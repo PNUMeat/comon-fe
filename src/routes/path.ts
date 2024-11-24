@@ -1,3 +1,4 @@
 export const PATH = {
-  home: '/',
+  HOME: '/',
+  TEAM_DASHBOARD: '/team-dashboard',
 } as const;
