@@ -28,6 +28,7 @@ const NavMenu = styled.div`
   display: flex;
   gap: 20px;
   margin-left: 106px;
+  align-items: center;
 
   a {
     color: white;
