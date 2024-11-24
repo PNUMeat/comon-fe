@@ -4,17 +4,21 @@ import { HeightInNumber } from '@/components/types';
 
 import styled from '@emotion/styled';
 
+// padding 사용하면 border gradient 이상해져서 자식의 margin으로 대체
 const HeaderContainer = styled(Flex)<HeightInNumber>`
   height: ${(props) => props.h}px;
-  border-radius: 40px;
-  background-color: #333333;
   align-items: center;
-  padding: 0 53px;
+  justify-content: space-between;
   margin: 54px 0;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid #333333;
+  border-radius: 40px;
   box-sizing: border-box;
-  justify-content: space-between;
+
+  border: 1px solid transparent;
+  background-image: linear-gradient(#333333, #333333),
+    linear-gradient(to right, #5f419f 0%, #f15ca7 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
 `;
 
 const ComonSLogo = styled.div`
@@ -22,6 +26,7 @@ const ComonSLogo = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: white;
+  margin-left: 53px;
 `;
 
 const NavMenu = styled.div`
@@ -48,6 +53,7 @@ const UserMenu = styled.div`
   flex-direction: column;
   align-items: flex-end;
   white-space: nowrap;
+  margin-right: 53px;
 
   button {
     background: none;
