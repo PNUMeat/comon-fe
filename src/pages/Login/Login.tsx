@@ -1,3 +1,4 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { CommonLayout } from '@/components/commons/CommonLayout';
 import { Container } from '@/components/commons/Container';
 import { GlassCard } from '@/components/commons/GlassCard';
@@ -13,6 +14,7 @@ export const Login = () => {
     <CommonLayout>
       <Container maxW={1090}>
         <PageSectionHeader h={h}>로그인</PageSectionHeader>
+        <BackgroundGradient />
         <Spacer h={80} />
         <GlassCard>
           <LoginForm h={324} />
