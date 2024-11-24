@@ -20,4 +20,5 @@ export const Flex = styled.div<{
   justify-content: ${(props) => props.justify || 'flex-start'};
   gap: ${(props) => props.gap || '0'};
   width: ${(props) => props.width ?? 100}%;
+  box-sizing: border-box;
 `;
