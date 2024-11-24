@@ -103,6 +103,9 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
       <LoginImage h={imgHeight} />
       <KakaoButton>카카오로 시작하기</KakaoButton>
+      <a href={'http://3.39.248.57:8080/oauth2/authorization/kakao'}>
+        카카오로그인 테스트
+      </a>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
