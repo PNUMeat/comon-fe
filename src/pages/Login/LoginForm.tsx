@@ -75,11 +75,7 @@ const LoginImageMargins = styled.div`
 `;
 
 const LoginImageFallback: React.FC<HeightInNumber> = ({ h }) => {
-  return (
-    <LoginImageMargins>
-      <div style={{ height: `${h}px` }}>이미지 로딩중</div>
-    </LoginImageMargins>
-  );
+  return <div style={{ height: `${h}px` }}>이미지 로딩중</div>;
 };
 
 const LoginImage: React.FC<HeightInNumber> = ({ h }) => {
