@@ -75,26 +75,20 @@ const LoginImageMargins = styled.div`
 `;
 
 const LoginImageFallback: React.FC<HeightInNumber> = ({ h }) => {
-  return (
-    <LoginImageMargins>
-      <div style={{ height: `${h}px` }}>이미지 로딩중</div>
-    </LoginImageMargins>
-  );
+  return <div style={{ height: `${h}px` }}>이미지 로딩중</div>;
 };
 
 const LoginImage: React.FC<HeightInNumber> = ({ h }) => {
   return (
-    <LoginImageMargins>
-      <Suspense fallback={<LoginImageFallback h={h} />}>
-        <LazyImage
-          altText={'로그인 이미지'}
-          w={50}
-          maxW={50}
-          h={h}
-          src={loginVector}
-        />
-      </Suspense>
-    </LoginImageMargins>
+    <Suspense fallback={<LoginImageFallback h={h} />}>
+      <LazyImage
+        altText={'로그인 이미지'}
+        w={50}
+        maxW={50}
+        h={h}
+        src={loginVector}
+      />
+    </Suspense>
   );
 };
 
@@ -105,7 +99,9 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
     <Container h={h}>
       <Title>코몬 시작하기</Title>
       <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
-      <LoginImage h={imgHeight} />
+      <LoginImageMargins>
+        <LoginImage h={imgHeight} />
+      </LoginImageMargins>
       <KakaoButton>카카오로 시작하기</KakaoButton>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
