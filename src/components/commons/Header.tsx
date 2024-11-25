@@ -2,9 +2,11 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
+import { Link } from 'react-router-dom';
+
 import styled from '@emotion/styled';
 
-// padding 사용하면 border gradient 이상해져서 자식의 margin으로 대체
+// padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
 const HeaderContainer = styled(Flex)<HeightInNumber>`
   height: ${(props) => props.h}px;
   align-items: center;
@@ -38,8 +40,8 @@ const NavMenu = styled.div`
   a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
 
     &:hover {
       text-decoration: underline;
@@ -55,16 +57,14 @@ const UserMenu = styled.div`
   white-space: nowrap;
   margin-right: 53px;
 
-  button {
+  a {
     background: none;
     border: none;
     color: white;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    font-weight: 800;
+    text-decoration: none;
   }
 `;
 
@@ -84,7 +84,11 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         </NavMenu>
       </Flex>
       <UserMenu>
-        {isLoggedIn ? <button>로그인</button> : <button>마이 페이지</button>}
+        {isLoggedIn ? (
+          <button>마이 페이지</button>
+        ) : (
+          <Link to={'/login'}>로그인</Link>
+        )}
       </UserMenu>
     </HeaderContainer>
   );
