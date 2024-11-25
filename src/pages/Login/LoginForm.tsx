@@ -49,7 +49,26 @@ const Button = styled.button`
   }
 `;
 
-const KakaoButton = styled(Button)`
+const LinkButton = styled.a`
+  width: 100%;
+  height: 50px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #cdcfff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const KakaoLinkButton = styled(LinkButton)`
   background: #fddc3f;
   color: #000000;
 
@@ -102,10 +121,11 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <Title>코몬 시작하기</Title>
       <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
       <LoginImage h={imgHeight} />
-      <KakaoButton>카카오로 시작하기</KakaoButton>
-      <a href={'http://3.39.248.57:8080/oauth2/authorization/kakao'}>
-        카카오로그인 테스트
-      </a>
+      <KakaoLinkButton
+        href={'http://3.39.248.57:8080/oauth2/authorization/kakao'}
+      >
+        카카오로 시작하기
+      </KakaoLinkButton>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
