@@ -35,7 +35,9 @@ export const TeamList = () => {
         팀이 없으신가요? 활동 중인 코몬 팀을 찾아보세요!
       </PageSectionHeader>
 
+      <Spacer h={34} />
       <FilterButtons />
+      <Spacer h={34} />
 
       <List>
         {teams.map((team, index) => (
@@ -67,7 +69,9 @@ export const TeamList = () => {
         ))}
       </List>
 
+      <Spacer h={34} />
       <Pagination />
+      <Spacer h={34} />
     </>
   );
 };

@@ -2,6 +2,7 @@ import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { Spacer } from '@/components/commons/Spacer';
 
 import click from '@/assets/TeamDashboard/click.png';
 import { colors } from '@/constants/colors';
@@ -21,6 +22,7 @@ export const MyTeamCard = () => {
   return (
     <>
       <PageSectionHeader h={40}>나의 팀</PageSectionHeader>
+      <Spacer h={30} />
       <Box width="100%">
         <Flex justify="space-around">
           <Box width="260px" height="260px" />
@@ -58,6 +60,7 @@ export const MyTeamCard = () => {
           </Flex>
         </Flex>
       </Box>
+      <Spacer h={84} />
     </>
   );
 };
