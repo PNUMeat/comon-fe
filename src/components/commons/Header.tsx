@@ -2,19 +2,25 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
+import { Link } from 'react-router-dom';
+
 import styled from '@emotion/styled';
 
+// padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
 const HeaderContainer = styled(Flex)<HeightInNumber>`
   height: ${(props) => props.h}px;
-  border-radius: 40px;
-  background-color: #333333;
   align-items: center;
-  padding: 0 53px;
+  justify-content: space-between;
   margin: 54px 0;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid #333333;
+  border-radius: 40px;
   box-sizing: border-box;
-  justify-content: space-between;
+
+  border: 1px solid transparent;
+  background-image: linear-gradient(#333333, #333333),
+    linear-gradient(to right, #5f419f 0%, #f15ca7 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
 `;
 
 const ComonSLogo = styled.div`
@@ -22,6 +28,7 @@ const ComonSLogo = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: white;
+  margin-left: 53px;
 `;
 
 const NavMenu = styled.div`
@@ -33,8 +40,8 @@ const NavMenu = styled.div`
   a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
 
     &:hover {
       text-decoration: underline;
@@ -48,17 +55,16 @@ const UserMenu = styled.div`
   flex-direction: column;
   align-items: flex-end;
   white-space: nowrap;
+  margin-right: 53px;
 
-  button {
+  a {
     background: none;
     border: none;
     color: white;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    font-weight: 800;
+    text-decoration: none;
   }
 `;
 
@@ -78,7 +84,11 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         </NavMenu>
       </Flex>
       <UserMenu>
-        {isLoggedIn ? <button>로그인</button> : <button>마이 페이지</button>}
+        {isLoggedIn ? (
+          <button>마이 페이지</button>
+        ) : (
+          <Link to={'/login'}>로그인</Link>
+        )}
       </UserMenu>
     </HeaderContainer>
   );

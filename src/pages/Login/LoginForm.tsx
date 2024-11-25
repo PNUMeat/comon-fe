@@ -3,6 +3,7 @@ import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
 
+import { kakaoOauth2LoginUrl } from '@/api/Login';
 import loginVector from '@/assets/Login/loginVector.png';
 import styled from '@emotion/styled';
 
@@ -49,7 +50,26 @@ const Button = styled.button`
   }
 `;
 
-const KakaoButton = styled(Button)`
+const LinkButton = styled.a`
+  width: 100%;
+  height: 50px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #cdcfff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const KakaoLinkButton = styled(LinkButton)`
   background: #fddc3f;
   color: #000000;
 
@@ -75,11 +95,7 @@ const LoginImageMargins = styled.div`
 `;
 
 const LoginImageFallback: React.FC<HeightInNumber> = ({ h }) => {
-  return (
-    <LoginImageMargins>
-      <div style={{ height: `${h}px` }}>이미지 로딩중</div>
-    </LoginImageMargins>
-  );
+  return <div style={{ height: `${h}px` }}>이미지 로딩중</div>;
 };
 
 const LoginImage: React.FC<HeightInNumber> = ({ h }) => {
@@ -106,7 +122,9 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <Title>코몬 시작하기</Title>
       <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
       <LoginImage h={imgHeight} />
-      <KakaoButton>카카오로 시작하기</KakaoButton>
+      <KakaoLinkButton href={kakaoOauth2LoginUrl}>
+        카카오로 시작하기
+      </KakaoLinkButton>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
