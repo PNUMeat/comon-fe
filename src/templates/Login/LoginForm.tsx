@@ -37,7 +37,6 @@ const Button = styled.button`
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  font-weight: bold;
   border: 1px solid #cdcfff;
   cursor: pointer;
   margin-bottom: 10px;
@@ -55,7 +54,6 @@ const LinkButton = styled.a`
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  font-weight: bold;
   border: 1px solid #cdcfff;
   cursor: pointer;
   margin-bottom: 10px;

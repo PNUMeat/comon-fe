@@ -1,8 +1,10 @@
+import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
+
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
-import { Login } from '@/pages/Login/Login';
 import { PATH } from '@/routes/path';
+import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +13,12 @@ export const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: PATH.login,
-    element: <Login />,
+    element: <SingleSectionLayout />,
+    children: [
+      {
+        path: PATH.login,
+        element: <LoginTemplate />,
+      },
+    ],
   },
 ]);
