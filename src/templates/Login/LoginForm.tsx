@@ -16,10 +16,10 @@ const Container = styled.div<HeightInNumber>`
   box-sizing: border-box;
 `;
 
-const Title = styled.h1`
+const Title = styled.div`
   font-size: 32px;
   font-weight: 700;
-  margin: 0;
+  font-style: normal;
   line-height: 38.19px
   color: #333333;
 `;
@@ -29,7 +29,7 @@ const Subtitle = styled.p`
   font-weight: 400;
   line-height: 19px;
   color: #333333;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.28px;
 `;
 
 const Button = styled.button`
