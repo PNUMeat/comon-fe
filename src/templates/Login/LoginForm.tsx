@@ -1,10 +1,12 @@
+import { FormTitle } from '@/components/commons/FormTitle';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
 
-import { kakaoOauth2LoginUrl } from '@/api/Login';
+// import { kakaoOauth2LoginUrl } from '@/api/Login';
 import loginVector from '@/assets/Login/loginVector.png';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 const Container = styled.div<HeightInNumber>`
@@ -14,22 +16,6 @@ const Container = styled.div<HeightInNumber>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-`;
-
-const Title = styled.div`
-  font-size: 32px;
-  font-weight: 700;
-  font-style: normal;
-  line-height: 38.19px
-  color: #333333;
-`;
-
-const Subtitle = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 19px;
-  color: #333333;
-  letter-spacing: -0.28px;
 `;
 
 const Button = styled.button`
@@ -117,12 +103,13 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
 
   return (
     <Container h={h}>
-      <Title>코몬 시작하기</Title>
-      <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
+      <FormTitle
+        title={'코몬 시작하기'}
+        subtitle={'소셜 로그인으로 빠르게 코몬해요!'}
+      />
       <LoginImage h={imgHeight} />
-      <KakaoLinkButton href={kakaoOauth2LoginUrl}>
-        카카오로 시작하기
-      </KakaoLinkButton>
+      {/*<KakaoLinkButton href={kakaoOauth2LoginUrl}>*/}
+      <KakaoLinkButton href={PATH.enroll}>카카오로 시작하기</KakaoLinkButton>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
