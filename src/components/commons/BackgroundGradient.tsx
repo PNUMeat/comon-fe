@@ -5,11 +5,13 @@ import { Flex } from './Flex';
 interface GradientBackgroundProps {
   count: number;
   positions: { top?: string; left?: string; right?: string; bottom?: string }[];
+  height?: string;
 }
 
 export const BackgroundGradient: React.FC<GradientBackgroundProps> = ({
   count,
   positions,
+  height,
 }) => {
   return (
     <BackgroundContainer>
@@ -21,6 +23,7 @@ export const BackgroundGradient: React.FC<GradientBackgroundProps> = ({
             left={positions[index]?.left}
             right={positions[index]?.right}
             bottom={positions[index]?.bottom}
+            height={height}
           />
         ))}
       </Flex>
@@ -37,6 +40,7 @@ const GradientCircle = styled.div<{
   left?: string;
   right?: string;
   bottom?: string;
+  height?: string;
 }>`
   position: absolute;
   top: ${(props) => props.top || 'auto'};
@@ -44,7 +48,7 @@ const GradientCircle = styled.div<{
   right: ${(props) => props.right || 'auto'};
   bottom: ${(props) => props.bottom || 'auto'};
   width: 940px;
-  height: 491px;
+  height: ${(props) => props.height || '490px'};
   border-radius: 600px 600px 0 0;
   background: radial-gradient(100% 100% at 50% 100%, #c2c5fb 40%, #fda2d0 100%);
   filter: blur(50px);
