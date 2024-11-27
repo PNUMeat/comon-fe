@@ -1,3 +1,4 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
@@ -22,6 +23,12 @@ export const MyTeamCard = () => {
   return (
     <>
       <PageSectionHeader h={40}>나의 팀</PageSectionHeader>
+      <BackgroundGradient
+        count={1}
+        positions={[{ top: '-4px' }]}
+        height="300px"
+      />
+
       <Spacer h={30} />
       <Box width="100%">
         <Flex justify="space-around">
