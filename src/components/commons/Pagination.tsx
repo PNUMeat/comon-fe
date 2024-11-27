@@ -26,7 +26,6 @@ export const Pagination = () => {
   return (
     <Flex justify="center">
       <PaginationContainer>
-        {/* <LeftArrow src={ArrowButton} onClick={handlePrev} disabled={currentPage === 1}/> */}
         <LeftArrow src={ArrowButton} onClick={handlePrev} />
         <Spacer width={12} h={0} />
         <PageList>
@@ -42,7 +41,6 @@ export const Pagination = () => {
         </PageList>
         <Spacer width={12} h={0} />
 
-        {/* <RightArrow src={ArrowButton} onClick={handleNext} disabled={currentPage === totalPages}/> */}
         <RightArrow src={ArrowButton} onClick={handleNext} />
       </PaginationContainer>
     </Flex>
