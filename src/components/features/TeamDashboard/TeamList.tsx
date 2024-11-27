@@ -1,3 +1,4 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { FilterButtons } from '@/components/commons/FilterButtons';
@@ -34,6 +35,11 @@ export const TeamList = () => {
       <PageSectionHeader h={40}>
         팀이 없으신가요? 활동 중인 코몬 팀을 찾아보세요!
       </PageSectionHeader>
+      <BackgroundGradient
+        count={1}
+        positions={[{ top: '90px' }]}
+        height="470px"
+      />
 
       <Spacer h={34} />
       <FilterButtons />

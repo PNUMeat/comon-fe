@@ -14,7 +14,7 @@ export const Login = () => {
     <CommonLayout>
       <Container maxW={1090}>
         <PageSectionHeader h={h}>로그인</PageSectionHeader>
-        <BackgroundGradient />
+        <BackgroundGradient count={1} positions={[{ top: '-4px' }]} />
         <Spacer h={80} />
         <GlassCard>
           <LoginForm h={324} />
