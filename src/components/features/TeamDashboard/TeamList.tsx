@@ -90,17 +90,19 @@ const List = styled.div`
 
 const Team = styled.div`
   font-size: 12px;
+  font-weight: 600;
 `;
 
 const TeamName = styled.div`
   font-size: 24px;
   color: #333;
-  font-weight: bold;
+  font-weight: 700;
 `;
 
 const SinceDate = styled.div`
   color: #777;
   margin-bottom: 8px;
+  font-weight: 400;
 `;
 
 const ButtonWrapper = styled.div`

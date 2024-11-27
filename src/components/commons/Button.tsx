@@ -28,6 +28,7 @@ const StyledButton = styled.button<ButtonProps>`
   border-radius: 5px;
   background-color: ${(props) => props.backgroundColor || colors.buttonPurple};
   color: #fff;
+  font-weight: 400;
   cursor: pointer;
 
   &:hover {
