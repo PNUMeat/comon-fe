@@ -1,6 +1,10 @@
 import { Wrap } from '@/components/commons/Wrap';
 
+import { useCallback } from 'react';
+
+import { enrollNameAtom } from '@/store/enroll';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 const InputContainer = styled.div`
   display: flex;
@@ -36,11 +40,29 @@ const CharacterCounter = styled.span`
   margin-top: 4px;
 `;
 
-export const NameInput: React.FC<{ maxLength: number }> = ({ maxLength }) => (
-  <Wrap>
-    <InputContainer>
-      <TextInput placeholder={'이름'} maxLength={maxLength} />
-    </InputContainer>
-    <CharacterCounter>0/{maxLength}자</CharacterCounter>
-  </Wrap>
-);
+export const NameInput: React.FC<{ maxLength: number }> = ({ maxLength }) => {
+  const [name, setName] = useAtom(enrollNameAtom);
+
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      setName(e.target.value);
+    },
+    [setName]
+  );
+
+  return (
+    <Wrap>
+      <InputContainer>
+        <TextInput
+          placeholder={'이름'}
+          maxLength={maxLength}
+          value={name}
+          onChange={onChange}
+        />
+      </InputContainer>
+      <CharacterCounter>
+        {name.length}/{maxLength}자
+      </CharacterCounter>
+    </Wrap>
+  );
+};

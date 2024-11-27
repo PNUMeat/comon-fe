@@ -1,8 +1,10 @@
 import { Wrap } from '@/components/commons/Wrap';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
+import { enrollIntroductionAtom } from '@/store/enroll';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -26,6 +28,7 @@ const EditableDiv = styled.div`
   border: none;
   background: transparent;
   color: #333333;
+  cursor: text;
 
   &:empty::before {
     content: '자신을 소개해주세요!';
@@ -44,7 +47,7 @@ const CharacterCount = styled.span`
 `;
 
 export const ContentEditable = ({ maxLength }: { maxLength: number }) => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useAtom(enrollIntroductionAtom);
   const editableRef = useRef<HTMLDivElement>(null);
 
   const handleInput = () => {

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-
+import { isEnrollAgreementCheckedAtom } from '@/store/enroll';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 const CheckboxContainer = styled.label`
   display: flex;
@@ -57,14 +57,16 @@ const CheckboxWrap = styled.div`
 `;
 
 export const AgreementCheckbox = () => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isAgreementChecked, setIsAgreementChecked] = useAtom(
+    isEnrollAgreementCheckedAtom
+  );
 
-  const handleCheckboxClick = () => setIsChecked((prev) => !prev);
+  const handleCheckboxClick = () => setIsAgreementChecked((prev) => !prev);
 
   return (
     <CheckboxWrap>
       <CheckboxContainer onClick={handleCheckboxClick}>
-        <Checkbox checked={isChecked} />
+        <Checkbox checked={isAgreementChecked} />
         <CommentText>개인정보 보호정책에 동의합니다.</CommentText>
       </CheckboxContainer>
       <MoreInfoLink href="#">자세히보기</MoreInfoLink>
