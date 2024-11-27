@@ -20,15 +20,15 @@ const Title = styled.h1`
   font-size: 32px;
   font-weight: 700;
   margin: 0;
-  line-height: 38.19px;
-  color: #333;
+  line-height: 38.19px
+  color: #333333;
 `;
 
 const Subtitle = styled.p`
   font-size: 14px;
   font-weight: 400;
   line-height: 19px;
-  color: #333;
+  color: #333333;
   letter-spacing: -0.4px;
 `;
 
@@ -71,7 +71,7 @@ const LinkButton = styled.a`
 
 const KakaoLinkButton = styled(LinkButton)`
   background: #fddc3f;
-  color: #000;
+  color: #000000;
 
   &::before {
     content: '💬';
@@ -81,7 +81,7 @@ const KakaoLinkButton = styled(LinkButton)`
 
 const GoogleButton = styled(Button)`
   background: #ffffff;
-  color: #000;
+  color: #000000;
   border: 1px solid #ccc;
 
   &::before {

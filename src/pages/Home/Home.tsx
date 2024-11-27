@@ -1,4 +1,4 @@
-import { CommonLayout } from '@/components/commons/CommonLayout';
+import { CommonLayout } from '@/components/Layout/CommonLayout';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 
 export const Home = () => {
