@@ -1,4 +1,4 @@
-import { FormTitle } from '@/components/commons/FormTitle';
+import { ComonFormTitle } from '@/components/commons/ComonFormTitle';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { HeightInNumber } from '@/components/types';
 
@@ -103,7 +103,7 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
 
   return (
     <Container h={h}>
-      <FormTitle
+      <ComonFormTitle
         title={'코몬 시작하기'}
         subtitle={'소셜 로그인으로 빠르게 코몬해요!'}
       />

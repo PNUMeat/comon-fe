@@ -1,5 +1,7 @@
+import { ComonFieldLabel } from '@/components/commons/ComonFormFieldLabel';
+import { ComonFormGrid } from '@/components/commons/ComonFormGrid';
+import { ComonFormTitle } from '@/components/commons/ComonFormTitle';
 import { ComonImageInput } from '@/components/commons/ComonImageInput';
-import { FormTitle } from '@/components/commons/FormTitle';
 import { HeightInNumber } from '@/components/types';
 
 import { AgreementCheckbox } from '@/templates/Enroll/AgreementCheckbox';
@@ -20,42 +22,26 @@ const EnrollFormContainer = styled.div<HeightInNumber>`
   gap: 78px;
 `;
 
-const FormGrid = styled.div<HeightInNumber>`
-  height: ${(props) => props.h}px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 20px 30px;
-  width: 100%;
-`;
-
-const FieldLabel = styled.label`
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  display: block;
-`;
-
 export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
   return (
     <EnrollFormContainer h={h}>
-      <FormTitle
+      <ComonFormTitle
         title={'프로필 완성하기'}
         subtitle={'가입 후에도 모든 정보를 수정할 수 있어요'}
       />
-      <FormGrid h={494}>
-        <FieldLabel>이름</FieldLabel>
+      <ComonFormGrid h={494}>
+        <ComonFieldLabel>이름</ComonFieldLabel>
         <NameInput maxLength={10} />
 
-        <FieldLabel>프로필 이미지</FieldLabel>
+        <ComonFieldLabel>프로필 이미지</ComonFieldLabel>
         <ComonImageInput />
 
-        <FieldLabel>프로필 설명</FieldLabel>
+        <ComonFieldLabel>프로필 설명</ComonFieldLabel>
         <ContentEditable maxLength={50} />
 
-        <FieldLabel>정책 동의</FieldLabel>
+        <ComonFieldLabel>정책 동의</ComonFieldLabel>
         <AgreementCheckbox />
-      </FormGrid>
+      </ComonFormGrid>
       <ProfileSubmitButton />
     </EnrollFormContainer>
   );

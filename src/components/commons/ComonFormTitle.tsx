@@ -18,7 +18,7 @@ const Subtitle = styled.p`
   letter-spacing: -0.28px;
 `;
 
-export const FormTitle: React.FC<{
+export const ComonFormTitle: React.FC<{
   title: string;
   subtitle: string;
 }> = ({ title, subtitle }) => {
