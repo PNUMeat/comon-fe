@@ -7,6 +7,7 @@ import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { PATH } from '@/routes/path';
 import { EnrollTemplate } from '@/templates/Enroll/EnrollTemplate';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
+import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: PATH.ENROLL,
         element: <EnrollTemplate />,
+      },
+      {
+        path: PATH.TEAM_REGISTRATION,
+        element: <TeamRegistrationTemplate />,
       },
     ],
   },
