@@ -4,9 +4,8 @@ import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
 
-// import { kakaoOauth2LoginUrl } from '@/api/Login';
+import { kakaoOauth2LoginUrl } from '@/api/Login';
 import loginVector from '@/assets/Login/loginVector.png';
-import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 const Container = styled.div<HeightInNumber>`
@@ -108,8 +107,10 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
         subtitle={'소셜 로그인으로 빠르게 코몬해요!'}
       />
       <LoginImage h={imgHeight} />
-      {/*<KakaoLinkButton href={kakaoOauth2LoginUrl}>*/}
-      <KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>
+      <KakaoLinkButton href={kakaoOauth2LoginUrl}>
+        카카오로 시작하기
+      </KakaoLinkButton>
+      {/*<KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>*/}
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
