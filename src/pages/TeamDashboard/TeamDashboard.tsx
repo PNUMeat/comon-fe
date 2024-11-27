@@ -8,7 +8,7 @@ import styled from '@emotion/styled';
 
 export const TeamDashboardPage = () => {
   return (
-    <Container>
+    <>
       {/* 나의 팀 */}
       <MyTeamCard />
 
@@ -20,13 +20,9 @@ export const TeamDashboardPage = () => {
         <ClickImage src={click} />
         <ActionText>팀 생성하기</ActionText>
       </Box>
-    </Container>
+    </>
   );
 };
-
-const Container = styled.div`
-  padding: 0 175px;
-`;
 
 const GuideText = styled.div`
   color: #333;

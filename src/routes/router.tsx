@@ -1,3 +1,4 @@
+import { MultiSectionLayout } from '@/components/Layout/MultiSectionHeader';
 import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
 
 import { createBrowserRouter } from 'react-router-dom';
@@ -36,7 +37,12 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: PATH.TEAM_DASHBOARD,
-    element: <TeamDashboardPage />,
+    element: <MultiSectionLayout />,
+    children: [
+      {
+        path: PATH.TEAM_DASHBOARD,
+        element: <TeamDashboardPage />,
+      },
+    ],
   },
 ]);
