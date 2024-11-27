@@ -9,7 +9,7 @@ export const GradientGlassPanel: React.FC<{
 }> = ({ children }) => {
   return (
     <Fragment>
-      <BackgroundGradient />
+      <BackgroundGradient count={1} positions={[{ top: '-4px' }]} />
       <Spacer h={80} />
       <GlassCard>{children}</GlassCard>
     </Fragment>
