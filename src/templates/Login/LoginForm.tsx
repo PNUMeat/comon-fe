@@ -1,3 +1,4 @@
+import { ComonFormTitle } from '@/components/commons/ComonFormTitle';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { HeightInNumber } from '@/components/types';
 
@@ -16,28 +17,11 @@ const Container = styled.div<HeightInNumber>`
   box-sizing: border-box;
 `;
 
-const Title = styled.h1`
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0;
-  line-height: 38.19px
-  color: #333333;
-`;
-
-const Subtitle = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 19px;
-  color: #333333;
-  letter-spacing: -0.4px;
-`;
-
 const Button = styled.button`
   width: 100%;
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  font-weight: bold;
   border: 1px solid #cdcfff;
   cursor: pointer;
   margin-bottom: 10px;
@@ -55,7 +39,6 @@ const LinkButton = styled.a`
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  font-weight: bold;
   border: 1px solid #cdcfff;
   cursor: pointer;
   margin-bottom: 10px;
@@ -119,12 +102,15 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
 
   return (
     <Container h={h}>
-      <Title>코몬 시작하기</Title>
-      <Subtitle>소셜 로그인으로 빠르게 코몬해요!</Subtitle>
+      <ComonFormTitle
+        title={'코몬 시작하기'}
+        subtitle={'소셜 로그인으로 빠르게 코몬해요!'}
+      />
       <LoginImage h={imgHeight} />
       <KakaoLinkButton href={kakaoOauth2LoginUrl}>
         카카오로 시작하기
       </KakaoLinkButton>
+      {/*<KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>*/}
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
