@@ -1,9 +1,10 @@
 import { Flex } from '@/components/commons/Flex';
+import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { useState } from 'react';
-
+import { imageAtom, isImageFitAtom } from '@/store/common';
 import styled from '@emotion/styled';
+import { useAtom, useAtomValue } from 'jotai';
 
 const ImageContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -51,6 +52,7 @@ const InfoText = styled.p`
   line-height: 19px;
   letter-spacing: -0.28px;
   color: #cccccc;
+  white-space: pre-line;
 `;
 
 const AttachImageButton = styled.label`
@@ -75,51 +77,42 @@ const AttachImageButton = styled.label`
   }
 `;
 
-const ImageRestrictionNotice = () => (
-  <InfoText>
-    JPG, PNG
-    <br />
-    10MB 용량 제한
-    <br />
-    500x500 px 사이즈 권장
-  </InfoText>
-);
+const ImageRestrictionNotice = () => {
+  const isEnrollImageFit = useAtomValue(isImageFitAtom);
 
-const isValidFileType = (file: File) => {
-  const allowedTypes = ['image/png', 'image/jpeg'];
-  return allowedTypes.includes(file.type);
+  return (
+    <InfoText>
+      JPG, PNG
+      <br />
+      {isEnrollImageFit === null || isEnrollImageFit ? (
+        '10MB 용량 제한\n500x500 px 사이즈 권장'
+      ) : (
+        <SText color="red">10MB 용량을 초과했습니다</SText>
+      )}
+    </InfoText>
+  );
 };
 
-export const ImageInput = () => {
-  const [image, setImage] = useState<string | null>(null);
-
-  const processFile = (file: File) => {
-    if (!isValidFileType(file)) {
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => setImage(reader.result as string);
-    reader.readAsDataURL(file);
-  };
+export const ComonImageInput = () => {
+  const [image, setImage] = useAtom(imageAtom);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      processFile(file);
+      setImage(file);
     }
   };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
-    e.preventDefault();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      processFile(file);
+      setImage(file);
     }
   };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
+    e.preventDefault();
 
   return (
     <Flex gap={'17px'}>

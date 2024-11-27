@@ -1,9 +1,9 @@
+import { ComonImageInput } from '@/components/commons/ComonImageInput';
 import { FormTitle } from '@/components/commons/FormTitle';
 import { HeightInNumber } from '@/components/types';
 
 import { AgreementCheckbox } from '@/templates/Enroll/AgreementCheckbox';
 import { ContentEditable } from '@/templates/Enroll/ContentEditable';
-import { ImageInput } from '@/templates/Enroll/ImageInput';
 import { NameInput } from '@/templates/Enroll/NameInput';
 import { ProfileSubmitButton } from '@/templates/Enroll/ProfileSubmitButton';
 import styled from '@emotion/styled';
@@ -48,7 +48,7 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
         <NameInput maxLength={10} />
 
         <FieldLabel>프로필 이미지</FieldLabel>
-        <ImageInput />
+        <ComonImageInput />
 
         <FieldLabel>프로필 설명</FieldLabel>
         <ContentEditable maxLength={50} />
@@ -56,7 +56,7 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
         <FieldLabel>정책 동의</FieldLabel>
         <AgreementCheckbox />
       </FormGrid>
-      <ProfileSubmitButton disabled={false} />
+      <ProfileSubmitButton />
     </EnrollFormContainer>
   );
 };
