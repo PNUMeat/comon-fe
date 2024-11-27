@@ -3,6 +3,7 @@ import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
+import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { PATH } from '@/routes/path';
 import { EnrollTemplate } from '@/templates/Enroll/EnrollTemplate';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
@@ -10,7 +11,7 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 export const router = createBrowserRouter([
   {
     index: true,
-    path: PATH.home,
+    path: PATH.HOME,
     element: <Home />,
   },
   {
@@ -25,13 +26,17 @@ export const router = createBrowserRouter([
     element: <SingleSectionLayout />,
     children: [
       {
-        path: PATH.login,
+        path: PATH.LOGIN,
         element: <LoginTemplate />,
       },
       {
-        path: PATH.enroll,
+        path: PATH.ENROLL,
         element: <EnrollTemplate />,
       },
     ],
+  },
+  {
+    path: PATH.TEAM_DASHBOARD,
+    element: <TeamDashboardPage />,
   },
 ]);

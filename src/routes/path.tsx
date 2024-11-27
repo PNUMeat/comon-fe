@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 
 export const PATH = {
-  home: '/',
-  login: '/login',
-  enroll: '/enroll',
+  HOME: '/',
+  LOGIN: '/login',
+  ENROLL: '/enroll',
+  TEAM_DASHBOARD: '/team-dashboard',
 } as const;
 
 export const TITLES: Record<string, ReactNode> = {

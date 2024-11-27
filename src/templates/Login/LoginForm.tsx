@@ -109,7 +109,7 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       />
       <LoginImage h={imgHeight} />
       {/*<KakaoLinkButton href={kakaoOauth2LoginUrl}>*/}
-      <KakaoLinkButton href={PATH.enroll}>카카오로 시작하기</KakaoLinkButton>
+      <KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
