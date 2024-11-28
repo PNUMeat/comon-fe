@@ -2,7 +2,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { imageAtom, isImageFitAtom } from '@/store/form';
+import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
 
@@ -85,7 +85,7 @@ const ImageRestrictionNotice = () => {
       JPG, PNG
       <br />
       {isEnrollImageFit === null || isEnrollImageFit ? (
-        '10MB 용량 제한\n500x500 px 사이즈 권장'
+        `${MAX_IMAGE_SIZE}MB 용량 제한\n500x500 px 사이즈 권장`
       ) : (
         <SText color="red">10MB 용량을 초과했습니다</SText>
       )}

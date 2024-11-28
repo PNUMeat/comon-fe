@@ -7,8 +7,8 @@ export const formTextInputAtom = atom<string>('');
 export const formTextareaAtom = atom<string>('');
 
 const imageStorageAtom = atom<string | null>(null);
+export const MAX_IMAGE_SIZE = 10;
 export const isImageFitAtom = atom<boolean | null>(null);
-
 export const imageAtom = atom(
   (get) => get(imageStorageAtom),
   (_get, set, file: File) => {
@@ -18,7 +18,7 @@ export const imageAtom = atom(
     }
 
     const fileSizeInMB = file.size / 1024 / 1024;
-    if (fileSizeInMB > 10) {
+    if (fileSizeInMB > MAX_IMAGE_SIZE) {
       set(isImageFitAtom, false);
       return;
     } else {
@@ -35,7 +35,6 @@ export const imageAtom = atom(
     Enroll
  */
 export const isEnrollAgreementCheckedAtom = atom<boolean>(false);
-
 export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
   const name = get(formTextInputAtom);
   const introduction = get(formTextareaAtom);
@@ -47,15 +46,27 @@ export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
 /*
     Team
  */
-const peopleNumStorageAtom = atom<number>(0);
-
+const peopleNumStorageAtom = atom<number | string>('');
+export const MAX_PEOPLE_NUM = 20;
 export const teamMaxNumAtom = atom(
   (get) => get(peopleNumStorageAtom),
   (_get, set, newValue: number) => {
-    if (newValue > 0) {
+    if (newValue > 0 && newValue <= MAX_PEOPLE_NUM) {
       set(peopleNumStorageAtom, newValue);
     }
   }
 );
+
 export const teamSubjectAtom = atom<string>('');
-export const teamPasswordAtom = atom<string>('');
+
+const passwordStorageAtom = atom<string>('');
+export const PROPER_PASSWORD_LENGTH = 4;
+export const teamPasswordAtom = atom(
+  (get) => get(passwordStorageAtom),
+  (_get, set, newValue: string) => {
+    if (/^\d*$/.test(newValue) && newValue.length <= PROPER_PASSWORD_LENGTH) {
+      set(passwordStorageAtom, newValue);
+      return;
+    }
+  }
+);
