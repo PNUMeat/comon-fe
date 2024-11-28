@@ -4,10 +4,9 @@ import { atom } from 'jotai';
     Form
  */
 export const formTextInputAtom = atom<string>('');
-
 export const formTextareaAtom = atom<string>('');
 
-export const imageStorageAtom = atom<string | null>(null);
+const imageStorageAtom = atom<string | null>(null);
 export const isImageFitAtom = atom<boolean | null>(null);
 
 export const imageAtom = atom(
@@ -48,5 +47,15 @@ export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
 /*
     Team
  */
+const peopleNumStorageAtom = atom<number>(0);
 
-export const teamMaxNumAtom = atom<number>(0);
+export const teamMaxNumAtom = atom(
+  (get) => get(peopleNumStorageAtom),
+  (_get, set, newValue: number) => {
+    if (newValue > 0) {
+      set(peopleNumStorageAtom, newValue);
+    }
+  }
+);
+export const teamSubjectAtom = atom<string>('');
+export const teamPasswordAtom = atom<string>('');

@@ -12,10 +12,8 @@ export const TeamMaxPeopleInput = () => {
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const nValue = parseInt(e.target.value);
-      if (nValue > 0) {
-        setTeamMaxNum(nValue);
-      }
+      const value = parseInt(e.target.value);
+      setTeamMaxNum(value);
     },
     [setTeamMaxNum]
   );
