@@ -111,7 +111,6 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <KakaoLinkButton href={kakaoOauth2LoginUrl}>
         카카오로 시작하기
       </KakaoLinkButton>
-      {/*<KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>*/}
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
