@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const ComonFieldLabel = styled.label`
+export const FormFieldLabel = styled.label`
   font-size: 24px;
   font-style: normal;
   font-weight: 700;

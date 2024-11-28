@@ -1,5 +1,9 @@
 import { atom } from 'jotai';
 
+export const formTextInputAtom = atom<string>('');
+
+export const formTextareaAtom = atom<string>('');
+
 export const imageStorageAtom = atom<string | null>(null);
 export const isImageFitAtom = atom<boolean | null>(null);
 

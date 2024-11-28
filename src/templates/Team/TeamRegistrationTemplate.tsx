@@ -9,7 +9,7 @@ export const TeamRegistrationTemplate = () => {
   return (
     <Fragment>
       <GradientGlassPanel>
-        <TeamForm />
+        <TeamForm h={977} />
       </GradientGlassPanel>
       <Spacer h={312} />
     </Fragment>

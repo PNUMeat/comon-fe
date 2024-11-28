@@ -1,8 +1,6 @@
-import { isAllFieldSatisfiedAtom } from '@/store/enroll';
 import styled from '@emotion/styled';
-import { useAtomValue } from 'jotai';
 
-const SubmitButton = styled.button<{ disabled: boolean }>`
+export const ComonFormSubmitButton = styled.button<{ disabled: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +9,6 @@ const SubmitButton = styled.button<{ disabled: boolean }>`
   height: 57px;
   padding: 28px 72px 26px 72px;
   border-radius: 20px;
-  font-family: Pretendard, sans-serif;
   font-size: 18px;
   font-weight: 600;
   line-height: normal;
@@ -41,14 +38,5 @@ const SubmitButton = styled.button<{ disabled: boolean }>`
   
   span {
     font-size: 16px;
+  }
 `;
-
-export const ProfileSubmitButton = () => {
-  const isAllFieldSatisfied = useAtomValue(isAllFieldSatisfiedAtom);
-
-  return (
-    <SubmitButton disabled={!isAllFieldSatisfied}>
-      <span>🚀 코몬 시작하기!</span>
-    </SubmitButton>
-  );
-};

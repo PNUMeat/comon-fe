@@ -2,7 +2,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { imageAtom, isImageFitAtom } from '@/store/common';
+import { imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
 
