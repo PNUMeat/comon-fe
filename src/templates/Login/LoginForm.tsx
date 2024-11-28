@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 
 import { kakaoOauth2LoginUrl } from '@/api/Login';
 import loginVector from '@/assets/Login/loginVector.png';
+import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 const Container = styled.div<HeightInNumber>`
@@ -22,7 +23,7 @@ const Button = styled.button`
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  border: 1px solid #cdcfff;
+  border: 1px solid ${colors.borderPurple};
   cursor: pointer;
   margin-bottom: 10px;
   display: flex;
@@ -39,7 +40,7 @@ const LinkButton = styled.a`
   height: 50px;
   border-radius: 20px;
   font-size: 16px;
-  border: 1px solid #cdcfff;
+  border: 1px solid ${colors.borderPurple};
   cursor: pointer;
   margin-bottom: 10px;
   display: flex;
@@ -63,7 +64,7 @@ const KakaoLinkButton = styled(LinkButton)`
 `;
 
 const GoogleButton = styled(Button)`
-  background: #ffffff;
+  background: #fff;
   color: #000000;
   border: 1px solid #ccc;
 
@@ -110,7 +111,6 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <KakaoLinkButton href={kakaoOauth2LoginUrl}>
         카카오로 시작하기
       </KakaoLinkButton>
-      {/*<KakaoLinkButton href={PATH.ENROLL}>카카오로 시작하기</KakaoLinkButton>*/}
       <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );

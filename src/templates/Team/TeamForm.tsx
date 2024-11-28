@@ -22,13 +22,15 @@ const TeamContainer = styled.div<HeightInNumber>`
   box-sizing: border-box;
 `;
 
-export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
+export const TeamForm: React.FC<
+  HeightInNumber & {
+    title: string;
+    subtitle: string;
+  }
+> = ({ h, title, subtitle }) => {
   return (
     <TeamContainer h={h}>
-      <ComonFormTitle
-        title={'팀 정보 입력하기'}
-        subtitle={'팀 생성 후에도 모든 정보를 수정할 수 있어요'}
-      />
+      <ComonFormTitle title={title} subtitle={subtitle} />
       <Spacer h={78} />
       <ComonFormGrid h={683}>
         <FormFieldLabel>팀 이름</FormFieldLabel>

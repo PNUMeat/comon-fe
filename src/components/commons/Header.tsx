@@ -5,6 +5,7 @@ import { HeightInNumber } from '@/components/types';
 import { Link } from 'react-router-dom';
 
 import { PATH } from '@/routes/path';
+import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 // padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
@@ -19,7 +20,7 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
 
   border: 1px solid transparent;
   background-image: linear-gradient(#333333, #333333),
-    linear-gradient(to right, #5f419f 0%, #f15ca7 100%);
+    linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
 `;
