@@ -1,6 +1,6 @@
-import { InputCharacterCounter } from '@/components/commons/Form/segments/InputCharacterCounter';
 import { InputContainer } from '@/components/commons/Form/segments/InputContainer';
 import { InputField } from '@/components/commons/Form/segments/InputField';
+import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
 import { useCallback } from 'react';
@@ -8,6 +8,9 @@ import { useCallback } from 'react';
 import { formTextInputAtom } from '@/store/form';
 import { useAtom } from 'jotai';
 
+/**
+    상태가 매핑됨 (formTextInputAtom)
+ */
 export const ComonTextInput: React.FC<{
   maxLength: number;
   placeholder: string;
@@ -34,9 +37,9 @@ export const ComonTextInput: React.FC<{
           onChange={onChange}
         />
       </InputContainer>
-      <InputCharacterCounter>
+      <InputHelperText>
         {name.length}/{maxLength}자
-      </InputCharacterCounter>
+      </InputHelperText>
     </Wrap>
   );
 };

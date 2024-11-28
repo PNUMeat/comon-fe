@@ -1,5 +1,5 @@
 import { EditableDiv } from '@/components/commons/Form/segments/EditableDiv';
-import { InputCharacterCounter } from '@/components/commons/Form/segments/InputCharacterCounter';
+import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
 import { useEffect, useRef } from 'react';
@@ -24,6 +24,9 @@ const ContentContainer = styled.div`
   color: #333;
 `;
 
+/**
+ * 상태가 매핑됨 (formTextareaAtom)
+ */
 export const ComonTextarea = ({ maxLength }: { maxLength: number }) => {
   // TODO: 현재 해당 컴포넌트가 여러번 필요한 디자인이 없으므로 상태를 매핑 했다. 혹시 생긴다면 수정 필요.
   //  상태를 매핑했기 때문에 하나의 페이지에서 여러번 재사용 불가함.
@@ -88,9 +91,9 @@ export const ComonTextarea = ({ maxLength }: { maxLength: number }) => {
           placeholder={'자신을 소개해주세요!'}
         />
       </ContentContainer>
-      <InputCharacterCounter>
+      <InputHelperText>
         {content.length}/{maxLength}자
-      </InputCharacterCounter>
+      </InputHelperText>
     </Wrap>
   );
 };
