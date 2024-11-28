@@ -1,8 +1,10 @@
+import { MultiSectionLayout } from '@/components/Layout/MultiSectionHeader';
 import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
 
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
+import { TeamCalendarPage } from '@/pages/TeamCalendar/TeamCalendar';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { PATH } from '@/routes/path';
 import { EnrollTemplate } from '@/templates/Enroll/EnrollTemplate';
@@ -32,10 +34,16 @@ export const router = createBrowserRouter([
         path: PATH.ENROLL,
         element: <EnrollTemplate />,
       },
+      { path: PATH.TEAM_CALENDAR, element: <TeamCalendarPage /> },
     ],
   },
   {
-    path: PATH.TEAM_DASHBOARD,
-    element: <TeamDashboardPage />,
+    element: <MultiSectionLayout />,
+    children: [
+      {
+        path: PATH.TEAM_DASHBOARD,
+        element: <TeamDashboardPage />,
+      },
+    ],
   },
 ]);
