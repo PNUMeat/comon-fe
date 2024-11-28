@@ -70,3 +70,21 @@ export const teamPasswordAtom = atom(
     }
   }
 );
+
+export const isTeamRegistrationValidAtom = atom<boolean>((get) => {
+  const name = get(formTextInputAtom);
+  const desc = get(formTextareaAtom);
+  const num = get(peopleNumStorageAtom);
+  const subject = get(teamSubjectAtom);
+  const password = get(passwordStorageAtom);
+
+  return (
+    name.trim().length > 0 &&
+    desc.trim().length > 0 &&
+    Number.isInteger(num) &&
+    (num as number) <= MAX_PEOPLE_NUM &&
+    subject !== '' &&
+    /^\d*$/.test(password) &&
+    password.length === 4
+  );
+});

@@ -1,8 +1,16 @@
+import { ComonImageInput } from '@/components/commons/ComonImageInput';
 import { ComonFormGrid } from '@/components/commons/Form/ComonFormGrid';
 import { ComonFormTitle } from '@/components/commons/Form/ComonFormTitle';
+import { ComonTextInput } from '@/components/commons/Form/ComonTextInput';
+import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
+import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabel';
 import { Spacer } from '@/components/commons/Spacer';
 import { HeightInNumber } from '@/components/types';
 
+import { TeamMaxPeopleInput } from '@/templates/Team/TeamMaxPeopleInput';
+import { TeamPasswordInput } from '@/templates/Team/TeamPasswordInput';
+import { TeamSubjectRadio } from '@/templates/Team/TeamSubjectRadio';
+import { TeamSubmitButton } from '@/templates/Team/TeamSubmitButton';
 import styled from '@emotion/styled';
 
 const TeamContainer = styled.div<HeightInNumber>`
@@ -10,9 +18,8 @@ const TeamContainer = styled.div<HeightInNumber>`
   display: flex;
   padding: 66px 87px 77px 87px;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 99px;
+  box-sizing: border-box;
 `;
 
 export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
@@ -24,18 +31,26 @@ export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
       />
       <Spacer h={78} />
       <ComonFormGrid h={683}>
-        {/*<FormFieldLabel>팀 이름</FormFieldLabel>*/}
-        {/*<ComonTextInput maxLength={10} />*/}
+        <FormFieldLabel>팀 이름</FormFieldLabel>
+        <ComonTextInput maxLength={10} placeholder={'팀이름'} />
 
-        {/*<FormFieldLabel>팀 설명</FormFieldLabel>*/}
-        {/*<ComonTextarea maxLength={50} />*/}
+        <FormFieldLabel>팀 설명</FormFieldLabel>
+        <ComonTextarea maxLength={50} />
 
-        {/*<FormFieldLabel>팀 아이콘</FormFieldLabel>*/}
-        {/*<ComonImageInput />*/}
+        <FormFieldLabel>팀 아이콘</FormFieldLabel>
+        <ComonImageInput />
 
-        {/*<FormFieldLabel>주제</FormFieldLabel>*/}
+        <FormFieldLabel>주제</FormFieldLabel>
+        <TeamSubjectRadio />
+
+        <FormFieldLabel>인원 제한</FormFieldLabel>
+        <TeamMaxPeopleInput />
+
+        <FormFieldLabel>입장 비밀번호</FormFieldLabel>
+        <TeamPasswordInput />
       </ComonFormGrid>
-      <div>{h}</div>
+      <Spacer h={99} />
+      <TeamSubmitButton />
     </TeamContainer>
   );
 };
