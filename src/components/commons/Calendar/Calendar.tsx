@@ -56,6 +56,10 @@ const StyledCalendar = styled(Calendar)`
     &:hover {
       background-color: transparent;
     }
+
+    &:focus {
+      background-color: transparent;
+    }
   }
 
   /* 년/월 상단 네비게이션 칸 크기 줄이기 */
@@ -65,10 +69,8 @@ const StyledCalendar = styled(Calendar)`
 
   /* 전체 폰트 컬러 */
   .react-calendar__month-view {
-    /* padding-bottom: 16px;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border: 1px solid ${colors.borderPurple}; */
+    border-radius: 20px;
+    border: 1px solid ${colors.borderPurple};
 
     abbr {
       font-family: 'Pretendard';
@@ -92,11 +94,6 @@ const StyledCalendar = styled(Calendar)`
     }
   }
 
-  .react-calendar__month-view__days {
-    //border-radius: 20px;
-    //border: 1px solid ${colors.borderPurple};
-  }
-
   /* 날짜 셀 */
   .react-calendar__tile {
     display: flex;
@@ -111,6 +108,18 @@ const StyledCalendar = styled(Calendar)`
 
     &:hover {
       background-color: #f8f8ff;
+    }
+
+    &:nth-last-child(-n + 7) {
+      border-bottom: none; /* 마지막 줄 셀의 하단 테두리 제거 */
+    }
+
+    &:nth-child(7n) {
+      border-right: none; /* 오른쪽 가장자리 셀의 테두리 제거 */
+    }
+
+    &:nth-child(7n - 6) {
+      border-left: none; /* 왼쪽 가장자리 셀의 왼쪽 테두리 제거 */
     }
 
     /* 이미지 추가 */
