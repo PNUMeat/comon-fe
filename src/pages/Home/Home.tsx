@@ -16,6 +16,9 @@ export const Home = () => {
         <li>
           <Link to={PATH.TEAM_REGISTRATION}>팀 생성</Link>
         </li>
+        <li>
+          <Link to={PATH.TEAM_MODIFICATION}>팀 수정</Link>
+        </li>
       </ul>
     </CommonLayout>
   );
