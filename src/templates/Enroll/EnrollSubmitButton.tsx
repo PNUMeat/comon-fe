@@ -1,6 +1,6 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
-import { isEnrollSatisfiedAtom } from '@/store/enroll';
+import { isEnrollSatisfiedAtom } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
 export const EnrollSubmitButton = () => {

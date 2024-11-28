@@ -1,4 +1,4 @@
-import { isEnrollAgreementCheckedAtom } from '@/store/enroll';
+import { isEnrollAgreementCheckedAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 

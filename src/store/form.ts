@@ -1,5 +1,8 @@
 import { atom } from 'jotai';
 
+/*
+    Form
+ */
 export const formTextInputAtom = atom<string>('');
 
 export const formTextareaAtom = atom<string>('');
@@ -28,3 +31,22 @@ export const imageAtom = atom(
     reader.readAsDataURL(file);
   }
 );
+
+/*
+    Enroll
+ */
+export const isEnrollAgreementCheckedAtom = atom<boolean>(false);
+
+export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
+  const name = get(formTextInputAtom);
+  const introduction = get(formTextareaAtom);
+  const isAgreed = get(isEnrollAgreementCheckedAtom);
+
+  return name.trim().length > 0 && introduction.trim().length > 0 && isAgreed;
+});
+
+/*
+    Team
+ */
+
+export const teamMaxNumAtom = atom<number>(0);
