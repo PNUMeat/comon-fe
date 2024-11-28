@@ -93,6 +93,9 @@ const ImageRestrictionNotice = () => {
   );
 };
 
+/**
+ * 상태가 매핑됨 (imageAtom)
+ */
 export const ComonImageInput = () => {
   const [image, setImage] = useAtom(imageAtom);
 

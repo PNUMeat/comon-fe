@@ -1,5 +1,15 @@
 import { atom } from 'jotai';
 
+/**
+ * 폼 값을 언제 클린업 해야할 지? 계속 유지하며 사용하고 싶다.
+ * 현재 폼의 상태는 프로필 생성, 팀 생성, 팀 정보 변경에서 공유된다. (ComonTextarea, ComonTextInput, ComonImageInput)
+ * 폼 값을 비워야 하는 경우는 다음과 같다.
+ * 1. 프로필 -> 팀
+ * 2. 팀 -> 프로필
+ *
+ *
+ */
+
 /*
     Form
  */
