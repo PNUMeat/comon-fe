@@ -7,58 +7,60 @@ import styled from '@emotion/styled';
 export const CustomCalendar = () => {
   return (
     <CalendarWrapper>
+      {/* 오늘 버튼 */}
+      <StyledDate>오늘</StyledDate>
+
       <StyledCalendar
         calendarType="gregory"
         formatDay={(_locale: string | undefined, date: Date) =>
           date.getDate().toString()
         }
+        next2Label={null}
+        prev2Label={null}
       />
     </CalendarWrapper>
   );
 };
 
 const CalendarWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #fafafe;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 `;
 
-// TODO:
+const StyledDate = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 750px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+`;
+
 const StyledCalendar = styled(Calendar)`
   width: 100%;
   max-width: 800px;
   border: none;
 
-  // TODO:
-  /* 캘린더 네비게이션 (년도, 월, 버튼) */
+  /* 캘린더 네비게이션 (연도, 월, 버튼) */
   .react-calendar__navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
-    border-radius: 16px 16px 0 0;
-    //background-color: pink;
+    margin: 0;
   }
 
-  // TODO:
   .react-calendar__navigation button {
-    // background-color: yellow;
     color: #333;
     font-weight: 600;
-    //background: none;
     border: none;
-    cursor: pointer;
-    // font-family: 'Pretendard';
-    //font-size: 16px;
+    font-family: 'Pretendard';
+    font-size: 16px;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  /* 년/월 상단 네비게이션 칸 크기 줄이기 */
+  .react-calendar__navigation__label {
+    flex-grow: 0 !important;
   }
 
   /* 전체 폰트 컬러 */
@@ -84,6 +86,10 @@ const StyledCalendar = styled(Calendar)`
     text-align: center;
     border-radius: 20px 20px 0 0;
     border: 1px solid ${colors.borderPurple};
+
+    abbr {
+      text-decoration: none;
+    }
   }
 
   .react-calendar__month-view__days {
