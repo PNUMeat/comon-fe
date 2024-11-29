@@ -1,5 +1,5 @@
-import { MultiSectionLayout } from '@/components/Layout/MultiSectionHeader';
-import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
+import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
+import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
 import { createBrowserRouter } from 'react-router-dom';
 

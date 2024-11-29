@@ -1,5 +1,5 @@
-import { CommonLayout } from '@/components/Layout/CommonLayout';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Link } from 'react-router-dom';
 

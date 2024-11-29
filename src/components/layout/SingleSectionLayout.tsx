@@ -1,6 +1,6 @@
-import { CommonLayout } from '@/components/Layout/CommonLayout';
 import { Container } from '@/components/commons/Container';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Outlet, useLocation } from 'react-router-dom';
 
