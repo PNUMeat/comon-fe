@@ -37,7 +37,7 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
         <ComonImageInput />
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>
-        <ComonTextarea maxLength={50} />
+        <ComonTextarea maxLength={50} placeholder={'자신을 소개해주세요!'} />
 
         <FormFieldLabel>정책 동의</FormFieldLabel>
         <EnrollAgreementCheckbox />
