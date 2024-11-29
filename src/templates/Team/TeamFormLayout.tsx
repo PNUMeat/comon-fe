@@ -7,7 +7,7 @@ import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { FORM_TITLES } from '@/routes/path';
-import { TeamSubmitButton } from '@/templates/Team/TeamSubmitButton';
+import { TeamSubmitButton } from '@/templates/Team/segments/TeamSubmitButton';
 import styled from '@emotion/styled';
 
 const TeamContainer = styled.div<HeightInNumber>`

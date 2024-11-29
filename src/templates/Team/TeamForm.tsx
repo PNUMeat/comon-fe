@@ -5,9 +5,9 @@ import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabe
 import { HeightInNumber } from '@/components/types';
 
 import { TeamFormLayout } from '@/templates/Team/TeamFormLayout';
-import { TeamMaxPeopleInput } from '@/templates/Team/TeamMaxPeopleInput';
-import { TeamPasswordInput } from '@/templates/Team/TeamPasswordInput';
-import { TeamSubjectRadio } from '@/templates/Team/TeamSubjectRadio';
+import { TeamMaxPeopleInput } from '@/templates/Team/segments/TeamMaxPeopleInput';
+import { TeamPasswordInput } from '@/templates/Team/segments/TeamPasswordInput';
+import { TeamSubjectRadio } from '@/templates/Team/segments/TeamSubjectRadio';
 
 export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
   return (
