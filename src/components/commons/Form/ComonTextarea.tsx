@@ -4,7 +4,7 @@ import { Wrap } from '@/components/commons/Wrap';
 
 import { useEffect, useRef } from 'react';
 
-import { formTextareaAtom } from '@/store/form';
+import { currentPathAtom, formTextareaAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
@@ -35,6 +35,8 @@ export const ComonTextarea: React.FC<{
   //  상태를 매핑했기 때문에 하나의 페이지에서 여러번 재사용 불가함.
   //   클린업 함수는 submit 후동작으로 넣을 것임. useEffect의 return 부분에 넣어야하는지?
   const [content, setContent] = useAtom(formTextareaAtom);
+  // useAtomValue로 가져오면 리렌더링 감지 안됨
+  const [path] = useAtom(currentPathAtom);
   const editableRef = useRef<HTMLDivElement>(null);
 
   const handleInput = () => {
@@ -82,6 +84,12 @@ export const ComonTextarea: React.FC<{
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (editableRef.current && content.trim().length > 0) {
+      editableRef.current.innerText = content;
+    }
+  }, [path]);
 
   return (
     <Wrap>
