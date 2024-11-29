@@ -4,8 +4,8 @@ import { HeightInNumber } from '@/components/types';
 
 import { Link } from 'react-router-dom';
 
-import { PATH } from '@/routes/path';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 // padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
@@ -51,7 +51,6 @@ const NavMenu = styled.div`
   }
 `;
 
-// TODO : 추후 DropDown으로 변경할 것
 const UserMenu = styled.div`
   display: flex;
   flex-direction: column;
