@@ -5,25 +5,32 @@ import { Fragment, Suspense } from 'react';
 
 import { TeamForm } from '@/templates/Team/TeamForm';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-// const SuspenseTeamForm = () => {
-//   // throw new Promise(() => {});
-//
-//   return (
-//     <TeamForm
-//       h={977}
-//       title={'팀 정보 수정하기'}
-//       subtitle={'저장 후에도 모든 정보를 수정할 수 있어요'}
-//     />
-//   );
-// };
+const mockQueryFn = (): Promise<string> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('data');
+    }, 3000);
+  });
+};
+
+const SuspenseTeamForm = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['mockData'],
+    queryFn: mockQueryFn,
+  });
+
+  console.log(data);
+  return <TeamForm h={977} />;
+};
 
 export const TeamModificationTemplate = () => {
   return (
     <Fragment>
       <GradientGlassPanel>
         <Suspense fallback={<TeamSkeleton h={977} />}>
-          <TeamForm h={977} />
+          <SuspenseTeamForm />
         </Suspense>
       </GradientGlassPanel>
       <Spacer h={312} />
