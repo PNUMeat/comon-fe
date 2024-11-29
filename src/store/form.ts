@@ -42,8 +42,8 @@ export const formTextInputAtom = atom(
   }
 );
 
-const userDescStorageAtom = atom<string>('1');
-const teamDescStorageAtom = atom<string>('2');
+const userDescStorageAtom = atom<string>('');
+const teamDescStorageAtom = atom<string>('');
 
 export const formTextareaAtom = atom(
   (get) => {
