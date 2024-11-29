@@ -1,9 +1,14 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { DropDownItems } from '@/components/commons/Dropdown/DropdownItems';
+
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const dropDownPadding = 4;
 
-export const Dropdown = () => {
+export const Dropdown: React.FC<{
+  buttonLabel: string;
+  children: ReactNode;
+}> = ({ buttonLabel, children }) => {
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [showDropDown, setShowDropDown] = useState(false);
@@ -65,9 +70,13 @@ export const Dropdown = () => {
   return (
     <Fragment>
       <button type="button" onClick={toggleDropDown} ref={buttonRef}>
-        드롭다운
+        {buttonLabel}
       </button>
-      {showDropDown && createPortal(<div>드롭다운 옵션</div>, document.body)}
+      {showDropDown &&
+        createPortal(
+          <DropDownItems dropDownRef={dropDownRef}>{children}</DropDownItems>,
+          document.body
+        )}
     </Fragment>
   );
 };
