@@ -28,6 +28,7 @@ const parseCookieAsJson = (): Record<string, string> => {
 
 const postProcessResponse = (navigate: NavigateFunction) => () => {
   const cookie = parseCookieAsJson();
+  console.log('<<', cookie);
   if (Object.entries(cookie).length > 0) {
     const at = cookie['access_token'];
     if (at) {
