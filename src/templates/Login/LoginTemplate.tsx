@@ -29,11 +29,13 @@ export const LoginTemplate = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const cookie = parseCookieAsJson();
-    if (cookie) {
+    if (Object.entries(cookie).length > 0) {
       const at = cookie['access_token'];
-      localStorage.setItem('Authorization', at);
+      if (at) {
+        localStorage.setItem('Authorization', at);
 
-      navigate(isNew(cookie['new']) ? PATH.ENROLL : PATH.HOME);
+        navigate(isNew(cookie['new']) ? PATH.ENROLL : PATH.HOME);
+      }
     }
   }, []);
   return (
