@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}/api/`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,9 +10,9 @@ const apiInstance: AxiosInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('Authorization');
+    const token = localStorage.getItem('Authorization');
     if (token) {
-      config.headers.Authorization = `${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

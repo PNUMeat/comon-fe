@@ -20,6 +20,7 @@ const DropdownItemsWrapper = styled.div`
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
+  position: fixed;
 `;
 
 interface IDropDownItems {

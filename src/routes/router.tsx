@@ -1,5 +1,5 @@
-import { MultiSectionLayout } from '@/components/Layout/MultiSectionHeader';
-import { SingleSectionLayout } from '@/components/Layout/SingleSectionLayout';
+import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
+import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -9,6 +9,8 @@ import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { PATH } from '@/routes/path';
 import { EnrollTemplate } from '@/templates/Enroll/EnrollTemplate';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
+import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
+import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ export const router = createBrowserRouter([
       {
         path: PATH.ENROLL,
         element: <EnrollTemplate />,
+      },
+      {
+        path: PATH.TEAM_REGISTRATION,
+        element: <TeamRegistrationTemplate />,
+      },
+      {
+        path: PATH.TEAM_MODIFICATION,
+        element: <TeamModificationTemplate />,
       },
       { path: PATH.TEAM_CALENDAR, element: <TeamCalendarPage /> },
     ],

@@ -5,6 +5,7 @@ import { HeightInNumber } from '@/components/types';
 import { Link } from 'react-router-dom';
 
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 // padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
@@ -50,7 +51,6 @@ const NavMenu = styled.div`
   }
 `;
 
-// TODO : 추후 DropDown으로 변경할 것
 const UserMenu = styled.div`
   display: flex;
   flex-direction: column;
@@ -75,10 +75,12 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   return (
     <HeaderContainer h={h}>
       <Flex>
-        <ComonSLogo>
-          C<SText color={'#8488EC'}>O</SText>M<SText color={'#F15CA7'}>O</SText>
-          N 코몬
-        </ComonSLogo>
+        <Link to={PATH.HOME}>
+          <ComonSLogo>
+            C<SText color={'#8488EC'}>O</SText>M
+            <SText color={'#F15CA7'}>O</SText>N 코몬
+          </ComonSLogo>
+        </Link>
         <NavMenu>
           <a href="#service">서비스 소개</a>
           <a href="#team">활동 팀</a>

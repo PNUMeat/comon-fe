@@ -1,4 +1,4 @@
-import { ComonFormTitle } from '@/components/commons/ComonFormTitle';
+import { ComonFormTitle } from '@/components/commons/Form/ComonFormTitle';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { HeightInNumber } from '@/components/types';
 

@@ -1,8 +1,10 @@
+import { EditableDiv } from '@/components/commons/Form/segments/EditableDiv';
+import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
 import { useEffect, useRef } from 'react';
 
-import { enrollIntroductionAtom } from '@/store/enroll';
+import { currentPathAtom, formTextareaAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
@@ -22,32 +24,19 @@ const ContentContainer = styled.div`
   color: #333;
 `;
 
-const EditableDiv = styled.div`
-  flex: 1;
-  outline: none;
-  border: none;
-  background: transparent;
-  color: #333333;
-  cursor: text;
-
-  &:empty::before {
-    content: '자신을 소개해주세요!';
-    color: #cccccc;
-    display: block;
-  }
-`;
-
-const CharacterCount = styled.span`
-  font-size: 14px;
-  font-weight: 400;
-  color: #cccccc;
-  display: block;
-  text-align: right;
-  margin-top: 4px;
-`;
-
-export const ContentEditable = ({ maxLength }: { maxLength: number }) => {
-  const [content, setContent] = useAtom(enrollIntroductionAtom);
+/**
+ * 상태가 매핑됨 (formTextareaAtom)
+ */
+export const ComonTextarea: React.FC<{
+  maxLength: number;
+  placeholder: string;
+}> = ({ maxLength, placeholder }) => {
+  // TODO: 현재 해당 컴포넌트가 여러번 필요한 디자인이 없으므로 상태를 매핑 했다. 혹시 생긴다면 수정 필요.
+  //  상태를 매핑했기 때문에 하나의 페이지에서 여러번 재사용 불가함.
+  //   클린업 함수는 submit 후동작으로 넣을 것임. useEffect의 return 부분에 넣어야하는지?
+  const [content, setContent] = useAtom(formTextareaAtom);
+  // useAtomValue로 가져오면 리렌더링 감지 안됨
+  const [path] = useAtom(currentPathAtom);
   const editableRef = useRef<HTMLDivElement>(null);
 
   const handleInput = () => {
@@ -96,6 +85,12 @@ export const ContentEditable = ({ maxLength }: { maxLength: number }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (editableRef.current && content.trim().length > 0) {
+      editableRef.current.innerText = content;
+    }
+  }, [path]);
+
   return (
     <Wrap>
       <ContentContainer>
@@ -104,11 +99,12 @@ export const ContentEditable = ({ maxLength }: { maxLength: number }) => {
           contentEditable="plaintext-only"
           onInput={handleInput}
           suppressContentEditableWarning={true}
+          placeholder={placeholder}
         />
       </ContentContainer>
-      <CharacterCount>
+      <InputHelperText>
         {content.length}/{maxLength}자
-      </CharacterCount>
+      </InputHelperText>
     </Wrap>
   );
 };

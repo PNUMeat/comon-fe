@@ -1,4 +1,4 @@
-import { isEnrollAgreementCheckedAtom } from '@/store/enroll';
+import { isEnrollAgreementCheckedAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
@@ -56,7 +56,7 @@ const CheckboxWrap = styled.div`
   justify-content: space-between;
 `;
 
-export const AgreementCheckbox = () => {
+export const EnrollAgreementCheckbox = () => {
   const [isAgreementChecked, setIsAgreementChecked] = useAtom(
     isEnrollAgreementCheckedAtom
   );
