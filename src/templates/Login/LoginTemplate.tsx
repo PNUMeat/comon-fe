@@ -1,9 +1,9 @@
 import { GradientGlassPanel } from '@/components/commons/GradientGlassPanel';
 
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { PATH } from '@/routes/path';
+// import { useNavigate } from 'react-router-dom';
+// import { PATH } from '@/routes/path';
 import { LoginForm } from '@/templates/Login/LoginForm';
 
 const parseCookieAsJson = (): Record<string, string> => {
@@ -21,12 +21,12 @@ const parseCookieAsJson = (): Record<string, string> => {
     );
 };
 
-const isNew = (segment: string | null) => {
-  return segment && segment === 'true';
-};
+// const isNew = (segment: string | null) => {
+//   return segment && segment === 'true';
+// };
 
 export const LoginTemplate = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   useEffect(() => {
     const cookie = parseCookieAsJson();
     if (Object.entries(cookie).length > 0) {
@@ -34,7 +34,7 @@ export const LoginTemplate = () => {
       if (at) {
         localStorage.setItem('Authorization', at);
 
-        navigate(isNew(cookie['new']) ? PATH.ENROLL : PATH.HOME);
+        // navigate(isNew(cookie['new']) ? PATH.ENROLL : PATH.HOME);
       }
     }
   }, []);
