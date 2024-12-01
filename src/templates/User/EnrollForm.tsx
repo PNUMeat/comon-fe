@@ -6,8 +6,8 @@ import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabel';
 import { HeightInNumber } from '@/components/types';
 
-import { EnrollAgreementCheckbox } from '@/templates/Enroll/EnrollAgreementCheckbox';
-import { EnrollSubmitButton } from '@/templates/Enroll/EnrollSubmitButton';
+import { EnrollAgreementCheckbox } from '@/templates/User/EnrollAgreementCheckbox';
+import { EnrollSubmitButton } from '@/templates/User/EnrollSubmitButton';
 import styled from '@emotion/styled';
 
 const EnrollFormContainer = styled.div<HeightInNumber>`

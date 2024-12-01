@@ -24,7 +24,8 @@ import { atom } from 'jotai';
     Form
  */
 export const currentPathAtom = atom<string>(window.location.pathname);
-const isOnUserFormAtom = atom((get) => get(currentPathAtom) === PATH.ENROLL);
+const userForm = [PATH.ENROLL, PATH.PROFILE];
+const isOnUserFormAtom = atom((get) => get(currentPathAtom) in userForm);
 
 const userNameStorageAtom = atom<string>('');
 const teamNameStorageAtom = atom<string>('');

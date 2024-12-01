@@ -70,7 +70,7 @@ const UserMenu = styled.div`
 `;
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const isLoggedIn = false;
+  const isLoggedIn = sessionStorage.getItem('Authorization') !== undefined;
 
   return (
     <HeaderContainer h={h}>
@@ -88,9 +88,9 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       </Flex>
       <UserMenu>
         {isLoggedIn ? (
-          <button>마이 페이지</button>
+          <Link to={PATH.PROFILE}>프로필 수정</Link>
         ) : (
-          <Link to={'/login'}>로그인</Link>
+          <Link to={PATH.LOGIN}>로그인</Link>
         )}
       </UserMenu>
     </HeaderContainer>

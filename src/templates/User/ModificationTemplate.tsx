@@ -3,13 +3,13 @@ import { Spacer } from '@/components/commons/Spacer';
 
 import { Fragment } from 'react';
 
-import { EnrollForm } from '@/templates/Enroll/EnrollForm';
+import { ModificationForm } from '@/templates/User/ModificationForm';
 
-export const EnrollTemplate = () => {
+export const ModificationTemplate = () => {
   return (
     <Fragment>
       <GradientGlassPanel>
-        <EnrollForm h={767} />
+        <ModificationForm h={767} />
       </GradientGlassPanel>
       <Spacer h={577} />
     </Fragment>

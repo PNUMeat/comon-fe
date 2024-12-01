@@ -14,6 +14,9 @@ export const Home = () => {
           <Link to={PATH.ENROLL}>프로필 생성</Link>
         </li>
         <li>
+          <Link to={PATH.PROFILE}>프로필 수정</Link>
+        </li>
+        <li>
           <Link to={PATH.TEAM_REGISTRATION}>팀 생성</Link>
         </li>
         <li>

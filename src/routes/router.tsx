@@ -7,10 +7,11 @@ import { Home } from '@/pages/Home/Home';
 import { TeamCalendarPage } from '@/pages/TeamCalendar/TeamCalendar';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { PATH } from '@/routes/path';
-import { EnrollTemplate } from '@/templates/Enroll/EnrollTemplate';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
+import { EnrollTemplate } from '@/templates/User/EnrollTemplate';
+import { ModificationTemplate } from '@/templates/User/ModificationTemplate';
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: PATH.ENROLL,
         element: <EnrollTemplate />,
+      },
+      {
+        path: PATH.PROFILE,
+        element: <ModificationTemplate />,
       },
       {
         path: PATH.TEAM_REGISTRATION,
