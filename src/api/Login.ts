@@ -15,20 +15,20 @@ export const createProfile = async ({
 }: CreateProfileArgs) => {
   const formData = new FormData();
 
-  // formData.append('memberName', memberName);
-  // formData.append('memberExplain', memberExplain);
-  formData.append(
-    'memberName',
-    new Blob([memberName], {
-      type: 'application/json',
-    })
-  );
-  formData.append(
-    'memberName',
-    new Blob([memberExplain], {
-      type: 'application/json',
-    })
-  );
+  formData.append('memberName', memberName);
+  formData.append('memberExplain', memberExplain);
+  // formData.append(
+  //   'memberName',
+  //   new Blob([memberName], {
+  //     type: 'application/json',
+  //   })
+  // );
+  // formData.append(
+  //   'memberExplain',
+  //   new Blob([memberExplain], {
+  //     type: 'application/json',
+  //   })
+  // );
   if (image) {
     formData.append('image', image);
   }
