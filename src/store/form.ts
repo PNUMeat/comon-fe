@@ -60,8 +60,8 @@ export const formTextareaAtom = atom(
   }
 );
 
-export const userPictureStorageAtom = atom<string | null>(null);
-export const teamPictureStorageAtom = atom<string | null>(null);
+const userPictureStorageAtom = atom<File | null>(null);
+const teamPictureStorageAtom = atom<File | null>(null);
 
 export const MAX_IMAGE_SIZE = 10;
 export const isImageFitAtom = atom<boolean | null>(null);
@@ -84,14 +84,10 @@ export const imageAtom = atom(
       set(isImageFitAtom, true);
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () =>
-      set(
-        get(isOnUserFormAtom) ? userPictureStorageAtom : teamPictureStorageAtom,
-        reader.result as string
-      );
-    reader.readAsDataURL(file);
+    set(
+      get(isOnUserFormAtom) ? userPictureStorageAtom : teamPictureStorageAtom,
+      file
+    );
   }
 );
 

@@ -2,6 +2,8 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
+import { useEffect, useState } from 'react';
+
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
@@ -98,6 +100,7 @@ const ImageRestrictionNotice = () => {
  */
 export const ComonImageInput = () => {
   const [image, setImage] = useAtom(imageAtom);
+  const [imageStr, setImageStr] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -117,11 +120,19 @@ export const ComonImageInput = () => {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
     e.preventDefault();
 
+  useEffect(() => {
+    const reader = new FileReader();
+    reader.onload = () => setImageStr(reader.result as string);
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }, [image]);
+
   return (
     <Flex gap={'17px'}>
       <ImageContainer h={200} onDragOver={handleDragOver} onDrop={handleDrop}>
-        {image && <PreviewImage src={image} alt="Uploaded preview" />}
-        {!image && <PlaceholderText>이미지를 드래그하세요</PlaceholderText>}
+        {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
+        {!imageStr && <PlaceholderText>이미지를 드래그하세요</PlaceholderText>}
       </ImageContainer>
       <SideContainer h={200}>
         <ImageRestrictionNotice />
