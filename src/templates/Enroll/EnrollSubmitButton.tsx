@@ -1,6 +1,7 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { createProfile } from '@/api/Login';
 import {
@@ -26,19 +27,6 @@ const parseCookieAsJson = (): Record<string, string> => {
     );
 };
 
-const postProcessResponse = (navigate: NavigateFunction) => () => {
-  const cookie = parseCookieAsJson();
-  console.log('<<', cookie);
-  if (Object.entries(cookie).length > 0) {
-    const at = cookie['access_token'];
-    if (at) {
-      localStorage.setItem('Authorization', at);
-      navigate(-1);
-      alert('회원가입에 성공했습니다');
-    }
-  }
-};
-
 export const EnrollSubmitButton = () => {
   const isAllFieldSatisfied = useAtomValue(isEnrollSatisfiedAtom);
   const memberName = useAtomValue(formTextInputAtom);
@@ -46,13 +34,26 @@ export const EnrollSubmitButton = () => {
   const image = useAtomValue(imageAtom);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const cookie = parseCookieAsJson();
+    if (Object.entries(cookie).length > 0) {
+      const at = cookie['access_token'];
+      if (at) {
+        sessionStorage.setItem('Authorization', at);
+      }
+    }
+  }, []);
+
   const onClick = () => {
     createProfile({
       memberName: memberName,
       memberExplain: memberExplain,
       image: image,
     })
-      .then(postProcessResponse(navigate))
+      .then(() => {
+        navigate(-1);
+        alert('회원가입에 성공했습니다');
+      })
       .catch((err) => {
         console.error(err);
         alert('회원가입에 실패했습니다');
