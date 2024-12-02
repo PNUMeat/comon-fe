@@ -6,8 +6,9 @@ import { HeightInNumber } from '@/components/types';
 import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { FORM_TITLES } from '@/routes/path';
-import { TeamSubmitButton } from '@/templates/Team/segments/TeamSubmitButton';
+import { FORM_TITLES, PATH } from '@/routes/path';
+import { TeamModificationButton } from '@/templates/Team/TeamModificationButton';
+import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
 
 const TeamContainer = styled.div<HeightInNumber>`
@@ -27,6 +28,8 @@ export const TeamFormLayout: React.FC<
   const location = useLocation();
   const currentPath = location.pathname;
   const { title, subtitle } = FORM_TITLES[currentPath];
+  const isOnTeamReg = currentPath === PATH.TEAM_REGISTRATION;
+  const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
 
   return (
     <TeamContainer h={h}>
@@ -34,7 +37,8 @@ export const TeamFormLayout: React.FC<
       <Spacer h={78} />
       <ComonFormGrid h={683}>{children}</ComonFormGrid>
       <Spacer h={99} />
-      <TeamSubmitButton />
+      {isOnTeamReg && <TeamRegistrationButton />}
+      {isOnTeamMod && <TeamModificationButton />}
     </TeamContainer>
   );
 };

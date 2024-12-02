@@ -3,7 +3,7 @@ import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmit
 import { isTeamRegistrationValidAtom } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
-export const TeamSubmitButton = () => {
+export const TeamRegistrationButton = () => {
   const isGoodToGo = useAtomValue(isTeamRegistrationValidAtom);
 
   return (

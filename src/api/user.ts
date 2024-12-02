@@ -4,8 +4,8 @@ export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
 
 type ProfileArgs = {
   memberName: string;
-  image: File | null;
   memberExplain: string;
+  image: File | null;
 };
 
 export const createProfile = async ({
