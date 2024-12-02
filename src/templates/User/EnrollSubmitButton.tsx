@@ -1,11 +1,9 @@
-import { handleCookieOnRedirect } from '@/utils/cookie';
-
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { createProfile } from '@/api/user';
+import { PATH } from '@/routes/path';
 import {
   formTextInputAtom,
   formTextareaAtom,
@@ -20,10 +18,7 @@ export const EnrollSubmitButton = () => {
   const memberExplain = useAtomValue(formTextareaAtom);
   const image = useAtomValue(imageAtom);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    handleCookieOnRedirect();
-  }, []);
+  const location = useLocation();
 
   const onClick = () => {
     createProfile({
@@ -32,7 +27,8 @@ export const EnrollSubmitButton = () => {
       image: image,
     })
       .then(() => {
-        navigate(-1);
+        const previousPath = location.state?.redirect ?? PATH.HOME;
+        navigate(previousPath);
         alert('회원가입에 성공했습니다');
       })
       .catch((err) => {

@@ -1,8 +1,10 @@
+import { checkIfLoggedIn } from '@/utils/cookie';
+
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -70,7 +72,8 @@ const UserMenu = styled.div`
 `;
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const isLoggedIn = sessionStorage.getItem('Authorization') !== null;
+  const isLoggedIn = checkIfLoggedIn();
+  const location = useLocation();
 
   return (
     <HeaderContainer h={h}>
@@ -90,7 +93,14 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         {isLoggedIn ? (
           <Link to={PATH.PROFILE}>프로필 수정</Link>
         ) : (
-          <Link to={PATH.LOGIN}>로그인</Link>
+          <Link
+            to={{
+              pathname: PATH.LOGIN,
+            }}
+            state={{ redirect: location.pathname }}
+          >
+            로그인
+          </Link>
         )}
       </UserMenu>
     </HeaderContainer>

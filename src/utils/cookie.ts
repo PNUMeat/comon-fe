@@ -22,3 +22,6 @@ export const handleCookieOnRedirect = () => {
     }
   }
 };
+
+export const checkIfLoggedIn = () =>
+  sessionStorage.getItem('Authorization') !== null;
