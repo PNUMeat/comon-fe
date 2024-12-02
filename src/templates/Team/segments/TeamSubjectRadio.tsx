@@ -19,7 +19,7 @@ const TeamSubjectButton = styled.button<{ isSelected: boolean }>`
   transition: all 0.2s;
 `;
 
-const options = ['study', 'code'];
+const options = ['스터디', '코딩테스트'];
 
 export const TeamSubjectRadio = () => {
   const [subject, setSubject] = useAtom(teamSubjectAtom);
