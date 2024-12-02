@@ -45,7 +45,9 @@ export const LazyImage: React.FC<ILazyImage> = ({
         width: w,
         maxWidth: maxW,
         height: h,
+        objectFit: 'cover',
       }}
+      loading={'lazy'}
       className={className}
     />
   );
