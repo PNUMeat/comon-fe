@@ -4,7 +4,7 @@ import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
 
-import { kakaoOauth2LoginUrl } from '@/api/Login';
+import { kakaoOauth2LoginUrl } from '@/api/user';
 import loginVector from '@/assets/Login/loginVector.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';

@@ -121,9 +121,9 @@ export const ComonImageInput = () => {
     e.preventDefault();
 
   useEffect(() => {
-    const reader = new FileReader();
-    reader.onload = () => setImageStr(reader.result as string);
     if (image) {
+      const reader = new FileReader();
+      reader.onload = () => setImageStr(reader.result as string);
       reader.readAsDataURL(image);
     }
   }, [image]);

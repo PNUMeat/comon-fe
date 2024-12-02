@@ -3,7 +3,7 @@ import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmit
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createProfile } from '@/api/Login';
+import { createProfile } from '@/api/user';
 import {
   formTextInputAtom,
   formTextareaAtom,

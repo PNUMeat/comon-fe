@@ -2,7 +2,7 @@ import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmit
 
 import { useMemo } from 'react';
 
-import { changeProfile } from '@/api/Login';
+import { changeProfile } from '@/api/user';
 import { formTextInputAtom, formTextareaAtom, imageAtom } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
