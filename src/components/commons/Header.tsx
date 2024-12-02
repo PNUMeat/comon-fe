@@ -70,7 +70,7 @@ const UserMenu = styled.div`
 `;
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const isLoggedIn = sessionStorage.getItem('Authorization') !== undefined;
+  const isLoggedIn = sessionStorage.getItem('Authorization') !== null;
 
   return (
     <HeaderContainer h={h}>
