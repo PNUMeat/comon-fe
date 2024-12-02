@@ -25,17 +25,16 @@ apiInstance.interceptors.request.use(
 apiInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ServerIntendedError>) => {
-    console.log('intercept', error);
     if (error.response) {
-      console.log('error.response', error.response.data);
       const data = error.response.data;
+      console.log(data.message);
       const { message } = data;
       if (
         error.response.status === 401 &&
         message === '토큰이 만료되었습니다.'
       ) {
         try {
-          await apiInstance.get('v1/reissue');
+          await apiInstance.post('v1/reissue');
           handleCookieOnRedirect();
           return Promise.resolve();
         } catch (err) {
