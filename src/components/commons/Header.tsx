@@ -81,12 +81,12 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const navigate = useNavigate();
 
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
-  const onClick = () => navigate(PATH.HOME);
+  const onClickHome = () => navigate(PATH.HOME);
 
   return (
     <HeaderContainer h={h}>
       <Flex>
-        <ComonLogoWrap onClick={onClick}>
+        <ComonLogoWrap onClick={onClickHome}>
           <ComonSLogo>
             C<SText color={'#8488EC'}>O</SText>M
             <SText color={'#F15CA7'}>O</SText>N 코몬
@@ -95,6 +95,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         <NavMenu>
           <a href="#service">서비스 소개</a>
           <a href="#team">활동 팀</a>
+          {/* 임시 */}
+          <Link to={PATH.TEAM_REGISTRATION}>팀 생성</Link>
         </NavMenu>
       </Flex>
       <UserMenu>

@@ -27,7 +27,6 @@ apiInstance.interceptors.response.use(
   (error: AxiosError<ServerIntendedError>) => {
     if (error.response) {
       const data = error.response.data;
-      console.log(data.message);
       const { message } = data;
       if (
         error.response.status === 401 &&
