@@ -1,7 +1,7 @@
 import { handleCookieOnRedirect } from '@/utils/cookie';
 
 import { ServerIntendedError } from '@/api/types';
-import axios, { AxiosInstance, isAxiosError } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `/api/`,
@@ -24,32 +24,26 @@ apiInstance.interceptors.request.use(
 
 apiInstance.interceptors.response.use(
   (response) => response,
-  async (error) => {
+  async (error: AxiosError<ServerIntendedError>) => {
     console.log('intercept', error);
-    if (isAxiosError(error) && error.response) {
-      // const { status, message, code } = error.response
-      console.log('axios', error.response);
-      const { message } = error.response.data as ServerIntendedError;
-      // if (code === 100) {
-      //
-      // }
+    if (error.response) {
+      console.log('error.response', error.response.data);
+      const data = error.response.data;
+      const { message } = data;
       if (
         error.response.status === 401 &&
         message === '토큰이 만료되었습니다.'
       ) {
-        // apiInstance.get('api/v1/reissue').then(() => handleCookieOnRedirect());
-        // return Promise.resolve();
         try {
           await apiInstance.get('api/v1/reissue');
           handleCookieOnRedirect();
           return Promise.resolve();
-        } catch (reissueError) {
-          console.error('Token reissue failed:', reissueError);
-          window.location.href = '/login';
-          return Promise.reject(reissueError);
+        } catch (err) {
+          return Promise.reject(error);
         }
       }
     }
+
     return Promise.reject(error);
   }
 );
