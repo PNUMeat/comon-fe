@@ -95,8 +95,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         <NavMenu>
           <a href="#service">서비스 소개</a>
           <a href="#team">활동 팀</a>
-          {/* 임시 */}
-          <Link to={PATH.TEAM_REGISTRATION}>팀 생성</Link>
         </NavMenu>
       </Flex>
       <UserMenu>

@@ -120,8 +120,11 @@ const aims = [
 export const Home = () => {
   const navigate = useNavigate();
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
-  const onClick = () => {
+  const onClickLogin = () => {
     navigate(PATH.LOGIN);
+  };
+  const onClickTeam = () => {
+    navigate(PATH.TEAM_REGISTRATION);
   };
   return (
     <CommonLayout>
@@ -145,12 +148,18 @@ export const Home = () => {
             </HomeComment>
           </Suspense>
           <Spacer h={34} />
-          <Wrap>
-            <StartButton onClick={onClick}>시작하기</StartButton>
-            <StartButtonDescription>
-              계정 생성 or 로그인하러 가기
-            </StartButtonDescription>
-          </Wrap>
+          <Flex gap={'50px'}>
+            <Wrap>
+              <StartButton onClick={onClickLogin}>시작하기</StartButton>
+              <StartButtonDescription>
+                계정 생성 or 로그인하러 가기
+              </StartButtonDescription>
+            </Wrap>
+            <Wrap>
+              <StartButton onClick={onClickTeam}>팀 생성하기</StartButton>
+              <StartButtonDescription>팀 생성 하러 가기</StartButtonDescription>
+            </Wrap>
+          </Flex>
           <Spacer h={93} />
           <Flex gap={'27px'}>
             {aims.map((aim) => (
