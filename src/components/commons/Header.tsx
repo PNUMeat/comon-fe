@@ -4,7 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -71,19 +71,27 @@ const UserMenu = styled.div`
   }
 `;
 
+const ComonLogoWrap = styled.div`
+  cursor: pointer;
+`;
+
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const isLoggedIn = checkIfLoggedIn();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // TODO: Link를 사용하면 보라색 밑줄이 그여짐
+  const onClick = () => navigate(PATH.HOME);
 
   return (
     <HeaderContainer h={h}>
       <Flex>
-        <Link to={PATH.HOME}>
+        <ComonLogoWrap onClick={onClick}>
           <ComonSLogo>
             C<SText color={'#8488EC'}>O</SText>M
             <SText color={'#F15CA7'}>O</SText>N 코몬
           </ComonSLogo>
-        </Link>
+        </ComonLogoWrap>
         <NavMenu>
           <a href="#service">서비스 소개</a>
           <a href="#team">활동 팀</a>

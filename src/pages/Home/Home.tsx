@@ -7,11 +7,13 @@ import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
 import achivement from '@/assets/Home/goalAchievement.svg';
 import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 const HomeComment = styled.div`
@@ -34,6 +36,7 @@ const StartButton = styled.button`
   padding: 23px 60px;
   border-radius: 42px;
   background: #333;
+  cursor: pointer;
 
   color: #fff;
   text-align: center;
@@ -115,6 +118,11 @@ const aims = [
 ];
 
 export const Home = () => {
+  const navigate = useNavigate();
+  // TODO: Link를 사용하면 보라색 밑줄이 그여짐
+  const onClick = () => {
+    navigate(PATH.LOGIN);
+  };
   return (
     <CommonLayout>
       <Container padding={'0 149px'} maxW={1002}>
@@ -138,7 +146,7 @@ export const Home = () => {
           </Suspense>
           <Spacer h={34} />
           <Wrap>
-            <StartButton>시작하기</StartButton>
+            <StartButton onClick={onClick}>시작하기</StartButton>
             <StartButtonDescription>
               계정 생성 or 로그인하러 가기
             </StartButtonDescription>
