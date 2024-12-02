@@ -32,6 +32,7 @@ export const TeamFormLayout: React.FC<
   const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
 
   return (
+    //   <form>의 onSubmit을 통해서 입력 값을 전달 받을 것이였으면 사용자 값들을 전역 상태로 만들면 안됐다.
     <TeamContainer h={h}>
       <ComonFormTitle title={title} subtitle={subtitle} />
       <Spacer h={78} />

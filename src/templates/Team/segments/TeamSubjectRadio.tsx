@@ -31,6 +31,7 @@ export const TeamSubjectRadio = () => {
           isSelected={subject === option}
           key={option}
           onClick={() => setSubject(option)}
+          type="button"
         >
           {option}
         </TeamSubjectButton>
