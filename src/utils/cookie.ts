@@ -20,6 +20,11 @@ export const handleCookieOnRedirect = () => {
     if (at) {
       sessionStorage.setItem('Authorization', at);
     }
+    const rt = cookie['refresh_token'];
+    console.log('rt', rt);
+    if (rt) {
+      sessionStorage.setItem('refresh_token', rt);
+    }
   }
 };
 

@@ -24,7 +24,7 @@ apiInstance.interceptors.request.use(
 
 apiInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     console.log('intercept', error);
     if (isAxiosError(error) && error.response) {
       // const { status, message, code } = error.response
@@ -37,8 +37,17 @@ apiInstance.interceptors.response.use(
         error.response.status === 401 &&
         message === '토큰이 만료되었습니다.'
       ) {
-        apiInstance.get('api/v1/reissue').then(() => handleCookieOnRedirect());
+        // apiInstance.get('api/v1/reissue').then(() => handleCookieOnRedirect());
         // return Promise.resolve();
+        try {
+          await apiInstance.get('api/v1/reissue');
+          handleCookieOnRedirect();
+          return Promise.resolve();
+        } catch (reissueError) {
+          console.error('Token reissue failed:', reissueError);
+          window.location.href = '/login';
+          return Promise.reject(reissueError);
+        }
       }
     }
     return Promise.reject(error);
