@@ -1,3 +1,5 @@
+import { handleCookieOnRedirect } from '@/utils/cookie';
+
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
 import { useEffect } from 'react';
@@ -12,21 +14,6 @@ import {
 } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
-const parseCookieAsJson = (): Record<string, string> => {
-  return document.cookie
-    .split(';')
-    .map((cookie) => cookie.trim().split('='))
-    .reduce(
-      (acc, [key, value]) => {
-        if (key && value) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-};
-
 export const EnrollSubmitButton = () => {
   const isAllFieldSatisfied = useAtomValue(isEnrollSatisfiedAtom);
   const memberName = useAtomValue(formTextInputAtom);
@@ -35,13 +22,7 @@ export const EnrollSubmitButton = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cookie = parseCookieAsJson();
-    if (Object.entries(cookie).length > 0) {
-      const at = cookie['access_token'];
-      if (at) {
-        sessionStorage.setItem('Authorization', at);
-      }
-    }
+    handleCookieOnRedirect();
   }, []);
 
   const onClick = () => {
