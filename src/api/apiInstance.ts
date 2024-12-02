@@ -35,7 +35,7 @@ apiInstance.interceptors.response.use(
         message === '토큰이 만료되었습니다.'
       ) {
         try {
-          await apiInstance.get('api/v1/reissue');
+          await apiInstance.get('v1/reissue');
           handleCookieOnRedirect();
           return Promise.resolve();
         } catch (err) {
