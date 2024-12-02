@@ -39,7 +39,7 @@ apiInstance.interceptors.response.use(
           handleCookieOnRedirect();
           return Promise.resolve();
         } catch (err) {
-          return Promise.reject(error);
+          return Promise.reject(err);
         }
       }
     }
