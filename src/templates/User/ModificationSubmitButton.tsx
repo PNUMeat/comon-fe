@@ -6,7 +6,7 @@ import { changeProfile } from '@/api/user';
 import { formTextInputAtom, formTextareaAtom, imageAtom } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
-export const serializeImage = (file: File | null): string => {
+const serializeImage = (file: File | null): string => {
   if (!file) return 'NULL';
 
   return JSON.stringify({
