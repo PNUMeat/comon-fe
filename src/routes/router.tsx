@@ -5,7 +5,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
-import { Suspense, lazy } from 'react';
+import { ComponentType, LazyExoticComponent, Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
@@ -31,7 +31,10 @@ const LazySkeleton = () => (
  * 그냥 Promise.all을 사용하는게 그냥 로직상으로도, 코드상으로도 이해가 편할듯
  * lazy 로드 했는데 응답이 빨리 오면 화면이 깜빡거리는거 같은 상황 발생해서 fallback 최소 렌더링 시간 추가
  */
-const delayedLazy = (importFunction: () => Promise<any>, delay = 1000) => {
+const delayedLazy = (
+  importFunction: () => Promise<{ default: ComponentType<unknown> }>,
+  delay = 1000
+): LazyExoticComponent<ComponentType<unknown>> => {
   return lazy(() =>
     Promise.all([
       importFunction(),
