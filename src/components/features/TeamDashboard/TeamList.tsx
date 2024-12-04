@@ -3,8 +3,10 @@ import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { FilterButtons } from '@/components/commons/FilterButtons';
 import { Flex } from '@/components/commons/Flex';
+import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { Pagination } from '@/components/commons/Pagination';
+import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { colors } from '@/constants/colors';
@@ -54,11 +56,18 @@ export const TeamList = () => {
               align="center"
               width={100}
             >
-              <Team>TEAM</Team> <TeamName>{team.name}</TeamName>
+              <SText fontSize="12px" fontWeight={600}>
+                TEAM
+              </SText>{' '}
+              <SText fontSize="24px" color="#333" fontWeight={700}>
+                {team.name}
+              </SText>
               <SinceDate>since {team.since}</SinceDate>
-              <Box height="18px" fontSize="10px" theme="label">
-                스터디
-              </Box>
+              <Label>
+                <SText fontSize="10px" fontWeight={600}>
+                  스터디
+                </SText>
+              </Label>
               <Spacer h={20} />
               <ProfileList profiles={profiles} />
               <Spacer h={14} />
@@ -86,17 +95,6 @@ const List = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
-`;
-
-const Team = styled.div`
-  font-size: 12px;
-  font-weight: 600;
-`;
-
-const TeamName = styled.div`
-  font-size: 24px;
-  color: #333;
-  font-weight: 700;
 `;
 
 const SinceDate = styled.div`
