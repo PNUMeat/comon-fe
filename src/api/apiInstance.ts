@@ -25,6 +25,13 @@ apiInstance.interceptors.request.use(
 apiInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ServerIntendedError>) => {
+    /**
+     * 응답이 401이고, 401의 원인이 access token이 만료된 경우,
+     * refresh token을 통해 access token을 재발급 받은후,
+     * 재발급한 access token을 통해 재요청한다.
+     * access token을 재발급 받을 때, "이전 로그인 정보를 통해 재입장중입니다."라는 느낌의 토스트 메세지를 띄웠으면 좋겠음
+     * 대기시간이 길어지는 이유를 설명하고 싶음.
+     */
     if (error.response) {
       const data = error.response.data;
       const { message } = data;
