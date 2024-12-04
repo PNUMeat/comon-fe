@@ -47,7 +47,8 @@ export const ComonTextarea: React.FC<{
   };
 
   useEffect(() => {
-    if (editableRef.current) {
+    const editable = editableRef.current;
+    if (editable) {
       const handlePaste = (e: ClipboardEvent) => {
         e.preventDefault();
 
@@ -77,10 +78,10 @@ export const ComonTextarea: React.FC<{
         }
       };
 
-      editableRef.current.addEventListener('paste', handlePaste);
+      editable.addEventListener('paste', handlePaste);
 
       return () => {
-        editableRef.current?.removeEventListener('paste', handlePaste);
+        editable?.removeEventListener('paste', handlePaste);
       };
     }
   }, []);

@@ -6,7 +6,7 @@ import { HeightInNumber } from '@/components/types';
 import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { FORM_TITLES, PATH } from '@/routes/path';
+import { PATH } from '@/routes/path';
 import { TeamModificationButton } from '@/templates/Team/TeamModificationButton';
 import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
@@ -19,6 +19,24 @@ const TeamContainer = styled.div<HeightInNumber>`
   align-items: center;
   box-sizing: border-box;
 `;
+
+// 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸
+const FORM_TITLES: Record<
+  string,
+  {
+    title: string;
+    subtitle: string;
+  }
+> = {
+  '/team-registration': {
+    title: '팀 정보 입력하기',
+    subtitle: '팀 생성 후에도 모든 정보를 수정할 수 있어요',
+  },
+  '/team-modification': {
+    title: '팀 정보 수정하기',
+    subtitle: '저장 후에도 모든 정보를 수정할 수 있어요',
+  },
+};
 
 export const TeamFormLayout: React.FC<
   HeightInNumber & {

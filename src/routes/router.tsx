@@ -1,39 +1,18 @@
-import { Flex } from '@/components/commons/Flex';
-import { SText } from '@/components/commons/SText';
-import { SimpleLoader } from '@/components/commons/SimpleLoader';
-import { Spacer } from '@/components/commons/Spacer';
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { TeamCalendarPage } from '@/pages/TeamCalendar/TeamCalendar';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
+import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
 import { ModificationTemplate } from '@/templates/User/ModificationTemplate';
-
-const LazySkeleton = () => (
-  <Flex align="center" direction="column">
-    <Spacer h={150} />
-    <SimpleLoader />
-    <Spacer h={15} />
-    <SText>로딩중</SText>
-  </Flex>
-);
-
-// TODO: LazySkeleton이 너무 빨리 거둬지면 화면이 그냥 깜빡거리는거 같음. 임시방편으로 최소 딜레이 700ms 설정
-//  다른 방법 사용 찾기가 필수
-const EnrollTemplate = lazy(() => {
-  return Promise.all([
-    import('@/templates/User/EnrollTemplate'),
-    new Promise((resolve) => setTimeout(resolve, 700)),
-  ]).then(([moduleExports]) => moduleExports);
-});
 
 export const router = createBrowserRouter([
   {
@@ -69,7 +48,7 @@ export const router = createBrowserRouter([
         path: PATH.ENROLL,
         element: (
           <Suspense fallback={<LazySkeleton />}>
-            <EnrollTemplate />
+            <LazyEnrollTemplate />
           </Suspense>
         ),
       },
