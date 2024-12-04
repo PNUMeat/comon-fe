@@ -56,7 +56,12 @@ export const TeamList = () => {
               align="center"
               width={100}
             >
-              <Team>TEAM</Team> <TeamName>{team.name}</TeamName>
+              <SText fontSize="12px" fontWeight={600}>
+                TEAM
+              </SText>{' '}
+              <SText fontSize="24px" color="#333" fontWeight={700}>
+                {team.name}
+              </SText>
               <SinceDate>since {team.since}</SinceDate>
               <Label>
                 <SText fontSize="10px" fontWeight={600}>
@@ -90,17 +95,6 @@ const List = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
-`;
-
-const Team = styled.div`
-  font-size: 12px;
-  font-weight: 600;
-`;
-
-const TeamName = styled.div`
-  font-size: 24px;
-  color: #333;
-  font-weight: 700;
 `;
 
 const SinceDate = styled.div`
