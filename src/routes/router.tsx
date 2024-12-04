@@ -26,14 +26,23 @@ const LazySkeleton = () => (
   </Flex>
 );
 
-// TODO: LazySkeleton이 너무 빨리 거둬지면 화면이 그냥 깜빡거리는거 같음. 임시방편으로 최소 딜레이 700ms 설정
-//  다른 방법 사용 찾기가 필수
-const EnrollTemplate = lazy(() => {
-  return Promise.all([
-    import('@/templates/User/EnrollTemplate'),
-    new Promise((resolve) => setTimeout(resolve, 700)),
-  ]).then(([moduleExports]) => moduleExports);
-});
+/**
+ * useState, useEffect 써서 MinTimePreservedFallback을 만드는 건 좀 별로 인거 같음.
+ * 그냥 Promise.all을 사용하는게 그냥 로직상으로도, 코드상으로도 이해가 편할듯
+ * lazy 로드 했는데 응답이 빨리 오면 화면이 깜빡거리는거 같은 상황 발생해서 fallback 최소 렌더링 시간 추가
+ */
+const delayedLazy = (importFunction: () => Promise<any>, delay = 1000) => {
+  return lazy(() =>
+    Promise.all([
+      importFunction(),
+      new Promise((resolve) => setTimeout(resolve, delay)),
+    ]).then(([moduleExports]) => moduleExports)
+  );
+};
+
+const EnrollTemplate = delayedLazy(
+  () => import('@/templates/User/EnrollTemplate')
+);
 
 export const router = createBrowserRouter([
   {
