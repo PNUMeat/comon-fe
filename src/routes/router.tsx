@@ -33,7 +33,7 @@ const LazySkeleton = () => (
  */
 const delayedLazy = (
   importFunction: () => Promise<{ default: ComponentType<unknown> }>,
-  delay = 1000
+  delay = 600
 ): LazyExoticComponent<ComponentType<unknown>> => {
   return lazy(() =>
     Promise.all([
