@@ -5,7 +5,7 @@ import { CommonLayout } from '@/components/layout/CommonLayout';
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import { TITLES } from '@/routes/path';
+import { TITLES } from '@/routes/pathTitles';
 import { currentPathAtom } from '@/store/form';
 import { useSetAtom } from 'jotai/index';
 
