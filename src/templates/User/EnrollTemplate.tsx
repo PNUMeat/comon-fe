@@ -7,7 +7,7 @@ import { Fragment, useEffect } from 'react';
 
 import { EnrollForm } from '@/templates/User/EnrollForm';
 
-export const EnrollTemplate = () => {
+const EnrollTemplate = () => {
   useEffect(() => {
     handleCookieOnRedirect();
   }, []);
@@ -21,3 +21,5 @@ export const EnrollTemplate = () => {
     </Fragment>
   );
 };
+
+export default EnrollTemplate;
