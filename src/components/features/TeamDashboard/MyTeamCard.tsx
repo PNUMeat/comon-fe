@@ -2,7 +2,9 @@ import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
+import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import click from '@/assets/TeamDashboard/click.png';
@@ -37,9 +39,11 @@ export const MyTeamCard = () => {
           <Flex direction="column" justify="center" align="center" width={30}>
             <Team>TEAM</Team> <TeamName>Codemonster</TeamName>
             <SinceDate>since 2024.11.12</SinceDate>
-            <Box height="18px" fontSize="10px" theme="label">
-              스터디
-            </Box>
+            <Label>
+              <SText fontSize="10px" fontWeight={600}>
+                스터디
+              </SText>
+            </Label>
             <ButtonWrapper>
               <Button backgroundColor={colors.buttonPurple}>6 members</Button>
               <Button backgroundColor={colors.buttonPink}>126일차 코몬</Button>
@@ -60,9 +64,11 @@ export const MyTeamCard = () => {
                 <ProfileList profiles={profiles} />
               </Flex>
             </Box>
-            <Box width="360px" height="80px" theme="action" fontSize="20px">
+            <Box width="360px" height="80px" padding="0" borderWidth="3px">
               <ClickImage src={click} />
-              <ActionText>팀 페이지로 이동하기</ActionText>
+              <ActionText>
+                <SText fontSize="20px">팀 페이지로 이동하기</SText>
+              </ActionText>
             </Box>
           </Flex>
         </Flex>
