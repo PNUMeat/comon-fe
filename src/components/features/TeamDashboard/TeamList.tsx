@@ -3,8 +3,10 @@ import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { FilterButtons } from '@/components/commons/FilterButtons';
 import { Flex } from '@/components/commons/Flex';
+import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { Pagination } from '@/components/commons/Pagination';
+import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { colors } from '@/constants/colors';
@@ -56,9 +58,11 @@ export const TeamList = () => {
             >
               <Team>TEAM</Team> <TeamName>{team.name}</TeamName>
               <SinceDate>since {team.since}</SinceDate>
-              <Box height="18px" fontSize="10px" theme="label">
-                스터디
-              </Box>
+              <Label>
+                <SText fontSize="10px" fontWeight={600}>
+                  스터디
+                </SText>
+              </Label>
               <Spacer h={20} />
               <ProfileList profiles={profiles} />
               <Spacer h={14} />
