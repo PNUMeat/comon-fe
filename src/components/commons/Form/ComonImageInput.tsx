@@ -2,7 +2,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
@@ -101,11 +101,50 @@ const ImageRestrictionNotice = () => {
 export const ComonImageInput = () => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+
+  const loadCompressedImage = useCallback(
+    (file: File) => {
+      if (!workerRef.current) {
+        workerRef.current = new Worker(
+          new URL('@/workers/imageCompressor.ts', import.meta.url),
+          { type: 'module' }
+        );
+
+        workerRef.current.onmessage = (e) => {
+          const { compressedImage, error = undefined } = e.data;
+          if (compressedImage && !error) {
+            console.log('after: ', compressedImage.size);
+            setImage(compressedImage);
+            return;
+          }
+          console.error(error);
+          // 그래도 일단 돌아는 가야 하지 않을까
+          setImage(file);
+        };
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const worker = workerRef.current;
+        console.log('before: ', file.size);
+        worker?.postMessage({
+          src: e?.target?.result,
+          fileType: file.type,
+          fileName: '설정할 파일 이름',
+          quality: 0.8,
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+    [setImage]
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setImage(file);
+      loadCompressedImage(file);
     }
   };
 
@@ -113,7 +152,7 @@ export const ComonImageInput = () => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setImage(file);
+      loadCompressedImage(file);
     }
   };
 
