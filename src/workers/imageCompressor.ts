@@ -1,5 +1,6 @@
-/*
-  JPG랑 PNG만 압축가능한데 다른 확장자도 필요하다면 그냥 browser-image-compression 쓰는게 나을듯함
+/**
+  (12/06) JPG만 압축가능한데 다른 확장자도 필요하다면 그냥 browser-image-compression 쓰는게 나을듯함
+  그래도 PNG까지는 해보고 싶음
  */
 function compressImage(
   image: ImageBitmap,
@@ -19,8 +20,15 @@ function compressImage(
 
     const compressOptions = {
       type: fileType,
-      quality: fileType === 'image/jpeg' ? quality : undefined,
+      // quality: fileType === 'image/jpeg' ? quality : undefined,
+      quality: quality,
     };
+
+    // if (fileType === 'image/png') {
+    //   // const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    //   const cvs = ctx.canvas;
+    //
+    // }
 
     canvas
       .convertToBlob(compressOptions)
