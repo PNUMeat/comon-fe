@@ -99,9 +99,10 @@ const ImageRestrictionNotice = () => {
 /**
  * 상태가 매핑됨 (imageAtom)
  */
-export const ComonImageInput: React.FC<{ imageUrl?: string }> = ({
-  imageUrl,
-}) => {
+export const ComonImageInput: React.FC<{
+  imageUrl?: string;
+  isDisabled?: boolean;
+}> = ({ imageUrl, isDisabled }) => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
@@ -154,7 +155,7 @@ export const ComonImageInput: React.FC<{ imageUrl?: string }> = ({
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (!isDisabled && e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       loadCompressedImage(file);
     }

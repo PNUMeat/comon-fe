@@ -24,7 +24,7 @@ const ModificationFormContainer = styled.div<HeightInNumber>`
 `;
 
 export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ['profile-query'],
     queryFn: getMyProfile,
   });
@@ -41,16 +41,18 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
           maxLength={10}
           placeholder={'이름'}
           value={data?.memberName}
+          isDisabled={isFetching}
         />
 
         <FormFieldLabel>프로필 이미지</FormFieldLabel>
-        <ComonImageInput imageUrl={data?.imageUrl} />
+        <ComonImageInput imageUrl={data?.imageUrl} isDisabled={isFetching} />
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>
         <ComonTextarea
           maxLength={50}
           placeholder={'자신을 소개해주세요!'}
           value={data?.memberExplain}
+          isDisabled={isFetching}
         />
       </ComonFormGrid>
       <ModificationSubmitButton />
