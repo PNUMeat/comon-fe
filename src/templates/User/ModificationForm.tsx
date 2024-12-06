@@ -45,7 +45,13 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
         />
 
         <FormFieldLabel>프로필 이미지</FormFieldLabel>
-        <ComonImageInput imageUrl={data?.imageUrl} isDisabled={isFetching} />
+        {/* data.imageUrl이 바뀔 때마다 무조건 리렌더링 (받아온 imageUrl을 imageStr에 넣기 위함) */}
+        {/* ComonImageInput 안에서 useEffect 돌리기 싫어서 이렇게 했다. 프로필 변경 페이지에서만 imageUrl이 사용되기 때문에 */}
+        <ComonImageInput
+          key={`${data?.imageUrl}`}
+          imageUrl={data?.imageUrl}
+          isDisabled={isFetching}
+        />
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>
         <ComonTextarea
