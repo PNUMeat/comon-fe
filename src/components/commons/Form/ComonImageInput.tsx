@@ -1,5 +1,6 @@
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
+import { SimpleLoader } from '@/components/commons/SimpleLoader';
 import { HeightInNumber } from '@/components/types';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -171,8 +172,13 @@ export const ComonImageInput = () => {
   return (
     <Flex gap={'17px'}>
       <ImageContainer h={200} onDragOver={handleDragOver} onDrop={handleDrop}>
-        {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
-        {!imageStr && <PlaceholderText>이미지를 드래그하세요</PlaceholderText>}
+        {image && imageStr && (
+          <PreviewImage src={imageStr} alt="Uploaded preview" />
+        )}
+        {image && !imageStr && <SimpleLoader />}
+        {!image && !imageStr && (
+          <PlaceholderText>이미지를 드래그하세요</PlaceholderText>
+        )}
       </ImageContainer>
       <SideContainer h={200}>
         <ImageRestrictionNotice />
