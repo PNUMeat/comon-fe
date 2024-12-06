@@ -25,9 +25,10 @@ const ModificationFormContainer = styled.div<HeightInNumber>`
 
 export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
   const { data, isFetching } = useQuery({
-    queryKey: ['profile-query'],
+    queryKey: ['my-profile-query'],
     queryFn: getMyProfile,
   });
+  console.error('??', data, isFetching);
 
   return (
     <ModificationFormContainer h={h}>
