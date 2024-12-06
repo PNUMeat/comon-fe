@@ -175,11 +175,9 @@ export const ComonImageInput: React.FC<{
   return (
     <Flex gap={'17px'}>
       <ImageContainer h={200} onDragOver={handleDragOver} onDrop={handleDrop}>
-        {image && imageStr && (
-          <PreviewImage src={imageStr} alt="Uploaded preview" />
-        )}
-        {image && !imageStr && <SimpleLoader />}
-        {!image && !imageStr && (
+        {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
+        {!imageStr && image && <SimpleLoader />}
+        {!imageStr && !image && (
           <PlaceholderText>이미지를 드래그하세요</PlaceholderText>
         )}
       </ImageContainer>
