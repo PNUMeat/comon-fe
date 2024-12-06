@@ -1,8 +1,9 @@
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
+import { SimpleLoader } from '@/components/commons/SimpleLoader';
 import { HeightInNumber } from '@/components/types';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
@@ -101,11 +102,51 @@ const ImageRestrictionNotice = () => {
 export const ComonImageInput = () => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+
+  const loadCompressedImage = useCallback(
+    (file: File) => {
+      if (!workerRef.current) {
+        workerRef.current = new Worker(
+          new URL('@/workers/imageCompressor.ts', import.meta.url),
+          { type: 'module' }
+        );
+
+        workerRef.current.onmessage = (e) => {
+          const { compressedImage, error = undefined } = e.data;
+          if (compressedImage && !error) {
+            console.log('after: ', readableBytes(compressedImage.size));
+
+            setImage(compressedImage);
+            return;
+          }
+          console.error('이미지 압축에 실패했습니다.', error);
+          // 그래도 일단 돌아는 가야 하지 않을까
+          setImage(file);
+        };
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const worker = workerRef.current;
+        console.log('before: ', readableBytes(file.size));
+        worker?.postMessage({
+          src: e?.target?.result,
+          fileType: file.type,
+          fileName: '설정할 파일 이름',
+          quality: 0.8,
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+    [setImage]
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setImage(file);
+      loadCompressedImage(file);
     }
   };
 
@@ -113,7 +154,7 @@ export const ComonImageInput = () => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setImage(file);
+      loadCompressedImage(file);
     }
   };
 
@@ -131,8 +172,13 @@ export const ComonImageInput = () => {
   return (
     <Flex gap={'17px'}>
       <ImageContainer h={200} onDragOver={handleDragOver} onDrop={handleDrop}>
-        {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
-        {!imageStr && <PlaceholderText>이미지를 드래그하세요</PlaceholderText>}
+        {image && imageStr && (
+          <PreviewImage src={imageStr} alt="Uploaded preview" />
+        )}
+        {image && !imageStr && <SimpleLoader />}
+        {!image && !imageStr && (
+          <PlaceholderText>이미지를 드래그하세요</PlaceholderText>
+        )}
       </ImageContainer>
       <SideContainer h={200}>
         <ImageRestrictionNotice />
@@ -147,4 +193,11 @@ export const ComonImageInput = () => {
       </SideContainer>
     </Flex>
   );
+};
+
+const readableBytes = (bytes: number) => {
+  const i = Math.floor(Math.log(bytes) / Math.log(1024)),
+    sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 };
