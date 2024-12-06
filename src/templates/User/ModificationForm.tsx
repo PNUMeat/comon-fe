@@ -6,8 +6,10 @@ import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabel';
 import { HeightInNumber } from '@/components/types';
 
+import { getMyProfile } from '@/api/user';
 import { ModificationSubmitButton } from '@/templates/User/ModificationSubmitButton';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
 const ModificationFormContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -22,6 +24,11 @@ const ModificationFormContainer = styled.div<HeightInNumber>`
 `;
 
 export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
+  const { data } = useQuery({
+    queryKey: ['profile-query'],
+    queryFn: getMyProfile,
+  });
+
   return (
     <ModificationFormContainer h={h}>
       <ComonFormTitle
@@ -30,13 +37,21 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
       />
       <ComonFormGrid h={494}>
         <FormFieldLabel>이름</FormFieldLabel>
-        <ComonTextInput maxLength={10} placeholder={'이름'} />
+        <ComonTextInput
+          maxLength={10}
+          placeholder={'이름'}
+          value={data?.memberName}
+        />
 
         <FormFieldLabel>프로필 이미지</FormFieldLabel>
-        <ComonImageInput />
+        <ComonImageInput imageUrl={data?.imageUrl} />
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>
-        <ComonTextarea maxLength={50} placeholder={'자신을 소개해주세요!'} />
+        <ComonTextarea
+          maxLength={50}
+          placeholder={'자신을 소개해주세요!'}
+          value={data?.memberExplain}
+        />
       </ComonFormGrid>
       <ModificationSubmitButton />
     </ModificationFormContainer>

@@ -99,9 +99,11 @@ const ImageRestrictionNotice = () => {
 /**
  * 상태가 매핑됨 (imageAtom)
  */
-export const ComonImageInput = () => {
+export const ComonImageInput: React.FC<{ imageUrl?: string }> = ({
+  imageUrl,
+}) => {
   const [image, setImage] = useAtom(imageAtom);
-  const [imageStr, setImageStr] = useState<string | null>(null);
+  const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
 
   const loadCompressedImage = useCallback(

@@ -2,17 +2,25 @@ import apiInstance from '@/api/apiInstance';
 
 export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
 
-type ProfileArgs = {
+type ProfileCommonArgs = {
   memberName: string;
   memberExplain: string;
+};
+
+type ProfileMutationArgs = ProfileCommonArgs & {
   image: File | null;
+};
+
+type ProfileQueryResp = ProfileCommonArgs & {
+  imageUrl: string;
+  uuid: string;
 };
 
 export const createProfile = async ({
   memberName,
   memberExplain,
   image,
-}: ProfileArgs) => {
+}: ProfileMutationArgs) => {
   const formData = new FormData();
 
   formData.append('memberName', memberName);
@@ -34,7 +42,7 @@ export const changeProfile = async ({
   memberName,
   memberExplain,
   image,
-}: ProfileArgs) => {
+}: ProfileMutationArgs) => {
   const formData = new FormData();
 
   formData.append('memberName', memberName);
@@ -48,6 +56,18 @@ export const changeProfile = async ({
       'Content-Type': 'multipart/form-data',
     },
   });
+
+  return res.data;
+};
+
+export const getMyProfile = async (): Promise<ProfileQueryResp> => {
+  const res = await apiInstance.get('v1/members/own-profile');
+
+  return res.data;
+};
+
+export const getProfile = async (uuid: string): Promise<ProfileQueryResp> => {
+  const res = await apiInstance.get(`v1/members/profile/${uuid}`);
 
   return res.data;
 };
