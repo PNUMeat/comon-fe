@@ -8,6 +8,7 @@
   (12/06) PNG의 무손실 압축을 구현할 수 없어서 PNG면 JPG로 변환해서 압축후 그냥 PNG로 변환한다.
   진짜 돌아만 가는 코드지만 압축은 된다.
   여기서 더 개선이나 추가 기능이 필요하다면 그냥 brower-image-compression 써야함.
+  나중에 이미지 압축 관련해서도 알아보고 싶다.
  */
 
 function compressImage(
