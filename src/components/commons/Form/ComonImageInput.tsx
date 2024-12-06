@@ -107,6 +107,8 @@ export const ComonImageInput: React.FC<{
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
 
+  console.error('???', imageStr, imageUrl, isDisabled);
+
   const loadCompressedImage = useCallback(
     (file: File) => {
       if (!workerRef.current) {
