@@ -123,9 +123,6 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
-  const onClickTeam = () => {
-    navigate(PATH.TEAM_REGISTRATION);
-  };
   return (
     <CommonLayout>
       <Container padding={'0 149px'} maxW={1002}>
@@ -154,10 +151,6 @@ export const Home = () => {
               <StartButtonDescription>
                 계정 생성 or 로그인하러 가기
               </StartButtonDescription>
-            </Wrap>
-            <Wrap>
-              <StartButton onClick={onClickTeam}>팀 생성하기</StartButton>
-              <StartButtonDescription>팀 생성 하러 가기</StartButtonDescription>
             </Wrap>
           </Flex>
           <Spacer h={93} />

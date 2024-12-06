@@ -107,8 +107,6 @@ export const ComonImageInput: React.FC<{
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
 
-  console.error('???', imageStr, imageUrl, isDisabled);
-
   const loadCompressedImage = useCallback(
     (file: File) => {
       if (!workerRef.current) {
@@ -121,6 +119,15 @@ export const ComonImageInput: React.FC<{
           const { compressedImage, error = undefined } = e.data;
           if (compressedImage && !error) {
             console.log('after: ', readableBytes(compressedImage.size));
+
+            // TODO: for stress test and result
+            const imageUrl = URL.createObjectURL(compressedImage);
+            const img = new Image();
+            img.src = imageUrl;
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imageUrl;
+            downloadLink.download = 'processed-image.png';
+            downloadLink.click();
 
             setImage(compressedImage);
             return;
