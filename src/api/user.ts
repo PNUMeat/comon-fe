@@ -1,4 +1,5 @@
 import apiInstance from '@/api/apiInstance';
+import { ServerResponse } from '@/api/types';
 
 export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
 
@@ -61,13 +62,17 @@ export const changeProfile = async ({
 };
 
 export const getMyProfile = async (): Promise<ProfileQueryResp> => {
-  const res = await apiInstance.get('v1/members/own-profile');
+  const res = await apiInstance.get<ServerResponse<ProfileQueryResp>>(
+    'v1/members/own-profile'
+  );
 
-  return res.data;
+  return res.data.data;
 };
 
 export const getProfile = async (uuid: string): Promise<ProfileQueryResp> => {
-  const res = await apiInstance.get(`v1/members/profile/${uuid}`);
+  const res = await apiInstance.get<ServerResponse<ProfileQueryResp>>(
+    `v1/members/profile/${uuid}`
+  );
 
-  return res.data;
+  return res.data.data;
 };

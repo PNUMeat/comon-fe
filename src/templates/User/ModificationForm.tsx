@@ -28,7 +28,6 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
     queryKey: ['my-profile-query'],
     queryFn: getMyProfile,
   });
-  console.error('??', data, isFetching);
 
   return (
     <ModificationFormContainer h={h}>
