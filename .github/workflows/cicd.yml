@@ -50,4 +50,3 @@ jobs:
           chmod 600 key.pem
           scp -o StrictHostKeyChecking=no -i key.pem -r dist/* $EC2_USERNAME@$EC2_HOST:/var/www/html/
           ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USERNAME@$EC2_HOST "sudo systemctl restart nginx"
-          echo "✅ Deployment Complete! Visit http://${{ secrets.EC2_HOST }} to view the site."
