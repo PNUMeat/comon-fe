@@ -75,9 +75,9 @@ export const createTeam = async ({
 };
 
 export const getTeamList = async (
-  sort: string = 'recent', // TODO: 수정
-  page: number = 0, // TODO: 수정
-  size: number = 6 // TODO: 수정
+  sort: string = 'recent',
+  page: number = 0,
+  size: number = 6
 ): Promise<ITeamListResponse> => {
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
@@ -85,7 +85,6 @@ export const getTeamList = async (
       params: { sort, page, size },
     }
   );
-  console.log(res.data); // TODO: 삭제
 
   return res.data.data;
 };
