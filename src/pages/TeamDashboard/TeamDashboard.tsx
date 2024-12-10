@@ -26,7 +26,6 @@ const TeamData = () => {
       {myTeams.length > 0 && <MyTeamCard teams={myTeams} />}
       {/* 팀이 없으신가요? 활동 중인 코몬 팀을 찾아보세요! */}
       <TeamList teams={allTeams} />
-      <TeamList />
     </>
   );
 };

@@ -21,7 +21,7 @@ const profiles = [
   'https://via.placeholder.com/24x24.png?text=5',
 ];
 
-export const MyTeamCard = () => {
+export const MyTeamCard = ({ teams }) => {
   return (
     <>
       <PageSectionHeader h={40}>나의 팀</PageSectionHeader>
@@ -32,47 +32,54 @@ export const MyTeamCard = () => {
       />
 
       <Spacer h={30} />
-      <Box width="100%">
-        <Flex justify="space-around">
-          <Box width="260px" height="260px" />
 
-          <Flex direction="column" justify="center" align="center" width={30}>
-            <Team>TEAM</Team> <TeamName>Codemonster</TeamName>
-            <SinceDate>since 2024.11.12</SinceDate>
-            <Label>
-              <SText fontSize="10px" fontWeight={600}>
-                스터디
-              </SText>
-            </Label>
-            <ButtonWrapper>
-              <Button backgroundColor={colors.buttonPurple}>6 members</Button>
-              <Button backgroundColor={colors.buttonPink}>126일차 코몬</Button>
-            </ButtonWrapper>
+      {teams.map((team) => (
+        <Box key={team.teamId} width="100%">
+          <Flex justify="space-around">
+            <Box width="260px" height="260px" /> {/* TODO: imageUrl 수정 */}
+            <Flex direction="column" justify="center" align="center" width={30}>
+              <Team>TEAM</Team> <TeamName>{team.teamName}</TeamName>
+              <SinceDate>since {team.createdAt}</SinceDate>
+              <Label>
+                <SText fontSize="10px" fontWeight={600}>
+                  {team.topic}
+                </SText>
+              </Label>
+              <ButtonWrapper>
+                <Button backgroundColor={colors.buttonPink}>
+                  {team.streakDays}일 연속 코몬 중!
+                </Button>
+                <Button backgroundColor={colors.buttonPurple}>
+                  {team.memberCount} members
+                </Button>
+              </ButtonWrapper>
+            </Flex>
+            <Flex
+              direction="column"
+              justify="space-evenly"
+              align="center"
+              width={35}
+            >
+              <Box width="360px" height="80px">
+                <Flex width={100} justify="space-evenly" align="center">
+                  <UploadStatusText>
+                    오늘의 코테 {team.successMemberCount}명 업로드 완료!
+                  </UploadStatusText>
+                  <ProfileList profiles={profiles} />{' '}
+                  {/* TODO: LazyImage 적용 */}
+                </Flex>
+              </Box>
+              {/* TODO: link 어디로? */}
+              <Box width="360px" height="80px" padding="0" borderWidth="3px">
+                <ClickImage src={click} />
+                <ActionText>
+                  <SText fontSize="20px">팀 페이지로 이동하기</SText>
+                </ActionText>
+              </Box>
+            </Flex>
           </Flex>
-
-          <Flex
-            direction="column"
-            justify="space-evenly"
-            align="center"
-            width={35}
-          >
-            <Box width="360px" height="80px">
-              <Flex width={100} justify="space-evenly" align="center">
-                <UploadStatusText>
-                  오늘의 코테 6명 업로드 완료!
-                </UploadStatusText>
-                <ProfileList profiles={profiles} />
-              </Flex>
-            </Box>
-            <Box width="360px" height="80px" padding="0" borderWidth="3px">
-              <ClickImage src={click} />
-              <ActionText>
-                <SText fontSize="20px">팀 페이지로 이동하기</SText>
-              </ActionText>
-            </Box>
-          </Flex>
-        </Flex>
-      </Box>
+        </Box>
+      ))}
       <Spacer h={84} />
     </>
   );
