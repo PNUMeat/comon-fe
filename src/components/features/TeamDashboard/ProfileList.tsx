@@ -1,3 +1,5 @@
+import { LazyImage } from '@/components/commons/LazyImage';
+
 import styled from '@emotion/styled';
 
 interface ProfileListProps {
@@ -14,13 +16,20 @@ export const ProfileList: React.FC<ProfileListProps> = ({
   return (
     <ProfileContainer>
       {profiles.map((profile, index) => (
-        <Profile
+        <LazyImageWrapper
           key={index}
-          src={profile}
-          alt={`Profile ${index + 1}`}
           size={size}
           overlap={overlap}
-        />
+          index={index}
+        >
+          <LazyImage
+            src={profile}
+            altText={`profile ${index + 1}`}
+            w={size}
+            h={size}
+            maxW={size}
+          />
+        </LazyImageWrapper>
       ))}
     </ProfileContainer>
   );
@@ -32,14 +41,14 @@ const ProfileContainer = styled.div`
   position: relative;
 `;
 
-const Profile = styled.img<{ size: number; overlap: number }>`
+const LazyImageWrapper = styled.div<{
+  size: number;
+  overlap: number;
+  index: number;
+}>`
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-left: ${(props) => `-${props.overlap}px`};
-
-  &:first-of-type {
-    margin-left: 0;
-  }
+  overflow: hidden;
+  margin-left: ${(props) => (props.index === 0 ? '0' : `-${props.overlap}px`)};
 `;
