@@ -17,9 +17,15 @@ import { ProfileList } from './ProfileList';
 
 interface TeamListProps {
   teams: ITeamInfo[];
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export const TeamList = ({ teams }: TeamListProps) => {
+export const TeamList = ({
+  teams,
+  totalPages,
+  onPageChange,
+}: TeamListProps) => {
   return (
     <>
       <PageSectionHeader h={40}>
@@ -79,7 +85,7 @@ export const TeamList = ({ teams }: TeamListProps) => {
         })}
       </List>
       <Spacer h={34} />
-      <Pagination /> {/* TODO: */}
+      <Pagination totalPages={totalPages} onPageChange={onPageChange} />
       <Spacer h={34} />
     </>
   );

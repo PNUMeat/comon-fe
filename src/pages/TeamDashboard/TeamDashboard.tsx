@@ -4,7 +4,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { MyTeamCard } from '@/components/features/TeamDashboard/MyTeamCard';
 import { TeamList } from '@/components/features/TeamDashboard/TeamList';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getTeamList } from '@/api/team';
@@ -14,20 +14,27 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
 const TeamData = () => {
+  const [page, setPage] = useState(0);
+
   const { data } = useQuery({
-    queryKey: ['team-list'],
-    queryFn: () => getTeamList('recent', 0, 6), // TODO: 수정
+    queryKey: ['team-list', page],
+    queryFn: () => getTeamList('recent', page, 6),
   });
 
   const myTeams = data?.myTeams || [];
   const allTeams = data?.allTeams.content || [];
+  const totalPages = data?.allTeams.page.totalPages || 1;
 
   return (
     <>
       {/* 나의 팀 */}
       {myTeams.length > 0 && <MyTeamCard teams={myTeams} />}
       {/* 팀이 없으신가요? 활동 중인 코몬 팀을 찾아보세요! */}
-      <TeamList teams={allTeams} />
+      <TeamList
+        teams={allTeams}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </>
   );
 };
