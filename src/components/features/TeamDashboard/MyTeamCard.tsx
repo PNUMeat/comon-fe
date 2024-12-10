@@ -8,7 +8,7 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Team } from '@/api/team/getTeamList';
+import { ITeamInfo } from '@/api/team';
 import click from '@/assets/TeamDashboard/click.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -16,7 +16,7 @@ import styled from '@emotion/styled';
 import { ProfileList } from './ProfileList';
 
 interface MyTeamCardProps {
-  teams: Team[];
+  teams: ITeamInfo[];
 }
 
 export const MyTeamCard = ({ teams }: MyTeamCardProps) => {

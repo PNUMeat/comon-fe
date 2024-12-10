@@ -7,7 +7,7 @@ import { TeamList } from '@/components/features/TeamDashboard/TeamList';
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getTeamList } from '@/api/team/getTeamList';
+import { getTeamList } from '@/api/team';
 import click from '@/assets/TeamDashboard/click.png';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';

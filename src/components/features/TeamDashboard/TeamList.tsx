@@ -9,14 +9,14 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Team } from '@/api/team/getTeamList';
+import { ITeamInfo } from '@/api/team';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 import { ProfileList } from './ProfileList';
 
 interface TeamListProps {
-  teams: Team[];
+  teams: ITeamInfo[];
 }
 
 export const TeamList = ({ teams }: TeamListProps) => {
