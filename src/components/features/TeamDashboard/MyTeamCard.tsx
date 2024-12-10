@@ -3,6 +3,7 @@ import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
@@ -36,7 +37,15 @@ export const MyTeamCard = ({ teams }) => {
       {teams.map((team) => (
         <Box key={team.teamId} width="100%">
           <Flex justify="space-around">
-            <Box width="260px" height="260px" /> {/* TODO: imageUrl 수정 */}
+            <Box width="260px" height="260px">
+              <ImageContainer
+                src={team.imageUrl}
+                altText={team.teamName}
+                w="inherit"
+                h="inherit"
+                maxW={260}
+              />
+            </Box>
             <Flex direction="column" justify="center" align="center" width={30}>
               <Team>TEAM</Team> <TeamName>{team.teamName}</TeamName>
               <SinceDate>since {team.createdAt}</SinceDate>
@@ -84,6 +93,11 @@ export const MyTeamCard = ({ teams }) => {
     </>
   );
 };
+
+const ImageContainer = styled(LazyImage)`
+  object-fit: cover;
+  object-position: center;
+`;
 
 const Team = styled.div`
   font-weight: 600;
