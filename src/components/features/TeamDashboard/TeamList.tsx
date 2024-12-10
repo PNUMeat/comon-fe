@@ -53,7 +53,7 @@ export const TeamList = ({ teams }) => {
                   </SText>
                 </Label>
                 <Spacer h={20} />
-                <ProfileList profiles={profiles} /> {/* TODO: LazyImage 적용 */}
+                <ProfileList profiles={profiles} />
                 <Spacer h={14} />
                 <ButtonWrapper>
                   <Button backgroundColor={colors.buttonPurple}>
