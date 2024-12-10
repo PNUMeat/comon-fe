@@ -1,7 +1,7 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
-import { FilterButtons } from '@/components/commons/FilterButtons';
+// import { FilterButtons } from '@/components/commons/FilterButtons';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
@@ -31,7 +31,7 @@ export const TeamList = ({ teams }: TeamListProps) => {
         height="470px"
       />
       <Spacer h={34} />
-      <FilterButtons /> {/* TODO: */}
+      {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
       <Spacer h={34} />
       <List>
         {teams.map((team) => {
