@@ -44,7 +44,9 @@ export const TeamDashboardPage = () => {
         <Box width="100%" height="80px" padding="0" borderWidth="3px">
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px">팀 생성하기</SText>
+            <SText fontSize="20px" fontWeight={700}>
+              팀 생성하기
+            </SText>
           </ActionText>
         </Box>
       </Link>
