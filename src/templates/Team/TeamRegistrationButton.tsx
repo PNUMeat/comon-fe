@@ -1,6 +1,6 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
-import { createTeam } from '@/api/team';
+import { createTeam } from '@/api/team/createTeam';
 import {
   formTextInputAtom,
   formTextareaAtom,
