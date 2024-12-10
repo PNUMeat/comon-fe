@@ -14,15 +14,6 @@ import styled from '@emotion/styled';
 
 import { ProfileList } from './ProfileList';
 
-const teams = [
-  { name: 'Codemonster', since: '2024.11.12', members: 6 },
-  { name: 'DORTHY', since: '2024.11.12', members: 4 },
-  { name: 'Apptive', since: '2024.11.12', members: 7 },
-  { name: 'Codemonster', since: '2024.11.12', members: 6 },
-  { name: 'DORTHY', since: '2024.11.12', members: 4 },
-  { name: 'Apptive', since: '2024.11.12', members: 7 },
-];
-
 const profiles = [
   'https://via.placeholder.com/24x24.png?text=1',
   'https://via.placeholder.com/24x24.png?text=2',
@@ -31,7 +22,7 @@ const profiles = [
   'https://via.placeholder.com/24x24.png?text=5',
 ];
 
-export const TeamList = () => {
+export const TeamList = ({ teams }) => {
   return (
     <>
       <PageSectionHeader h={40}>
@@ -48,8 +39,8 @@ export const TeamList = () => {
       <Spacer h={34} />
 
       <List>
-        {teams.map((team, index) => (
-          <Box key={index} width="330px" height="210px">
+        {teams.map((team) => (
+          <Box key={team.teamId} width="330px" height="210px">
             <Flex
               direction="column"
               justify="center"
@@ -60,23 +51,23 @@ export const TeamList = () => {
                 TEAM
               </SText>{' '}
               <SText fontSize="24px" color="#333" fontWeight={700}>
-                {team.name}
+                {team.teamName}
               </SText>
-              <SinceDate>since {team.since}</SinceDate>
+              <SinceDate>since {team.createdAt}</SinceDate>
               <Label>
                 <SText fontSize="10px" fontWeight={600}>
-                  스터디
+                  {team.topic}
                 </SText>
               </Label>
               <Spacer h={20} />
-              <ProfileList profiles={profiles} />
+              <ProfileList profiles={profiles} /> {/* TODO: LazyImage 적용 */}
               <Spacer h={14} />
               <ButtonWrapper>
                 <Button backgroundColor={colors.buttonPurple}>
-                  {team.members} members
+                  {team.memberCount} members
                 </Button>
                 <Button backgroundColor={colors.buttonPink}>
-                  126일차 코몬
+                  {team.streakDays}일차 코몬
                 </Button>
               </ButtonWrapper>
             </Flex>
