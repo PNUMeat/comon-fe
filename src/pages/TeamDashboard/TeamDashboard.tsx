@@ -5,9 +5,11 @@ import { MyTeamCard } from '@/components/features/TeamDashboard/MyTeamCard';
 import { TeamList } from '@/components/features/TeamDashboard/TeamList';
 
 import { Suspense } from 'react';
+import { Link } from 'react-router-dom';
 
 import { getTeamList } from '@/api/team/getTeamList';
 import click from '@/assets/TeamDashboard/click.png';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
@@ -38,12 +40,14 @@ export const TeamDashboardPage = () => {
         혹은, 새로운 팀을 생성하시겠나요?
       </SText>
       <Spacer h={12} />
-      <Box width="100%" height="80px" padding="0" borderWidth="3px">
-        <ClickImage src={click} />
-        <ActionText>
-          <SText fontSize="20px">팀 생성하기</SText>
-        </ActionText>
-      </Box>
+      <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
+        <Box width="100%" height="80px" padding="0" borderWidth="3px">
+          <ClickImage src={click} />
+          <ActionText>
+            <SText fontSize="20px">팀 생성하기</SText>
+          </ActionText>
+        </Box>
+      </Link>
     </Suspense>
   );
 };
