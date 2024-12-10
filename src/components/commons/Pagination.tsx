@@ -7,19 +7,28 @@ import styled from '@emotion/styled';
 import { Flex } from './Flex';
 import { Spacer } from './Spacer';
 
-export const Pagination = () => {
+interface IPaginationProps {
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+export const Pagination = ({ totalPages, onPageChange }: IPaginationProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3; // TODO: 수정
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    onPageChange(page - 1);
+  };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
+      handlePageChange(currentPage - 1);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
+      handlePageChange(currentPage + 1);
     }
   };
 
@@ -33,14 +42,13 @@ export const Pagination = () => {
             <PageNumber
               key={index + 1}
               isActive={index + 1 === currentPage}
-              onClick={() => setCurrentPage(index + 1)}
+              onClick={() => handlePageChange(index + 1)}
             >
               {index + 1}
             </PageNumber>
           ))}
         </PageList>
         <Spacer width={12} h={0} />
-
         <RightArrow src={ArrowButton} onClick={handleNext} />
       </PaginationContainer>
     </Flex>
