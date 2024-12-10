@@ -9,12 +9,17 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Team } from '@/api/team/getTeamList';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 import { ProfileList } from './ProfileList';
 
-export const TeamList = ({ teams }) => {
+interface TeamListProps {
+  teams: Team[];
+}
+
+export const TeamList = ({ teams }: TeamListProps) => {
   return (
     <>
       <PageSectionHeader h={40}>

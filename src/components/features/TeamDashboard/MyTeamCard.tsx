@@ -8,13 +8,18 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Team } from '@/api/team/getTeamList';
 import click from '@/assets/TeamDashboard/click.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 import { ProfileList } from './ProfileList';
 
-export const MyTeamCard = ({ teams }) => {
+interface MyTeamCardProps {
+  teams: Team[];
+}
+
+export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
   return (
     <>
       <PageSectionHeader h={40}>나의 팀</PageSectionHeader>
@@ -47,7 +52,11 @@ export const MyTeamCard = ({ teams }) => {
                 align="center"
                 width={30}
               >
-                <Team>TEAM</Team> <TeamName>{team.teamName}</TeamName>
+                <SText fontSize="16px" fontWeight={600}>
+                  TEAM
+                </SText>
+                <Spacer h={8} />
+                <TeamName>{team.teamName}</TeamName>
                 <SinceDate>since {team.createdAt}</SinceDate>
                 <Label>
                   <SText fontSize="10px" fontWeight={600}>
@@ -97,11 +106,6 @@ export const MyTeamCard = ({ teams }) => {
 const ImageContainer = styled(LazyImage)`
   object-fit: cover;
   object-position: center;
-`;
-
-const Team = styled.div`
-  font-weight: 600;
-  margin-bottom: 8px;
 `;
 
 const TeamName = styled.div`
