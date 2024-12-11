@@ -115,9 +115,29 @@ const FlipCardItem = ({
 
         {/* 뒷면 */}
         <FlipCardBack>
-          <SText fontSize="24px" color="#fff" fontWeight={700}>
-            안녕^.^
-          </SText>
+          <Flex direction="column" justify="center" align="center" width={100}>
+            <SText fontSize="12px" fontWeight={600}>
+              TEAM
+            </SText>
+            <Spacer h={4} />
+            <SText fontSize="24px" color="#333" fontWeight={700}>
+              {team.teamName}
+            </SText>
+            <Spacer h={8} />
+            <SText fontSize="16px" color="#777" fontWeight={400}>
+              since {team.createdAt}
+            </SText>
+            <Spacer h={8} />
+            <Label>
+              <SText fontSize="10px" fontWeight={600}>
+                {team.topic}
+              </SText>
+            </Label>
+            <Spacer h={20} />
+            <PasswordInput type="password" placeholder="PASSWORD" />
+            <Spacer h={14} />
+            <Button backgroundColor={colors.buttonPurple}>팀 참가하기</Button>
+          </Flex>
         </FlipCardBack>
       </FlipCardInner>
     </FlipCard>
@@ -134,6 +154,26 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
+`;
+
+const PasswordInput = styled.input`
+  width: 160px;
+  height: 24px;
+  border: 1px solid ${colors.borderPurple};
+  border-radius: 28px;
+  outline: none;
+  text-align: center;
+  color: #ccc;
+  background-color: transparent;
+
+  &::placeholder {
+    color: #ccc;
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: ${colors.buttonPurple};
+  }
 `;
 
 const FlipCard = styled.div`
@@ -160,8 +200,7 @@ const FlipCardFront = styled.div`
   height: 100%;
   backface-visibility: hidden;
   background: #fff;
-  border: 1px solid #f1f1f1;
-  border-radius: 12px;
+  border-radius: 20px;
 `;
 
 const FlipCardBack = styled.div`
@@ -169,11 +208,11 @@ const FlipCardBack = styled.div`
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  background: dodgerblue;
-  color: white;
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 20px;
   transform: rotateY(180deg);
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid ${colors.buttonPurple};
 `;
