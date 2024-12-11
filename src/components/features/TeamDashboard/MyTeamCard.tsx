@@ -8,7 +8,7 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Team } from '@/api/team/getTeamList';
+import { ITeamInfo } from '@/api/team';
 import click from '@/assets/TeamDashboard/click.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -16,7 +16,7 @@ import styled from '@emotion/styled';
 import { ProfileList } from './ProfileList';
 
 interface MyTeamCardProps {
-  teams: Team[];
+  teams: ITeamInfo[];
 }
 
 export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
@@ -55,22 +55,29 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                 <SText fontSize="16px" fontWeight={600}>
                   TEAM
                 </SText>
+                <Spacer h={12} />
+                <SText fontSize="40px" color="#333" fontWeight={700}>
+                  {team.teamName}
+                </SText>
                 <Spacer h={8} />
-                <TeamName>{team.teamName}</TeamName>
-                <SinceDate>since {team.createdAt}</SinceDate>
+                <SText fontSize="16px" color="#777" fontWeight={400}>
+                  since {team.createdAt}
+                </SText>
+                <Spacer h={8} />
                 <Label>
                   <SText fontSize="10px" fontWeight={600}>
                     {team.topic}
                   </SText>
                 </Label>
-                <ButtonWrapper>
+                <Spacer h={24} />
+                <Flex direction="column" align="center" gap="10px">
                   <Button backgroundColor={colors.buttonPink}>
                     {team.streakDays}일 연속 코몬 중!
                   </Button>
                   <Button backgroundColor={colors.buttonPurple}>
                     {team.memberCount} members
                   </Button>
-                </ButtonWrapper>
+                </Flex>
               </Flex>
               <Flex
                 direction="column"
@@ -80,9 +87,9 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
               >
                 <Box width="360px" height="80px">
                   <Flex width={100} justify="space-evenly" align="center">
-                    <UploadStatusText>
+                    <SText fontSize="16px" fontWeight={600} color="#333">
                       오늘의 코테 {team.successMemberCount}명 업로드 완료!
-                    </UploadStatusText>
+                    </SText>
                     <ProfileList profiles={profiles} />
                   </Flex>
                 </Box>
@@ -90,7 +97,9 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                 <Box width="360px" height="80px" padding="0" borderWidth="3px">
                   <ClickImage src={click} />
                   <ActionText>
-                    <SText fontSize="20px">팀 페이지로 이동하기</SText>
+                    <SText fontSize="20px" fontWeight={700} color="#333">
+                      팀 페이지로 이동하기
+                    </SText>
                   </ActionText>
                 </Box>
               </Flex>
@@ -104,30 +113,10 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
 };
 
 const ImageContainer = styled(LazyImage)`
-  object-fit: cover;
   object-position: center;
+  overflow: hidden;
+  max-height: 230px;
 `;
-
-const TeamName = styled.div`
-  font-size: 40px;
-  color: #333;
-  font-weight: 700;
-`;
-
-const SinceDate = styled.div`
-  color: #777;
-  margin-bottom: 8px;
-  font-weight: 400;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  margin-top: 36px;
-  gap: 10px;
-`;
-
-const UploadStatusText = styled.div``;
 
 const ClickImage = styled.img`
   width: 24px;
