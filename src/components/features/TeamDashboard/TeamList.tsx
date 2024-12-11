@@ -9,6 +9,8 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useState } from 'react';
+
 import { ITeamInfo } from '@/api/team';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -44,43 +46,7 @@ export const TeamList = ({
           const profiles = team.members.map((member) => member.imageUrl);
 
           return (
-            <Box key={team.teamId} width="330px" height="210px">
-              <Flex
-                direction="column"
-                justify="center"
-                align="center"
-                width={100}
-              >
-                <SText fontSize="12px" fontWeight={600}>
-                  TEAM
-                </SText>
-                <Spacer h={4} />
-                <SText fontSize="24px" color="#333" fontWeight={700}>
-                  {team.teamName}
-                </SText>
-                <Spacer h={8} />
-                <SText fontSize="16px" color="#777" fontWeight={400}>
-                  since {team.createdAt}
-                </SText>
-                <Spacer h={8} />
-                <Label>
-                  <SText fontSize="10px" fontWeight={600}>
-                    {team.topic}
-                  </SText>
-                </Label>
-                <Spacer h={20} />
-                <ProfileList profiles={profiles} />
-                <Spacer h={14} />
-                <ButtonWrapper>
-                  <Button backgroundColor={colors.buttonPurple}>
-                    {team.memberCount} members
-                  </Button>
-                  <Button backgroundColor={colors.buttonPink}>
-                    {team.streakDays}일차 코몬
-                  </Button>
-                </ButtonWrapper>
-              </Flex>
-            </Box>
+            <FlipCardItem key={team.teamId} team={team} profiles={profiles} />
           );
         })}
       </List>
@@ -88,6 +54,73 @@ export const TeamList = ({
       <Pagination totalPages={totalPages} onPageChange={onPageChange} />
       <Spacer h={34} />
     </>
+  );
+};
+
+const FlipCardItem = ({
+  team,
+  profiles,
+}: {
+  team: ITeamInfo;
+  profiles: string[];
+}) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <FlipCard
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
+      <FlipCardInner isFlipped={isFlipped}>
+        {/* 앞면 */}
+        <FlipCardFront>
+          <Box width="100%" height="100%">
+            <Flex
+              direction="column"
+              justify="center"
+              align="center"
+              width={100}
+            >
+              <SText fontSize="12px" fontWeight={600}>
+                TEAM
+              </SText>
+              <Spacer h={4} />
+              <SText fontSize="24px" color="#333" fontWeight={700}>
+                {team.teamName}
+              </SText>
+              <Spacer h={8} />
+              <SText fontSize="16px" color="#777" fontWeight={400}>
+                since {team.createdAt}
+              </SText>
+              <Spacer h={8} />
+              <Label>
+                <SText fontSize="10px" fontWeight={600}>
+                  {team.topic}
+                </SText>
+              </Label>
+              <Spacer h={20} />
+              <ProfileList profiles={profiles} />
+              <Spacer h={14} />
+              <ButtonWrapper>
+                <Button backgroundColor={colors.buttonPurple}>
+                  {team.memberCount} members
+                </Button>
+                <Button backgroundColor={colors.buttonPink}>
+                  {team.streakDays}일차 코몬
+                </Button>
+              </ButtonWrapper>
+            </Flex>
+          </Box>
+        </FlipCardFront>
+
+        {/* 뒷면 */}
+        <FlipCardBack>
+          <SText fontSize="24px" color="#fff" fontWeight={700}>
+            안녕^.^
+          </SText>
+        </FlipCardBack>
+      </FlipCardInner>
+    </FlipCard>
   );
 };
 
@@ -101,4 +134,46 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
+`;
+
+const FlipCard = styled.div`
+  background-color: transparent;
+  width: 330px;
+  height: 210px;
+  perspective: 1000px;
+`;
+
+const FlipCardInner = styled.div<{ isFlipped: boolean }>`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  transform: ${({ isFlipped }) =>
+    isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'};
+`;
+
+const FlipCardFront = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 12px;
+`;
+
+const FlipCardBack = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: dodgerblue;
+  color: white;
+  border-radius: 12px;
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
