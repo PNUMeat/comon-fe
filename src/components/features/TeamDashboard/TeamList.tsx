@@ -74,73 +74,70 @@ const FlipCardItem = ({
       <FlipCardInner isFlipped={isFlipped}>
         {/* 앞면 */}
         <FlipCardFront>
-          <Box width="100%" height="100%">
-            <Flex
-              direction="column"
-              justify="center"
-              align="center"
-              width={100}
-            >
-              <SText fontSize="12px" fontWeight={600}>
-                TEAM
-              </SText>
-              <Spacer h={4} />
-              <SText fontSize="24px" color="#333" fontWeight={700}>
-                {team.teamName}
-              </SText>
-              <Spacer h={8} />
-              <SText fontSize="16px" color="#777" fontWeight={400}>
-                since {team.createdAt}
-              </SText>
-              <Spacer h={8} />
-              <Label>
-                <SText fontSize="10px" fontWeight={600}>
-                  {team.topic}
-                </SText>
-              </Label>
-              <Spacer h={20} />
-              <ProfileList profiles={profiles} />
-              <Spacer h={14} />
-              <ButtonWrapper>
-                <Button backgroundColor={colors.buttonPurple}>
-                  {team.memberCount} members
-                </Button>
-                <Button backgroundColor={colors.buttonPink}>
-                  {team.streakDays}일차 코몬
-                </Button>
-              </ButtonWrapper>
-            </Flex>
-          </Box>
+          <FlipCardContent team={team} profiles={profiles} />
         </FlipCardFront>
 
         {/* 뒷면 */}
         <FlipCardBack>
-          <Flex direction="column" justify="center" align="center" width={100}>
-            <SText fontSize="12px" fontWeight={600}>
-              TEAM
-            </SText>
-            <Spacer h={4} />
-            <SText fontSize="24px" color="#333" fontWeight={700}>
-              {team.teamName}
-            </SText>
-            <Spacer h={8} />
-            <SText fontSize="16px" color="#777" fontWeight={400}>
-              since {team.createdAt}
-            </SText>
-            <Spacer h={8} />
-            <Label>
-              <SText fontSize="10px" fontWeight={600}>
-                {team.topic}
-              </SText>
-            </Label>
-            <Spacer h={20} />
-            <PasswordInput type="password" placeholder="PASSWORD" />
-            <Spacer h={14} />
-            <Button backgroundColor={colors.buttonPurple}>팀 참가하기</Button>
-          </Flex>
+          <FlipCardContent team={team} isBack />
         </FlipCardBack>
       </FlipCardInner>
     </FlipCard>
+  );
+};
+
+const FlipCardContent = ({
+  team,
+  profiles,
+  isBack = false,
+}: {
+  team: ITeamInfo;
+  profiles?: string[];
+  isBack?: boolean;
+}) => {
+  return (
+    <Box width="100%" height="100%">
+      <Flex direction="column" justify="center" align="center" width={100}>
+        <SText fontSize="12px" fontWeight={600}>
+          TEAM
+        </SText>
+        <Spacer h={4} />
+        <SText fontSize="24px" color="#333" fontWeight={700}>
+          {team.teamName}
+        </SText>
+        <Spacer h={8} />
+        <SText fontSize="16px" color="#777" fontWeight={400}>
+          since {team.createdAt}
+        </SText>
+        <Spacer h={8} />
+        <Label>
+          <SText fontSize="10px" fontWeight={600}>
+            {team.topic}
+          </SText>
+        </Label>
+        <Spacer h={20} />
+        {isBack ? (
+          <>
+            <PasswordInput type="password" placeholder="PASSWORD" />
+            <Spacer h={14} />
+            <Button backgroundColor={colors.buttonPurple}>팀 참가하기</Button>
+          </>
+        ) : (
+          <>
+            <ProfileList profiles={profiles || []} />
+            <Spacer h={14} />
+            <ButtonWrapper>
+              <Button backgroundColor={colors.buttonPurple}>
+                {team.memberCount} members
+              </Button>
+              <Button backgroundColor={colors.buttonPink}>
+                {team.streakDays}일차 코몬
+              </Button>
+            </ButtonWrapper>
+          </>
+        )}
+      </Flex>
+    </Box>
   );
 };
 
