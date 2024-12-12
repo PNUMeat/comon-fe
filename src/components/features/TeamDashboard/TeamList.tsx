@@ -11,7 +11,7 @@ import { Spacer } from '@/components/commons/Spacer';
 
 import { useState } from 'react';
 
-import { ITeamInfo } from '@/api/team';
+import { ITeamInfo, joinTeam } from '@/api/team';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -95,6 +95,8 @@ const FlipCardContent = ({
   profiles?: string[];
   isBack?: boolean;
 }) => {
+  const [password, setPassword] = useState('');
+
   return (
     <Box width="100%" height="100%">
       <Flex direction="column" justify="center" align="center" width={100}>
@@ -118,9 +120,19 @@ const FlipCardContent = ({
         <Spacer h={20} />
         {isBack ? (
           <>
-            <PasswordInput type="password" placeholder="PASSWORD" />
+            <PasswordInput
+              type="password"
+              placeholder="PASSWORD"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <Spacer h={14} />
-            <Button backgroundColor={colors.buttonPurple}>팀 참가하기</Button>
+            <Button
+              backgroundColor={colors.buttonPurple}
+              onClick={() => joinTeam(team.teamId, password)}
+            >
+              팀 참가하기
+            </Button>
           </>
         ) : (
           <>
