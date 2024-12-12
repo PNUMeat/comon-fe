@@ -88,3 +88,17 @@ export const getTeamList = async (
 
   return res.data.data;
 };
+
+export const joinTeam = async (teamId: number, password: string) => {
+  return apiInstance
+    .post<ServerResponse<null>>(`/v1/teams/${teamId}/join`, { password })
+    .then((res) => {
+      alert(res.data.message);
+    })
+    .catch((error) => {
+      const errorMessage =
+        error.response?.data?.message || '팀 참가에 실패했습니다.';
+      alert(errorMessage);
+      throw error;
+    });
+};
