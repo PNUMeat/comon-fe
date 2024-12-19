@@ -1,8 +1,8 @@
 import { Box } from '@/components/commons/Box';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { MyTeamCard } from '@/components/features/TeamDashboard/MyTeamCard';
-import { TeamList } from '@/components/features/TeamDashboard/TeamList';
+import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
+import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
 import { Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -39,7 +39,7 @@ const TeamData = () => {
   );
 };
 
-export const TeamDashboardPage = () => {
+export const TeamJoinPage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <TeamData />
