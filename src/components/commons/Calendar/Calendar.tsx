@@ -138,13 +138,14 @@ const StyledCalendar = styled(Calendar)`
 
   /* 현재 날짜 스타일 */
   .react-calendar__tile--now {
-    background-color: rgba(241, 92, 167, 0.2) !important;
+    background-color: #fff !important;
     box-sizing: border-box;
   }
 
   /* 선택된 날짜 스타일 */
   .react-calendar__tile--active {
-    background-color: #f8f8ff !important;
+    background: linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%) !important;
     box-sizing: border-box;
+    color: #fff;
   }
 `;
