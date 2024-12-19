@@ -131,7 +131,6 @@ const StyledCalendar = styled(Calendar)`
       left: 36px;
       width: 40px;
       height: 40px;
-      background-image: url('../src/assets/TeamCalendar/mark.png');
       background-size: cover;
       background-position: center;
     }

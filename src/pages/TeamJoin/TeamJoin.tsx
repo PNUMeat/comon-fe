@@ -8,7 +8,7 @@ import { Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getTeamList } from '@/api/team';
-import click from '@/assets/TeamDashboard/click.png';
+import click from '@/assets/TeamJoin/click.png';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';

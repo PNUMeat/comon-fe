@@ -9,7 +9,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { ITeamInfo } from '@/api/team';
-import click from '@/assets/TeamDashboard/click.png';
+import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
