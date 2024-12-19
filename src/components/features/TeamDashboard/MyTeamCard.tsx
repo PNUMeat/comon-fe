@@ -13,7 +13,7 @@ import click from '@/assets/TeamDashboard/click.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
-import { ProfileList } from './ProfileList';
+// import { ProfileList } from './ProfileList';
 
 interface MyTeamCardProps {
   teams: ITeamInfo[];
@@ -32,7 +32,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
       <Spacer h={30} />
 
       {teams.map((team) => {
-        const profiles = team.members.map((member) => member.imageUrl);
+        // const profiles = team.members.map((member) => member.imageUrl);
 
         return (
           <Box key={team.teamId} width="100%">
@@ -71,9 +71,9 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                 </Label>
                 <Spacer h={24} />
                 <Flex direction="column" align="center" gap="10px">
-                  <Button backgroundColor={colors.buttonPink}>
+                  {/* <Button backgroundColor={colors.buttonPink}>
                     {team.streakDays}일 연속 코몬 중!
-                  </Button>
+                  </Button> */}
                   <Button backgroundColor={colors.buttonPurple}>
                     {team.memberCount} members
                   </Button>
@@ -85,14 +85,14 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                 align="center"
                 width={35}
               >
-                <Box width="360px" height="80px">
+                {/* <Box width="360px" height="80px">
                   <Flex width={100} justify="space-evenly" align="center">
                     <SText fontSize="16px" fontWeight={600} color="#333">
                       오늘의 코테 {team.successMemberCount}명 업로드 완료!
                     </SText>
                     <ProfileList profiles={profiles} />
                   </Flex>
-                </Box>
+                </Box> */}
                 {/* TODO: link 어디로? */}
                 <Box width="360px" height="80px" padding="0" borderWidth="3px">
                   <ClickImage src={click} />
