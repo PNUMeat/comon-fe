@@ -1,13 +1,17 @@
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
-export const Label = styled.div`
+export const Label = styled.div<{
+  background?: string;
+  color?: string;
+  padding?: string;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f4f4;
-  color: ${colors.buttonPurple};
-  padding: 2px 20px;
+  background: ${(props) => props.background || '#f4f4f4'};
+  color: ${(props) => props.color || colors.buttonPurple};
+  padding: ${(props) => props.padding || '2px 20px'};
   border: 1px solid ${colors.borderPurple};
   border-radius: 34px;
   box-sizing: border-box;
