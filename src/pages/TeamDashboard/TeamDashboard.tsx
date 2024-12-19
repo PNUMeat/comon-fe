@@ -6,7 +6,9 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import defaultProfile from '@/assets/TeamDashboard/default_profile.png';
+import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { colors } from '@/constants/colors';
@@ -87,7 +89,25 @@ export const TeamDashboardPage = () => {
             </Flex>
           </Box>
         </Sidebar>
-        <Announcement>Team Announcement</Announcement>
+        <Announcement>
+          <Box width="60%" height="70px" padding="12px 28px">
+            <AnnouncementImage src={AnnouncementIcon} />
+            <Flex direction="column" gap="4px">
+              <SText color="#333" fontSize="18px" fontWeight={700}>
+                Team announcement
+              </SText>
+              <SText color="#333" fontSize="14px" fontWeight={500}>
+                제목 양식: 00/00 코테 풀이로 작성 할 것!
+              </SText>
+            </Flex>
+          </Box>
+          <NewPostButton>
+            <AnnouncementImage src={PencilIcon} />
+            <SText fontSize="18px" color="#fff" fontWeight={700}>
+              오늘의 글쓰기
+            </SText>
+          </NewPostButton>
+        </Announcement>
         <CalendarSection>
           <CustomCalendar />
         </CalendarSection>
@@ -127,6 +147,25 @@ const SettingImage = styled.img`
 
 const Announcement = styled.header`
   grid-area: announcement;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const AnnouncementImage = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+`;
+
+const NewPostButton = styled.button`
+  display: flex;
+  align-items: center;
+  height: 70px;
+  padding: 24px 72px;
+  border-radius: 20px;
+  background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  border: none;
 `;
 
 const CalendarSection = styled.section`
