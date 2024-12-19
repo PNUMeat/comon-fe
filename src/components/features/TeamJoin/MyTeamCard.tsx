@@ -8,9 +8,12 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Link } from 'react-router-dom';
+
 import { ITeamInfo } from '@/api/team';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 // import { ProfileList } from './ProfileList';
@@ -93,15 +96,21 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     <ProfileList profiles={profiles} />
                   </Flex>
                 </Box> */}
-                {/* TODO: link 어디로? */}
-                <Box width="360px" height="80px" padding="0" borderWidth="3px">
-                  <ClickImage src={click} />
-                  <ActionText>
-                    <SText fontSize="20px" fontWeight={700} color="#333">
-                      팀 페이지로 이동하기
-                    </SText>
-                  </ActionText>
-                </Box>
+                <Link to={PATH.TEAM_DASHBOARD}>
+                  <Box
+                    width="360px"
+                    height="80px"
+                    padding="0"
+                    borderWidth="3px"
+                  >
+                    <ClickImage src={click} />
+                    <ActionText>
+                      <SText fontSize="20px" fontWeight={700} color="#333">
+                        팀 페이지로 이동하기
+                      </SText>
+                    </ActionText>
+                  </Box>
+                </Link>
               </Flex>
             </Flex>
           </Box>
@@ -125,4 +134,6 @@ const ClickImage = styled.img`
 
 const ActionText = styled.div`
   margin-left: 8px;
+  text-decoration: none;
+  color: #333;
 `;
