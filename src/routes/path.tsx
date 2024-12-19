@@ -7,5 +7,4 @@ export const PATH = {
   TEAM_MODIFICATION: '/team-modification',
   JOIN: '/join',
   TEAM_DASHBOARD: '/team-dashboard',
-  TEAM_CALENDAR: '/team-calendar',
 };

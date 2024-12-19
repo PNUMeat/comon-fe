@@ -1,6 +1,6 @@
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 
-export const TeamCalendarPage = () => {
+export const TeamDashboardPage = () => {
   return (
     <>
       <CustomCalendar />

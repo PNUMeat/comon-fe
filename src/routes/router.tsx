@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
-import { TeamCalendarPage } from '@/pages/TeamCalendar/TeamCalendar';
+import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
         path: PATH.TEAM_MODIFICATION,
         element: <TeamModificationTemplate />,
       },
-      { path: PATH.TEAM_CALENDAR, element: <TeamCalendarPage /> },
+      { path: PATH.TEAM_DASHBOARD, element: <TeamDashboardPage /> },
     ],
   },
   {
