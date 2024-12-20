@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import ArrowButton from '@/assets/TeamDashboard/arrow.png';
+import ArrowButton from '@/assets/TeamJoin/arrow.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 

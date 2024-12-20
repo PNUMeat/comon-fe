@@ -7,5 +7,5 @@ export const TITLES: Record<string, ReactNode> = {
   '/modification': <span>👑 프로필 수정</span>,
   '/team-registration': <span>👑 팀 생성</span>,
   '/team-modification': <span>👑 팀 수정</span>,
-  '/team-calendar': <span>🗓️ 팀 캘린더</span>,
+  '/team-dashboard': <span>🗓️ 팀 페이지</span>,
 };
