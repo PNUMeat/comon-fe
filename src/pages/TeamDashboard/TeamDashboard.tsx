@@ -1,8 +1,10 @@
 import { Box } from '@/components/commons/Box';
+import { Button } from '@/components/commons/Button';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { LazyImage } from '@/components/commons/LazyImage';
+import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
@@ -110,8 +112,72 @@ export const TeamDashboardPage = () => {
         </Announcement>
         <CalendarSection>
           <CustomCalendar />
+          <Spacer h={24} />
+          <Box width="100%" padding="20px 40px">
+            <Flex justify="space-between" align="center">
+              <Flex width={30} justify="space-between" align="center">
+                <SText color="#333" fontSize="24px" fontWeight={700}>
+                  2024.11.26
+                </SText>
+                <Label background="#FF5780" padding="2px 10px">
+                  <SText fontSize="12px" fontWeight={600} color="#fff">
+                    코딩테스트
+                  </SText>
+                </Label>
+              </Flex>
+              <Button>주제 확인하기</Button>
+            </Flex>
+          </Box>
+          <List>
+            <Box width="100%" height="104px" padding="20px">
+              <Flex direction="column">
+                <SText color="#333" fontSize="16px" fontWeight={600}>
+                  11/26 코테 풀이
+                </SText>
+                <Spacer h={4} />
+                <SText color="#777" fontSize="12px" fontWeight={400}>
+                  2024.11.01 14:39
+                </SText>
+                <Spacer h={12} />
+                <SText color="#333" fontSize="14px" fontWeight={600}>
+                  파댕이
+                </SText>
+              </Flex>
+            </Box>
+            <Box width="100%" height="104px" padding="20px">
+              <Flex direction="column">
+                <SText color="#333" fontSize="16px" fontWeight={600}>
+                  11/26 코테 풀이
+                </SText>
+                <Spacer h={4} />
+                <SText color="#777" fontSize="12px" fontWeight={400}>
+                  2024.11.01 14:39
+                </SText>
+                <Spacer h={12} />
+                <SText color="#333" fontSize="14px" fontWeight={600}>
+                  파댕이
+                </SText>
+              </Flex>
+            </Box>
+            <Box width="100%" height="104px" padding="20px">
+              <Flex direction="column">
+                <SText color="#333" fontSize="16px" fontWeight={600}>
+                  11/26 코테 풀이
+                </SText>
+                <Spacer h={4} />
+                <SText color="#777" fontSize="12px" fontWeight={400}>
+                  2024.11.01 14:39
+                </SText>
+                <Spacer h={12} />
+                <SText color="#333" fontSize="14px" fontWeight={600}>
+                  파댕이
+                </SText>
+              </Flex>
+            </Box>
+          </List>
+          <Spacer h={16} />
+          <Pagination totalPages={5} onPageChange={() => {}} /> {/* TODO: */}
         </CalendarSection>
-        <Posts>Posts Section</Posts>
       </Grid>
     </>
   );
@@ -121,8 +187,7 @@ const Grid = styled.div`
   display: grid;
   grid-template-areas:
     'sidebar announcement'
-    'sidebar calendar'
-    'sidebar posts';
+    'sidebar calendar';
   grid-template-columns: 260px 1fr;
   grid-template-rows: auto 1fr auto;
   gap: 24px 40px;
@@ -170,8 +235,13 @@ const NewPostButton = styled.button`
 
 const CalendarSection = styled.section`
   grid-area: calendar;
+  background-color: #f8f8ff;
+  border-radius: 20px;
+  padding: 20px 36px 40px 36px;
 `;
 
-const Posts = styled.section`
-  grid-area: posts;
+const List = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 `;
