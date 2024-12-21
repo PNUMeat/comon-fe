@@ -13,14 +13,14 @@ export const createPost = async ({
   articleTitle,
   articleBody,
   image,
-  articleCategory = '스터디 전',
+  // articleCategory = '스터디 전',
 }: PostingMutationArg) => {
   const formData = new FormData();
 
   formData.append('teamId', teamId);
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  formData.append('articleCategory', articleCategory);
+  // formData.append('articleCategory', articleCategory);
   if (image) {
     formData.append('image', image);
   }
