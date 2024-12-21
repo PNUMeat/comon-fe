@@ -8,6 +8,7 @@ export interface ILazyImage {
   src: string;
   className?: string;
   imageRef?: MutableRefObject<HTMLImageElement | null>;
+  nodeKey?: string;
 }
 
 const imageCache = new Set();
