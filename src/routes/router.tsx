@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
+import { Posting } from '@/pages/Posting/Posting';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
     index: true,
     path: PATH.HOME,
     element: <Home />,
+  },
+  {
+    path: PATH.POSTING,
+    element: <Posting />,
   },
   {
     /**

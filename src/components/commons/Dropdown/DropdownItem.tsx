@@ -2,10 +2,11 @@ import { DropdownContext } from '@/components/commons/Dropdown/DropdownContext';
 
 import { ReactNode, useContext, useEffect, useRef } from 'react';
 
-export const DropDownItem: React.FC<{
+export const DropdownItem: React.FC<{
   children: ReactNode;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}> = ({ children, onClick }) => {
+  className?: string;
+}> = ({ children, onClick, className = 'editor-dropdown-item' }) => {
   const ref = useRef<HTMLButtonElement | null>(null);
   const dropDownContext = useContext(DropdownContext);
 
@@ -21,5 +22,9 @@ export const DropDownItem: React.FC<{
     }
   }, [ref, registerItem]);
 
-  return <button onClick={onClick}>{children}</button>;
+  return (
+    <button className={className} onClick={onClick}>
+      {children}
+    </button>
+  );
 };

@@ -1,14 +1,25 @@
-import { DropDownItems } from '@/components/commons/Dropdown/DropdownItems';
+import { DropdownItems } from '@/components/commons/Dropdown/DropdownItems';
+import { Flex } from '@/components/commons/Flex';
 
 import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import dropdownIcon from '@/assets/Posting/dropdownIcon.svg';
+import styled from '@emotion/styled';
+
 const dropDownPadding = 4;
 
+const DropdownIcon = styled.img<{ isClicked?: boolean }>`
+  width: 16px;
+  margin-left: 8px;
+  transform: ${(props) => (props.isClicked ? 'rotate(180deg)' : undefined)};
+`;
+
 export const Dropdown: React.FC<{
-  buttonLabel: string;
+  buttonLabel: ReactNode;
   children: ReactNode;
-}> = ({ buttonLabel, children }) => {
+  className?: string;
+}> = ({ buttonLabel, className = 'editor-dropdown', children }) => {
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [showDropDown, setShowDropDown] = useState(false);
@@ -20,7 +31,7 @@ export const Dropdown: React.FC<{
     if (showDropDown && button && dropDown) {
       const { top, left } = button.getBoundingClientRect();
       dropDown.style.top = `${top + button.offsetHeight + dropDownPadding}px`;
-      dropDown.style.left = `${Math.min(left, window.innerWidth - dropDown.offsetWidth - 20)}px`;
+      dropDown.style.left = `${Math.min(left, window.innerWidth - dropDown.offsetWidth - 30)}px`;
     }
   }, [dropDownRef, buttonRef, showDropDown]);
 
@@ -69,12 +80,24 @@ export const Dropdown: React.FC<{
 
   return (
     <Fragment>
-      <button type="button" onClick={toggleDropDown} ref={buttonRef}>
-        {buttonLabel}
+      <button
+        type="button"
+        onClick={toggleDropDown}
+        ref={buttonRef}
+        className={className}
+      >
+        <Flex>
+          {buttonLabel}
+          <DropdownIcon
+            src={dropdownIcon}
+            alt={'downward arrow icon'}
+            isClicked={showDropDown}
+          />
+        </Flex>
       </button>
       {showDropDown &&
         createPortal(
-          <DropDownItems dropDownRef={dropDownRef}>{children}</DropDownItems>,
+          <DropdownItems dropDownRef={dropDownRef}>{children}</DropdownItems>,
           document.body
         )}
     </Fragment>

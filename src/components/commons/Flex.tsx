@@ -13,6 +13,7 @@ export const Flex = styled.div<{
     | 'space-evenly';
   gap?: string;
   width?: number;
+  padding?: string;
 }>`
   display: flex;
   flex-direction: ${(props) => props.direction || 'row'};
@@ -20,5 +21,6 @@ export const Flex = styled.div<{
   justify-content: ${(props) => props.justify || 'flex-start'};
   gap: ${(props) => props.gap || '0'};
   width: ${(props) => props.width ?? 100}%;
+  padding: ${(props) => props.padding};
   box-sizing: border-box;
 `;

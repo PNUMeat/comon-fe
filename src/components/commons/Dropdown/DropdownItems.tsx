@@ -12,10 +12,9 @@ import {
 import styled from '@emotion/styled';
 
 const DropdownItemsWrapper = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
-  // gap: 8px;
+  gap: 8px;
   background: white;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -26,11 +25,13 @@ const DropdownItemsWrapper = styled.div`
 interface IDropDownItems {
   children: ReactNode;
   dropDownRef: React.Ref<HTMLDivElement>;
+  className?: string;
 }
 
-export const DropDownItems: React.FC<IDropDownItems> = ({
+export const DropdownItems: React.FC<IDropDownItems> = ({
   children,
   dropDownRef,
+  className = 'editor-dropdown-items',
 }) => {
   const [items, setItems] = useState<RefObject<HTMLButtonElement>[]>();
   const [cursor, setCursor] = useState<RefObject<HTMLButtonElement>>();
@@ -61,7 +62,9 @@ export const DropDownItems: React.FC<IDropDownItems> = ({
 
   return (
     <DropdownContext.Provider value={contextValue}>
-      <DropdownItemsWrapper ref={dropDownRef}>{children}</DropdownItemsWrapper>
+      <DropdownItemsWrapper className={className} ref={dropDownRef}>
+        {children}
+      </DropdownItemsWrapper>
     </DropdownContext.Provider>
   );
 };
