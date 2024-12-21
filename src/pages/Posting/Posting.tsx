@@ -19,7 +19,7 @@ export const Posting = () => {
 
   const onClick = () =>
     createPost({
-      teamId: '3',
+      teamId: 3,
       image: (postImages && postImages[0]) ?? null,
       articleBody: content.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,

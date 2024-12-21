@@ -1,11 +1,11 @@
 import apiInstance from '@/api/apiInstance';
 
 type PostingMutationArg = {
-  teamId: string;
+  teamId: number;
   articleTitle: string;
   articleBody: string;
   image: File | null;
-  articleCategory?: string;
+  // articleCategory?: string;
 };
 
 export const createPost = async ({
@@ -17,10 +17,9 @@ export const createPost = async ({
 }: PostingMutationArg) => {
   const formData = new FormData();
 
-  formData.append('teamId', teamId);
+  formData.append('teamId', teamId.toString());
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  // formData.append('articleCategory', articleCategory);
   if (image) {
     formData.append('image', image);
   }

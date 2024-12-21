@@ -2,7 +2,7 @@ import { DragEventHandler, MutableRefObject, useState } from 'react';
 
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useSetAtom } from 'jotai/index';
+import { useSetAtom } from 'jotai';
 
 const BoomerangColors = {
   calmWhite: '#FFFFFF',

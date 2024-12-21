@@ -7,7 +7,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import { TITLES } from '@/routes/pathTitles';
 import { currentPathAtom } from '@/store/form';
-import { useSetAtom } from 'jotai/index';
+import { useSetAtom } from 'jotai';
 
 export const SingleSectionLayout = () => {
   const location = useLocation();
