@@ -4,11 +4,6 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
 
-const BoomerangColors = {
-  calmWhite: '#FFFFFF',
-  deepBlue: '#0B123F',
-};
-
 const gray300 = '#CBD5E0';
 const gray500 = '#A0AEC0';
 
@@ -19,10 +14,11 @@ const ImageInputContainer = styled.div`
   gap: 16px;
   padding: 16px;
   position: fixed;
-  background-color: ${BoomerangColors.calmWhite};
-  border: 2px solid ${BoomerangColors.deepBlue};
+  background-color: #fff;
+  border: 2px solid #c2c5fb;
   border-radius: 8px;
   z-index: 999999;
+  transform: translate(-360px, 9px);
 `;
 
 const LabelBox = styled.label`
@@ -31,7 +27,7 @@ const LabelBox = styled.label`
   padding: 16px;
   text-align: center;
   cursor: pointer;
-  width: 100%;
+  white-space: nowrap;
 `;
 
 const HiddenFileInput = styled.input`

@@ -5,7 +5,6 @@ type PostingMutationArg = {
   articleTitle: string;
   articleBody: string;
   image: File | null;
-  // articleCategory?: string;
 };
 
 export const createPost = async ({
@@ -30,5 +29,5 @@ export const createPost = async ({
     },
   });
 
-  return res.data;
+  return res.data.data;
 };

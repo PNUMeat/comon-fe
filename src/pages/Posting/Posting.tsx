@@ -23,7 +23,7 @@ export const Posting = () => {
       image: (postImages && postImages[0]) ?? null,
       articleBody: content.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,
-    }).then((data) => alert(data));
+    }).then((data) => alert(data.message));
 
   return (
     <CommonLayout>
