@@ -7,7 +7,7 @@ export const PATH = {
   TEAM_REGISTRATION: '/team-registration',
   TEAM_MODIFICATION: '/team-modification',
   TEAM_DASHBOARD: '/team-dashboard',
-  TEAM_ADMIN: '/team-admin',
-  POSTING: '/posting',
+  TEAM_ADMIN: '/team-admin/:id',
   SUBJECT: 'team-subject/:id',
+  POSTING: '/posting/:id',
 };

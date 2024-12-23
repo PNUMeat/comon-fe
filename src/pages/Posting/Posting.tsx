@@ -7,11 +7,13 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { createPost } from '@/api/postings';
 import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import { postImagesAtom, postTitleAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -21,9 +23,15 @@ export const Posting = () => {
   const [postImages] = useAtom(postImagesAtom);
   const [postTitle] = useAtom(postTitleAtom);
 
+  const { id } = useParams();
+
+  if (!id) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
+
   const onClick = () =>
     createPost({
-      teamId: 3,
+      teamId: parseInt(id),
       image: (postImages && postImages[0]) ?? null,
       articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,
