@@ -119,7 +119,7 @@ const FlipCardContent = ({
         </Label>
         <Spacer h={20} />
         {isBack ? (
-          <>
+          <div style={{ zIndex: 999 }}>
             <PasswordInput
               type="password"
               placeholder="PASSWORD"
@@ -134,7 +134,7 @@ const FlipCardContent = ({
             >
               팀 참가하기
             </Button>
-          </>
+          </div>
         ) : (
           <>
             <ProfileList profiles={profiles || []} />
@@ -175,7 +175,6 @@ const PasswordInput = styled.input`
   text-align: center;
   color: #ccc;
   background-color: transparent;
-  z-index: 9999;
 
   &::placeholder {
     color: #ccc;
