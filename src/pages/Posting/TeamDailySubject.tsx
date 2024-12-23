@@ -7,24 +7,36 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
+import { createSubject } from '@/api/subject';
 import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
-import { postImagesAtom, postTitleAtom } from '@/store/posting';
+import { PATH } from '@/routes/path';
+import { subjectImagesAtom, subjectTitleAtom } from '@/store/subject';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
   const [tag, setTag] = useState<string>('');
-  const [postImages] = useAtom(postImagesAtom);
-  const [postTitle] = useAtom(postTitleAtom);
+  const [subjectImages] = useAtom(subjectImagesAtom);
+  const [subjectTitle] = useAtom(subjectTitleAtom);
   const { id } = useParams();
 
+  if (!id) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
+
   const onClick = () => {
-    console.log(content, postImages, postTitle, id, tag);
+    createSubject({
+      teamId: parseInt(id),
+      articleTitle: subjectTitle,
+      articleBody: content,
+      image: subjectImages ? subjectImages[0] : null,
+      articleCategory: tag,
+    }).then((r) => console.log(r));
   };
 
   return (
