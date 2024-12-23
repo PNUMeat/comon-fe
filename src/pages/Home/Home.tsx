@@ -145,14 +145,12 @@ export const Home = () => {
             </HomeComment>
           </Suspense>
           <Spacer h={34} />
-          <Flex gap={'50px'}>
-            <Wrap>
-              <StartButton onClick={onClickLogin}>시작하기</StartButton>
-              <StartButtonDescription>
-                계정 생성 or 로그인하러 가기
-              </StartButtonDescription>
-            </Wrap>
-          </Flex>
+          <Wrap>
+            <StartButton onClick={onClickLogin}>시작하기</StartButton>
+            <StartButtonDescription>
+              계정 생성 or 로그인하러 가기
+            </StartButtonDescription>
+          </Wrap>
           <Spacer h={93} />
           <Flex gap={'27px'}>
             {aims.map((aim) => (

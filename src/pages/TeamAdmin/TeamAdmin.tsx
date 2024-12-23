@@ -133,6 +133,23 @@ export const TeamAdmin = () => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
 
+  const positionModal = () => {
+    if (
+      announcementRef &&
+      'current' in announcementRef &&
+      announcementRef.current
+    ) {
+      const announcement = announcementRef.current;
+      const { top, left, width } = announcement.getBoundingClientRect();
+      const modal = modalRef.current;
+      if (modal) {
+        modal.style.top = `${top}px`;
+        modal.style.left = `${left}px`;
+        modal.style.width = `${width}px`;
+      }
+    }
+  };
+
   useEffect(() => {
     if (
       announcementRef &&
@@ -164,6 +181,14 @@ export const TeamAdmin = () => {
       }
     }
   }, [show]);
+
+  useEffect(() => {
+    document.addEventListener('scroll', positionModal);
+
+    return () => {
+      document.removeEventListener('scroll', positionModal);
+    };
+  }, []);
 
   return (
     <Fragment>
