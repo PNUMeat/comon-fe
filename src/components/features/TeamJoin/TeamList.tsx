@@ -175,6 +175,7 @@ const PasswordInput = styled.input`
   text-align: center;
   color: #ccc;
   background-color: transparent;
+  z-index: 9999;
 
   &::placeholder {
     color: #ccc;
