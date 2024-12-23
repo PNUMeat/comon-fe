@@ -10,11 +10,13 @@ import { HeightInNumber } from '@/components/types';
 
 import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 const Grid = styled.div`
@@ -67,22 +69,28 @@ const SubjectControlButtonWrap = styled.button`
   border: none;
 `;
 
-const SubjectControlButton = () => (
-  <SubjectControlButtonWrap>
-    <SubjectImage src={PencilIcon} alt={'pencil icon'} />
-    <SText fontSize="18px" color="#fff" fontWeight={700}>
-      주제 작성 및 수정
-    </SText>
-  </SubjectControlButtonWrap>
-);
+const SubjectControlButton: React.FC<{
+  id: string;
+}> = ({ id }) => {
+  const navigate = useNavigate();
+  return (
+    <SubjectControlButtonWrap onClick={() => navigate(`/team-subject/${id}`)}>
+      <SubjectImage src={PencilIcon} alt={'pencil icon'} />
+      <SText fontSize="18px" color="#fff" fontWeight={700}>
+        주제 작성 및 수정
+      </SText>
+    </SubjectControlButtonWrap>
+  );
+};
 
 const AnnouncementAndSubject = forwardRef<
   HTMLDivElement,
   {
     onClick: () => void;
     announcementToday: string;
+    id: string;
   }
->(({ announcementToday, onClick }, ref) => {
+>(({ announcementToday, onClick, id }, ref) => {
   return (
     <Announcement>
       <Box
@@ -121,7 +129,7 @@ const AnnouncementAndSubject = forwardRef<
         />
       </Box>
 
-      <SubjectControlButton />
+      <SubjectControlButton id={id} />
     </Announcement>
   );
 });
@@ -132,6 +140,7 @@ export const TeamAdmin = () => {
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
+  const { id } = useParams();
 
   const positionModal = () => {
     if (
@@ -190,6 +199,10 @@ export const TeamAdmin = () => {
     };
   }, []);
 
+  if (!id) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
+
   return (
     <Fragment>
       <Spacer h={28} />
@@ -202,6 +215,7 @@ export const TeamAdmin = () => {
           announcementToday={announcementToday}
           onClick={() => setShow(true)}
           ref={announcementRef}
+          id={id}
         />
       </Grid>
       {createPortal(<PromptModal ref={modalRef} />, document.body)}

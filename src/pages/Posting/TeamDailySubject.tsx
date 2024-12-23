@@ -7,7 +7,7 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { createSubject } from '@/api/subject';
 import commonToday from '@/assets/Posting/comonToday.png';
@@ -24,6 +24,7 @@ export const TeamDailySubject = () => {
   const [subjectImages] = useAtom(subjectImagesAtom);
   const [subjectTitle] = useAtom(subjectTitleAtom);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -36,7 +37,12 @@ export const TeamDailySubject = () => {
       articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
-    }).then((r) => console.log(r));
+    })
+      .then((r) => {
+        alert(r.message);
+        navigate(`/team-admin/${id}`);
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
