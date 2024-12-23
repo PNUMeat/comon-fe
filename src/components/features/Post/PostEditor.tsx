@@ -88,12 +88,28 @@ const PostContainer = forwardRef<
   );
 });
 
+const TitleInput = styled.input`
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  // color: #ccc;
+  border: none;
+  margin: 40px 10px;
+  outline: none;
+
+  ::placeholder {
+    color: #ccc;
+  }
+`;
+
 const PostEditor: React.FC<{
   forwardContent?: (content: string) => void;
   content?: string;
   // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
   //  임시방편이다.
-}> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
+  // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
+}> = ({ forwardContent, content }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -108,18 +124,9 @@ const PostEditor: React.FC<{
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <PostWrap>
-        <input
+        <TitleInput
           type={'text'}
           placeholder={'제목을 입력하세요'}
-          style={{
-            fontSize: '32px',
-            fontStyle: 'normal',
-            fontWeight: '700',
-            lineHeight: 'normal',
-            color: '#CCC',
-            border: 'none',
-            margin: '40px 10px',
-          }}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPostTitle(e.target.value)
           }
