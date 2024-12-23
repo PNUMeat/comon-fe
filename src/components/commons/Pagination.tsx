@@ -65,6 +65,7 @@ const PaginationContainer = styled.div`
   background: #fff;
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   max-width: 270px;
+  z-index: 999;
 `;
 
 const LeftArrow = styled.img`

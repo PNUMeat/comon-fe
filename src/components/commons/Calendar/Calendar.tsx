@@ -29,10 +29,10 @@ const CalendarWrapper = styled.div`
 const StyledDate = styled.div`
   position: absolute;
   top: 16px;
-  left: 750px;
+  right: 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #777;
+  color: ${colors.buttonPurple};
   cursor: pointer;
 `;
 
@@ -40,6 +40,7 @@ const StyledCalendar = styled(Calendar)`
   width: 100%;
   max-width: 800px;
   border: none;
+  background: transparent;
 
   /* 캘린더 네비게이션 (연도, 월, 버튼) */
   .react-calendar__navigation {
@@ -47,11 +48,11 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__navigation button {
-    color: #333;
+    color: ${colors.buttonPurple};
     font-weight: 600;
     border: none;
     font-family: 'Pretendard';
-    font-size: 16px;
+    font-size: 14px;
 
     &:hover {
       background-color: transparent;
@@ -69,9 +70,6 @@ const StyledCalendar = styled(Calendar)`
 
   /* 전체 폰트 컬러 */
   .react-calendar__month-view {
-    border-radius: 20px;
-    border: 1px solid ${colors.borderPurple};
-
     abbr {
       font-family: 'Pretendard';
     }
@@ -81,24 +79,29 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__month-view__weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background-color: #f8f8ff;
     font-weight: 600;
-    font-size: 12px;
-    color: #777;
+    font-size: 10px;
+    color: ${colors.buttonPurple};
     text-align: center;
-    border-radius: 20px 20px 0 0;
-    border: 1px solid ${colors.borderPurple};
 
     abbr {
       text-decoration: none;
     }
   }
 
+  .react-calendar__month-view__days {
+    background-color: #fff;
+  }
+
+  .react-calendar__month-view__days__day--neighboringMonth {
+    background-color: ${colors.headerPurple};
+  }
+
   /* 날짜 셀 */
   .react-calendar__tile {
     display: flex;
     justify-content: end;
-    padding: 8px 18px 0 0;
+    // padding: 8px 0px 0 0px; /* TODO: */
     height: 100px;
     border: 1px solid ${colors.borderPurple};
     font-weight: 600;
@@ -107,32 +110,7 @@ const StyledCalendar = styled(Calendar)`
     position: relative;
 
     &:hover {
-      background-color: #f8f8ff;
-    }
-
-    &:nth-last-child(-n + 7) {
-      border-bottom: none; /* 마지막 줄 셀의 하단 테두리 제거 */
-    }
-
-    &:nth-child(7n) {
-      border-right: none; /* 오른쪽 가장자리 셀의 테두리 제거 */
-    }
-
-    &:nth-child(7n - 6) {
-      border-left: none; /* 왼쪽 가장자리 셀의 왼쪽 테두리 제거 */
-    }
-
-    /* 이미지 추가 */
-    &::before {
-      content: '';
-      display: block;
-      position: absolute;
-      top: 32px;
-      left: 36px;
-      width: 40px;
-      height: 40px;
-      background-size: cover;
-      background-position: center;
+      background-color: #f0f1ff;
     }
   }
 
