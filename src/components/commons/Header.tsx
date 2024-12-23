@@ -4,6 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { colors } from '@/constants/colors';
@@ -76,9 +77,12 @@ const ComonLogoWrap = styled.div`
 `;
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const isLoggedIn = checkIfLoggedIn();
+  const [isLoggedIn] = useState<boolean>(checkIfLoggedIn());
+  // const isLoggedIn = checkIfLoggedIn();
   const location = useLocation();
   const navigate = useNavigate();
+
+  console.error('???', isLoggedIn);
 
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
   const onClickHome = () => navigate(PATH.HOME);
@@ -99,7 +103,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       </Flex>
       <UserMenu>
         {isLoggedIn ? (
-          <Link to={PATH.PROFILE}>프로필 수정</Link>
+          // <Link to={PATH.PROFILE}>프로필 수정</Link>
+          <Link to={PATH.TEAM_DASHBOARD}>팀 페이지</Link>
         ) : (
           <Link
             to={{
