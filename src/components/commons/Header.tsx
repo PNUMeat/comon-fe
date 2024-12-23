@@ -85,7 +85,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   //   if (!isLoggedIn) {
   //     setIsLoggedIn(checkIfLoggedIn());
   //
-  //     return () => setIsLoggedIn(checkIfLoggedIn());
   //   }
   // });
 
