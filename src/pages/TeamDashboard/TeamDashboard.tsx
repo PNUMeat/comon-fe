@@ -23,6 +23,7 @@ export const TeamDashboardPage = () => {
 
   const teamInfo = data?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = data?.teamManager || false;
+  const tags = data?.subjectArticleDateAndTagResponses || [];
 
   return (
     <>
@@ -33,7 +34,7 @@ export const TeamDashboardPage = () => {
           isTeamManager={isTeamManager}
         />
         <CalendarSection>
-          <CustomCalendar />
+          <CustomCalendar tags={tags} />
           <Spacer h={24} />
           <Posts />
         </CalendarSection>

@@ -2,7 +2,7 @@ import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';
 
-interface ICalendarTag {
+export interface ICalendarTag {
   subjectDate: string;
   articleCategory: string;
 }
@@ -19,7 +19,7 @@ export const getTeamInfoAndTags = async (
   month: number
 ): Promise<ITeamInfoAndTagsResponse> => {
   const res = await apiInstance.get<ServerResponse<ITeamInfoAndTagsResponse>>(
-    `/api/v1/teams/${teamId}/team-page`,
+    `/v1/teams/${teamId}/team-page`,
     { params: { year, month } }
   );
 

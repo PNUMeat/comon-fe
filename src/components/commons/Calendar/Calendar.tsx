@@ -1,10 +1,15 @@
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
+import { ICalendarTag } from '@/api/dashboard';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
-export const CustomCalendar = () => {
+interface ICustomCalendarProps {
+  tags: ICalendarTag[];
+}
+
+export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
   return (
     <CalendarWrapper>
       {/* 오늘 버튼 */}
