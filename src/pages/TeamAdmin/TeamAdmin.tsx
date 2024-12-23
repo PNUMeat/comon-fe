@@ -142,10 +142,6 @@ export const TeamAdmin = () => {
   const [show, setShow] = useState<boolean>(false);
   const { id } = useParams();
 
-  if (!id) {
-    return <Navigate to={PATH.TEAMS} />;
-  }
-
   const positionModal = () => {
     if (
       announcementRef &&
@@ -202,6 +198,10 @@ export const TeamAdmin = () => {
       document.removeEventListener('scroll', positionModal);
     };
   }, []);
+
+  if (!id) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
 
   return (
     <Fragment>
