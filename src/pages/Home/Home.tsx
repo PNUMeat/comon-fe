@@ -6,7 +6,7 @@ import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -123,66 +123,116 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  // const bottomHitEffectRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (bottomRef && bottomRef.current) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            console.log('hi');
+          }
+        },
+        { threshold: 1.0 }
+      );
+
+      observer.observe(bottomRef.current);
+      return () => observer.disconnect();
+    }
+  }, []);
 
   return (
-    <CommonLayout>
-      <Container padding={'0 149px'} maxW={1002}>
-        <Flex direction={'column'} align={'center'}>
-          <Suspense fallback={<div>배너</div>}>
-            <LazyImage
-              altText={'코몬 배너 이미지'}
-              // 아래가 피그마 크기인데 조금 이상함
-              // w={940}
-              // maxW={940}
-              // h={491}
-              w={1024}
-              maxW={1024}
-              h={591}
-              src={comon}
-            />
-            <HomeComment>
-              코몬! 오늘부터 코드몬스터와 함께 매일의 도전을 시작해보세요.
-              <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
-            </HomeComment>
-          </Suspense>
-          <Spacer h={34} />
-          <Wrap>
-            <StartButton onClick={onClickLogin}>시작하기</StartButton>
-            <StartButtonDescription>
-              계정 생성 or 로그인하러 가기
-            </StartButtonDescription>
-          </Wrap>
-          <Spacer h={93} />
-          <Flex gap={'27px'}>
-            {aims.map((aim) => (
-              <GoalBox key={aim.title} h={204}>
-                <Suspense
-                  fallback={
-                    <div
-                      style={{
-                        backgroundColor: 'whitesmoke',
-                        width: 40,
-                        height: 40,
-                      }}
-                    ></div>
-                  }
-                >
-                  <LazyImage
-                    altText={'img for aim'}
-                    w={40}
-                    maxW={50}
-                    h={40}
-                    src={aim.img}
-                  />
-                </Suspense>
-                <GoalTitle>{aim.title}</GoalTitle>
-                <GoalSubtitle>{aim.subtitle}</GoalSubtitle>
-              </GoalBox>
-            ))}
+    <ScrollSnapContainer>
+      <ScrollStart />
+      <CommonLayout>
+        <Container
+          padding={'0 149px'}
+          maxW={1002}
+          scrollSnapAlign={'end'}
+          margin={'0 auto 100px auto'}
+        >
+          <Flex direction={'column'} align={'center'}>
+            <Suspense fallback={<div>배너</div>}>
+              <LazyImage
+                altText={'코몬 배너 이미지'}
+                w={940}
+                maxW={940}
+                h={491}
+                src={comon}
+              />
+              <HomeComment>
+                코몬! 오늘부터 코드몬스터와 함께 매일의 도전을 시작해보세요.
+                <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
+              </HomeComment>
+            </Suspense>
+            <Spacer h={34} />
+            <Wrap>
+              <StartButton onClick={onClickLogin}>시작하기</StartButton>
+              <StartButtonDescription>
+                계정 생성 or 로그인하러 가기
+              </StartButtonDescription>
+            </Wrap>
+            <Spacer h={93} />
+            <Flex gap={'27px'}>
+              {aims.map((aim) => (
+                <GoalBox key={aim.title} h={204}>
+                  <Suspense
+                    fallback={
+                      <div
+                        style={{
+                          backgroundColor: 'whitesmoke',
+                          width: 40,
+                          height: 40,
+                        }}
+                      />
+                    }
+                  >
+                    <LazyImage
+                      altText={'img for aim'}
+                      w={40}
+                      maxW={50}
+                      h={40}
+                      src={aim.img}
+                    />
+                  </Suspense>
+                  <GoalTitle>{aim.title}</GoalTitle>
+                  <GoalSubtitle>{aim.subtitle}</GoalSubtitle>
+                </GoalBox>
+              ))}
+            </Flex>
           </Flex>
-        </Flex>
-        <Spacer h={200} />
-      </Container>
-    </CommonLayout>
+          <Spacer h={100} />
+        </Container>
+      </CommonLayout>
+      <Spacer h={4} ref={bottomRef} />
+      {/*{createPortal(*/}
+      {/*  <div*/}
+      {/*    style={{*/}
+      {/*      position: 'fixed',*/}
+      {/*      bottom: 0,*/}
+      {/*      left: 0,*/}
+      {/*      width: '100%',*/}
+      {/*      background:*/}
+      {/*        'linear-gradient(5deg, rgba(0, 0, 0, 0.10) 10.3%, rgba(255, 255, 255, 0.00) 108.81%)',*/}
+      {/*    }}*/}
+      {/*    ref={bottomHitEffectRef}*/}
+      {/*  >*/}
+      {/*    modal*/}
+      {/*  </div>,*/}
+      {/*  document.body*/}
+      {/*)}*/}
+    </ScrollSnapContainer>
   );
 };
+
+const ScrollSnapContainer = styled.div`
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+`;
+
+const ScrollStart = styled.div`
+  scroll-snap-align: start;
+`;
