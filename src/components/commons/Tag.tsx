@@ -5,17 +5,22 @@ import styled from '@emotion/styled';
 interface TagProps {
   bgColor: string;
   label: string;
+  padding?: string;
+  fontSize?: string;
   onClick?: () => void;
   isSelected?: boolean;
 }
 
-const TagContainer = styled.div<{ bgColor: string }>`
+const TagContainer = styled.div<{
+  bgColor: string;
+  padding?: string;
+}>`
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background-color: ${({ bgColor }) => bgColor};
   border-radius: 34px;
-  padding: 2px 10px;
+  padding: ${(props) => props.padding || '2px 6px'};
   cursor: pointer;
 `;
 
@@ -26,10 +31,10 @@ const Dot = styled.div<{ isSelected?: boolean }>`
   background-color: ${(props) => (props.isSelected ? '#777' : '#fff')};
 `;
 
-const TagText = styled.span`
+const TagText = styled.span<{ fontSize?: string }>`
   font-family: 'Pretendard Variable', sans-serif;
   font-weight: 600;
-  font-size: 10px;
+  font-size: ${(props) => props.fontSize || '8px'};
   line-height: 12px;
   color: #ffffff;
   text-align: center;

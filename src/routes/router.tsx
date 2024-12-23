@@ -86,7 +86,7 @@ export const router = createBrowserRouter([
     element: <SingleSectionLayout />,
     children: [
       {
-        path: PATH.TEAM_DASHBOARD,
+        path: `${PATH.TEAM_DASHBOARD}/:teamId`,
         element: (
           <Suspense fallback={<LazySkeleton />}>
             <TeamDashboardPage />

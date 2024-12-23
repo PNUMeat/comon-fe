@@ -96,7 +96,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     <ProfileList profiles={profiles} />
                   </Flex>
                 </Box> */}
-                <Link to={PATH.TEAM_DASHBOARD}>
+                <Link to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}>
                   <Box
                     width="360px"
                     height="80px"

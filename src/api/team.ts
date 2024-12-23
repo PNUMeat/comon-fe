@@ -28,6 +28,7 @@ export interface ITeamInfo extends ITeamCommon {
   memberCount: number;
   streakDays: number;
   successMemberCount: number;
+  teamAnnouncement: string;
   createdAt: string;
   members: ITeamMember[];
 }
