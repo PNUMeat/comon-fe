@@ -5,11 +5,28 @@ import { ICalendarTag } from '@/api/dashboard';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
+import { Tag } from '../Tag';
+
 interface ICustomCalendarProps {
   tags: ICalendarTag[];
 }
 
 export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
+  const getCategoryForDate = (date: Date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+    return (
+      tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
+      null
+    );
+  };
+
+  const categoryColors: Record<string, string> = {
+    '스터디 복습': '#6E74FA',
+    '스터디 예습': '#C2C4FB',
+    스터디: '#FFA379',
+    '코딩 테스트': '#FF5780',
+  };
+
   return (
     <CalendarWrapper>
       {/* 오늘 버튼 */}
@@ -17,11 +34,15 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
 
       <StyledCalendar
         calendarType="gregory"
-        formatDay={(_locale: string | undefined, date: Date) =>
-          date.getDate().toString()
-        }
+        formatDay={(_locale, date) => date.getDate().toString()}
         next2Label={null}
         prev2Label={null}
+        tileContent={({ date }) => {
+          const category = getCategoryForDate(date);
+          return category ? (
+            <Tag bgColor={categoryColors[category]} label={category} />
+          ) : null;
+        }}
       />
     </CalendarWrapper>
   );
@@ -105,11 +126,10 @@ const StyledCalendar = styled(Calendar)`
   /* 날짜 셀 */
   .react-calendar__tile {
     display: flex;
-    justify-content: end;
-    // padding: 8px 0px 0 0px; /* TODO: */
+    justify-content: space-between;
     height: 100px;
     border: 1px solid ${colors.borderPurple};
-    font-weight: 600;
+    font-weight: 400;
     color: ${colors.buttonPurple};
     transition: all 0.3s ease-in-out;
     position: relative;
