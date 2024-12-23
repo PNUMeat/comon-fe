@@ -238,8 +238,8 @@ const FloatingLinkEditor: React.FC<{
             }}
           />
           <div>
-            <button onClick={() => setIsLinkEditMode(false)}>취소</button>
             <button onClick={handleLinkSubmission}>확인</button>
+            <button onClick={() => setIsLinkEditMode(false)}>취소</button>
           </div>
         </Fragment>
       ) : (

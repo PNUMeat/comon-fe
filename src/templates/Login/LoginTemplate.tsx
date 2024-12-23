@@ -1,8 +1,9 @@
 import { checkIfLoggedIn, handleCookieOnRedirect } from '@/utils/cookie';
 
 import { GradientGlassPanel } from '@/components/commons/GradientGlassPanel';
+import { Spacer } from '@/components/commons/Spacer';
 
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { PATH } from '@/routes/path';
@@ -16,14 +17,22 @@ export const LoginTemplate = () => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       // const previousPath = location.state?.redirect ?? PATH.HOME;
-      const previousPath = location.state?.redirect ?? PATH.TEAM_DASHBOARD;
-      navigate(previousPath);
+      console.error('loginTemplate', location.state?.redirect);
+      const navigatePath = location.state?.redirect
+        ? location.state.redirect === PATH.HOME
+          ? PATH.TEAMS
+          : PATH.HOME
+        : PATH.HOME;
+      navigate(navigatePath);
     }
   }, []);
 
   return (
-    <GradientGlassPanel>
-      <LoginForm h={324} />
-    </GradientGlassPanel>
+    <Fragment>
+      <GradientGlassPanel>
+        <LoginForm h={324} />
+      </GradientGlassPanel>
+      <Spacer h={500} />
+    </Fragment>
   );
 };

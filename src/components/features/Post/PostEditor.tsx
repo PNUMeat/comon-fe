@@ -2,6 +2,7 @@ import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
 import { ImagePlugin } from '@/components/features/Post/plugins/ImagePlugin';
+import { InitContentPlugin } from '@/components/features/Post/plugins/InitContentPlugin';
 import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin';
 
 import { ChangeEvent, forwardRef, memo, useCallback, useState } from 'react';
@@ -47,7 +48,7 @@ const initialConfig = {
 const EditorContainer = styled.div`
   position: relative;
   padding: 20px 50px;
-  min-height: 600px;
+  // min-height: 600px;
 `;
 
 const PostWrap = styled.div`
@@ -89,7 +90,10 @@ const PostContainer = forwardRef<
 
 const PostEditor: React.FC<{
   forwardContent?: (content: string) => void;
-}> = ({ forwardContent }) => {
+  content?: string;
+  // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
+  //  임시방편이다.
+}> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -139,6 +143,7 @@ const PostEditor: React.FC<{
           <ImagePlugin />
           <LinkPlugin />
           <HistoryPlugin />
+          {content && <InitContentPlugin content={content} />}
           {forwardContent && (
             <GrabContentPlugin forwardContent={forwardContent} />
           )}

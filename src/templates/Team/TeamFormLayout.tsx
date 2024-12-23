@@ -58,6 +58,7 @@ export const TeamFormLayout: React.FC<
       <Spacer h={99} />
       {isOnTeamReg && <TeamRegistrationButton />}
       {isOnTeamMod && <TeamModificationButton />}
+      <Spacer h={300} />
     </TeamContainer>
   );
 };
