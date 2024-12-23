@@ -123,6 +123,7 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
+
   return (
     <CommonLayout>
       <Container padding={'0 149px'} maxW={1002}>

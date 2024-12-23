@@ -27,8 +27,14 @@ export const EnrollSubmitButton = () => {
       image: image,
     })
       .then(() => {
-        const previousPath = location.state?.redirect ?? PATH.HOME;
-        navigate(previousPath);
+        // const previousPath = location.state?.redirect ?? PATH.TEAMS;
+        // navigate(previousPath);
+        const navigatePath = location.state?.redirect
+          ? location.state.redirect === PATH.HOME
+            ? PATH.TEAMS
+            : PATH.HOME
+          : PATH.HOME;
+        navigate(navigatePath);
         alert('회원가입에 성공했습니다');
       })
       .catch((err) => {
