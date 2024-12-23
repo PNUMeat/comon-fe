@@ -222,7 +222,7 @@ const ModalWrap = styled.div<HeightInNumber>`
   align-items: center;
 `;
 
-const PromptModal = forwardRef<HTMLDivElement, {}>((_props, ref) => {
+const PromptModal = forwardRef<HTMLDivElement>((_props, ref) => {
   const [announcement, setAnnouncement] = useState<string>('');
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAnnouncement(e.target.value);
