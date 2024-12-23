@@ -119,7 +119,7 @@ const FlipCardContent = ({
         </Label>
         <Spacer h={20} />
         {isBack ? (
-          <div style={{ zIndex: 999 }}>
+          <>
             <PasswordInput
               type="password"
               placeholder="PASSWORD"
@@ -134,7 +134,7 @@ const FlipCardContent = ({
             >
               팀 참가하기
             </Button>
-          </div>
+          </>
         ) : (
           <>
             <ProfileList profiles={profiles || []} />
@@ -225,4 +225,5 @@ const FlipCardBack = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid ${colors.buttonPurple};
+  z-index: 999;
 `;
