@@ -33,7 +33,7 @@ export const TeamDailySubject = () => {
     createSubject({
       teamId: parseInt(id),
       articleTitle: subjectTitle,
-      articleBody: content,
+      articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
     }).then((r) => console.log(r));
