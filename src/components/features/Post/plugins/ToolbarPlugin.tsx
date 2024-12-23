@@ -42,9 +42,9 @@ const TAG_LIST: {
   label: string;
 }[] = [
   { color: '#6E74FA', label: '스터디 복습' },
-  { color: '#B1AFFF', label: '스터디 예습' },
-  { color: '#F9A76A', label: '스터디' },
-  { color: '#FF6E6E', label: '코딩 테스트' },
+  { color: '#C2C4FB', label: '스터디 예습' },
+  { color: '#FFA379', label: '스터디' },
+  { color: '#FF5780', label: '코딩 테스트' },
 ];
 
 export const ToolbarPlugin: React.FC<{
@@ -143,7 +143,7 @@ export const ToolbarPlugin: React.FC<{
           style={{
             display: 'flex',
             width: '405px',
-            gap: '22px',
+            gap: '13px',
             marginRight: '78px',
           }}
         >
