@@ -7,6 +7,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { Posting } from '@/pages/Posting/Posting';
+import { TeamDailySubject } from '@/pages/Posting/TeamDailySubject';
 import { TeamAdmin } from '@/pages/TeamAdmin/TeamAdmin';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
@@ -23,9 +24,14 @@ export const router = createBrowserRouter([
     path: PATH.HOME,
     element: <Home />,
   },
+  // TODO : 아래 Posting이랑 Subject 공통 레이어 묶어야함
   {
     path: PATH.POSTING,
     element: <Posting />,
+  },
+  {
+    path: PATH.SUBJECT,
+    element: <TeamDailySubject />,
   },
   {
     /**
@@ -81,7 +87,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: `${PATH.TEAM_DASHBOARD}/:teamId`,
-        element: <TeamDashboardPage />,
+        element: (
+          <Suspense fallback={<LazySkeleton />}>
+            <TeamDashboardPage />
+          </Suspense>
+        ),
       },
       {
         path: PATH.TEAM_ADMIN,

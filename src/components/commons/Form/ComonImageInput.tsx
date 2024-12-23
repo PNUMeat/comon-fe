@@ -120,14 +120,14 @@ export const ComonImageInput: React.FC<{
           if (compressedImage && !error) {
             console.log('after: ', readableBytes(compressedImage.size));
 
-            // TODO: for stress test and result
-            const imageUrl = URL.createObjectURL(compressedImage);
-            const img = new Image();
-            img.src = imageUrl;
-            const downloadLink = document.createElement('a');
-            downloadLink.href = imageUrl;
-            downloadLink.download = 'processed-image.png';
-            downloadLink.click();
+            // 이미지 다운
+            // const imageUrl = URL.createObjectURL(compressedImage);
+            // const img = new Image();
+            // img.src = imageUrl;
+            // const downloadLink = document.createElement('a');
+            // downloadLink.href = imageUrl;
+            // downloadLink.download = 'processed-image.png';
+            // downloadLink.click();
 
             setImage(compressedImage);
             return;

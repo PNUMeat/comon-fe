@@ -7,8 +7,8 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { createPost } from '@/api/postings';
 import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
@@ -16,18 +16,16 @@ import { postImagesAtom, postTitleAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
-export const Posting = () => {
+export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
+  const [tag, setTag] = useState<string>('');
   const [postImages] = useAtom(postImagesAtom);
   const [postTitle] = useAtom(postTitleAtom);
+  const { id } = useParams();
 
-  const onClick = () =>
-    createPost({
-      teamId: 3,
-      image: (postImages && postImages[0]) ?? null,
-      articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
-      articleTitle: postTitle,
-    }).then((data) => alert(data.message));
+  const onClick = () => {
+    console.log(content, postImages, postTitle, id, tag);
+  };
 
   return (
     <CommonLayout>
@@ -42,9 +40,9 @@ export const Posting = () => {
           />
         </Suspense>
         <Spacer h={22} />
-        <PageSectionHeader h={40}>✏️오늘의 글 등록하기</PageSectionHeader>
+        <PageSectionHeader h={40}>✏️주제 작성하기</PageSectionHeader>
         <Spacer h={39} />
-        <PostEditor forwardContent={setContent} />
+        <PostEditor forwardContent={setContent} setTag={setTag} />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
           <ClickImage src={click} />
