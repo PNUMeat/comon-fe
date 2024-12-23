@@ -107,7 +107,12 @@ button {
 .link-editor button {
     margin-right: 10px;
     padding: 0 4px;
-    color: #888888;
+    /*color: #888888;*/
+}
+
+.link-editor>div {
+    display: flex;
+    white-space: nowrap;
 }
 
 .link-editor button:hover {

@@ -25,7 +25,7 @@ export const Posting = () => {
     createPost({
       teamId: 3,
       image: (postImages && postImages[0]) ?? null,
-      articleBody: content.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
+      articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,
     }).then((data) => alert(data.message));
 
