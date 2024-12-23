@@ -5,15 +5,27 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Link } from 'react-router-dom';
+
+import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import defaultProfile from '@/assets/TeamDashboard/default_profile.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
-export const SidebarAndAnnouncement = () => {
+interface ISidebarAndAnnouncementProps {
+  teamInfo: ITeamInfo;
+  isTeamManager: boolean;
+}
+
+export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
+  teamInfo,
+  isTeamManager,
+}) => {
   return (
     <>
       <Sidebar>
@@ -34,16 +46,16 @@ export const SidebarAndAnnouncement = () => {
             </SText>
             <Spacer h={2} />
             <SText fontSize="24px" color="#333" fontWeight={700}>
-              Codemonster
+              {teamInfo.teamName}
             </SText>
             <Spacer h={4} />
             <SText fontSize="16px" color="#777" fontWeight={400}>
-              since 2024.11.12
+              since {teamInfo.createdAt}
             </SText>
             <Spacer h={16} />
             <Label background="#6E74FA" color="#fff" padding="2px 10px">
               <SText fontSize="10px" fontWeight={600}>
-                코딩테스트
+                {teamInfo.topic}
               </SText>
             </Label>
             <Spacer h={16} />
@@ -53,27 +65,30 @@ export const SidebarAndAnnouncement = () => {
               fontWeight={400}
               lineHeight="20px"
             >
-              "팀 코드몬스터는 앱티브 동아리파생 코드 테스트 및 코드
-              스터디팀입니다, 만참부탁드립니다"
+              {teamInfo.teamExplain}
             </SText>
             <Spacer h={32} />
             <SText color={colors.buttonPurple} fontSize="16px" fontWeight={400}>
-              6 members
+              {teamInfo.memberCount} members
             </SText>
             <Spacer h={32} />
-            <Flex justify="center" align="center">
-              <SettingImage src={SettingsGreenIcon} />
-              <SText color="#ccc" fontWeight={600} fontSize="14px">
-                게시글 관리
-              </SText>
-            </Flex>
-            <Spacer h={4} />
-            <Flex justify="center" align="center">
-              <SettingImage src={SettingsRedIcon} />
-              <SText color="#ccc" fontWeight={600} fontSize="14px">
-                팀 설정
-              </SText>
-            </Flex>
+            {isTeamManager && (
+              <>
+                <Flex justify="center" align="center">
+                  <SettingImage src={SettingsGreenIcon} />
+                  <SText color="#ccc" fontWeight={600} fontSize="14px">
+                    게시글 관리
+                  </SText>
+                </Flex>
+                <Spacer h={4} />
+                <Flex justify="center" align="center">
+                  <SettingImage src={SettingsRedIcon} />
+                  <SText color="#ccc" fontWeight={600} fontSize="14px">
+                    팀 설정
+                  </SText>
+                </Flex>
+              </>
+            )}
           </Flex>
         </Box>
       </Sidebar>
@@ -86,16 +101,18 @@ export const SidebarAndAnnouncement = () => {
               Team announcement
             </SText>
             <SText color="#333" fontSize="14px" fontWeight={500}>
-              제목 양식: 00/00 코테 풀이로 작성 할 것!
+              {teamInfo.teamAnnouncement}
             </SText>
           </Flex>
         </Box>
-        <NewPostButton>
-          <AnnouncementImage src={PencilIcon} />
-          <SText fontSize="18px" color="#fff" fontWeight={700}>
-            오늘의 글쓰기
-          </SText>
-        </NewPostButton>
+        <Link to={PATH.POSTING} style={{ textDecoration: 'none' }}>
+          <NewPostButton>
+            <AnnouncementImage src={PencilIcon} />
+            <SText fontSize="18px" color="#fff" fontWeight={700}>
+              오늘의 글쓰기
+            </SText>
+          </NewPostButton>
+        </Link>
       </Announcement>
     </>
   );

@@ -3,14 +3,35 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 
+import { useParams } from 'react-router-dom';
+
+import { getTeamInfoAndTags } from '@/api/dashboard';
+import { ITeamInfo } from '@/api/team';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
 export const TeamDashboardPage = () => {
+  const { teamId } = useParams<{ teamId: string }>();
+  const year = 2024; // TODO:
+  const month = 12; // TODO:
+
+  const { data } = useQuery({
+    queryKey: ['team-info', teamId, year, month],
+    queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
+    enabled: !!teamId,
+  });
+
+  const teamInfo = data?.myTeamResponse || ({} as ITeamInfo);
+  const isTeamManager = data?.teamManager || false;
+
   return (
     <>
       <Spacer h={28} />
       <Grid>
-        <SidebarAndAnnouncement />
+        <SidebarAndAnnouncement
+          teamInfo={teamInfo}
+          isTeamManager={isTeamManager}
+        />
         <CalendarSection>
           <CustomCalendar />
           <Spacer h={24} />
