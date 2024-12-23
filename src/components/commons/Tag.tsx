@@ -8,12 +8,14 @@ interface TagProps {
   padding?: string;
   fontSize?: string;
   onClick?: () => void;
+  height?: string;
   isSelected?: boolean;
 }
 
 const TagContainer = styled.div<{
   bgColor: string;
   padding?: string;
+  height?: string;
 }>`
   display: inline-flex;
   align-items: center;
@@ -22,6 +24,7 @@ const TagContainer = styled.div<{
   border-radius: 34px;
   padding: ${(props) => props.padding || '2px 6px'};
   cursor: pointer;
+  ${(props) => (props.height ? `height: ${props.height}` : null)}
 `;
 
 const Dot = styled.div<{ isSelected?: boolean }>`
@@ -46,11 +49,19 @@ export const Tag: React.FC<TagProps> = ({
   label,
   onClick,
   isSelected,
+  fontSize,
+  padding,
+  height,
 }) => {
   return (
-    <TagContainer bgColor={bgColor} onClick={onClick}>
+    <TagContainer
+      bgColor={bgColor}
+      onClick={onClick}
+      padding={padding}
+      height={height}
+    >
       <Dot isSelected={isSelected} />
-      <TagText>{label}</TagText>
+      <TagText fontSize={fontSize}>{label}</TagText>
     </TagContainer>
   );
 };
