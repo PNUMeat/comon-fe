@@ -96,7 +96,10 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     <ProfileList profiles={profiles} />
                   </Flex>
                 </Box> */}
-                <Link to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}>
+                <Link
+                  to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}
+                  style={{ textDecoration: 'none' }}
+                >
                   <Box
                     width="360px"
                     height="80px"
@@ -134,6 +137,5 @@ const ClickImage = styled.img`
 
 const ActionText = styled.div`
   margin-left: 8px;
-  text-decoration: none;
   color: #333;
 `;
