@@ -16,8 +16,12 @@ export const LoginTemplate = () => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       // const previousPath = location.state?.redirect ?? PATH.HOME;
-      const previousPath = location.state?.redirect ?? PATH.TEAMS;
-      navigate(previousPath);
+      const navigatePath = location.state?.redirect
+        ? location.state.redirect === PATH.HOME
+          ? PATH.TEAMS
+          : PATH.HOME
+        : PATH.HOME;
+      navigate(navigatePath);
     }
   }, []);
 
