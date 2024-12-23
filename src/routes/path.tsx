@@ -9,4 +9,5 @@ export const PATH = {
   TEAM_DASHBOARD: '/team-dashboard',
   TEAM_ADMIN: '/team-admin',
   POSTING: '/posting',
+  SUBJECT: 'team-subject/:id',
 };

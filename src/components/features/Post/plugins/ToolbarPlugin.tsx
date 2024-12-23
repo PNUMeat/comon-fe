@@ -1,3 +1,5 @@
+import { SText } from '@/components/commons/SText';
+import { Tag } from '@/components/commons/Tag';
 import { convertToKoreanIfIsKoreanFont } from '@/components/features/Post/constants';
 import { FontDropdown } from '@/components/features/Post/segments/FontDropdown';
 import { InsertImageButton } from '@/components/features/Post/segments/InsertImageButton';
@@ -26,6 +28,7 @@ import {
 
 const ToolbarWrap = styled.div`
   height: 44px;
+  width: calc(100% - 40px);
   border-bottom: 3px solid #c2c5fb;
   padding: 0 20px;
   gap: 20px;
@@ -34,12 +37,22 @@ const ToolbarWrap = styled.div`
   justify-content: space-between;
 `;
 
+const TAG_LIST: {
+  color: string;
+  label: string;
+}[] = [
+  { color: '#6E74FA', label: '스터디 복습' },
+  { color: '#B1AFFF', label: '스터디 예습' },
+  { color: '#F9A76A', label: '스터디' },
+  { color: '#FF6E6E', label: '코딩 테스트' },
+];
+
 export const ToolbarPlugin: React.FC<{
   setIsLinkEditMode: Dispatch<boolean>;
-}> = ({ setIsLinkEditMode }) => {
+  setTag?: (tag: string) => void;
+}> = ({ setIsLinkEditMode, setTag }) => {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
-  // const [isEditable, setIsEditable] = useState(() => editor.isEditable());
 
   const [fontSize, setFontSize] = useState<string>('15px');
   const [fontColor, setFontColor] = useState<string>('#000');
@@ -48,13 +61,12 @@ export const ToolbarPlugin: React.FC<{
   const [isLink, setIsLink] = useState(false);
   // const [isBold, setIsBold] = useState(false);
 
+  const [tag, selectTag] = useState<string>('');
+
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       // setIsBold(selection.hasFormat('bold'));
-      // setIsItalic(selection.hasFormat('italic'));
-      // setIsUnderline(selection.hasFormat('underline'));
-      // setIsStrikethrough(selection.hasFormat('strikethrough'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -96,9 +108,6 @@ export const ToolbarPlugin: React.FC<{
     });
 
     return mergeRegister(
-      // activeEditor.registerEditableListener((editable) => {
-      //   setIsEditable(editable);
-      // }),
       activeEditor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           updateToolbarOnSelect();
@@ -129,6 +138,37 @@ export const ToolbarPlugin: React.FC<{
         currentFontSize={fontSize}
         currentFontColor={fontColor}
       />
+      {setTag ? (
+        <div
+          style={{
+            display: 'flex',
+            width: '405px',
+            gap: '22px',
+            marginRight: '78px',
+          }}
+        >
+          <SText
+            whiteSpace={'nowrap'}
+            color={'#CCC'}
+            fontSize={'16px'}
+            fontWeight={'600'}
+          >
+            태그 선택:
+          </SText>
+          {TAG_LIST.map((item) => (
+            <Tag
+              key={item.label}
+              bgColor={item.color}
+              label={item.label}
+              onClick={() => {
+                setTag(item.label);
+                selectTag(item.label);
+              }}
+              isSelected={item.label === tag}
+            />
+          ))}
+        </div>
+      ) : null}
       <div
         style={{
           display: 'flex',
