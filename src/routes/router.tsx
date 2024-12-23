@@ -79,7 +79,10 @@ export const router = createBrowserRouter([
   {
     element: <SingleSectionLayout />,
     children: [
-      { path: PATH.TEAM_DASHBOARD, element: <TeamDashboardPage /> },
+      {
+        path: `${PATH.TEAM_DASHBOARD}/:teamId`,
+        element: <TeamDashboardPage />,
+      },
       {
         path: PATH.TEAM_ADMIN,
         element: <TeamAdmin />,

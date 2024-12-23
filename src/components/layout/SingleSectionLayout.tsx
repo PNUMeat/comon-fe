@@ -4,14 +4,14 @@ import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Outlet } from 'react-router-dom';
 
-import { TITLES } from '@/routes/pathTitles';
+import { getTitle } from '@/routes/pathTitles';
 
 export const SingleSectionLayout = () => {
   return (
     <CommonLayout>
       <Container maxW={1090}>
         <PageSectionHeader h={40}>
-          {TITLES[location.pathname]}
+          {getTitle(location.pathname)}
         </PageSectionHeader>
         <Outlet />
       </Container>
