@@ -1,6 +1,5 @@
 import { Dropdown } from '@/components/commons/Dropdown/Dropdown';
 import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem';
-import { Flex } from '@/components/commons/Flex';
 import { FONT_FAMILY_OPTIONS } from '@/components/features/Post/constants';
 
 import { useCallback } from 'react';
@@ -71,7 +70,7 @@ export const FontDropdown: React.FC<{
   );
 
   return (
-    <Flex align={'center'} gap={'47px'}>
+    <FontFlex>
       <Dropdown buttonLabel={<LabelBox>{currentFontFamily}</LabelBox>}>
         {FONT_FAMILY_OPTIONS.map(([option, text]) => (
           <DropdownItem
@@ -102,6 +101,13 @@ export const FontDropdown: React.FC<{
           </DropdownItem>
         ))}
       </Dropdown>
-    </Flex>
+    </FontFlex>
   );
 };
+
+const FontFlex = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 47px;
+  width: 360px;
+`;

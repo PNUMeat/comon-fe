@@ -51,7 +51,7 @@ const EditorContainer = styled.div`
   // min-height: 600px;
 `;
 
-const PostWrap = styled.div`
+const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
   width: 100%;
   min-height: 867px;
   flex-shrink: 0;
@@ -59,6 +59,32 @@ const PostWrap = styled.div`
   border: 1px solid #cdcfff;
   padding: 0 30px;
   box-sizing: border-box;
+  position: relative;
+  ${(props) =>
+    props.shouldHighlight
+      ? `&::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+
+    padding: 1px;
+
+    background: linear-gradient(45deg, #ff5080, #ffd482, #ff377f);
+
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    z-index: -1;
+    pointer-events: none;`
+      : ''}
+  }
 `;
 
 const EditorPlaceholder = styled.div`
@@ -106,10 +132,11 @@ const TitleInput = styled.input`
 const PostEditor: React.FC<{
   forwardContent?: (content: string) => void;
   content?: string;
+  setTag?: (tag: string) => void;
   // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
   //  임시방편이다.
   // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
-}> = ({ forwardContent, content }) => {
+}> = ({ forwardContent, content, setTag }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -123,15 +150,15 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostWrap>
+      <PostWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
-          placeholder={'제목을 입력하세요'}
+          placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPostTitle(e.target.value)
           }
         />
-        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} setTag={setTag} />
         <PostContainer ref={onRef}>
           <RichTextPlugin
             contentEditable={<ContentEditable className={'content-editable'} />}

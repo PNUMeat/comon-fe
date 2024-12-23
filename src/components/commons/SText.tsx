@@ -7,6 +7,7 @@ interface TextProps {
   fontWeight?: string | number;
   lineHeight?: string;
   letterSpacing?: string;
+  whiteSpace?: string;
   textAlign?: React.CSSProperties['textAlign'];
 }
 
@@ -17,4 +18,5 @@ export const SText = styled.div<TextProps>`
   line-height: ${(props) => props.lineHeight || 'inherit'};
   letter-spacing: ${(props) => props.letterSpacing || 'inherit'};
   text-align: ${(props) => props.textAlign || 'inherit'};
+  white-space: ${(props) => props.whiteSpace || 'inherit'};
 `;
