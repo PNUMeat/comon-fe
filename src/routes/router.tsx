@@ -90,7 +90,7 @@ export const router = createBrowserRouter([
     element: <MultiSectionLayout />,
     children: [
       {
-        path: PATH.JOIN,
+        path: PATH.TEAMS,
         element: <TeamJoinPage />,
       },
     ],
