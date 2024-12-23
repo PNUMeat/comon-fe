@@ -15,7 +15,8 @@ export const LoginTemplate = () => {
   useEffect(() => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
-      const previousPath = location.state?.redirect ?? PATH.HOME;
+      // const previousPath = location.state?.redirect ?? PATH.HOME;
+      const previousPath = location.state?.redirect ?? PATH.TEAM_DASHBOARD;
       navigate(previousPath);
     }
   }, []);

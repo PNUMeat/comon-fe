@@ -1,4 +1,5 @@
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
+import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
 import { Suspense } from 'react';
@@ -6,6 +7,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { Posting } from '@/pages/Posting/Posting';
+import { TeamAdmin } from '@/pages/TeamAdmin/TeamAdmin';
 import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
 import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
@@ -42,8 +44,11 @@ export const router = createBrowserRouter([
      *
      * 그런데, 애초에 form 관련 페이지가 다른 페이지에 비해 사용 빈도가 낮으니
      * form 관련 페이지의 상태는 그냥 uncontrolled 방식으로 만들었으면 청크만 분리하면 되기 때문에 코드스플리팅이 더 쉬웠을듯함.
+     *
+     * (12/22) 현재 SSLWithPathAtom은 렌더링 마다 useEffect를 돌며 pathAtom 값을 변경하기 때문에, pathAtom을 사용하지 않는다면,
+     * 해당 레이아웃 말고 아래에 SingleSectionLayout을 사용할 것을 권장. 나중에 청크 분리할거임
      */
-    element: <SingleSectionLayout />,
+    element: <SSLWithPathAtom />,
     children: [
       {
         path: PATH.LOGIN,
@@ -69,7 +74,16 @@ export const router = createBrowserRouter([
         path: PATH.TEAM_MODIFICATION,
         element: <TeamModificationTemplate />,
       },
+    ],
+  },
+  {
+    element: <SingleSectionLayout />,
+    children: [
       { path: PATH.TEAM_DASHBOARD, element: <TeamDashboardPage /> },
+      {
+        path: PATH.TEAM_ADMIN,
+        element: <TeamAdmin />,
+      },
     ],
   },
   {

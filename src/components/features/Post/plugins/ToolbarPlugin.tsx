@@ -104,22 +104,6 @@ export const ToolbarPlugin: React.FC<{
           updateToolbarOnSelect();
         });
       })
-      // activeEditor.registerCommand<boolean>(
-      //   CAN_UNDO_COMMAND,
-      //   (payload) => {
-      //     setCanUndo(payload);
-      //     return false;
-      //   },
-      //   COMMAND_PRIORITY_CRITICAL
-      // ),
-      // activeEditor.registerCommand<boolean>(
-      //   CAN_REDO_COMMAND,
-      //   (payload) => {
-      //     setCanRedo(payload);
-      //     return false;
-      //   },
-      //   COMMAND_PRIORITY_CRITICAL
-      // )
     );
   }, [editor, activeEditor, updateToolbarOnSelect]);
 

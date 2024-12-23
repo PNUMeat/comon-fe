@@ -14,12 +14,13 @@ import styled from '@emotion/styled';
 const DropdownItemsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   background: white;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
   position: fixed;
+  transform: translate(-8px, 0);
 `;
 
 interface IDropDownItems {

@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -9,24 +11,23 @@ interface BoxProps {
   children?: React.ReactNode;
 }
 
-export const Box: React.FC<BoxProps> = ({
-  width,
-  height,
-  padding,
-  borderWidth,
-  children,
-}) => {
-  return (
-    <StyledBox
-      width={width}
-      height={height}
-      padding={padding}
-      borderWidth={borderWidth}
-    >
-      {children}
-    </StyledBox>
-  );
-};
+export const Box = forwardRef<HTMLDivElement, BoxProps>(
+  ({ width, height, padding, borderWidth, children }, ref) => {
+    return (
+      <StyledBox
+        ref={ref}
+        width={width}
+        height={height}
+        padding={padding}
+        borderWidth={borderWidth}
+      >
+        {children}
+      </StyledBox>
+    );
+  }
+);
+
+Box.displayName = 'Box';
 
 const StyledBox = styled.div<BoxProps>`
   width: ${(props) => props.width || 'fit-content'};
