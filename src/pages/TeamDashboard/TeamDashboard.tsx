@@ -64,10 +64,12 @@ export const TeamDashboardPage = () => {
     <>
       <Spacer h={28} />
       <Grid>
-        <SidebarAndAnnouncement
-          teamInfo={teamInfo}
-          isTeamManager={isTeamManager}
-        />
+        {teamInfoData && (
+          <SidebarAndAnnouncement
+            teamInfo={teamInfo}
+            isTeamManager={isTeamManager}
+          />
+        )}
         <CalendarSection>
           <CustomCalendar
             tags={tags}
