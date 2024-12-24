@@ -65,7 +65,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             <Spacer h={36} />
           </>
         )}
-        <div>{data?.articleBody}</div>
+        <div dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }} />
       </Flex>
     </Box>
   );
