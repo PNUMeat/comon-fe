@@ -7,27 +7,31 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-
-import { getArticlesByDate } from '@/api/dashboard';
+import { IArticlesByDateResponse } from '@/api/dashboard';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 
 interface PostsProps {
+  data: IArticlesByDateResponse;
   tags: {
     subjectDate: string;
     articleCategory: string;
   }[];
   selectedDate: string;
-  onShowArticleDetail: () => void;
+  onShowTopicDetail: () => void;
+  onShowArticleDetail: (articleId: number) => void;
+  onPageChange: (page: number) => void;
 }
 
 export const Posts: React.FC<PostsProps> = ({
+  data,
   tags,
   selectedDate,
+  onShowTopicDetail,
   onShowArticleDetail,
+  onPageChange,
 }) => {
+  const totalPages = data?.page.totalPages || 1;
+
   const categoryColors: Record<string, string> = {
     '스터디 복습': '#6E74FA',
     '스터디 예습': '#C2C4FB',
@@ -42,16 +46,13 @@ export const Posts: React.FC<PostsProps> = ({
 
   const category = getCategoryForSelectedDate();
 
-  const { teamId } = useParams<{ teamId: string }>();
-  const [page, setPage] = useState(0);
+  const handleArticleClick = (articleId: number) => {
+    onShowArticleDetail(articleId);
+  };
 
-  const { data } = useQuery({
-    queryKey: ['articles-by-date', teamId, selectedDate, page],
-    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
-    enabled: !!teamId && !!selectedDate,
-  });
-
-  const totalPages = data?.page.totalPages || 1;
+  const handlePageChange = (newPage: number) => {
+    onPageChange(newPage);
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -70,12 +71,11 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <Button padding="8px 14px" onClick={onShowArticleDetail}>
+          <Button padding="8px 14px" onClick={onShowTopicDetail}>
             주제 확인하기
           </Button>
         </Flex>
       </Box>
-
       {data?.content.length === 0 ? (
         <NoArticleDiv>
           <Flex justify="center" align="center" style={{ minHeight: '216px' }}>
@@ -92,6 +92,7 @@ export const Posts: React.FC<PostsProps> = ({
               height="104px"
               padding="20px"
               key={article.articleId}
+              onClick={() => handleArticleClick(article.articleId)}
             >
               <Flex direction="column">
                 <SText color="#333" fontSize="16px" fontWeight={600}>
@@ -119,9 +120,8 @@ export const Posts: React.FC<PostsProps> = ({
           ))}
         </List>
       )}
-
       <Spacer h={260} />
-      <Pagination totalPages={totalPages} onPageChange={setPage} />
+      <Pagination totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 };
