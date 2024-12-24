@@ -3,19 +3,13 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
-import styled from '@emotion/styled';
-
-export const TopicDetail = () => {
+export const ArticleDetail = () => {
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
-        <Flex align="center" gap="8px">
-          <Icon src={AnnouncementIcon} />
-          <SText color="#333" fontSize="24px" fontWeight={700}>
-            11/26 코테 풀이
-          </SText>
-        </Flex>
+        <SText color="#333" fontSize="24px" fontWeight={700}>
+          게시글
+        </SText>
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
           2024.11.01 14:39
@@ -53,8 +47,3 @@ export const TopicDetail = () => {
     </Box>
   );
 };
-
-const Icon = styled.img`
-  width: 24px;
-  height: 24px;
-`;
