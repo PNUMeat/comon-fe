@@ -103,7 +103,7 @@ const GoalSubtitle = styled.div`
 const aims = [
   {
     title: 'TOGETHER',
-    subtitle: '팀원들과 함꼐해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
+    subtitle: '팀원들과 함께해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
     img: together,
   },
   {
@@ -112,7 +112,7 @@ const aims = [
     img: achivement,
   },
   {
-    title: 'CONTINUALLY',
+    title: 'EVERYDAY',
     subtitle: '매일매일 새로운 코딩테스트\n1일 1회 업로드!',
     img: continually,
   },
