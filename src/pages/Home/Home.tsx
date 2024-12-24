@@ -1,6 +1,7 @@
 import { Container } from '@/components/commons/Container';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
+import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
@@ -123,23 +124,84 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
+  // const containerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  // const bottomHitEffectRef = useRef<HTMLDivElement | null>(null);
+  const effectRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (bottomRef && bottomRef.current) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            console.log('hi');
-          }
-        },
-        { threshold: 1.0 }
-      );
-
-      observer.observe(bottomRef.current);
-      return () => observer.disconnect();
+    if (
+      !bottomRef ||
+      !bottomRef.current ||
+      !effectRef ||
+      !effectRef.current
+      // !containerRef ||
+      // !containerRef.current
+    ) {
+      return;
     }
+    // const container = containerRef.current;
+    const bottom = bottomRef.current;
+    const effect = effectRef.current;
+    const fadeIn = 500;
+    const fadeOut = 3000 + fadeIn;
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    let fadeOutStartTime: number | null = null;
+
+    const animate = (pos: number) => (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      if (elapsed < fadeIn) {
+        animationFrameId = requestAnimationFrame(animate(pos));
+        return;
+      }
+
+      if (effect.style.opacity === '' || effect.style.opacity === '0') {
+        effect.style.opacity = '1';
+        effect.style.top = `${pos + 204 + 70}px`;
+        // effect.style.top = `${pos + 104}px`;
+        // effect.style.top = `${pos}px`;
+        Array.from(effect.children).forEach((child) => {
+          (child as HTMLElement).style.opacity = '1';
+        });
+        fadeOutStartTime = timestamp;
+      }
+
+      if (fadeOutStartTime) {
+        const fadeOutElapsed = timestamp - fadeOutStartTime;
+        if (fadeOutElapsed < fadeOut) {
+          const opacity = 1 - fadeOutElapsed / fadeOut;
+          effect.style.opacity = opacity.toString();
+          animationFrameId = requestAnimationFrame(animate(pos));
+        } else {
+          effect.style.opacity = '0';
+          Array.from(effect.children).forEach((child) => {
+            (child as HTMLElement).style.opacity = '0';
+          });
+        }
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const { bottom, top, height } = entry.boundingClientRect;
+          // console.log('?', bottom, top + height);
+          // const headerMarginTop = 54;
+          // const { top, height } = container.getBoundingClientRect();
+          console.log('??', top + height);
+          animationFrameId = requestAnimationFrame(animate(bottom));
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    observer.observe(bottom);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -153,7 +215,7 @@ export const Home = () => {
           margin={'0 auto 100px auto'}
         >
           <Flex direction={'column'} align={'center'}>
-            <Suspense fallback={<div>배너</div>}>
+            <Suspense fallback={<div style={{ height: '491px' }}>배너</div>}>
               <LazyImage
                 altText={'코몬 배너 이미지'}
                 w={940}
@@ -174,7 +236,7 @@ export const Home = () => {
               </StartButtonDescription>
             </Wrap>
             <Spacer h={93} />
-            <Flex gap={'27px'}>
+            <Flex gap={'27px'} height={282}>
               {aims.map((aim) => (
                 <GoalBox key={aim.title} h={204}>
                   <Suspense
@@ -205,23 +267,27 @@ export const Home = () => {
           <Spacer h={100} />
         </Container>
       </CommonLayout>
-      <Spacer h={4} ref={bottomRef} />
-      {/*{createPortal(*/}
-      {/*  <div*/}
-      {/*    style={{*/}
-      {/*      position: 'fixed',*/}
-      {/*      bottom: 0,*/}
-      {/*      left: 0,*/}
-      {/*      width: '100%',*/}
-      {/*      background:*/}
-      {/*        'linear-gradient(5deg, rgba(0, 0, 0, 0.10) 10.3%, rgba(255, 255, 255, 0.00) 108.81%)',*/}
-      {/*    }}*/}
-      {/*    ref={bottomHitEffectRef}*/}
-      {/*  >*/}
-      {/*    modal*/}
-      {/*  </div>,*/}
-      {/*  document.body*/}
-      {/*)}*/}
+      <Spacer h={4} ref={bottomRef} width={400} />
+      <WaitBox ref={effectRef}>
+        <SText
+          fontSize={'30px'}
+          fontWeight={700}
+          textAlign={'center'}
+          color={'#6E74FA'}
+          opacity={'0'}
+        >
+          공사중....
+        </SText>
+        <SText
+          fontSize={'16px'}
+          fontWeight={500}
+          textAlign={'center'}
+          color={'#777'}
+          opacity={'0'}
+        >
+          다음 업데이트를 기대해주세요!
+        </SText>
+      </WaitBox>
     </ScrollSnapContainer>
   );
 };
@@ -231,8 +297,26 @@ const ScrollSnapContainer = styled.div`
   width: 100%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
+  position: relative;
 `;
 
 const ScrollStart = styled.div`
   scroll-snap-align: start;
+`;
+
+const WaitBox = styled.div`
+  width: 100%;
+  position: absolute;
+  opacity: 0;
+  width: '100%';
+  height: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  padding-bottom: 40px;
+  gap: 10px;
+  // box-shadow: inset 0 -20px 40px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 -45px 30px -30px rgba(0, 0, 0, 0.5);
 `;
