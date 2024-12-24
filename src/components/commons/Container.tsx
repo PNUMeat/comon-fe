@@ -8,6 +8,7 @@ interface ContainerProps {
   scrollSnapType?: string;
   scrollSnapAlign?: string;
   margin?: string;
+  transform?: string;
   children?: React.ReactNode;
 }
 
@@ -20,8 +21,8 @@ export const ContainerStyle = styled.div<ContainerProps>`
     props.scrollSnapType === 'y mandatory'
       ? `scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh;`
       : `scroll-snap-type: ${props.scrollSnapType};`};
-
   scroll-snap-align: ${(props) => props.scrollSnapAlign};
+  transform: ${(props) => props.transform};
 `;
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(

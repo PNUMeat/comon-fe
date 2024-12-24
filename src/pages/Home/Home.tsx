@@ -124,30 +124,21 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
-  // const containerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const effectRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (
-      !bottomRef ||
-      !bottomRef.current ||
-      !effectRef ||
-      !effectRef.current
-      // !containerRef ||
-      // !containerRef.current
-    ) {
+    if (!bottomRef || !bottomRef.current || !effectRef || !effectRef.current) {
       return;
     }
-    // const container = containerRef.current;
     const bottom = bottomRef.current;
     const effect = effectRef.current;
     const fadeIn = 500;
     const fadeOut = 3000 + fadeIn;
     let animationFrameId: number;
     let startTime: number | null = null;
+    let isAnimating: boolean = false;
     let fadeOutStartTime: number | null = null;
-
     const animate = (pos: number) => (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -158,9 +149,7 @@ export const Home = () => {
 
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
-        effect.style.top = `${pos + 204 + 70}px`;
-        // effect.style.top = `${pos + 104}px`;
-        // effect.style.top = `${pos}px`;
+        effect.style.top = `${pos + 204 + 74}px`;
         Array.from(effect.children).forEach((child) => {
           (child as HTMLElement).style.opacity = '1';
         });
@@ -178,6 +167,7 @@ export const Home = () => {
           Array.from(effect.children).forEach((child) => {
             (child as HTMLElement).style.opacity = '0';
           });
+          isAnimating = false;
         }
       }
     };
@@ -185,12 +175,16 @@ export const Home = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          const { bottom, top, height } = entry.boundingClientRect;
-          // console.log('?', bottom, top + height);
-          // const headerMarginTop = 54;
-          // const { top, height } = container.getBoundingClientRect();
-          console.log('??', top + height);
+          const { bottom } = entry.boundingClientRect;
+          if (isAnimating) {
+            cancelAnimationFrame(animationFrameId);
+            effect.style.opacity = '0';
+            Array.from(effect.children).forEach((child) => {
+              (child as HTMLElement).style.opacity = '0';
+            });
+          }
           animationFrameId = requestAnimationFrame(animate(bottom));
+          isAnimating = true;
         }
       },
       { threshold: 1.0 }
@@ -213,6 +207,7 @@ export const Home = () => {
           maxW={1002}
           scrollSnapAlign={'end'}
           margin={'0 auto 100px auto'}
+          transform={'translate(0, -30px)'}
         >
           <Flex direction={'column'} align={'center'}>
             <Suspense fallback={<div style={{ height: '491px' }}>배너</div>}>
