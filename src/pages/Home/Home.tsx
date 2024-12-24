@@ -1,12 +1,13 @@
 import { Container } from '@/components/commons/Container';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
+import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -102,7 +103,7 @@ const GoalSubtitle = styled.div`
 const aims = [
   {
     title: 'TOGETHER',
-    subtitle: '팀원들과 함꼐해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
+    subtitle: '팀원들과 함께해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
     img: together,
   },
   {
@@ -111,7 +112,7 @@ const aims = [
     img: achivement,
   },
   {
-    title: 'CONTINUALLY',
+    title: 'EVERYDAY',
     subtitle: '매일매일 새로운 코딩테스트\n1일 1회 업로드!',
     img: continually,
   },
@@ -123,66 +124,196 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const effectRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!bottomRef || !bottomRef.current || !effectRef || !effectRef.current) {
+      return;
+    }
+    const bottom = bottomRef.current;
+    const effect = effectRef.current;
+    const fadeIn = 500;
+    const fadeOut = 3000 + fadeIn;
+    let animationFrameId: number | null = null;
+    let startTime: number | null = null;
+    let fadeOutStartTime: number | null = null;
+    const animate = (pos: number) => (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      if (elapsed < fadeIn) {
+        animationFrameId = requestAnimationFrame(animate(pos));
+        return;
+      }
+
+      if (effect.style.opacity === '' || effect.style.opacity === '0') {
+        effect.style.opacity = '1';
+        // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
+        effect.style.top = `${pos + 204 + 72}px`;
+        Array.from(effect.children).forEach((child) => {
+          (child as HTMLElement).style.opacity = '1';
+        });
+        fadeOutStartTime = timestamp;
+      }
+
+      if (fadeOutStartTime) {
+        const fadeOutElapsed = timestamp - fadeOutStartTime;
+        if (fadeOutElapsed < fadeOut) {
+          const opacity = 1 - fadeOutElapsed / fadeOut;
+          effect.style.opacity = opacity.toString();
+          animationFrameId = requestAnimationFrame(animate(pos));
+        } else {
+          effect.style.opacity = '0';
+          Array.from(effect.children).forEach((child) => {
+            (child as HTMLElement).style.opacity = '0';
+          });
+          animationFrameId = null;
+        }
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // const { bottom } = entry.boundingClientRect;
+          const { height } = document.body.getBoundingClientRect();
+          if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+            effect.style.opacity = '0';
+            Array.from(effect.children).forEach((child) => {
+              (child as HTMLElement).style.opacity = '0';
+            });
+          }
+          animationFrameId = requestAnimationFrame(animate(height));
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    observer.observe(bottom);
+
+    return () => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
   return (
-    <CommonLayout>
-      <Container padding={'0 149px'} maxW={1002}>
-        <Flex direction={'column'} align={'center'}>
-          <Suspense fallback={<div>배너</div>}>
-            <LazyImage
-              altText={'코몬 배너 이미지'}
-              // 아래가 피그마 크기인데 조금 이상함
-              // w={940}
-              // maxW={940}
-              // h={491}
-              w={1024}
-              maxW={1024}
-              h={591}
-              src={comon}
-            />
-            <HomeComment>
-              코몬! 오늘부터 코드몬스터와 함께 매일의 도전을 시작해보세요.
-              <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
-            </HomeComment>
-          </Suspense>
-          <Spacer h={34} />
-          <Wrap>
-            <StartButton onClick={onClickLogin}>시작하기</StartButton>
-            <StartButtonDescription>
-              계정 생성 or 로그인하러 가기
-            </StartButtonDescription>
-          </Wrap>
-          <Spacer h={93} />
-          <Flex gap={'27px'}>
-            {aims.map((aim) => (
-              <GoalBox key={aim.title} h={204}>
-                <Suspense
-                  fallback={
-                    <div
-                      style={{
-                        backgroundColor: 'whitesmoke',
-                        width: 40,
-                        height: 40,
-                      }}
-                    ></div>
-                  }
-                >
-                  <LazyImage
-                    altText={'img for aim'}
-                    w={40}
-                    maxW={50}
-                    h={40}
-                    src={aim.img}
-                  />
-                </Suspense>
-                <GoalTitle>{aim.title}</GoalTitle>
-                <GoalSubtitle>{aim.subtitle}</GoalSubtitle>
-              </GoalBox>
-            ))}
+    <ScrollSnapContainer>
+      <ScrollStart />
+      <CommonLayout>
+        <Container
+          padding={'0 149px'}
+          maxW={1002}
+          scrollSnapAlign={'end'}
+          margin={'0 auto 100px auto'}
+          transform={'translate(0, -30px)'}
+        >
+          <Flex direction={'column'} align={'center'}>
+            <Suspense fallback={<div style={{ height: '491px' }}>배너</div>}>
+              <LazyImage
+                altText={'코몬 배너 이미지'}
+                w={940}
+                maxW={940}
+                h={491}
+                src={comon}
+              />
+              <HomeComment>
+                코몬! 오늘부터 코드몬스터와 함께 매일의 도전을 시작해보세요.
+                <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
+              </HomeComment>
+            </Suspense>
+            <Spacer h={34} />
+            <Wrap>
+              <StartButton onClick={onClickLogin}>시작하기</StartButton>
+              <StartButtonDescription>
+                계정 생성 or 로그인하러 가기
+              </StartButtonDescription>
+            </Wrap>
+            <Spacer h={93} />
+            <Flex gap={'27px'} height={282}>
+              {aims.map((aim) => (
+                <GoalBox key={aim.title} h={204}>
+                  <Suspense
+                    fallback={
+                      <div
+                        style={{
+                          backgroundColor: 'whitesmoke',
+                          width: 40,
+                          height: 40,
+                        }}
+                      />
+                    }
+                  >
+                    <LazyImage
+                      altText={'img for aim'}
+                      w={40}
+                      maxW={50}
+                      h={40}
+                      src={aim.img}
+                    />
+                  </Suspense>
+                  <GoalTitle>{aim.title}</GoalTitle>
+                  <GoalSubtitle>{aim.subtitle}</GoalSubtitle>
+                </GoalBox>
+              ))}
+            </Flex>
           </Flex>
-        </Flex>
-        <Spacer h={200} />
-      </Container>
-    </CommonLayout>
+          <Spacer h={100} />
+        </Container>
+      </CommonLayout>
+      <Spacer h={4} ref={bottomRef} width={400} />
+      <WaitBox ref={effectRef}>
+        <SText
+          fontSize={'30px'}
+          fontWeight={700}
+          textAlign={'center'}
+          color={'#6E74FA'}
+          opacity={'0'}
+        >
+          공사중....
+        </SText>
+        <SText
+          fontSize={'16px'}
+          fontWeight={500}
+          textAlign={'center'}
+          color={'#777'}
+          opacity={'0'}
+        >
+          다음 업데이트를 기대해주세요!
+        </SText>
+      </WaitBox>
+    </ScrollSnapContainer>
   );
 };
+
+const ScrollSnapContainer = styled.div`
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  // scroll-snap-type: y mandatory;
+  position: relative;
+`;
+
+const ScrollStart = styled.div`
+  scroll-snap-align: start;
+`;
+
+const WaitBox = styled.div`
+  width: 100%;
+  position: absolute;
+  opacity: 0;
+  width: '100%';
+  height: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  padding-bottom: 40px;
+  gap: 10px;
+  // box-shadow: inset 0 -20px 40px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 -45px 30px -30px rgba(0, 0, 0, 0.5);
+`;

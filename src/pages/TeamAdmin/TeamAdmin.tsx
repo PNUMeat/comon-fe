@@ -142,62 +142,47 @@ export const TeamAdmin = () => {
   const [show, setShow] = useState<boolean>(false);
   const { id } = useParams();
 
-  const positionModal = () => {
-    if (
-      announcementRef &&
-      'current' in announcementRef &&
-      announcementRef.current
-    ) {
-      const announcement = announcementRef.current;
-      const { top, left, width } = announcement.getBoundingClientRect();
-      const modal = modalRef.current;
-      if (modal) {
-        modal.style.top = `${top}px`;
-        modal.style.left = `${left}px`;
-        modal.style.width = `${width}px`;
-      }
-    }
-  };
-
   useEffect(() => {
     if (
       announcementRef &&
       'current' in announcementRef &&
       announcementRef.current
     ) {
-      const announcement = announcementRef.current;
-      const { top, left, width } = announcement.getBoundingClientRect();
       const modal = modalRef.current;
-      if (modal) {
-        if (show) {
+      if (!modal) {
+        return;
+      }
+      if (show) {
+        const moveModal = () => {
+          const announcement = announcementRef.current;
+          const { top, left, width } =
+            announcement?.getBoundingClientRect() ?? {
+              top: 0,
+              left: 0,
+              width: 0,
+            };
           modal.style.top = `${top}px`;
           modal.style.left = `${left}px`;
           modal.style.width = `${width}px`;
-          const handleOutsideClick = (e: MouseEvent) => {
-            if (modalRef?.current?.contains(e.target as Node)) {
-              return;
-            }
-            setShow(false);
-          };
-          document.addEventListener('mousedown', handleOutsideClick);
+        };
+        const handleOutsideClick = (e: MouseEvent) => {
+          if (modalRef?.current?.contains(e.target as Node)) {
+            return;
+          }
+          setShow(false);
+        };
+        moveModal();
+        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('scroll', moveModal);
 
-          return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-          };
-        } else {
-          modal.style.top = `99999px`;
-        }
+        return () => {
+          document.removeEventListener('mousedown', handleOutsideClick);
+          document.removeEventListener('scroll', moveModal);
+        };
       }
+      modal.style.top = `99999px`;
     }
   }, [show]);
-
-  useEffect(() => {
-    document.addEventListener('scroll', positionModal);
-
-    return () => {
-      document.removeEventListener('scroll', positionModal);
-    };
-  }, []);
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
