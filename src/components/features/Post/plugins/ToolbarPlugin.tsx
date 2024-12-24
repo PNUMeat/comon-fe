@@ -20,10 +20,11 @@ import { $getSelectionStyleValueForProperty } from '@lexical/selection';
 import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
-  $isRangeSelection, // CAN_REDO_COMMAND,
-  // CAN_UNDO_COMMAND,
+  $isRangeSelection,
   COMMAND_PRIORITY_CRITICAL,
+  FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
+  TextFormatType,
 } from 'lexical';
 
 const ToolbarWrap = styled.div`
@@ -59,14 +60,14 @@ export const ToolbarPlugin: React.FC<{
   const [fontFamily, setFontFamily] = useState<string>('프리텐다드');
 
   const [isLink, setIsLink] = useState(false);
-  // const [isBold, setIsBold] = useState(false);
+  const [isBold, setIsBold] = useState(false);
 
   const [tag, selectTag] = useState<string>('');
 
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
-      // setIsBold(selection.hasFormat('bold'));
+      setIsBold(selection.hasFormat('bold'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -130,6 +131,10 @@ export const ToolbarPlugin: React.FC<{
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
   };
 
+  const dispatchTextFormat = (command: TextFormatType) => () => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, command);
+  };
+
   return (
     <ToolbarWrap>
       <FontDropdown
@@ -137,6 +142,8 @@ export const ToolbarPlugin: React.FC<{
         currentFontFamily={fontFamily}
         currentFontSize={fontSize}
         currentFontColor={fontColor}
+        dispatchTextFormat={dispatchTextFormat}
+        isBold={isBold}
       />
       {setTag ? (
         <div
