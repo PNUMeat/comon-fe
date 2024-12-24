@@ -43,5 +43,5 @@ const StyledBox = styled.div<BoxProps>`
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
   position: relative;
-  z-index: 2;
+  // z-index: 2;
 `;

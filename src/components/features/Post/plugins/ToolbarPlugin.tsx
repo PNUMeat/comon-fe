@@ -165,6 +165,9 @@ export const ToolbarPlugin: React.FC<{
                 selectTag(item.label);
               }}
               isSelected={item.label === tag}
+              fontSize={'10px'}
+              padding={'2px 10px'}
+              height={'15px'}
             />
           ))}
         </div>

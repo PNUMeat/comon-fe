@@ -125,6 +125,7 @@ const FlipCardContent = ({
               placeholder="PASSWORD"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoFocus={true}
             />
             <Spacer h={14} />
             <Button
@@ -224,4 +225,5 @@ const FlipCardBack = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid ${colors.buttonPurple};
+  z-index: 999;
 `;

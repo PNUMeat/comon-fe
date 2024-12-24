@@ -5,7 +5,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
@@ -13,7 +13,6 @@ import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { colors } from '@/constants/colors';
-import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 interface ISidebarAndAnnouncementProps {
@@ -25,6 +24,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
 }) => {
+  const { teamId } = useParams<{ teamId: string }>();
   return (
     <>
       <Sidebar>
@@ -104,7 +104,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             </SText>
           </Flex>
         </Box>
-        <Link to={PATH.POSTING} style={{ textDecoration: 'none' }}>
+        {/*<Link to={PATH.POSTING} style={{ textDecoration: 'none' }}>*/}
+        <Link to={`/posting/${teamId}`} style={{ textDecoration: 'none' }}>
           <NewPostButton>
             <AnnouncementImage src={PencilIcon} />
             <SText fontSize="18px" color="#fff" fontWeight={700}>

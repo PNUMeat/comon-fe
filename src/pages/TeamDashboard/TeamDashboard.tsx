@@ -3,10 +3,11 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { getTeamInfoAndTags } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
@@ -20,6 +21,10 @@ export const TeamDashboardPage = () => {
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
+
+  if (!teamId) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
 
   const teamInfo = data?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = data?.teamManager || false;
