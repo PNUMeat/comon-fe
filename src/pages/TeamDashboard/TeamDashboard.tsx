@@ -49,7 +49,7 @@ export const TeamDashboardPage = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage); // page 변경
+    setPage(newPage);
   };
 
   if (!teamId) {

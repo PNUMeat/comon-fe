@@ -45,6 +45,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             w={16}
             h={16}
             maxW={16}
+            style={{ borderRadius: '50%' }}
           />
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {data?.authorName}
