@@ -264,7 +264,7 @@ export const Home = () => {
           <Spacer h={100} />
         </Container>
       </CommonLayout>
-      <Spacer h={4} ref={bottomRef} width={400} bg={'blue'} />
+      <Spacer h={4} ref={bottomRef} width={400} />
       <WaitBox ref={effectRef}>
         <SText
           fontSize={'30px'}
