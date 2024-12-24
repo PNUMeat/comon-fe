@@ -9,6 +9,7 @@ interface TextProps {
   letterSpacing?: string;
   whiteSpace?: string;
   textAlign?: React.CSSProperties['textAlign'];
+  opacity?: string;
 }
 
 export const SText = styled.div<TextProps>`
@@ -19,4 +20,5 @@ export const SText = styled.div<TextProps>`
   letter-spacing: ${(props) => props.letterSpacing || 'inherit'};
   text-align: ${(props) => props.textAlign || 'inherit'};
   white-space: ${(props) => props.whiteSpace || 'inherit'};
+  opacity: ${(props) => props.opacity || 'inherit'};
 `;

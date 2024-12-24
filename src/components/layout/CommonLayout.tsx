@@ -9,7 +9,7 @@ export const CommonLayout: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   return (
-    <Container>
+    <Container padding={'0'}>
       <Header h={headerHeight} />
       {children}
     </Container>

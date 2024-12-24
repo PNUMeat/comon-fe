@@ -1,14 +1,15 @@
 import { Dropdown } from '@/components/commons/Dropdown/Dropdown';
 import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem';
+import { SText } from '@/components/commons/SText';
 import { FONT_FAMILY_OPTIONS } from '@/components/features/Post/constants';
 
 import { useCallback } from 'react';
 
 import styled from '@emotion/styled';
 import { $patchStyleText } from '@lexical/selection';
-import { $getSelection, LexicalEditor } from 'lexical';
+import { $getSelection, LexicalEditor, TextFormatType } from 'lexical';
 
-const FONT_COLOR_OPTIONS: string[] = ['#FFF', '#000'];
+const FONT_COLOR_OPTIONS: string[] = ['#F00', '#0F0', '#00F', '#000'];
 
 const FONT_SIZE_OPTIONS: [string, string][] = [
   ['10px', '10px'],
@@ -52,7 +53,16 @@ export const FontDropdown: React.FC<{
   currentFontFamily: string;
   currentFontSize: string;
   currentFontColor: string;
-}> = ({ editor, currentFontFamily, currentFontSize, currentFontColor }) => {
+  dispatchTextFormat: (command: TextFormatType) => () => void;
+  isBold: boolean;
+}> = ({
+  editor,
+  currentFontFamily,
+  currentFontSize,
+  currentFontColor,
+  dispatchTextFormat,
+  isBold,
+}) => {
   const onClick = useCallback(
     (style: string, option: string) => {
       editor.update(() => {
@@ -101,6 +111,16 @@ export const FontDropdown: React.FC<{
           </DropdownItem>
         ))}
       </Dropdown>
+
+      <button onClick={dispatchTextFormat('bold')}>
+        <SText
+          fontSize={'16px'}
+          fontWeight={700}
+          color={isBold ? '#000' : '#777'}
+        >
+          B
+        </SText>
+      </button>
     </FontFlex>
   );
 };
