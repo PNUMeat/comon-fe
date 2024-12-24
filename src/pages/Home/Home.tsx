@@ -135,9 +135,8 @@ export const Home = () => {
     const effect = effectRef.current;
     const fadeIn = 500;
     const fadeOut = 3000 + fadeIn;
-    let animationFrameId: number;
+    let animationFrameId: number | null = null;
     let startTime: number | null = null;
-    let isAnimating: boolean = false;
     let fadeOutStartTime: number | null = null;
     const animate = (pos: number) => (timestamp: number) => {
       if (!startTime) startTime = timestamp;
@@ -149,7 +148,8 @@ export const Home = () => {
 
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
-        effect.style.top = `${pos + 204 + 74}px`;
+        // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
+        effect.style.top = `${pos + 204 + 72}px`;
         Array.from(effect.children).forEach((child) => {
           (child as HTMLElement).style.opacity = '1';
         });
@@ -167,7 +167,7 @@ export const Home = () => {
           Array.from(effect.children).forEach((child) => {
             (child as HTMLElement).style.opacity = '0';
           });
-          isAnimating = false;
+          animationFrameId = null;
         }
       }
     };
@@ -175,16 +175,16 @@ export const Home = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          const { bottom } = entry.boundingClientRect;
-          if (isAnimating) {
+          // const { bottom } = entry.boundingClientRect;
+          const { height } = document.body.getBoundingClientRect();
+          if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
             effect.style.opacity = '0';
             Array.from(effect.children).forEach((child) => {
               (child as HTMLElement).style.opacity = '0';
             });
           }
-          animationFrameId = requestAnimationFrame(animate(bottom));
-          isAnimating = true;
+          animationFrameId = requestAnimationFrame(animate(height));
         }
       },
       { threshold: 1.0 }
@@ -193,7 +193,9 @@ export const Home = () => {
     observer.observe(bottom);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
       observer.disconnect();
     };
   }, []);
@@ -262,7 +264,7 @@ export const Home = () => {
           <Spacer h={100} />
         </Container>
       </CommonLayout>
-      <Spacer h={4} ref={bottomRef} width={400} />
+      <Spacer h={4} ref={bottomRef} width={400} bg={'blue'} />
       <WaitBox ref={effectRef}>
         <SText
           fontSize={'30px'}
@@ -291,7 +293,7 @@ const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  // scroll-snap-type: y mandatory;
   position: relative;
 `;
 
