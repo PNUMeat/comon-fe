@@ -56,9 +56,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             <LazyImage
               src={data.imageUrl}
               altText="이미지 불러오기 실패"
-              w={100}
-              h={100}
-              maxW={100}
+              w={600}
+              h={300}
+              maxW={600}
               style={{ padding: '0px 20px' }}
             />
             <Spacer h={36} />
