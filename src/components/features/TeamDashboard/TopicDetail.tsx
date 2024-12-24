@@ -24,7 +24,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     enabled: !!teamId && !!selectedDate,
   });
 
-  return (
+  return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex align="center" gap="8px">
@@ -67,6 +67,10 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         )}
         <div dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }} />
       </Flex>
+    </Box>
+  ) : (
+    <Box width="100%" padding="30px 40px">
+      주제가 등록되지 않았어요
     </Box>
   );
 };
