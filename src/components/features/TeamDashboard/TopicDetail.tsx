@@ -24,7 +24,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     enabled: !!teamId && !!selectedDate,
   });
 
-  return (
+  return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex align="center" gap="8px">
@@ -45,6 +45,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             w={16}
             h={16}
             maxW={16}
+            style={{ borderRadius: '50%' }}
           />
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {data?.authorName}
@@ -57,15 +58,21 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
               src={data.imageUrl}
               altText="이미지 불러오기 실패"
               w={600}
-              h={300}
+              h="auto"
               maxW={600}
               style={{ padding: '0px 20px' }}
             />
             <Spacer h={36} />
           </>
         )}
-        <div>{data?.articleBody}</div>
+        <div dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }} />
       </Flex>
+    </Box>
+  ) : (
+    <Box width="100%" padding="30px 40px">
+      <SText color="#ccc" fontSize="24px" fontWeight={400}>
+        주제가 등록되지 않았어요
+      </SText>
     </Box>
   );
 };

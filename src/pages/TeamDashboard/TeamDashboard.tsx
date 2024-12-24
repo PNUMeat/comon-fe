@@ -49,7 +49,7 @@ export const TeamDashboardPage = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage); // page 변경
+    setPage(newPage);
   };
 
   if (!teamId) {
@@ -64,10 +64,12 @@ export const TeamDashboardPage = () => {
     <>
       <Spacer h={28} />
       <Grid>
-        <SidebarAndAnnouncement
-          teamInfo={teamInfo}
-          isTeamManager={isTeamManager}
-        />
+        {teamInfoData && (
+          <SidebarAndAnnouncement
+            teamInfo={teamInfo}
+            isTeamManager={isTeamManager}
+          />
+        )}
         <CalendarSection>
           <CustomCalendar
             tags={tags}

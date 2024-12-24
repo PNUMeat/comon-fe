@@ -37,6 +37,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
             w={16}
             h={16}
             maxW={16}
+            style={{ borderRadius: '50%' }}
           />
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {article?.memberName}
@@ -49,14 +50,14 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               src={article?.imageUrl}
               altText="이미지 불러오기 실패"
               w={600}
-              h={300}
+              h="auto"
               maxW={600}
               style={{ padding: '0px 20px' }}
             />
             <Spacer h={36} />
           </>
         )}
-        <div>{article?.articleBody}</div>
+        <div dangerouslySetInnerHTML={{ __html: article?.articleBody || '' }} />
       </Flex>
     </Box>
   );
