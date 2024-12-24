@@ -10,10 +10,11 @@ interface BoxProps {
   borderWidth?: string;
   children?: React.ReactNode;
   style?: CSSProperties;
+  onClick?: () => void;
 }
 
 export const Box = forwardRef<HTMLDivElement, BoxProps>(
-  ({ width, height, padding, borderWidth, children, style }, ref) => {
+  ({ width, height, padding, borderWidth, children, style, onClick }, ref) => {
     return (
       <StyledBox
         ref={ref}
@@ -22,6 +23,7 @@ export const Box = forwardRef<HTMLDivElement, BoxProps>(
         padding={padding}
         borderWidth={borderWidth}
         style={style}
+        onClick={onClick}
       >
         {children}
       </StyledBox>
