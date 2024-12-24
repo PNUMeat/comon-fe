@@ -6,7 +6,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import styled from '@emotion/styled';
 
-export const ArticleDetail = () => {
+export const TopicDetail = () => {
   return (
     <Box padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
