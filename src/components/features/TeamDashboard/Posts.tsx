@@ -8,7 +8,12 @@ import { Spacer } from '@/components/commons/Spacer';
 
 import styled from '@emotion/styled';
 
-export const Posts = () => {
+interface PostsProps {
+  selectedDate: string | null;
+}
+
+export const Posts: React.FC<PostsProps> = ({ selectedDate }) => {
+  console.log(selectedDate);
   return (
     <div style={{ position: 'relative' }}>
       <Box width="100%" padding="20px 40px" style={{ zIndex: 2 }}>

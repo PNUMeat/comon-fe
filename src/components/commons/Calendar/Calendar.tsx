@@ -9,9 +9,13 @@ import { Tag } from '../Tag';
 
 interface ICustomCalendarProps {
   tags: ICalendarTag[];
+  onDateSelect: (date: string) => void;
 }
 
-export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
+export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
+  tags,
+  onDateSelect,
+}) => {
   const getCategoryForDate = (date: Date) => {
     const formattedDate = date.toISOString().split('T')[0];
     return (
@@ -43,6 +47,9 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
             <Tag bgColor={categoryColors[category]} label={category} />
           ) : null;
         }}
+        onClickDay={(value: Date) =>
+          onDateSelect(value.toISOString().split('T')[0])
+        }
       />
     </CalendarWrapper>
   );
