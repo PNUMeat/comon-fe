@@ -11,7 +11,7 @@ import styled from '@emotion/styled';
 export const Posts = () => {
   return (
     <div style={{ position: 'relative' }}>
-      <Box width="100%" padding="20px 40px">
+      <Box width="100%" padding="20px 40px" style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex width={30} justify="space-between" align="center">
             <SText color="#333" fontSize="24px" fontWeight={700}>
