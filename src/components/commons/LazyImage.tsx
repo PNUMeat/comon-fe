@@ -9,6 +9,7 @@ export interface ILazyImage {
   className?: string;
   imageRef?: MutableRefObject<HTMLImageElement | null>;
   nodeKey?: string;
+  style?: React.CSSProperties;
 }
 
 const imageCache = new Set();
@@ -21,6 +22,7 @@ export const LazyImage: React.FC<ILazyImage> = ({
   src,
   className,
   imageRef,
+  style,
 }) => {
   if (!imageCache.has(src)) {
     throw new Promise((resolve) => {
@@ -47,6 +49,7 @@ export const LazyImage: React.FC<ILazyImage> = ({
         maxWidth: maxW,
         height: h,
         objectFit: 'cover',
+        ...style,
       }}
       loading={'lazy'}
       className={className}
