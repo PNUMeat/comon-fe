@@ -33,6 +33,17 @@ export interface IArticlesByDateResponse {
   };
 }
 
+export interface ITopicResponse {
+  articleId: number;
+  articleCategory: string;
+  articleTitle: string;
+  articleBody: string;
+  createdDate: string;
+  imageUrl: string | null;
+  authorName: string;
+  authorImageUrl: string;
+}
+
 export const getTeamInfoAndTags = async (
   teamId: number,
   year: number,
@@ -54,6 +65,18 @@ export const getArticlesByDate = async (
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
     { params: { date, page } }
+  );
+
+  return res.data.data;
+};
+
+export const getTeamTopic = async (
+  teamId: number,
+  date: string
+): Promise<ITopicResponse> => {
+  const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
+    `/v1/articles/teams/${teamId}/subjects`,
+    { params: { date } }
   );
 
   return res.data.data;
