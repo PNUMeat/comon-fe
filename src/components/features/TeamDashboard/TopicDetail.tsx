@@ -1,54 +1,70 @@
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { getTeamTopic } from '@/api/dashboard';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
-export const TopicDetail = () => {
+interface TopicDetailProps {
+  teamId: number;
+  selectedDate: string;
+}
+
+export const TopicDetail: React.FC<TopicDetailProps> = ({
+  teamId,
+  selectedDate,
+}) => {
+  const { data } = useQuery({
+    queryKey: ['team-topic', teamId, selectedDate],
+    queryFn: () => getTeamTopic(teamId, selectedDate),
+    enabled: !!teamId && !!selectedDate,
+  });
+
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex align="center" gap="8px">
           <Icon src={AnnouncementIcon} />
           <SText color="#333" fontSize="24px" fontWeight={700}>
-            11/26 코테 풀이
+            {data?.articleTitle}
           </SText>
         </Flex>
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
-          2024.11.01 14:39
+          {data?.createdDate.slice(0, -3)}
         </SText>
         <Spacer h={28} />
         <Flex align="center" gap="8px">
-          <img src="https://via.placeholder.com/16x16" />
-          {/* <LazyImage
-            src="https://via.placeholder.com/16x16"
-            altText="https://via.placeholder.com/600x400"
+          <LazyImage
+            src={data?.authorImageUrl || ''}
+            altText={data?.authorName || ''}
             w={16}
             h={16}
             maxW={16}
-          /> */}
+          />
           <SText color="#333" fontSize="12px" fontWeight={600}>
-            파댕이2
+            {data?.authorName}
           </SText>
         </Flex>
-
         <Spacer h={36} />
-        <img
-          src="https://via.placeholder.com/600x300"
-          style={{ padding: '0px 20px' }}
-        />
-        {/* <LazyImage
-          src="https://via.placeholder.com/600x400"
-          altText="Sample Image"
-          w={100}
-          h={100}
-          maxW={100}
-        /> */}
-        <Spacer h={36} />
-        <div></div>
+        {data?.imageUrl && (
+          <>
+            <LazyImage
+              src={data.imageUrl}
+              altText="이미지 불러오기 실패"
+              w={100}
+              h={100}
+              maxW={100}
+              style={{ padding: '0px 20px' }}
+            />
+            <Spacer h={36} />
+          </>
+        )}
+        <div>{data?.articleBody}</div>
       </Flex>
     </Box>
   );
