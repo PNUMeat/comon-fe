@@ -1,19 +1,25 @@
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { getArticlesByDate } from '@/api/dashboard';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
 interface PostsProps {
   tags: {
     subjectDate: string;
     articleCategory: string;
   }[];
-  selectedDate: string | null;
+  selectedDate: string;
 }
 
 export const Posts: React.FC<PostsProps> = ({ tags, selectedDate }) => {
@@ -30,6 +36,17 @@ export const Posts: React.FC<PostsProps> = ({ tags, selectedDate }) => {
   };
 
   const category = getCategoryForSelectedDate();
+
+  const { teamId } = useParams<{ teamId: string }>();
+  const [page, setPage] = useState(0);
+
+  const { data } = useQuery({
+    queryKey: ['articles-by-date', teamId, selectedDate, page],
+    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
+    enabled: !!teamId && !!selectedDate,
+  });
+
+  const totalPages = data?.page.totalPages || 1;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -51,58 +68,69 @@ export const Posts: React.FC<PostsProps> = ({ tags, selectedDate }) => {
           <Button padding="8px 14px">주제 확인하기</Button>
         </Flex>
       </Box>
-      <List>
-        <Box width="100%" height="104px" padding="20px">
-          <Flex direction="column">
-            <SText color="#333" fontSize="16px" fontWeight={600}>
-              11/26 코테 풀이
-            </SText>
-            <Spacer h={4} />
-            <SText color="#777" fontSize="12px" fontWeight={400}>
-              2024.11.01 14:39
-            </SText>
-            <Spacer h={12} />
-            <SText color="#333" fontSize="14px" fontWeight={600}>
-              파댕이
+
+      {data?.content.length === 0 ? (
+        <NoArticleDiv>
+          <Flex justify="center" align="center" style={{ minHeight: '216px' }}>
+            <SText color="#ccc" fontSize="24px" fontWeight={400}>
+              게시글이 존재하지 않아요
             </SText>
           </Flex>
-        </Box>
-        <Box width="100%" height="104px" padding="20px">
-          <Flex direction="column">
-            <SText color="#333" fontSize="16px" fontWeight={600}>
-              11/26 코테 풀이
-            </SText>
-            <Spacer h={4} />
-            <SText color="#777" fontSize="12px" fontWeight={400}>
-              2024.11.01 14:39
-            </SText>
-            <Spacer h={12} />
-            <SText color="#333" fontSize="14px" fontWeight={600}>
-              파댕이
-            </SText>
-          </Flex>
-        </Box>
-        <Box width="100%" height="104px" padding="20px">
-          <Flex direction="column">
-            <SText color="#333" fontSize="16px" fontWeight={600}>
-              11/26 코테 풀이
-            </SText>
-            <Spacer h={4} />
-            <SText color="#777" fontSize="12px" fontWeight={400}>
-              2024.11.01 14:39
-            </SText>
-            <Spacer h={12} />
-            <SText color="#333" fontSize="14px" fontWeight={600}>
-              파댕이
-            </SText>
-          </Flex>
-        </Box>
-      </List>
+        </NoArticleDiv>
+      ) : (
+        <List>
+          {data?.content.map((article) => (
+            <Box
+              width="100%"
+              height="104px"
+              padding="20px"
+              key={article.articleId}
+            >
+              <Flex direction="column">
+                <SText color="#333" fontSize="16px" fontWeight={600}>
+                  {article.articleTitle}
+                </SText>
+                <Spacer h={8} />
+                <SText color="#777" fontSize="12px" fontWeight={400}>
+                  {article.createdDate.slice(0, -3)}
+                </SText>
+                <Spacer h={12} />
+                <Flex align="center" gap="6px">
+                  <LazyImage
+                    src={article.memberImage}
+                    altText={article.memberName}
+                    w={16}
+                    h={16}
+                    maxW={16}
+                  />
+                  <SText color="#333" fontSize="12px" fontWeight={600}>
+                    {article.memberName}
+                  </SText>
+                </Flex>
+              </Flex>
+            </Box>
+          ))}
+        </List>
+      )}
+
       <Spacer h={260} />
-      <Pagination totalPages={5} onPageChange={() => {}} /> {/* TODO: */}
+      <Pagination totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 };
+
+const NoArticleDiv = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  padding: 90px 40px;
+  min-height: 216px;
+  transform: translateX(-50%);
+  width: calc(100% - 80px);
+  z-index: 1;
+  border-radius: 20px;
+  background: #fff;
+`;
 
 const List = styled.div`
   display: grid;

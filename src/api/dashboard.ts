@@ -24,7 +24,7 @@ export interface IArticle {
 }
 
 export interface IArticlesByDateResponse {
-  articleInformation: IArticle[];
+  content: IArticle[];
   page: {
     size: number;
     number: number;
