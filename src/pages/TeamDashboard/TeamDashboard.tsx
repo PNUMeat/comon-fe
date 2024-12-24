@@ -1,11 +1,14 @@
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Spacer } from '@/components/commons/Spacer';
+import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
+import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
+import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-import { getTeamInfoAndTags } from '@/api/dashboard';
+import { getArticlesByDate, getTeamInfoAndTags } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -13,22 +16,49 @@ import { useQuery } from '@tanstack/react-query';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
-  const year = 2024; // TODO:
-  const month = 12; // TODO:
 
-  const { data } = useQuery({
+  const today = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<string>(today);
+  const [year, month] = selectedDate.split('-').map(Number);
+
+  const [currentView, setCurrentView] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
+    null
+  );
+
+  const { data: teamInfoData } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
 
+  const { data: articlesData } = useQuery({
+    queryKey: ['articles-by-date', teamId, selectedDate, page],
+    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
+    enabled: !!teamId && !!selectedDate,
+  });
+
+  const handleShowTopicDetail = () => {
+    setCurrentView('topic');
+  };
+
+  const handleShowArticleDetail = (articleId: number) => {
+    setSelectedArticleId(articleId);
+    setCurrentView('article');
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage); // page 변경
+  };
+
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const teamInfo = data?.myTeamResponse || ({} as ITeamInfo);
-  const isTeamManager = data?.teamManager || false;
-  const tags = data?.subjectArticleDateAndTagResponses || [];
+  const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
+  const isTeamManager = teamInfoData?.teamManager || false;
+  const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
     <>
@@ -39,9 +69,29 @@ export const TeamDashboardPage = () => {
           isTeamManager={isTeamManager}
         />
         <CalendarSection>
-          <CustomCalendar tags={tags} />
+          <CustomCalendar
+            tags={tags}
+            onDateSelect={setSelectedDate}
+            selectedDate={selectedDate}
+          />
           <Spacer h={24} />
-          <Posts />
+          {articlesData && (
+            <Posts
+              data={articlesData}
+              tags={tags}
+              selectedDate={selectedDate}
+              onShowTopicDetail={handleShowTopicDetail}
+              onShowArticleDetail={handleShowArticleDetail}
+              onPageChange={handlePageChange}
+            />
+          )}
+          <Spacer h={40} />
+          {currentView === 'topic' && (
+            <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
+          )}
+          {currentView === 'article' && articlesData && selectedArticleId && (
+            <ArticleDetail data={articlesData} articleId={selectedArticleId} />
+          )}
         </CalendarSection>
       </Grid>
     </>

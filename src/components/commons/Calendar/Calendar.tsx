@@ -9,11 +9,25 @@ import { Tag } from '../Tag';
 
 interface ICustomCalendarProps {
   tags: ICalendarTag[];
+  onDateSelect: (date: string) => void;
+  selectedDate: string;
 }
 
-export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
+export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
+  tags,
+  onDateSelect,
+  selectedDate,
+}) => {
   const getCategoryForDate = (date: Date) => {
-    const formattedDate = date.toISOString().split('T')[0];
+    const formattedDate = date
+      .toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .replace(/\s/g, '')
+      .replace(/[./]/g, '-')
+      .replace(/-$/, '');
     return (
       tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
       null
@@ -43,6 +57,19 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({ tags }) => {
             <Tag bgColor={categoryColors[category]} label={category} />
           ) : null;
         }}
+        onClickDay={(value: Date) => {
+          const formattedDate = value
+            .toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            })
+            .replace(/\s/g, '')
+            .replace(/[./]/g, '-')
+            .replace(/-$/, '');
+          onDateSelect(formattedDate);
+        }}
+        value={new Date(selectedDate)}
       />
     </CalendarWrapper>
   );
