@@ -50,7 +50,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               src={article?.imageUrl}
               altText="이미지 불러오기 실패"
               w={600}
-              h={300}
+              h="auto"
               maxW={600}
               style={{ padding: '0px 20px' }}
             />

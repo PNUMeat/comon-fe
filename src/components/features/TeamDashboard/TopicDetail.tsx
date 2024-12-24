@@ -58,7 +58,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
               src={data.imageUrl}
               altText="이미지 불러오기 실패"
               w={600}
-              h={300}
+              h="auto"
               maxW={600}
               style={{ padding: '0px 20px' }}
             />
@@ -70,7 +70,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     </Box>
   ) : (
     <Box width="100%" padding="30px 40px">
-      주제가 등록되지 않았어요
+      <SText color="#ccc" fontSize="24px" fontWeight={400}>
+        주제가 등록되지 않았어요
+      </SText>
     </Box>
   );
 };

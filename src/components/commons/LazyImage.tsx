@@ -4,7 +4,7 @@ export interface ILazyImage {
   altText: string;
   w: 'inherit' | number;
   maxW: number;
-  h: 'inherit' | number;
+  h: 'inherit' | 'auto' | number;
   src: string;
   className?: string;
   imageRef?: MutableRefObject<HTMLImageElement | null>;
