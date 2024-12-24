@@ -5,7 +5,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
 import { getArticlesByDate, getTeamInfoAndTags } from '@/api/dashboard';
@@ -61,7 +61,7 @@ export const TeamDashboardPage = () => {
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Spacer h={28} />
       <Grid>
         {teamInfoData && (
@@ -96,7 +96,7 @@ export const TeamDashboardPage = () => {
           )}
         </CalendarSection>
       </Grid>
-    </>
+    </Suspense>
   );
 };
 
