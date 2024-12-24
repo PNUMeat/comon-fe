@@ -13,14 +13,13 @@ interface PostsProps {
 }
 
 export const Posts: React.FC<PostsProps> = ({ selectedDate }) => {
-  console.log(selectedDate);
   return (
     <div style={{ position: 'relative' }}>
       <Box width="100%" padding="20px 40px" style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
-          <Flex width={30} justify="space-between" align="center">
+          <Flex width={35} justify="space-between" align="center">
             <SText color="#333" fontSize="24px" fontWeight={700}>
-              2024.11.26
+              {selectedDate}
             </SText>
             <Label background="#FF5780" padding="2px 10px">
               <SText fontSize="12px" fontWeight={600} color="#fff">
