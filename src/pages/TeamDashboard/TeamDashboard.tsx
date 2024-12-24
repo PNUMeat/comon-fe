@@ -17,11 +17,9 @@ import { useQuery } from '@tanstack/react-query';
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
-  const year = 2024; // TODO:
-  const month = 12; // TODO:
-
   const today = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState<string>(today);
+  const [year, month] = selectedDate.split('-').map(Number);
 
   const [currentView, setCurrentView] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
