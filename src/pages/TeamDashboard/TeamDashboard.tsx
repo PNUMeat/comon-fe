@@ -24,6 +24,10 @@ export const TeamDashboardPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>(today);
 
   const [currentView, setCurrentView] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
+    null
+  );
 
   const { data: teamInfoData } = useQuery({
     queryKey: ['team-info', teamId, year, month],
@@ -32,8 +36,8 @@ export const TeamDashboardPage = () => {
   });
 
   const { data: articlesData } = useQuery({
-    queryKey: ['articles-by-date', teamId, selectedDate, 0], // TODO:
-    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, 0), // TODO:
+    queryKey: ['articles-by-date', teamId, selectedDate, page],
+    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
 
@@ -41,8 +45,13 @@ export const TeamDashboardPage = () => {
     setCurrentView('topic');
   };
 
-  const handleShowArticleDetail = () => {
+  const handleShowArticleDetail = (articleId: number) => {
+    setSelectedArticleId(articleId);
     setCurrentView('article');
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage); // page 변경
   };
 
   if (!teamId) {
@@ -75,14 +84,15 @@ export const TeamDashboardPage = () => {
               selectedDate={selectedDate}
               onShowTopicDetail={handleShowTopicDetail}
               onShowArticleDetail={handleShowArticleDetail}
+              onPageChange={handlePageChange}
             />
           )}
           <Spacer h={40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
-          {currentView === 'article' && articlesData && (
-            <ArticleDetail data={articlesData} articleId={1} /> // TODO:
+          {currentView === 'article' && articlesData && selectedArticleId && (
+            <ArticleDetail data={articlesData} articleId={selectedArticleId} />
           )}
         </CalendarSection>
       </Grid>
