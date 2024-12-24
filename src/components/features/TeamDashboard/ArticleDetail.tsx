@@ -6,9 +6,9 @@ import { Spacer } from '@/components/commons/Spacer';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import styled from '@emotion/styled';
 
-export const TopicDetail = () => {
+export const ArticleDetail = () => {
   return (
-    <Box width="100%" padding="30px 40px">
+    <Box padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex align="center" gap="8px">
           <Icon src={AnnouncementIcon} />
@@ -38,7 +38,7 @@ export const TopicDetail = () => {
         <Spacer h={36} />
         <img
           src="https://via.placeholder.com/600x300"
-          style={{ padding: '0px 30px' }}
+          style={{ padding: '0px 20px' }}
         />
         {/* <LazyImage
           src="https://via.placeholder.com/600x400"

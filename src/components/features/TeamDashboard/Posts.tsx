@@ -20,13 +20,13 @@ interface PostsProps {
     articleCategory: string;
   }[];
   selectedDate: string;
-  onShowTopicDetail: () => void;
+  onShowArticleDetail: () => void;
 }
 
 export const Posts: React.FC<PostsProps> = ({
   tags,
   selectedDate,
-  onShowTopicDetail,
+  onShowArticleDetail,
 }) => {
   const categoryColors: Record<string, string> = {
     '스터디 복습': '#6E74FA',
@@ -70,7 +70,7 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <Button padding="8px 14px" onClick={onShowTopicDetail}>
+          <Button padding="8px 14px" onClick={onShowArticleDetail}>
             주제 확인하기
           </Button>
         </Flex>
