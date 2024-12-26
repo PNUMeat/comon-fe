@@ -13,6 +13,7 @@ import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 interface ISidebarAndAnnouncementProps {
@@ -73,12 +74,17 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             <Spacer h={32} />
             {isTeamManager && (
               <>
-                <Flex justify="center" align="center">
-                  <SettingImage src={SettingsGreenIcon} />
-                  <SText color="#ccc" fontWeight={600} fontSize="14px">
-                    게시글 관리
-                  </SText>
-                </Flex>
+                <Link
+                  to={`${PATH.TEAM_ADMIN}/${teamId}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Flex justify="center" align="center">
+                    <SettingImage src={SettingsGreenIcon} />
+                    <SText color="#ccc" fontWeight={600} fontSize="14px">
+                      게시글 관리
+                    </SText>
+                  </Flex>
+                </Link>
                 <Spacer h={4} />
                 <Flex justify="center" align="center">
                   <SettingImage src={SettingsRedIcon} />

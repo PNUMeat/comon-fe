@@ -5,6 +5,8 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { IArticle } from '@/api/dashboard';
+import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
+import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -14,9 +16,29 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({ data }) => {
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
-        <SText color="#333" fontSize="24px" fontWeight={700}>
-          {data?.articleTitle}
-        </SText>
+        <Flex justify="space-between">
+          <SText color="#333" fontSize="24px" fontWeight={700}>
+            {data?.articleTitle}
+          </SText>
+          {data?.isAuthor && (
+            <Flex width={7} gap="16px">
+              <LazyImage
+                src={ModifyIcon}
+                altText="수정"
+                w={20}
+                h={20}
+                maxW={20}
+              />
+              <LazyImage
+                src={DeleteIcon}
+                altText="삭제"
+                w={20}
+                h={20}
+                maxW={16}
+              />
+            </Flex>
+          )}
+        </Flex>
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
           {data?.createdDate.slice(0, -3)}
