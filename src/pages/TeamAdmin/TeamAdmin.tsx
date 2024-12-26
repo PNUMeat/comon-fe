@@ -80,16 +80,25 @@ const SubjectControlButtonWrap = styled.button`
   background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   border: none;
+  margin-left: 27px;
 `;
 
 const SubjectControlButton: React.FC<{
   id: string;
-}> = ({ id }) => {
+  selectedDate: string;
+}> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
   return (
-    <SubjectControlButtonWrap onClick={() => navigate(`/team-subject/${id}`)}>
+    <SubjectControlButtonWrap
+      onClick={() => navigate(`/team-subject/${id}/${selectedDate}`)}
+    >
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
-      <SText fontSize="18px" color="#fff" fontWeight={700}>
+      <SText
+        fontSize="18px"
+        color="#fff"
+        fontWeight={700}
+        whiteSpace={'nowrap'}
+      >
         주제 작성 및 수정
       </SText>
     </SubjectControlButtonWrap>
@@ -102,8 +111,9 @@ const AnnouncementAndSubject = forwardRef<
     onClick: () => void;
     announcementToday: string;
     id: string;
+    selectedDate: string;
   }
->(({ announcementToday, onClick, id }, ref) => {
+>(({ announcementToday, onClick, id, selectedDate }, ref) => {
   return (
     <Announcement>
       <Box width="60%" height="70px" padding="12px 28px" ref={ref}>
@@ -137,7 +147,7 @@ const AnnouncementAndSubject = forwardRef<
         />
       </Box>
 
-      <SubjectControlButton id={id} />
+      <SubjectControlButton id={id} selectedDate={selectedDate} />
     </Announcement>
   );
 });
@@ -275,6 +285,7 @@ export const TeamAdmin = () => {
           onClick={() => setShow(true)}
           ref={announcementRef}
           id={id}
+          selectedDate={selectedDate}
         />
         <CalendarSection>
           <CustomCalendar
