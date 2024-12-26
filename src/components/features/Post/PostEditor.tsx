@@ -7,7 +7,6 @@ import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin'
 
 import { ChangeEvent, forwardRef, memo, useCallback, useState } from 'react';
 
-import { postTitleAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -17,7 +16,6 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { useSetAtom } from 'jotai';
 
 import './editor.css';
 
@@ -130,17 +128,17 @@ const TitleInput = styled.input`
 `;
 
 const PostEditor: React.FC<{
+  forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
   content?: string;
   setTag?: (tag: string) => void;
   // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
   //  임시방편이다.
   // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
-}> = ({ forwardContent, content, setTag }) => {
+}> = ({ forwardContent, forwardTitle, content, setTag }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
-  const setPostTitle = useSetAtom(postTitleAtom);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -154,9 +152,11 @@ const PostEditor: React.FC<{
         <TitleInput
           type={'text'}
           placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setPostTitle(e.target.value)
-          }
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            if (forwardTitle) {
+              forwardTitle(e.target.value);
+            }
+          }}
         />
         <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} setTag={setTag} />
         <PostContainer ref={onRef}>

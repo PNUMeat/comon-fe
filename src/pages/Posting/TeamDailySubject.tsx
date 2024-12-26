@@ -14,15 +14,15 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { postImagesAtom, postTitleAtom } from '@/store/posting';
+import { subjectImagesAtom, subjectTitleAtom } from '@/store/subject';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
   const [tag, setTag] = useState<string>('');
-  const [subjectImages] = useAtom(postImagesAtom);
-  const [subjectTitle] = useAtom(postTitleAtom);
+  const [subjectImages] = useAtom(subjectImagesAtom);
+  const [subjectTitle, setSubjectTitle] = useAtom(subjectTitleAtom);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,7 +60,11 @@ export const TeamDailySubject = () => {
         <Spacer h={22} />
         <PageSectionHeader h={40}>✏️주제 작성하기</PageSectionHeader>
         <Spacer h={39} />
-        <PostEditor forwardContent={setContent} setTag={setTag} />
+        <PostEditor
+          forwardContent={setContent}
+          forwardTitle={setSubjectTitle}
+          setTag={setTag}
+        />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
           <ClickImage src={click} />
