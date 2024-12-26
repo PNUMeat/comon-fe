@@ -175,8 +175,9 @@ export const Home = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // const { bottom } = entry.boundingClientRect;
+          const { bottom } = entry.boundingClientRect;
           const { height } = document.body.getBoundingClientRect();
+          console.error('??', bottom, height);
           if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
             effect.style.opacity = '0';
@@ -293,7 +294,7 @@ const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  // scroll-snap-type: y mandatory;
+  scroll-snap-type: y mandatory;
   position: relative;
 `;
 
