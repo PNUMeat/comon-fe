@@ -4,24 +4,24 @@ import { Flex } from '@/components/commons/Flex';
 import { InputContainer } from '@/components/commons/Form/segments/InputContainer';
 import { InputField } from '@/components/commons/Form/segments/InputField';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
-import { LazyImage } from '@/components/commons/LazyImage';
+import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
+import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
+import { Posts } from '@/components/features/TeamDashboard/Posts';
+import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { HeightInNumber } from '@/components/types';
 
-import {
-  Fragment,
-  Suspense,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { getTeamInfoAndTags } from '@/api/dashboard';
+import {
+  IArticle,
+  getArticlesByDate,
+  getTeamInfoAndTags,
+} from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
@@ -65,8 +65,9 @@ const AnnouncementImage = styled(Image)`
 `;
 
 const SubjectImage = styled(Image)`
-  position: absolute;
-  transform: translate(-25px, 0);
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 `;
 
 const SubjectControlButtonWrap = styled.button`
@@ -88,7 +89,7 @@ const SubjectControlButton: React.FC<{
     <SubjectControlButtonWrap onClick={() => navigate(`/team-subject/${id}`)}>
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText fontSize="18px" color="#fff" fontWeight={700}>
-        주제 작성 및 수정
+        주제 작성하기
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -104,12 +105,7 @@ const AnnouncementAndSubject = forwardRef<
 >(({ announcementToday, onClick, id }, ref) => {
   return (
     <Announcement>
-      <Box
-        width="60%"
-        height="70px"
-        padding={`0 24px 0 ${leftPadding}`}
-        ref={ref}
-      >
+      <Box width="60%" height="70px" padding="12px 28px" ref={ref}>
         <Flex
           direction="column"
           gap="4px"
@@ -127,7 +123,7 @@ const AnnouncementAndSubject = forwardRef<
             </SText>
           ) : (
             <SText color="gray" fontSize="14px" fontWeight={500}>
-              공지가 선언되지 않았어요.
+              공지가 등록되지 않았어요.
             </SText>
           )}
         </Flex>
@@ -159,9 +155,33 @@ export const TeamAdmin = () => {
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
+
   const { id } = useParams();
-  const year = 2024;
-  const month = 12;
+
+  const today = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<string>(today);
+  const [year, month] = selectedDate.split('-').map(Number);
+
+  const [currentView, setCurrentView] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
+    null
+  );
+
+  const { data: articlesData } = useQuery({
+    queryKey: ['articles-by-date', id, selectedDate, page],
+    queryFn: () => getArticlesByDate(Number(id), selectedDate, page),
+    enabled: !!id && !!selectedDate,
+  });
+
+  const handleShowTopicDetail = () => {
+    setCurrentView('topic');
+  };
+
+  const handleShowArticleDetail = (articleId: number) => {
+    setSelectedArticleId(articleId);
+    setCurrentView('article');
+  };
 
   useEffect(() => {
     if (
@@ -205,62 +225,48 @@ export const TeamAdmin = () => {
     }
   }, [show]);
 
-  const { data } = useQuery({
+  const { data: teamInfoData } = useQuery({
     queryKey: ['team-info', id, year, month],
     queryFn: () => getTeamInfoAndTags(Number(id), year, month),
     enabled: !!id,
   });
 
-  const tags = data?.subjectArticleDateAndTagResponses || [];
+  const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const posts = [
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-    {
-      name: '나는 진영',
-      imgSrc: 'src',
-      title: '11/26 코테풀이',
-      date: '2024.11.01  14:39',
-    },
-  ];
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   return (
     <Fragment>
       <Spacer h={28} />
       <Grid>
         <Sidebar>
-          <Box width="100%" height="380px" borderWidth="3px"></Box>
+          <Box width="100%" height="380px" padding="0px 40px">
+            <Flex direction="column" align="center" width={100} height={280}>
+              <SText fontSize="12px" fontWeight={600}>
+                TEAM
+              </SText>
+              <Spacer h={2} />
+              <SText fontSize="24px" color="#333" fontWeight={700}>
+                관리페이지
+              </SText>
+              <Spacer h={52} />
+              <SText
+                color="#777"
+                fontSize="16px"
+                fontWeight={500}
+                lineHeight="24px"
+              >
+                오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의 게시글
+                및 태그를 수정, 변경할 수 있습니다.
+              </SText>
+            </Flex>
+          </Box>
         </Sidebar>
 
         <AnnouncementAndSubject
@@ -272,43 +278,39 @@ export const TeamAdmin = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            /*//TODO : TEMP*/
-            selectedDate={''}
-            onDateSelect={(date: string) => {
-              console.log(date);
-            }}
+            onDateSelect={setSelectedDate}
+            selectedDate={selectedDate}
           />
-          <Spacer h={25} />
-          <Subjects>
-            <SubjectHead>
-              <SText>2024.11.26</SText>
-              <button>주제 확인하기</button>
-            </SubjectHead>
-            <PostWrap>
-              {posts.map((post) => (
-                <PostPreview
-                  title={post.title}
-                  date={post.date}
-                  imgSrc={post.imgSrc}
-                  name={post.name}
-                />
-              ))}
-            </PostWrap>
-          </Subjects>
-          <Spacer h={25} />
-          <Box width={'100%'} padding={'31px 21px 20px 21px'} height={'672px'}>
-            <Flex
-              direction="column"
-              gap="4px"
-              justify="flex-start"
-              padding="0 24px"
-            >
-              <AnnouncementImage src={AnnouncementIcon} />
-              <SText color="#333" fontSize="18px" fontWeight={700}>
-                Team announcement
-              </SText>
-            </Flex>
-          </Box>
+          <Spacer h={24} />
+          {articlesData && (
+            <>
+              <Posts
+                data={articlesData}
+                tags={tags}
+                selectedDate={selectedDate}
+                onShowTopicDetail={handleShowTopicDetail}
+                onShowArticleDetail={handleShowArticleDetail}
+              />
+              <Pagination
+                totalPages={articlesData.page.totalPages}
+                currentPageProp={page}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
+          <Spacer h={40} />
+          {currentView === 'topic' && (
+            <TopicDetail teamId={Number(id)} selectedDate={selectedDate} />
+          )}
+          {currentView === 'article' && articlesData && selectedArticleId && (
+            <ArticleDetail
+              data={
+                articlesData.content.find(
+                  (article) => article.articleId === selectedArticleId
+                ) as IArticle
+              }
+            />
+          )}
         </CalendarSection>
       </Grid>
       {createPortal(<PromptModal ref={modalRef} />, document.body)}
@@ -317,117 +319,6 @@ export const TeamAdmin = () => {
 };
 
 // const SubjectViewer = () => {};
-
-const PostWrap = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 60px;
-  width: 100%;
-  height: 216px;
-`;
-
-const PostPreview: React.FC<{
-  title: string;
-  date: string;
-  imgSrc: string;
-  name: string;
-}> = ({ title, date, imgSrc, name }) => (
-  <Post>
-    <PostPreviewWrap>
-      <SText
-        color={'#333'}
-        fontSize={'16px'}
-        fontWeight={600}
-        whiteSpace={'nowrap'}
-      >
-        {/*11/26 코테풀이*/}
-        {title}
-      </SText>
-      <Spacer h={4} />
-      <SText
-        fontSize={'10px'}
-        fontWeight={400}
-        color={'#777'}
-        whiteSpace={'nowrap'}
-      >
-        {/*2024.11.01*/}
-        {date}
-      </SText>
-      <Spacer h={14} />
-      <Flex align={'center'} gap={'7px'}>
-        <Suspense
-          fallback={
-            <div
-              style={{
-                width: '16px',
-                height: '16px',
-                borderRadius: '4px',
-                backgroundColor: 'dodgerblue',
-              }}
-            />
-          }
-        >
-          <LazyImage
-            altText={'profile picture'}
-            w={16}
-            maxW={16}
-            h={16}
-            src={imgSrc}
-          />
-        </Suspense>
-        <SText
-          color={'#333'}
-          fontSize={'12px'}
-          fontWeight={600}
-          whiteSpace={'nowrap'}
-        >
-          {/*나는 진영*/}
-          {name}
-        </SText>
-      </Flex>
-    </PostPreviewWrap>
-  </Post>
-);
-
-const Post = styled.div`
-  align-items: center;
-  border-radius: 10px;
-  border: 1px solid #cdcfff;
-  background: #fff;
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
-`;
-
-const PostPreviewWrap = styled.div`
-  width: 65px;
-  height: 16px;
-  margin: 20px 0 7px 21px;
-`;
-
-const Subjects = styled.div`
-  width: 100%;
-  padding: 20px 40px;
-  height: 327px;
-  position: relative;
-  background: #fff;
-  color: #000;
-  box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
-  box-sizing: border-box;
-  border-radius: 20px;
-`;
-
-const SubjectHead = styled.div`
-  width: 100%;
-  border-radius: 20px;
-  box-sizing: border-box;
-  padding: 21px 51px;
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  left: 0;
-  top: 0;
-  border: 1px solid #cdcfff;
-`;
 
 const ModalWrap = styled.div<HeightInNumber>`
   height: ${(props) => (props.h ? `${props.h}px` : '0')};

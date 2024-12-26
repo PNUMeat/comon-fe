@@ -6,13 +6,16 @@ export const getTitle = (path: string): ReactNode => {
     return <span>🗓️ 팀 페이지</span>;
   }
 
+  if (path.startsWith('/team-admin')) {
+    return <span>🎂 팀 페이지 관리</span>;
+  }
+
   const staticTitles: Record<string, ReactNode> = {
     '/login': <span>🔑 로그인</span>,
     '/enroll': <span>👑 프로필 생성</span>,
     '/modification': <span>👑 프로필 수정</span>,
     '/team-registration': <span>👑 팀 생성</span>,
     '/team-modification': <span>👑 팀 수정</span>,
-    '/team-admin': <span>🎂 팀 페이지 관리</span>,
   };
 
   return staticTitles[path];
