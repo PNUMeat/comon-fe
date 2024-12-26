@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
         // ),
       },
       {
-        path: PATH.TEAM_ADMIN,
+        path: `${PATH.TEAM_ADMIN}/:teamId`,
         element: <TeamAdmin />,
       },
     ],
