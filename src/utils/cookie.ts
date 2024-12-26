@@ -25,3 +25,14 @@ export const handleCookieOnRedirect = () => {
 
 export const checkIfLoggedIn = () =>
   sessionStorage.getItem('Authorization') !== null;
+
+export const checkRemainingCookies = () => {
+  const cookie = getCookieAsJson();
+  if (Object.entries(cookie).length > 0) {
+    const at = cookie['access_token'];
+    if (at) {
+      sessionStorage.setItem('Authorization', at);
+    }
+  }
+  return sessionStorage.getItem('Authorization') !== null;
+};

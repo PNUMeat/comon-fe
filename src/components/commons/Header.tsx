@@ -1,4 +1,4 @@
-import { checkIfLoggedIn } from '@/utils/cookie';
+import { checkRemainingCookies } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
@@ -77,16 +77,11 @@ const ComonLogoWrap = styled.div`
 `;
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const [isLoggedIn] = useState<boolean>(checkIfLoggedIn());
+  const [isLoggedIn] = useState<boolean>(checkRemainingCookies());
   const location = useLocation();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     setIsLoggedIn(checkIfLoggedIn());
-  //
-  //   }
-  // });
+  console.error('???', isLoggedIn);
 
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
   const onClickHome = () => navigate(PATH.HOME);
