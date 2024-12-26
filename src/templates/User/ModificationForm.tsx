@@ -1,3 +1,5 @@
+import { usePrompt } from '@/hooks/usePrompt';
+
 import { ComonFormGrid } from '@/components/commons/Form/ComonFormGrid';
 import { ComonFormTitle } from '@/components/commons/Form/ComonFormTitle';
 import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
@@ -28,6 +30,8 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
     queryKey: ['my-profile-query'],
     queryFn: getMyProfile,
   });
+
+  usePrompt(true);
 
   return (
     <ModificationFormContainer h={h}>
