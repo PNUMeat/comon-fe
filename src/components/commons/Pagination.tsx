@@ -32,6 +32,8 @@ export const Pagination = ({ totalPages, onPageChange }: IPaginationProps) => {
     }
   };
 
+  console.log(currentPage);
+
   return (
     <Flex justify="center">
       <PaginationContainer>
