@@ -37,7 +37,7 @@ export const Posting = () => {
       articleTitle: postTitle,
     }).then((data) => {
       const { teamId } = data;
-      navigate(`posting/${teamId}`);
+      navigate(`team-dashboard/${teamId}`);
     });
 
   return (
@@ -84,6 +84,7 @@ const ConfirmButtonWrap = styled.div`
   height: 80px;
   padding: 0;
   border: 3px solid ${colors.borderPurple};
+  cursor: pointer;
 `;
 
 // TODO: TeamJoin에서 가져옴
