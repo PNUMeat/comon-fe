@@ -17,7 +17,6 @@ interface PostsProps {
     articleCategory: string;
   }[];
   selectedDate: string;
-  page: number;
   onShowTopicDetail: () => void;
   onShowArticleDetail: (articleId: number) => void;
   onPageChange: (page: number) => void;
@@ -27,7 +26,6 @@ export const Posts: React.FC<PostsProps> = ({
   data,
   tags,
   selectedDate,
-  page,
   onShowTopicDetail,
   onShowArticleDetail,
   onPageChange,
@@ -124,11 +122,7 @@ export const Posts: React.FC<PostsProps> = ({
         </List>
       )}
       <Spacer h={260} />
-      <Pagination
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        currentPage={page + 1}
-      />
+      <Pagination totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 };

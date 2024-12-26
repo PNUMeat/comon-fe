@@ -28,13 +28,6 @@ export const TeamList = ({
   totalPages,
   onPageChange,
 }: TeamListProps) => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    onPageChange(page - 1);
-  };
-
   return (
     <>
       <PageSectionHeader h={40}>
@@ -58,11 +51,7 @@ export const TeamList = ({
         })}
       </List>
       <Spacer h={34} />
-      <Pagination
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        currentPage={currentPage}
-      />
+      <Pagination totalPages={totalPages} onPageChange={onPageChange} />
       <Spacer h={34} />
     </>
   );
