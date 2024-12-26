@@ -156,7 +156,7 @@ export const TeamAdmin = () => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const today = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState<string>(today);
