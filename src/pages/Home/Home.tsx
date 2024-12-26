@@ -7,7 +7,7 @@ import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -127,78 +127,79 @@ export const Home = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const effectRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!bottomRef || !bottomRef.current || !effectRef || !effectRef.current) {
-      return;
-    }
-    const bottom = bottomRef.current;
-    const effect = effectRef.current;
-    const fadeIn = 500;
-    const fadeOut = 3000 + fadeIn;
-    let animationFrameId: number | null = null;
-    let startTime: number | null = null;
-    let fadeOutStartTime: number | null = null;
-    const animate = (pos: number) => (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      if (elapsed < fadeIn) {
-        animationFrameId = requestAnimationFrame(animate(pos));
-        return;
-      }
-
-      if (effect.style.opacity === '' || effect.style.opacity === '0') {
-        effect.style.opacity = '1';
-        // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
-        effect.style.top = `${pos + 204 + 72}px`;
-        Array.from(effect.children).forEach((child) => {
-          (child as HTMLElement).style.opacity = '1';
-        });
-        fadeOutStartTime = timestamp;
-      }
-
-      if (fadeOutStartTime) {
-        const fadeOutElapsed = timestamp - fadeOutStartTime;
-        if (fadeOutElapsed < fadeOut) {
-          const opacity = 1 - fadeOutElapsed / fadeOut;
-          effect.style.opacity = opacity.toString();
-          animationFrameId = requestAnimationFrame(animate(pos));
-        } else {
-          effect.style.opacity = '0';
-          Array.from(effect.children).forEach((child) => {
-            (child as HTMLElement).style.opacity = '0';
-          });
-          animationFrameId = null;
-        }
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          // const { bottom } = entry.boundingClientRect;
-          const { height } = document.body.getBoundingClientRect();
-          if (animationFrameId !== null) {
-            cancelAnimationFrame(animationFrameId);
-            effect.style.opacity = '0';
-            Array.from(effect.children).forEach((child) => {
-              (child as HTMLElement).style.opacity = '0';
-            });
-          }
-          animationFrameId = requestAnimationFrame(animate(height));
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    observer.observe(bottom);
-
-    return () => {
-      if (animationFrameId !== null) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      observer.disconnect();
-    };
-  }, []);
+  // useEffect(() => {
+  //   if (!bottomRef || !bottomRef.current || !effectRef || !effectRef.current) {
+  //     return;
+  //   }
+  //   const bottom = bottomRef.current;
+  //   const effect = effectRef.current;
+  //   const fadeIn = 0;
+  //   const fadeOut = 3000 + fadeIn;
+  //   let animationFrameId: number | null = null;
+  //   let startTime: number | null = null;
+  //   let fadeOutStartTime: number | null = null;
+  //   const animate = (pos: number) => (timestamp: number) => {
+  //     if (!startTime) startTime = timestamp;
+  //     const elapsed = timestamp - startTime;
+  //     if (elapsed < fadeIn) {
+  //       animationFrameId = requestAnimationFrame(animate(pos));
+  //       return;
+  //     }
+  //
+  //     if (effect.style.opacity === '' || effect.style.opacity === '0') {
+  //       effect.style.opacity = '1';
+  //       // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
+  //       effect.style.top = `${pos + 204 + 72}px`;
+  //       Array.from(effect.children).forEach((child) => {
+  //         (child as HTMLElement).style.opacity = '1';
+  //       });
+  //       fadeOutStartTime = timestamp;
+  //     }
+  //
+  //     if (fadeOutStartTime) {
+  //       const fadeOutElapsed = timestamp - fadeOutStartTime;
+  //       if (fadeOutElapsed < fadeOut) {
+  //         const opacity = 1 - fadeOutElapsed / fadeOut;
+  //         effect.style.opacity = opacity.toString();
+  //         animationFrameId = requestAnimationFrame(animate(pos));
+  //       } else {
+  //         effect.style.opacity = '0';
+  //         Array.from(effect.children).forEach((child) => {
+  //           (child as HTMLElement).style.opacity = '0';
+  //         });
+  //         animationFrameId = null;
+  //       }
+  //     }
+  //   };
+  //
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         const { bottom } = entry.boundingClientRect;
+  //         const { height } = document.body.getBoundingClientRect();
+  //         console.error('??', bottom, height);
+  //         if (animationFrameId !== null) {
+  //           cancelAnimationFrame(animationFrameId);
+  //           effect.style.opacity = '0';
+  //           Array.from(effect.children).forEach((child) => {
+  //             (child as HTMLElement).style.opacity = '0';
+  //           });
+  //         }
+  //         animationFrameId = requestAnimationFrame(animate(height));
+  //       }
+  //     },
+  //     { threshold: 1.0 }
+  //   );
+  //
+  //   observer.observe(bottom);
+  //
+  //   return () => {
+  //     if (animationFrameId !== null) {
+  //       cancelAnimationFrame(animationFrameId);
+  //     }
+  //     observer.disconnect();
+  //   };
+  // }, []);
 
   return (
     <ScrollSnapContainer>
@@ -293,7 +294,7 @@ const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  // scroll-snap-type: y mandatory;
+  scroll-snap-type: y mandatory;
   position: relative;
 `;
 
