@@ -95,7 +95,11 @@ export const router = createBrowserRouter([
       },
       {
         path: `${PATH.TEAM_ADMIN}/:id`,
-        element: <TeamAdmin />,
+        element: (
+          <Suspense fallback={<LazySkeleton />}>
+            <TeamAdmin />
+          </Suspense>
+        ),
       },
     ],
   },
