@@ -46,6 +46,10 @@ interface ITeamListResponse {
   };
 }
 
+interface ICreateTeamResponse {
+  teamId: number;
+}
+
 export const createTeam = async ({
   teamName,
   teamExplain,
@@ -66,13 +70,17 @@ export const createTeam = async ({
     formData.append('image', image);
   }
 
-  const res = await apiInstance.post('v1/teams', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
+    'v1/teams',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
 
-  return res.data;
+  return res.data.data;
 };
 
 export const getTeamList = async (

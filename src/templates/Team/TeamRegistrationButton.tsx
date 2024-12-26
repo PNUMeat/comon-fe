@@ -1,5 +1,7 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
+import { useNavigate } from 'react-router-dom';
+
 import { createTeam } from '@/api/team';
 import {
   formTextInputAtom,
@@ -20,6 +22,7 @@ export const TeamRegistrationButton = () => {
   const memberLimit = useAtomValue(teamMaxNumAtom);
   const password = useAtomValue(teamPasswordAtom);
   const image = useAtomValue(imageAtom);
+  const navigate = useNavigate();
 
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
@@ -32,7 +35,10 @@ export const TeamRegistrationButton = () => {
         password,
         image,
       })
-        .then(() => alert('팀 생성에 성공했습니다.'))
+        .then((data) => {
+          navigate(`/team-dashboard/${data.teamId}`);
+          alert('팀 생성에 성공했습니다.');
+        })
         .catch(() => alert('팀 생성에 실패했습니다.'));
     }
   };
