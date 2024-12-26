@@ -86,6 +86,7 @@ export const TeamDashboardPage = () => {
               data={articlesData}
               tags={tags}
               selectedDate={selectedDate}
+              page={page}
               onShowTopicDetail={handleShowTopicDetail}
               onShowArticleDetail={handleShowArticleDetail}
               onPageChange={handlePageChange}

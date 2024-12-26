@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ArrowButton from '@/assets/TeamJoin/arrow.png';
 import { colors } from '@/constants/colors';
@@ -10,10 +10,19 @@ import { Spacer } from './Spacer';
 interface IPaginationProps {
   totalPages: number;
   onPageChange: (page: number) => void;
+  currentPage: number;
 }
 
-export const Pagination = ({ totalPages, onPageChange }: IPaginationProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
+export const Pagination = ({
+  totalPages,
+  onPageChange,
+  currentPage: parentCurrentPage,
+}: IPaginationProps) => {
+  const [currentPage, setCurrentPage] = useState(parentCurrentPage);
+
+  useEffect(() => {
+    setCurrentPage(parentCurrentPage);
+  }, [parentCurrentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
