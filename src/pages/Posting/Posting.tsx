@@ -21,7 +21,7 @@ import { useAtom } from 'jotai';
 export const Posting = () => {
   const [content, setContent] = useState<string>('');
   const [postImages] = useAtom(postImagesAtom);
-  const [postTitle] = useAtom(postTitleAtom);
+  const [postTitle, setPostTitle] = useAtom(postTitleAtom);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -37,7 +37,7 @@ export const Posting = () => {
       articleTitle: postTitle,
     }).then((data) => {
       const { teamId } = data;
-      navigate(`posting/${teamId}`);
+      navigate(`team-dashboard/${teamId}`);
     });
 
   return (
@@ -55,7 +55,7 @@ export const Posting = () => {
         <Spacer h={22} />
         <PageSectionHeader h={40}>✏️오늘의 글 등록하기</PageSectionHeader>
         <Spacer h={39} />
-        <PostEditor forwardContent={setContent} />
+        <PostEditor forwardContent={setContent} forwardTitle={setPostTitle} />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
           <ClickImage src={click} />
@@ -84,6 +84,7 @@ const ConfirmButtonWrap = styled.div`
   height: 80px;
   padding: 0;
   border: 3px solid ${colors.borderPurple};
+  cursor: pointer;
 `;
 
 // TODO: TeamJoin에서 가져옴

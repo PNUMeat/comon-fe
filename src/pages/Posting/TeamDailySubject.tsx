@@ -22,7 +22,7 @@ export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
   const [tag, setTag] = useState<string>('');
   const [subjectImages] = useAtom(subjectImagesAtom);
-  const [subjectTitle] = useAtom(subjectTitleAtom);
+  const [subjectTitle, setSubjectTitle] = useAtom(subjectTitleAtom);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,7 +60,11 @@ export const TeamDailySubject = () => {
         <Spacer h={22} />
         <PageSectionHeader h={40}>✏️주제 작성하기</PageSectionHeader>
         <Spacer h={39} />
-        <PostEditor forwardContent={setContent} setTag={setTag} />
+        <PostEditor
+          forwardContent={setContent}
+          forwardTitle={setSubjectTitle}
+          setTag={setTag}
+        />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
           <ClickImage src={click} />
@@ -89,6 +93,7 @@ const ConfirmButtonWrap = styled.div`
   height: 80px;
   padding: 0;
   border: 3px solid ${colors.borderPurple};
+  cursor: pointer;
 `;
 
 // TODO: TeamJoin에서 가져옴
