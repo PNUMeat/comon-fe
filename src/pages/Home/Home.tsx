@@ -133,7 +133,7 @@ export const Home = () => {
     }
     const bottom = bottomRef.current;
     const effect = effectRef.current;
-    const fadeIn = 500;
+    const fadeIn = 0;
     const fadeOut = 3000 + fadeIn;
     let animationFrameId: number | null = null;
     let startTime: number | null = null;
