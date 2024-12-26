@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-// TODO : background color 필요한지?
 interface TextProps {
   color?: string;
+  fontFamily?: string;
   fontSize?: string;
   fontWeight?: string | number;
   lineHeight?: string;
@@ -14,6 +14,7 @@ interface TextProps {
 
 export const SText = styled.div<TextProps>`
   color: ${(props) => props.color || 'inherit'};
+  font-family: ${(props) => props.fontFamily || 'inherit'};
   font-size: ${(props) => props.fontSize || 'inherit'};
   font-weight: ${(props) => props.fontWeight || 'inherit'};
   line-height: ${(props) => props.lineHeight || 'inherit'};
