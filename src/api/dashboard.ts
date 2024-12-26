@@ -21,6 +21,7 @@ export interface IArticle {
   imageUrl: string;
   memberName: string;
   memberImage: string;
+  isAuthor: boolean;
 }
 
 export interface IArticlesByDateResponse {
