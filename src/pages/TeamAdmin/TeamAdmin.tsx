@@ -89,7 +89,7 @@ const SubjectControlButton: React.FC<{
     <SubjectControlButtonWrap onClick={() => navigate(`/team-subject/${id}`)}>
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText fontSize="18px" color="#fff" fontWeight={700}>
-        주제 작성하기
+        주제 작성 및 수정
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -151,7 +151,6 @@ const CalendarSection = styled.section`
 `;
 
 export const TeamAdmin = () => {
-  const announcementToday = '제목 양식: 00/00 코테 풀이로 작성 할 것!';
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
@@ -231,6 +230,7 @@ export const TeamAdmin = () => {
     enabled: !!id,
   });
 
+  const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || ''; // TODO:
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   if (!id) {
