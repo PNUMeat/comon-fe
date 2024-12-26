@@ -7,7 +7,7 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { createPost } from '@/api/postings';
 import commonToday from '@/assets/Posting/comonToday.png';
@@ -22,7 +22,7 @@ export const Posting = () => {
   const [content, setContent] = useState<string>('');
   const [postImages] = useAtom(postImagesAtom);
   const [postTitle] = useAtom(postTitleAtom);
-
+  const navigate = useNavigate();
   const { id } = useParams();
 
   if (!id) {
@@ -35,7 +35,10 @@ export const Posting = () => {
       image: (postImages && postImages[0]) ?? null,
       articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,
-    }).then((data) => alert(data.message));
+    }).then((data) => {
+      const { teamId } = data;
+      navigate(`posting/${teamId}`);
+    });
 
   return (
     <CommonLayout>

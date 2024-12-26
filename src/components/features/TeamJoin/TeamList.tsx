@@ -8,6 +8,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { ITeamInfo, joinTeam } from '@/api/team';
 import { colors } from '@/constants/colors';
@@ -88,6 +89,14 @@ const FlipCardContent = ({
   isBack?: boolean;
 }) => {
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const joinOnClick = (teamId: number, password: string) => () => {
+    joinTeam(teamId, password)
+      .then((data) => {
+        navigate(`/team-dashboard/${data.teamId}`);
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <Box width="100%" height="100%">
@@ -122,7 +131,8 @@ const FlipCardContent = ({
             <Spacer h={14} />
             <Button
               backgroundColor={colors.buttonPurple}
-              onClick={() => joinTeam(team.teamId, password)}
+              // onClick={() => joinTeam(team.teamId, password)}
+              onClick={joinOnClick(team.teamId, password)}
             >
               팀 참가하기
             </Button>
