@@ -17,6 +17,7 @@ import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
+import { updateAnnouncement } from '@/api/announcement';
 import {
   IArticle,
   getArticlesByDate,
@@ -313,7 +314,10 @@ export const TeamAdmin = () => {
           )}
         </CalendarSection>
       </Grid>
-      {createPortal(<PromptModal ref={modalRef} />, document.body)}
+      {createPortal(
+        <PromptModal ref={modalRef} teamId={Number(id)} />,
+        document.body
+      )}
     </Fragment>
   );
 };
@@ -333,48 +337,54 @@ const ModalWrap = styled.div<HeightInNumber>`
   align-items: center;
 `;
 
-const PromptModal = forwardRef<HTMLDivElement>((_props, ref) => {
-  const [announcement, setAnnouncement] = useState<string>('');
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnnouncement(e.target.value);
-  };
-  return (
-    <ModalWrap h={222} ref={ref}>
-      <div style={{ padding: `0 24px 0 ${leftPadding}` }}>
-        <AnnouncementImage src={AnnouncementIcon} />
-        <SText color="#333" fontSize="18px" fontWeight={700}>
-          Team announcement
-        </SText>
-      </div>
-      <Spacer h={25} />
-      <Wrap>
-        <InputContainer>
-          <InputField
-            placeholder={'공지글 입력'}
-            maxLength={50}
-            value={announcement}
-            onChange={onChange}
-          />
-        </InputContainer>
-        <InputHelperText>
-          {announcement.length}/{50}자
-        </InputHelperText>
-      </Wrap>
-      <Spacer h={44} />
-      <div
-        style={{
-          display: 'flex',
-          gap: '14px',
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        <CancelButton>취소</CancelButton>
-        <SaveButton>저장하기</SaveButton>
-      </div>
-    </ModalWrap>
-  );
-});
+const PromptModal = forwardRef<HTMLDivElement, { teamId: number }>(
+  ({ teamId }, ref) => {
+    const [announcement, setAnnouncement] = useState<string>('');
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setAnnouncement(e.target.value);
+    };
+
+    return (
+      <ModalWrap h={222} ref={ref}>
+        <div style={{ padding: `0 24px 0 ${leftPadding}` }}>
+          <AnnouncementImage src={AnnouncementIcon} />
+          <SText color="#333" fontSize="18px" fontWeight={700}>
+            Team announcement
+          </SText>
+        </div>
+        <Spacer h={25} />
+        <Wrap>
+          <InputContainer>
+            <InputField
+              placeholder={'공지글 입력'}
+              maxLength={50}
+              value={announcement}
+              onChange={onChange}
+            />
+          </InputContainer>
+          <InputHelperText>
+            {announcement.length}/{50}자
+          </InputHelperText>
+        </Wrap>
+        <Spacer h={44} />
+        <div
+          style={{
+            display: 'flex',
+            gap: '14px',
+            width: '100%',
+            justifyContent: 'center',
+          }}
+        >
+          <CancelButton>취소</CancelButton>
+          <SaveButton onClick={() => updateAnnouncement(teamId, announcement)}>
+            저장하기
+          </SaveButton>
+        </div>
+      </ModalWrap>
+    );
+  }
+);
 
 PromptModal.displayName = 'PromptModal';
 
