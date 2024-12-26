@@ -208,7 +208,7 @@ const Carousel = styled.div`
 export const CircleNav = styled.div`
   position: absolute;
   left: 50%;
-  transform: translate(-50%, 296px);
+  transform: translate(-50%, 310px);
   display: flex;
   gap: 8px;
 `;
