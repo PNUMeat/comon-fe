@@ -38,7 +38,5 @@ export const createPost = async ({
     }
   );
 
-  console.error('?post', res.data.data);
-
   return res.data.data;
 };

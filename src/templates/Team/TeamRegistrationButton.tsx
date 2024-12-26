@@ -37,7 +37,6 @@ export const TeamRegistrationButton = () => {
       })
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
-          alert('팀 생성에 성공했습니다.');
         })
         .catch(() => alert('팀 생성에 실패했습니다.'));
     }
