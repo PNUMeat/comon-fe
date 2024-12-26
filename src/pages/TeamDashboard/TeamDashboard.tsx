@@ -8,7 +8,11 @@ import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { Suspense, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-import { getArticlesByDate, getTeamInfoAndTags } from '@/api/dashboard';
+import {
+  IArticle,
+  getArticlesByDate,
+  getTeamInfoAndTags,
+} from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -92,7 +96,13 @@ export const TeamDashboardPage = () => {
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
           {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail data={articlesData} articleId={selectedArticleId} />
+            <ArticleDetail
+              data={
+                articlesData.content.find(
+                  (article) => article.articleId === selectedArticleId
+                ) as IArticle
+              }
+            />
           )}
         </CalendarSection>
       </Grid>
