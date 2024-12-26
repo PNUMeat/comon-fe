@@ -101,7 +101,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       <UserMenu>
         {isLoggedIn ? (
           // <Link to={PATH.PROFILE}>프로필 수정</Link>
-          <Link to={PATH.TEAM_DASHBOARD}>팀 페이지</Link>
+          <Link to={PATH.TEAMS}>팀 페이지</Link>
         ) : (
           <Link
             to={{

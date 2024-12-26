@@ -1,6 +1,14 @@
 import apiInstance from '@/api/apiInstance';
+import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
+  teamId: number;
+  articleTitle: string;
+  articleBody: string;
+  image: File | null;
+};
+
+type PostingMutationResp = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
@@ -23,11 +31,15 @@ export const createPost = async ({
     formData.append('image', image);
   }
 
-  const res = await apiInstance.post('v1/articles', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
+    'v1/articles',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
 
   return res.data.data;
 };
