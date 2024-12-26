@@ -2,7 +2,6 @@ import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
-import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
@@ -19,7 +18,6 @@ interface PostsProps {
   selectedDate: string;
   onShowTopicDetail: () => void;
   onShowArticleDetail: (articleId: number) => void;
-  onPageChange: (page: number) => void;
 }
 
 export const Posts: React.FC<PostsProps> = ({
@@ -28,10 +26,7 @@ export const Posts: React.FC<PostsProps> = ({
   selectedDate,
   onShowTopicDetail,
   onShowArticleDetail,
-  onPageChange,
 }) => {
-  const totalPages = data?.page.totalPages || 1;
-
   const categoryColors: Record<string, string> = {
     '스터디 복습': '#6E74FA',
     '스터디 예습': '#C2C4FB',
@@ -48,10 +43,6 @@ export const Posts: React.FC<PostsProps> = ({
 
   const handleArticleClick = (articleId: number) => {
     onShowArticleDetail(articleId);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    onPageChange(newPage);
   };
 
   return (
@@ -122,7 +113,6 @@ export const Posts: React.FC<PostsProps> = ({
         </List>
       )}
       <Spacer h={260} />
-      <Pagination totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 };

@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import ArrowButton from '@/assets/TeamJoin/arrow.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -10,29 +8,29 @@ import { Spacer } from './Spacer';
 interface IPaginationProps {
   totalPages: number;
   onPageChange: (page: number) => void;
+  currentPageProp: number;
 }
 
-export const Pagination = ({ totalPages, onPageChange }: IPaginationProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
-
+export const Pagination = ({
+  totalPages,
+  onPageChange,
+  currentPageProp,
+}: IPaginationProps) => {
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    onPageChange(page - 1);
+    onPageChange(page);
   };
 
   const handlePrev = () => {
-    if (currentPage > 1) {
-      handlePageChange(currentPage - 1);
+    if (currentPageProp > 1) {
+      handlePageChange(currentPageProp - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
-      handlePageChange(currentPage + 1);
+    if (currentPageProp < totalPages) {
+      handlePageChange(currentPageProp + 1);
     }
   };
-
-  console.log(currentPage);
 
   return (
     <Flex justify="center">
@@ -43,8 +41,8 @@ export const Pagination = ({ totalPages, onPageChange }: IPaginationProps) => {
           {Array.from({ length: totalPages }, (_, index) => (
             <PageNumber
               key={index + 1}
-              isActive={index + 1 === currentPage}
-              onClick={() => handlePageChange(index + 1)}
+              isActive={index + 1 === currentPageProp + 1}
+              onClick={() => handlePageChange(index)}
             >
               {index + 1}
             </PageNumber>

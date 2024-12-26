@@ -1,4 +1,5 @@
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
+import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
@@ -52,13 +53,13 @@ export const TeamDashboardPage = () => {
     setCurrentView('article');
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
@@ -82,14 +83,20 @@ export const TeamDashboardPage = () => {
           />
           <Spacer h={24} />
           {articlesData && (
-            <Posts
-              data={articlesData}
-              tags={tags}
-              selectedDate={selectedDate}
-              onShowTopicDetail={handleShowTopicDetail}
-              onShowArticleDetail={handleShowArticleDetail}
-              onPageChange={handlePageChange}
-            />
+            <>
+              <Posts
+                data={articlesData}
+                tags={tags}
+                selectedDate={selectedDate}
+                onShowTopicDetail={handleShowTopicDetail}
+                onShowArticleDetail={handleShowArticleDetail}
+              />
+              <Pagination
+                totalPages={articlesData.page.totalPages}
+                currentPageProp={page}
+                onPageChange={handlePageChange}
+              />
+            </>
           )}
           <Spacer h={40} />
           {currentView === 'topic' && (
