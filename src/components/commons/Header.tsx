@@ -38,7 +38,7 @@ const ComonSLogo = styled.div`
 
 const NavMenu = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 52px;
   margin-left: 106px;
   align-items: center;
 
@@ -81,8 +81,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.error('???', isLoggedIn);
-
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
   const onClickHome = () => navigate(PATH.HOME);
 
@@ -96,8 +94,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           </ComonSLogo>
         </ComonLogoWrap>
         <NavMenu>
-          <a href="#service">서비스 소개</a>
-          <a href="#team">활동 팀</a>
+          <a href={PATH.HOME}>서비스 소개</a>
+          <a href={PATH.TEAMS}>활동 팀</a>
         </NavMenu>
       </Flex>
       <UserMenu>

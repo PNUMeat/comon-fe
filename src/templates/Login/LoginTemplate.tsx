@@ -16,8 +16,6 @@ export const LoginTemplate = () => {
   useEffect(() => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
-      // const previousPath = location.state?.redirect ?? PATH.HOME;
-      console.error('loginTemplate', location.state?.redirect);
       const navigatePath = location.state?.redirect
         ? location.state.redirect === PATH.HOME
           ? PATH.TEAMS

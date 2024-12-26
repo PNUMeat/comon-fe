@@ -1,10 +1,12 @@
 import { ComonFormTitle } from '@/components/commons/Form/ComonFormTitle';
 import { LazyImage } from '@/components/commons/LazyImage';
+import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
 import { Suspense } from 'react';
 
 import { kakaoOauth2LoginUrl } from '@/api/user';
+import kakaoTalk from '@/assets/Login/kakaoTalkIcon.png';
 import loginVector from '@/assets/Login/loginVector.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -16,23 +18,6 @@ const Container = styled.div<HeightInNumber>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  height: 50px;
-  border-radius: 20px;
-  font-size: 16px;
-  border: 1px solid ${colors.borderPurple};
-  cursor: pointer;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 `;
 
 const LinkButton = styled.a`
@@ -58,19 +43,14 @@ const KakaoLinkButton = styled(LinkButton)`
   color: #000000;
 
   &::before {
-    content: '💬';
-    margin-right: 10px;
-  }
-`;
-
-const GoogleButton = styled(Button)`
-  background: #fff;
-  color: #000000;
-  border: 1px solid #ccc;
-
-  &::before {
-    content: '🌐';
-    margin-right: 10px;
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-image: url('${kakaoTalk}');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
   }
 `;
 
@@ -109,9 +89,17 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       />
       <LoginImage h={imgHeight} />
       <KakaoLinkButton href={kakaoOauth2LoginUrl}>
-        카카오로 시작하기
+        <SText
+          fontFamily={'Pretendard'}
+          color={'#3A2929'}
+          fontSize={'16px'}
+          fontWeight={500}
+          lineHeight={'19px'}
+          letterSpacing={'-0.32px'}
+        >
+          카카오로 시작하기
+        </SText>
       </KakaoLinkButton>
-      <GoogleButton>구글로 시작하기</GoogleButton>
     </Container>
   );
 };

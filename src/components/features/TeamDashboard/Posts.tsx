@@ -6,6 +6,8 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
+import { useState } from 'react';
+
 import { IArticlesByDateResponse } from '@/api/dashboard';
 import styled from '@emotion/styled';
 
@@ -20,6 +22,13 @@ interface PostsProps {
   onShowArticleDetail: (articleId: number) => void;
 }
 
+const categoryColors: Record<string, string> = {
+  '스터디 복습': '#6E74FA',
+  '스터디 예습': '#C2C4FB',
+  스터디: '#FFA379',
+  '코딩 테스트': '#FF5780',
+};
+
 export const Posts: React.FC<PostsProps> = ({
   data,
   tags,
@@ -27,13 +36,7 @@ export const Posts: React.FC<PostsProps> = ({
   onShowTopicDetail,
   onShowArticleDetail,
 }) => {
-  const categoryColors: Record<string, string> = {
-    '스터디 복습': '#6E74FA',
-    '스터디 예습': '#C2C4FB',
-    스터디: '#FFA379',
-    '코딩 테스트': '#FF5780',
-  };
-
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const getCategoryForSelectedDate = () => {
     if (!selectedDate) return null;
     return tags.find((tag) => tag.subjectDate === selectedDate) || null;
@@ -43,6 +46,7 @@ export const Posts: React.FC<PostsProps> = ({
 
   const handleArticleClick = (articleId: number) => {
     onShowArticleDetail(articleId);
+    setSelectedId(articleId);
   };
 
   return (
@@ -83,6 +87,15 @@ export const Posts: React.FC<PostsProps> = ({
               height="104px"
               padding="20px"
               key={article.articleId}
+              style={{
+                cursor: 'pointer',
+                boxShadow:
+                  selectedId === article.articleId
+                    ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+                    : undefined,
+                backgroundColor:
+                  selectedId === article.articleId ? '#F5F5F5' : '#fff',
+              }}
               onClick={() => handleArticleClick(article.articleId)}
             >
               <Flex direction="column">

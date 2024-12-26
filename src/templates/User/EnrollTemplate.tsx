@@ -1,5 +1,7 @@
 import { handleCookieOnRedirect } from '@/utils/cookie';
 
+import { usePrompt } from '@/hooks/usePrompt';
+
 import { GradientGlassPanel } from '@/components/commons/GradientGlassPanel';
 import { Spacer } from '@/components/commons/Spacer';
 
@@ -11,6 +13,8 @@ const EnrollTemplate = () => {
   useEffect(() => {
     handleCookieOnRedirect();
   }, []);
+
+  usePrompt(true);
 
   return (
     <Fragment>
