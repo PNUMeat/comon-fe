@@ -14,15 +14,15 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { subjectImagesAtom, subjectTitleAtom } from '@/store/subject';
+import { postImagesAtom, postTitleAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
   const [tag, setTag] = useState<string>('');
-  const [subjectImages] = useAtom(subjectImagesAtom);
-  const [subjectTitle] = useAtom(subjectTitleAtom);
+  const [subjectImages] = useAtom(postImagesAtom);
+  const [subjectTitle] = useAtom(postTitleAtom);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -89,6 +89,7 @@ const ConfirmButtonWrap = styled.div`
   height: 80px;
   padding: 0;
   border: 3px solid ${colors.borderPurple};
+  cursor: pointer;
 `;
 
 // TODO: TeamJoin에서 가져옴
