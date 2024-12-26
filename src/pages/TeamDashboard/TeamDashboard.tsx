@@ -6,8 +6,8 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Suspense, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Fragment, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import {
   IArticle,
@@ -15,9 +15,8 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
-import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -32,16 +31,18 @@ export const TeamDashboardPage = () => {
     null
   );
 
-  const { data: teamInfoData } = useQuery({
+  const { data: teamInfoData } = useSuspenseQuery({
     queryKey: ['team-info', teamId, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
-    enabled: !!teamId,
+    queryFn: () => {
+      return getTeamInfoAndTags(Number(teamId), year, month);
+    },
   });
 
-  const { data: articlesData } = useQuery({
+  const { data: articlesData } = useSuspenseQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
-    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
-    enabled: !!teamId && !!selectedDate,
+    queryFn: () => {
+      return getArticlesByDate(Number(teamId), selectedDate, page);
+    },
   });
 
   const handleShowTopicDetail = () => {
@@ -53,10 +54,6 @@ export const TeamDashboardPage = () => {
     setCurrentView('article');
   };
 
-  if (!teamId) {
-    return <Navigate to={PATH.TEAMS} />;
-  }
-
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -66,7 +63,7 @@ export const TeamDashboardPage = () => {
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Fragment>
       <Spacer h={28} />
       <Grid>
         {teamInfoData && (
@@ -113,7 +110,7 @@ export const TeamDashboardPage = () => {
           )}
         </CalendarSection>
       </Grid>
-    </Suspense>
+    </Fragment>
   );
 };
 
@@ -133,4 +130,5 @@ const CalendarSection = styled.section`
   background-color: #f8f8ff;
   border-radius: 20px;
   padding: 20px 36px 40px 36px;
+  margin-bottom: 100px;
 `;

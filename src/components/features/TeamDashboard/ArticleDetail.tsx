@@ -58,20 +58,16 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({ data }) => {
           </SText>
         </Flex>
         <Spacer h={36} />
-        {data?.imageUrl && (
-          <>
-            <LazyImage
-              src={data?.imageUrl}
-              altText="이미지 불러오기 실패"
-              w={600}
-              h="auto"
-              maxW={600}
-              style={{ padding: '0px 20px' }}
-            />
-            <Spacer h={36} />
-          </>
-        )}
-        <div dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }} />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: data?.imageUrl
+              ? data?.articleBody.replace(
+                  /(<img[^>]*src=")\?("[^>]*>)/g,
+                  `$1${data?.imageUrl}$2`
+                )
+              : data?.articleBody,
+          }}
+        />
       </Flex>
     </Box>
   );
