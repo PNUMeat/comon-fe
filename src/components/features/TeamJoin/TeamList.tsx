@@ -92,8 +92,8 @@ const FlipCardContent = ({
   const navigate = useNavigate();
   const joinOnClick = (teamId: number, password: string) => () => {
     joinTeam(teamId, password)
-      .then((data) => {
-        navigate(`/team-dashboard/${data.teamId}`);
+      .then(() => {
+        navigate(`/team-dashboard/${teamId}`);
       })
       .catch((err) => console.error(err));
   };

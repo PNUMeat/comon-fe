@@ -43,7 +43,7 @@ export const TeamDailySubject = () => {
         alert(r.message);
         navigate(`/team-admin/${id}`);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => alert(err.data.message));
   };
 
   return (

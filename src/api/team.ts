@@ -80,6 +80,8 @@ export const createTeam = async ({
     }
   );
 
+  console.error('??', res.data);
+
   return res.data.data;
 };
 
