@@ -272,8 +272,11 @@ export const TeamAdmin = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
+            /*//TODO : TEMP*/
             selectedDate={''}
-            onDateSelect={(_date: string) => {}}
+            onDateSelect={(date: string) => {
+              console.log(date);
+            }}
           />
           <Spacer h={25} />
           <Subjects>
