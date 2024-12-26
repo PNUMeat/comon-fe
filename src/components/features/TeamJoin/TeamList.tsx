@@ -1,11 +1,9 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
-// import { FilterButtons } from '@/components/commons/FilterButtons';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
-import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
@@ -23,11 +21,7 @@ interface TeamListProps {
   onPageChange: (page: number) => void;
 }
 
-export const TeamList = ({
-  teams,
-  totalPages,
-  onPageChange,
-}: TeamListProps) => {
+export const TeamList = ({ teams }: TeamListProps) => {
   return (
     <>
       <PageSectionHeader h={40}>
@@ -50,8 +44,6 @@ export const TeamList = ({
           );
         })}
       </List>
-      <Spacer h={34} />
-      <Pagination totalPages={totalPages} onPageChange={onPageChange} />
       <Spacer h={34} />
     </>
   );

@@ -1,4 +1,5 @@
 import { Box } from '@/components/commons/Box';
+import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
@@ -21,6 +22,9 @@ const TeamData = () => {
     queryFn: () => getTeamList('recent', page, 6),
   });
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
   const myTeams = data?.myTeams || [];
   const allTeams = data?.allTeams.content || [];
   const totalPages = data?.allTeams.page.totalPages || 1;
@@ -35,6 +39,12 @@ const TeamData = () => {
         totalPages={totalPages}
         onPageChange={setPage}
       />
+      <Pagination
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        currentPageProp={page}
+      />
+      <Spacer h={34} />
     </>
   );
 };
