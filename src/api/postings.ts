@@ -9,10 +9,7 @@ type PostingMutationArg = {
 };
 
 type PostingMutationResp = {
-  teamId: number;
-  articleTitle: string;
-  articleBody: string;
-  image: File | null;
+  articleId: number;
 };
 
 export const createPost = async ({
@@ -40,6 +37,8 @@ export const createPost = async ({
       },
     }
   );
+
+  console.error('?post', res.data.data);
 
   return res.data.data;
 };

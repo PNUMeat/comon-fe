@@ -38,5 +38,5 @@ export const createSubject = async ({
     }
   );
 
-  return res.data.data;
+  return res.data;
 };

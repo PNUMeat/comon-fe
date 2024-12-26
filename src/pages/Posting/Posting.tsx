@@ -35,10 +35,11 @@ export const Posting = () => {
       image: (postImages && postImages[0]) ?? null,
       articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       articleTitle: postTitle,
-    }).then((data) => {
-      const { teamId } = data;
-      navigate(`team-dashboard/${teamId}`);
-    });
+    })
+      .then(() => {
+        navigate(`/team-dashboard/${id}`);
+      })
+      .catch((err) => console.error(err));
 
   return (
     <CommonLayout>
