@@ -1,23 +1,34 @@
 import { Box } from '@/components/commons/Box';
+import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Flex } from '@/components/commons/Flex';
 import { InputContainer } from '@/components/commons/Form/segments/InputContainer';
 import { InputField } from '@/components/commons/Form/segments/InputField';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { HeightInNumber } from '@/components/types';
 
-import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  Suspense,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
+import { getTeamInfoAndTags } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
 const Grid = styled.div`
   display: grid;
@@ -135,12 +146,22 @@ const AnnouncementAndSubject = forwardRef<
 });
 AnnouncementAndSubject.displayName = 'AnnouncementAndSubject';
 
+// TODO: TeamDashboard에서 가져옴
+const CalendarSection = styled.section`
+  grid-area: calendar;
+  background-color: #f8f8ff;
+  border-radius: 20px;
+  padding: 20px 36px 40px 36px;
+`;
+
 export const TeamAdmin = () => {
   const announcementToday = '제목 양식: 00/00 코테 풀이로 작성 할 것!';
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
   const { id } = useParams();
+  const year = 2024;
+  const month = 12;
 
   useEffect(() => {
     if (
@@ -184,10 +205,56 @@ export const TeamAdmin = () => {
     }
   }, [show]);
 
+  const { data } = useQuery({
+    queryKey: ['team-info', id, year, month],
+    queryFn: () => getTeamInfoAndTags(Number(id), year, month),
+    enabled: !!id,
+  });
+
+  const tags = data?.subjectArticleDateAndTagResponses || [];
+
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
+  const posts = [
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+    {
+      name: '나는 진영',
+      imgSrc: 'src',
+      title: '11/26 코테풀이',
+      date: '2024.11.01  14:39',
+    },
+  ];
   return (
     <Fragment>
       <Spacer h={28} />
@@ -202,11 +269,165 @@ export const TeamAdmin = () => {
           ref={announcementRef}
           id={id}
         />
+        <CalendarSection>
+          <CustomCalendar
+            tags={tags}
+            /*//TODO : TEMP*/
+            selectedDate={''}
+            onDateSelect={(date: string) => {
+              console.log(date);
+            }}
+          />
+          <Spacer h={25} />
+          <Subjects>
+            <SubjectHead>
+              <SText>2024.11.26</SText>
+              <button>주제 확인하기</button>
+            </SubjectHead>
+            <PostWrap>
+              {posts.map((post) => (
+                <PostPreview
+                  title={post.title}
+                  date={post.date}
+                  imgSrc={post.imgSrc}
+                  name={post.name}
+                />
+              ))}
+            </PostWrap>
+          </Subjects>
+          <Spacer h={25} />
+          <Box width={'100%'} padding={'31px 21px 20px 21px'} height={'672px'}>
+            <Flex
+              direction="column"
+              gap="4px"
+              justify="flex-start"
+              padding="0 24px"
+            >
+              <AnnouncementImage src={AnnouncementIcon} />
+              <SText color="#333" fontSize="18px" fontWeight={700}>
+                Team announcement
+              </SText>
+            </Flex>
+          </Box>
+        </CalendarSection>
       </Grid>
       {createPortal(<PromptModal ref={modalRef} />, document.body)}
     </Fragment>
   );
 };
+
+// const SubjectViewer = () => {};
+
+const PostWrap = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 60px;
+  width: 100%;
+  height: 216px;
+`;
+
+const PostPreview: React.FC<{
+  title: string;
+  date: string;
+  imgSrc: string;
+  name: string;
+}> = ({ title, date, imgSrc, name }) => (
+  <Post>
+    <PostPreviewWrap>
+      <SText
+        color={'#333'}
+        fontSize={'16px'}
+        fontWeight={600}
+        whiteSpace={'nowrap'}
+      >
+        {/*11/26 코테풀이*/}
+        {title}
+      </SText>
+      <Spacer h={4} />
+      <SText
+        fontSize={'10px'}
+        fontWeight={400}
+        color={'#777'}
+        whiteSpace={'nowrap'}
+      >
+        {/*2024.11.01*/}
+        {date}
+      </SText>
+      <Spacer h={14} />
+      <Flex align={'center'} gap={'7px'}>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '4px',
+                backgroundColor: 'dodgerblue',
+              }}
+            />
+          }
+        >
+          <LazyImage
+            altText={'profile picture'}
+            w={16}
+            maxW={16}
+            h={16}
+            src={imgSrc}
+          />
+        </Suspense>
+        <SText
+          color={'#333'}
+          fontSize={'12px'}
+          fontWeight={600}
+          whiteSpace={'nowrap'}
+        >
+          {/*나는 진영*/}
+          {name}
+        </SText>
+      </Flex>
+    </PostPreviewWrap>
+  </Post>
+);
+
+const Post = styled.div`
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid #cdcfff;
+  background: #fff;
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+`;
+
+const PostPreviewWrap = styled.div`
+  width: 65px;
+  height: 16px;
+  margin: 20px 0 7px 21px;
+`;
+
+const Subjects = styled.div`
+  width: 100%;
+  padding: 20px 40px;
+  height: 327px;
+  position: relative;
+  background: #fff;
+  color: #000;
+  box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
+  box-sizing: border-box;
+  border-radius: 20px;
+`;
+
+const SubjectHead = styled.div`
+  width: 100%;
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 21px 51px;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 1px solid #cdcfff;
+`;
 
 const ModalWrap = styled.div<HeightInNumber>`
   height: ${(props) => (props.h ? `${props.h}px` : '0')};
@@ -253,7 +474,8 @@ const PromptModal = forwardRef<HTMLDivElement>((_props, ref) => {
         style={{
           display: 'flex',
           gap: '14px',
-          alignSelf: 'center',
+          width: '100%',
+          justifyContent: 'center',
         }}
       >
         <CancelButton>취소</CancelButton>
