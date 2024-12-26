@@ -67,8 +67,6 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
 
       <Carousel ref={containerRef}>
         {teams.map((team) => {
-          // const profiles = team.members.map((member) => member.imageUrl);
-
           return (
             <div
               style={{
@@ -77,7 +75,6 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
               }}
               key={team.teamId}
             >
-              {/*<Box key={team.teamId} width="100%">*/}
               <Box width="100%">
                 <Flex justify="space-around">
                   <Box width="260px" height="260px">
@@ -218,7 +215,7 @@ const DotButton = styled.button<{ isSelected?: boolean }>`
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  background-color: ${({ isSelected }) => (isSelected ? '#666' : '#ccc')};
+  background-color: ${({ isSelected }) => (isSelected ? '#8488ec' : '#cdcfff')};
   transition: background-color 0.3s;
 
   &:hover {
