@@ -23,10 +23,10 @@ export const TeamDailySubject = () => {
   const [tag, setTag] = useState<string>('');
   const [subjectImages] = useAtom(subjectImagesAtom);
   const [subjectTitle, setSubjectTitle] = useAtom(subjectTitleAtom);
-  const { id } = useParams();
+  const { id, selectedDate } = useParams();
   const navigate = useNavigate();
 
-  if (!id) {
+  if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
@@ -34,6 +34,7 @@ export const TeamDailySubject = () => {
     createSubject({
       teamId: parseInt(id),
       articleTitle: subjectTitle,
+      selectedDate: selectedDate,
       articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,

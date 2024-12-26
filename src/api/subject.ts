@@ -5,6 +5,7 @@ type SubjectMutationArg = {
   articleTitle: string;
   articleBody: string;
   articleCategory: string;
+  selectedDate: string;
   image: File | null;
 };
 
@@ -14,6 +15,7 @@ export const createSubject = async ({
   articleBody,
   image,
   articleCategory,
+  selectedDate,
 }: SubjectMutationArg) => {
   const formData = new FormData();
 
@@ -21,6 +23,7 @@ export const createSubject = async ({
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
   formData.append('articleCategory', articleCategory);
+  formData.append('selectedDate', selectedDate);
   if (image) {
     formData.append('image', image);
   }
