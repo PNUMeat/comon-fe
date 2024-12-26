@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { CSSProperties, forwardRef } from 'react';
 
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -9,10 +9,12 @@ interface BoxProps {
   padding?: string;
   borderWidth?: string;
   children?: React.ReactNode;
+  style?: CSSProperties;
+  onClick?: () => void;
 }
 
 export const Box = forwardRef<HTMLDivElement, BoxProps>(
-  ({ width, height, padding, borderWidth, children }, ref) => {
+  ({ width, height, padding, borderWidth, children, style, onClick }, ref) => {
     return (
       <StyledBox
         ref={ref}
@@ -20,6 +22,8 @@ export const Box = forwardRef<HTMLDivElement, BoxProps>(
         height={height}
         padding={padding}
         borderWidth={borderWidth}
+        style={style}
+        onClick={onClick}
       >
         {children}
       </StyledBox>
@@ -43,5 +47,4 @@ const StyledBox = styled.div<BoxProps>`
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
   position: relative;
-  // z-index: 2;
 `;

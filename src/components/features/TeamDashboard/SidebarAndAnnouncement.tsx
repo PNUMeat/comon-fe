@@ -9,7 +9,6 @@ import { Link, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
-import defaultProfile from '@/assets/TeamDashboard/default_profile.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
@@ -31,8 +30,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
       <Sidebar>
         <Box width="100%" height="260px" borderWidth="3px">
           <ImageContainer
-            src={defaultProfile}
-            altText="default-profile"
+            src={teamInfo.imageUrl}
+            altText={teamInfo.teamName}
             w={200}
             h={200}
             maxW={200}

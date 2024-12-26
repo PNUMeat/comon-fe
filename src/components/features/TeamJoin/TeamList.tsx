@@ -143,9 +143,9 @@ const FlipCardContent = ({
               <Button backgroundColor={colors.buttonPurple}>
                 {team.memberCount} members
               </Button>
-              <Button backgroundColor={colors.buttonPink}>
+              {/* <Button backgroundColor={colors.buttonPink}>
                 {team.streakDays}일차 코몬
-              </Button>
+              </Button> */}
             </ButtonWrapper>
           </>
         )}
@@ -162,8 +162,9 @@ const List = styled.div`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  // justify-content: space-between;
+  // gap: 10px;
 `;
 
 const PasswordInput = styled.input`

@@ -186,7 +186,6 @@ const ClickImage = styled.img`
 
 const ActionText = styled.div`
   margin-left: 8px;
-  text-decoration: none;
   color: #333;
 `;
 
