@@ -113,7 +113,7 @@ const aims = [
   },
   {
     title: 'EVERYDAY',
-    subtitle: '매일매일 새로운 코딩테스트\n1일 1회 업로드!',
+    subtitle: '매일 남기는 코테 기록,\n효율을 높이는 스터디 학습',
     img: continually,
   },
 ];
