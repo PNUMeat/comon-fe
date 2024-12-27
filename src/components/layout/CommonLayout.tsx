@@ -12,13 +12,18 @@ export const CommonLayout: React.FC<{
   const location = useLocation();
 
   useLayoutEffect(() => {
-    if (!location.pathname.includes('team-')) {
+    let prev: string | null = null;
+    if (prev !== location.pathname) {
+      prev = location.pathname;
       document.documentElement.scrollTo({
         top: 0,
         left: 0,
         behavior: 'instant',
       });
     }
+    return () => {
+      prev = null;
+    };
   }, [location.pathname]);
 
   return (
