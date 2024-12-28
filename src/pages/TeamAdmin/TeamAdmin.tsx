@@ -325,6 +325,7 @@ export const TeamAdmin = () => {
           )}
         </CalendarSection>
       </Grid>
+      <Spacer h={200} />
       {createPortal(
         <PromptModal
           ref={modalRef}
