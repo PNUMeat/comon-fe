@@ -102,7 +102,6 @@ const FloatingLinkEditor: React.FC<{
       }
 
       setLastSelection(selection);
-      // } else if (!activeElement || activeElement.className !== styles.linkInput) {
     } else if (!activeElement || activeElement.className !== 'link-input') {
       if (rootElement !== null) {
         setFloatingElemPositionForLinkEditor(null, editorElem, anchorElem);
@@ -197,13 +196,18 @@ const FloatingLinkEditor: React.FC<{
     }
 
     if (linkUrl !== '') {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, editedLinkUrl);
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+        url: editedLinkUrl,
+        target: '_blank',
+      });
 
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
           const parent = getSelectedNode(selection).getParent();
-          if ($isAutoLinkNode(parent)) {
+          if ($isLinkNode(parent)) {
+            parent.setTarget('_blank');
+          } else if ($isAutoLinkNode(parent)) {
             const linkNode = $createLinkNode(parent.getURL(), {
               rel: parent.__rel,
               target: parent.__target,
