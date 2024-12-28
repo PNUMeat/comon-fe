@@ -25,9 +25,7 @@ interface TeamListProps {
 export const TeamList = ({ teams }: TeamListProps) => {
   return (
     <>
-      <PageSectionHeader h={40}>
-        팀이 없으신가요? 활동 중인 코몬 팀을 찾아보세요!
-      </PageSectionHeader>
+      <PageSectionHeader h={40}>🔍 활동 팀 찾기</PageSectionHeader>
       <BackgroundGradient
         count={1}
         positions={[{ top: '90px' }]}

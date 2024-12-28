@@ -56,7 +56,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
 
   return (
     <>
-      <PageSectionHeader h={40}>나의 팀</PageSectionHeader>
+      <PageSectionHeader h={40}>👑 나의 팀</PageSectionHeader>
       <BackgroundGradient
         count={1}
         positions={[{ top: '-4px' }]}
