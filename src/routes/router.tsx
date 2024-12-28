@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
+import { NotFound } from '@/pages/NotFound/NotFound';
 import { Posting } from '@/pages/Posting/Posting';
 import { TeamDailySubject } from '@/pages/Posting/TeamDailySubject';
 import { TeamAdmin } from '@/pages/TeamAdmin/TeamAdmin';
@@ -112,6 +113,10 @@ export const router = createBrowserRouter(
           element: <TeamJoinPage />,
         },
       ],
+    },
+    {
+      path: '*',
+      element: <NotFound />,
     },
   ],
   {
