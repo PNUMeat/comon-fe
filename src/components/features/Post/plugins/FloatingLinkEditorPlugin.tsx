@@ -225,7 +225,11 @@ const FloatingLinkEditor: React.FC<{
     <div
       ref={editorRef}
       className={'link-editor'}
-      onClick={(e: MouseEvent<HTMLDivElement>) => e.preventDefault()}
+      onClick={(e: MouseEvent<HTMLDivElement>) => {
+        if (!(e.target instanceof HTMLAnchorElement)) {
+          e.preventDefault();
+        }
+      }}
     >
       {!isLink ? null : isLinkEditMode ? (
         <Fragment>
@@ -235,6 +239,10 @@ const FloatingLinkEditor: React.FC<{
             value={editedLinkUrl}
             onChange={(event) => {
               setEditedLinkUrl(event.target.value);
+            }}
+            onClick={(e: MouseEvent<HTMLInputElement>) => {
+              e.preventDefault();
+              e.stopPropagation();
             }}
             onKeyDown={(event) => {
               monitorInputInteraction(event);
@@ -246,8 +254,13 @@ const FloatingLinkEditor: React.FC<{
           </div>
         </Fragment>
       ) : (
-        <div className={'link-view'} style={{ zIndex: 11 }}>
-          <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+        <div className={'link-view'}>
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ zIndex: 11 }}
+          >
             {linkUrl}
           </a>
           <div>
