@@ -40,7 +40,7 @@ export const Posting = () => {
         navigate(`/team-dashboard/${id}`);
         alert('게시글 작성이 완료되었습니다!');
       })
-      .catch((err) => console.error(err));
+      .catch((err) => alert(err.response.data.data.articleTitle));
 
   return (
     <CommonLayout>
