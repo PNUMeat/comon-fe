@@ -242,7 +242,7 @@ const FloatingLinkEditor: React.FC<{
           </div>
         </Fragment>
       ) : (
-        <div className={'link-view'}>
+        <div className={'link-view'} style={{ zIndex: 11 }}>
           <a href={linkUrl} target="_blank" rel="noopener noreferrer">
             {linkUrl}
           </a>
