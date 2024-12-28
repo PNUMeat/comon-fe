@@ -3,7 +3,7 @@ import { SText } from '@/components/commons/SText';
 import { SimpleLoader } from '@/components/commons/SimpleLoader';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { ComponentType, LazyExoticComponent, lazy } from 'react';
+import React, { ComponentType, LazyExoticComponent, lazy } from 'react';
 
 /**
  * useState, useEffect 써서 MinTimePreservedFallback을 만드는 건 좀 별로 인거 같음.
@@ -33,4 +33,8 @@ export const LazySkeleton = () => (
     <Spacer h={15} />
     <SText>로딩중</SText>
   </Flex>
+);
+
+export const LazyEditorImage = React.lazy(
+  () => import('@/components/features/Post/nodes/LazyEditorImage')
 );

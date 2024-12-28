@@ -1,5 +1,6 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 
+import { LazyEditorImage } from '@/routes/Lazies';
 import {
   DOMConversionMap,
   DOMConversionOutput,
@@ -11,8 +12,6 @@ import {
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
-
-const LazyEditorImage = React.lazy(() => import('./LazyEditorImage'));
 
 export interface ImagePayload {
   altText: string;

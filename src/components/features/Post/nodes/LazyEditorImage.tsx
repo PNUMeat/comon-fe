@@ -155,11 +155,17 @@ const LazyEditorImage: React.FC<ILazyImage> = ({
 
   return (
     <Suspense fallback={null}>
-      {/*{isFocused && (*/}
-      {/*  <Box color={'white'} bg={'black'} position={'absolute'}>*/}
-      {/*    backspace 또는 del 키를 통해 삭제*/}
-      {/*  </Box>*/}
-      {/*)}*/}
+      {isFocused && (
+        <div
+          style={{
+            color: 'white',
+            backgroundColor: 'black',
+            position: 'absolute',
+          }}
+        >
+          backspace 또는 del 키를 통해 삭제
+        </div>
+      )}
       <LazyImage
         altText={altText}
         w={w}

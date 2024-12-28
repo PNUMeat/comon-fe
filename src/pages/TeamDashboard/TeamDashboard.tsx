@@ -16,7 +16,7 @@ import {
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -31,18 +31,16 @@ export const TeamDashboardPage = () => {
     null
   );
 
-  const { data: teamInfoData } = useSuspenseQuery({
+  const { data: teamInfoData } = useQuery({
     queryKey: ['team-info', teamId, year, month],
-    queryFn: () => {
-      return getTeamInfoAndTags(Number(teamId), year, month);
-    },
+    queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
+    enabled: !!teamId,
   });
 
-  const { data: articlesData } = useSuspenseQuery({
+  const { data: articlesData } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
-    queryFn: () => {
-      return getArticlesByDate(Number(teamId), selectedDate, page);
-    },
+    queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
+    enabled: !!teamId && !!selectedDate,
   });
 
   const handleShowTopicDetail = () => {
