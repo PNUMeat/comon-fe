@@ -67,6 +67,7 @@ export const TeamJoinPage = () => {
           </ActionText>
         </Box>
       </Link>
+      <Spacer h={100} />
     </Suspense>
   );
 };

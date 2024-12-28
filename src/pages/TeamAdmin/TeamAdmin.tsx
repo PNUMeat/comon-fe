@@ -15,7 +15,7 @@ import { HeightInNumber } from '@/components/types';
 
 import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
 import {
@@ -241,7 +241,7 @@ export const TeamAdmin = () => {
     enabled: !!id,
   });
 
-  const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || ''; // TODO:
+  const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   if (!id) {
@@ -276,6 +276,18 @@ export const TeamAdmin = () => {
                 오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의 게시글
                 및 태그를 수정, 변경할 수 있습니다.
               </SText>
+              <Spacer h={32} />
+
+              <Box width="100%" height="60px" padding="0" borderWidth="3px">
+                <Link
+                  to={`${PATH.TEAM_DASHBOARD}/${id}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <SText fontSize="16px" fontWeight={600} color="#333">
+                    팀 페이지로 이동하기
+                  </SText>
+                </Link>
+              </Box>
             </Flex>
           </Box>
         </Sidebar>
@@ -325,6 +337,7 @@ export const TeamAdmin = () => {
           )}
         </CalendarSection>
       </Grid>
+      <Spacer h={200} />
       {createPortal(
         <PromptModal
           ref={modalRef}

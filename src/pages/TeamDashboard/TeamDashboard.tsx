@@ -108,6 +108,7 @@ export const TeamDashboardPage = () => {
           )}
         </CalendarSection>
       </Grid>
+      <Spacer h={200} />
     </Fragment>
   );
 };
