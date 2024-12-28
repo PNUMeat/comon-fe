@@ -41,10 +41,24 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
     '코딩 테스트': '#FF5780',
   };
 
+  const handleTodayClick = () => {
+    const today = new Date()
+      .toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .replace(/\s/g, '')
+      .replace(/[./]/g, '-')
+      .replace(/-$/, '');
+
+    onDateSelect(today);
+  };
+
   return (
     <CalendarWrapper>
       {/* 오늘 버튼 */}
-      <StyledDate>오늘</StyledDate>
+      <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
 
       <StyledCalendar
         calendarType="gregory"
