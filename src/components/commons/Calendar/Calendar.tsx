@@ -13,21 +13,24 @@ interface ICustomCalendarProps {
   selectedDate: string;
 }
 
+const formatDate = (date: Date): string =>
+  date
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\s/g, '')
+    .replace(/[./]/g, '-')
+    .replace(/-$/, '');
+
 export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   tags,
   onDateSelect,
   selectedDate,
 }) => {
   const getCategoryForDate = (date: Date) => {
-    const formattedDate = date
-      .toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
-      .replace(/\s/g, '')
-      .replace(/[./]/g, '-')
-      .replace(/-$/, '');
+    const formattedDate = formatDate(date);
     return (
       tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
       null
@@ -42,16 +45,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   };
 
   const handleTodayClick = () => {
-    const today = new Date()
-      .toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
-      .replace(/\s/g, '')
-      .replace(/[./]/g, '-')
-      .replace(/-$/, '');
-
+    const today = formatDate(new Date());
     onDateSelect(today);
   };
 
@@ -72,15 +66,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
           ) : null;
         }}
         onClickDay={(value: Date) => {
-          const formattedDate = value
-            .toLocaleDateString('ko-KR', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            })
-            .replace(/\s/g, '')
-            .replace(/[./]/g, '-')
-            .replace(/-$/, '');
+          const formattedDate = formatDate(value);
           onDateSelect(formattedDate);
         }}
         value={new Date(selectedDate)}
