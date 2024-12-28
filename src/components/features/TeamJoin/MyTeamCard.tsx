@@ -37,7 +37,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
       setCurrentIndex(newIndex);
     };
 
-    // TODO : throttle?
+    // TODO: throttle?
     scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       scrollContainer.removeEventListener('scroll', handleScroll);
@@ -133,7 +133,10 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     <ProfileList profiles={profiles} />
                   </Flex>
                 </Box> */}
-                    <Link to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}>
+                    <Link
+                      to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}
+                      style={{ textDecoration: 'none' }}
+                    >
                       <Box
                         width="360px"
                         height="80px"

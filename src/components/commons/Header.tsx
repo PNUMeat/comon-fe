@@ -48,10 +48,6 @@ const NavMenu = styled.div`
     text-decoration: none;
     font-size: 20px;
     font-weight: 600;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 `;
 
