@@ -7,6 +7,7 @@ import { HeightInNumber } from '@/components/types';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { logout } from '@/api/user';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -61,7 +62,8 @@ const UserMenu = styled.div`
   white-space: nowrap;
   margin-right: 53px;
 
-  a {
+  a,
+  button {
     background: none;
     border: none;
     color: white;
@@ -83,6 +85,14 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
 
   // TODO: Link를 사용하면 보라색 밑줄이 그여짐
   const onClickHome = () => navigate(PATH.HOME);
+  const onClickLogout = () =>
+    logout()
+      .then(() => {
+        sessionStorage.removeItem('Authorization');
+        alert('로그아웃 되었습니다!');
+        window.location.reload();
+      })
+      .catch((err) => console.error(err));
 
   return (
     <HeaderContainer h={h}>
@@ -101,7 +111,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       <UserMenu>
         {isLoggedIn ? (
           // <Link to={PATH.PROFILE}>프로필 수정</Link>
-          <Link to={PATH.TEAMS}>팀 페이지</Link>
+          <button onClick={onClickLogout}>로그아웃</button>
         ) : (
           <Link
             to={{

@@ -76,3 +76,9 @@ export const getProfile = async (uuid: string): Promise<ProfileQueryResp> => {
 
   return res.data.data;
 };
+
+export const logout = async () => {
+  const res = await apiInstance.post(`v1/logout`);
+
+  return res.data;
+};
