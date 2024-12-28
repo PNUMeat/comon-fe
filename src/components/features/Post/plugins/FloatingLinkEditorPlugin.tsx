@@ -225,7 +225,6 @@ const FloatingLinkEditor: React.FC<{
     <div
       ref={editorRef}
       className={'link-editor'}
-      // onClick={(e: MouseEvent<HTMLDivElement>) => e.preventDefault()}
       onClick={(e: MouseEvent<HTMLDivElement>) => {
         if (!(e.target instanceof HTMLAnchorElement)) {
           e.preventDefault();
