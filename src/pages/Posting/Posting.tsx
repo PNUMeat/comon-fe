@@ -38,6 +38,7 @@ export const Posting = () => {
     })
       .then(() => {
         navigate(`/team-dashboard/${id}`);
+        alert('게시글 작성이 완료되었습니다!');
       })
       .catch((err) => console.error(err));
 

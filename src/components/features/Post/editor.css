@@ -1,6 +1,7 @@
 .content-editable {
     outline: none;
     font-family: Pretendard, serif;
+    line-height: 1.5;
 }
 
 .content-editable:focus {

@@ -209,6 +209,7 @@ const FloatingLinkEditor: React.FC<{
               target: parent.__target,
               title: parent.__title,
             });
+            linkNode.setTarget('_blank');
             parent.replace(linkNode, true);
           }
         }
@@ -217,7 +218,6 @@ const FloatingLinkEditor: React.FC<{
   };
 
   return (
-    // <div ref={editorRef} className={styles.linkEditor}>
     <div
       ref={editorRef}
       className={'link-editor'}
@@ -227,7 +227,6 @@ const FloatingLinkEditor: React.FC<{
         <Fragment>
           <input
             ref={inputRef}
-            // className={styles.linkInput}
             className={'link-input'}
             value={editedLinkUrl}
             onChange={(event) => {
@@ -243,7 +242,6 @@ const FloatingLinkEditor: React.FC<{
           </div>
         </Fragment>
       ) : (
-        // <div className={styles.linkView}>
         <div className={'link-view'}>
           <a href={linkUrl} target="_blank" rel="noopener noreferrer">
             {linkUrl}
