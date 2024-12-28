@@ -15,6 +15,7 @@ import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 import { ProfileList } from './ProfileList';
+import { SearchBar } from './SearchBar';
 
 interface TeamListProps {
   teams: ITeamInfo[];
@@ -33,6 +34,9 @@ export const TeamList = ({ teams }: TeamListProps) => {
       />
       <Spacer h={34} />
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
+      <Flex justify="flex-end">
+        <SearchBar value="" onChange={() => {}} /> {/*TODO: */}
+      </Flex>
       <Spacer h={34} />
       <List>
         {teams.map((team) => {
