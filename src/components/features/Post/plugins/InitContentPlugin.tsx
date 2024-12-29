@@ -1,3 +1,5 @@
+import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
+
 import { useEffect, useRef } from 'react';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -6,6 +8,7 @@ import {
   $createTextNode,
   $getRoot,
   $getSelection,
+  $isTextNode,
   LexicalNode,
 } from 'lexical';
 
@@ -15,54 +18,52 @@ const createStyledTextNode = (text: string, style: string): LexicalNode => {
   return textNode;
 };
 
-/** HTML -> LexicalNode[] 로 직접 변환해주는 함수 */
-function importHtmlToLexicalNodes(htmlString: string): LexicalNode[] {
+/** HTML -> LexicalNode[] 로 직접 변환해주는 함수 예시 */
+const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(htmlString, 'text/html');
-  const body = dom.body;
+  const { body } = dom;
 
   const lexicalNodes: LexicalNode[] = [];
 
-  // DOM을 순회(재귀)하며 변환
-  function traverse(node: ChildNode): LexicalNode | LexicalNode[] | null {
+  const traverse = (node: ChildNode): LexicalNode | LexicalNode[] | null => {
     // 텍스트 노드
     if (node.nodeType === Node.TEXT_NODE) {
       const textContent = node.textContent ?? '';
       if (!textContent) return null;
 
-      // 부모가 span 태그면서 style이 있으면 가져오기
+      // 부모가 <span style="..."> 일 경우
       const parentEl = node.parentElement;
       if (parentEl?.tagName === 'SPAN') {
         const style = parentEl.getAttribute('style') ?? '';
+
         return createStyledTextNode(textContent, style);
       } else {
-        // 스타일이 없는 일반 텍스트 노드
         return $createTextNode(textContent);
       }
     }
 
-    // 엘리먼트 노드
     if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node as HTMLElement;
       const tagName = element.tagName.toLowerCase();
 
       switch (tagName) {
+        // <p> -> ParagraphNode
         case 'p': {
           const paragraph = $createParagraphNode();
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
             if (childLexicalNode) {
-              if (Array.isArray(childLexicalNode)) {
-                paragraph.append(...childLexicalNode);
-                return;
-              }
-              paragraph.append(childLexicalNode);
+              Array.isArray(childLexicalNode)
+                ? paragraph.append(...childLexicalNode)
+                : paragraph.append(childLexicalNode);
             }
           });
           return paragraph;
         }
+
+        // <span> -> 자식 텍스트 노드들 처리
         case 'span': {
-          // span 아래에 #text만 있다는 가정이라면...
           let nodes: LexicalNode[] = [];
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
@@ -76,9 +77,47 @@ function importHtmlToLexicalNodes(htmlString: string): LexicalNode[] {
           });
           return nodes;
         }
-        // b, strong 등 다른 태그들도 여기에 추가로 처리
+
+        // <b>, <strong>, <bold> -> 내부 TextNode에 bold 포맷 적용
+        case 'b':
+        case 'strong':
+        case 'bold': {
+          let nodes: LexicalNode[] = [];
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                childLexicalNode.forEach((n) => {
+                  if ($isTextNode(n)) {
+                    n.toggleFormat('bold');
+                  }
+                });
+                nodes.push(...childLexicalNode);
+              } else {
+                if ($isTextNode(childLexicalNode)) {
+                  childLexicalNode.toggleFormat('bold');
+                }
+                nodes.push(childLexicalNode);
+              }
+            }
+          });
+          return nodes;
+        }
+
+        case 'img': {
+          const src = element.getAttribute('src') || '';
+          const alt = element.getAttribute('alt') || '';
+          if (!src) {
+            return null;
+          }
+
+          return $createImageNode({
+            altText: alt,
+            src: src,
+          });
+        }
+
         default: {
-          // children만 재귀 순회
           let nodes: LexicalNode[] = [];
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
@@ -96,7 +135,7 @@ function importHtmlToLexicalNodes(htmlString: string): LexicalNode[] {
     }
 
     return null;
-  }
+  };
 
   body.childNodes.forEach((child) => {
     const result = traverse(child);
@@ -110,7 +149,7 @@ function importHtmlToLexicalNodes(htmlString: string): LexicalNode[] {
   });
 
   return lexicalNodes;
-}
+};
 
 export const InitContentPlugin: React.FC<{ content: string }> = ({
   content,
@@ -120,10 +159,7 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
 
   useEffect(() => {
     return editor.update(() => {
-      // const parser = new DOMParser();
-      // const dom = parser.parseFromString(content, 'text/html');
-      // const nodes = $generateNodesFromDOM(editor, dom);
-      const nodes = importHtmlToLexicalNodes(content);
+      const nodes = parseHtmlStrToLexicalNodes(content);
       $getRoot().select();
       const selection = $getSelection();
       if (selection && isInitializedRef.current) {
