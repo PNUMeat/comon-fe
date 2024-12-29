@@ -26,7 +26,12 @@ import { useAtom } from 'jotai';
 export const TeamDailySubject = () => {
   const location = useLocation();
   const { articleId, articleCategory, articleBody, articleTitle } =
-    location.state;
+    location?.state ?? {
+      articleId: null,
+      articleCategory: null,
+      articleBody: null,
+      articleTitle: null,
+    };
   const [content, setContent] = useState<string>(() => articleBody ?? '');
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');

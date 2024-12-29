@@ -26,7 +26,11 @@ import { useAtom, useSetAtom } from 'jotai';
 
 export const Posting = () => {
   const location = useLocation();
-  const { article, articleId, articleTitle } = location.state;
+  const { article, articleId, articleTitle } = location?.state ?? {
+    article: null,
+    articleId: null,
+    articleTitle: null,
+  };
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [postImages] = useAtom(postImagesAtom);
