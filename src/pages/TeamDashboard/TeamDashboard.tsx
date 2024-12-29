@@ -6,7 +6,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useLayoutEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -43,14 +43,14 @@ export const TeamDashboardPage = () => {
     enabled: !!teamId && !!selectedDate,
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (currentView === 'article') {
       setTimeout(() => {
         scrollTo({
           top: document.documentElement.scrollHeight,
           behavior: 'instant',
         });
-      }, 200);
+      });
     }
   }, [currentView]);
 

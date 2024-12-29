@@ -73,7 +73,6 @@ export const Posting = () => {
         setDashboardView('article');
         setSelectedPostId(articleId);
         navigate(`/team-dashboard/${id}`);
-        scrollTo(0, document.body.scrollHeight);
         alert('게시글 작성이 완료되었습니다!');
       })
       .catch((err) => alert(err.response.data.data.articleTitle));

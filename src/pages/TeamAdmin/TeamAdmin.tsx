@@ -13,7 +13,14 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { HeightInNumber } from '@/components/types';
 
-import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
@@ -248,14 +255,14 @@ export const TeamAdmin = () => {
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
   const isTeamManager = teamInfoData?.teamManager ?? false;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (currentView === 'article') {
       setTimeout(() => {
         scrollTo({
           top: document.documentElement.scrollHeight,
           behavior: 'instant',
         });
-      }, 200);
+      });
     }
   }, [currentView]);
 
