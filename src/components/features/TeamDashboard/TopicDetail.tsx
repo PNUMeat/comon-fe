@@ -43,7 +43,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
           {isTeamManager && (
             <Flex width={7} gap="16px">
               <Link
-                to={`team-subject/${teamId}/${selectedDate}`}
+                to={`/team-subject/${teamId}/${selectedDate}`}
                 state={{
                   articleBody: data?.articleBody,
                   articleId: data?.articleId,
