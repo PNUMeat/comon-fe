@@ -97,6 +97,9 @@ export const TeamDailySubject = () => {
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
           setTag={setTag}
+          content={articleBody}
+          title={articleTitle}
+          tag={articleCategory}
         />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>

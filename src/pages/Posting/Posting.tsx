@@ -87,6 +87,7 @@ export const Posting = () => {
           forwardContent={setContent}
           forwardTitle={setPostTitle}
           content={article}
+          title={articleTitle}
         />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
