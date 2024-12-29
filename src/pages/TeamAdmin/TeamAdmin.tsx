@@ -333,6 +333,7 @@ export const TeamAdmin = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              teamId={Number(id)}
             />
           )}
         </CalendarSection>
