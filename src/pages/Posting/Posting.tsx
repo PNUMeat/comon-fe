@@ -25,8 +25,8 @@ import { useAtom } from 'jotai';
 
 export const Posting = () => {
   const location = useLocation();
-  const { prevContent, articleId } = location.state;
-  const [content, setContent] = useState<string>(() => prevContent ?? '');
+  const { article, articleId } = location.state;
+  const [content, setContent] = useState<string>(() => article ?? '');
   const [postImages] = useAtom(postImagesAtom);
   const [postTitle, setPostTitle] = useAtom(postTitleAtom);
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ export const Posting = () => {
       .trim()
       .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
 
-    if (prevContent && articleId) {
+    if (article && articleId) {
       mutatePost({
         teamId: parseInt(id),
         image: (postImages && postImages[0]) ?? null,
@@ -86,7 +86,7 @@ export const Posting = () => {
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setPostTitle}
-          content={prevContent}
+          content={article}
         />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
