@@ -40,3 +40,42 @@ export const createSubject = async ({
 
   return res.data;
 };
+
+type PutSubjectArgs = {
+  teamId: number;
+  articleTitle: string;
+  articleBody: string;
+  articleCategory: string;
+  articleId: number;
+  image: File | null;
+};
+
+export const mutateSubject = async ({
+  teamId,
+  articleTitle,
+  articleBody,
+  articleCategory,
+  articleId,
+  image,
+}: PutSubjectArgs) => {
+  const formData = new FormData();
+
+  formData.append('articleTitle', articleTitle);
+  formData.append('articleBody', articleBody);
+  formData.append('articleCategory', articleCategory);
+  if (image) {
+    formData.append('image', image);
+  }
+
+  const res = await apiInstance.put(
+    `/v1/articles/teams/${teamId}/subjects/${articleId}`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return res.data;
+};

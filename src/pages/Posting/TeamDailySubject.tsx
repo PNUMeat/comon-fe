@@ -7,22 +7,30 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 
-import { createSubject } from '@/api/subject';
+import { createSubject, mutateSubject } from '@/api/subject';
 import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { subjectImagesAtom, subjectTitleAtom } from '@/store/subject';
+import { subjectImagesAtom } from '@/store/subject';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
-  const [content, setContent] = useState<string>('');
-  const [tag, setTag] = useState<string>('');
+  const location = useLocation();
+  const { articleId, articleCategory, articleBody, articleTitle } =
+    location.state;
+  const [content, setContent] = useState<string>(() => articleBody ?? '');
+  const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
+  const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [subjectImages] = useAtom(subjectImagesAtom);
-  const [subjectTitle, setSubjectTitle] = useAtom(subjectTitleAtom);
   const { id, selectedDate } = useParams();
   const navigate = useNavigate();
 
@@ -31,11 +39,35 @@ export const TeamDailySubject = () => {
   }
 
   const onClick = () => {
+    const articleBody = content
+      .trim()
+      .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
+
+    if (articleId && articleCategory && articleBody && articleTitle) {
+      mutateSubject({
+        teamId: parseInt(id),
+        articleId: parseInt(articleId),
+        articleTitle: articleTitle,
+        articleBody: articleBody,
+        image: subjectImages ? subjectImages[0] : null,
+        articleCategory: articleCategory,
+      })
+        .then(() => {
+          alert('주제 수정이 완료되었습니다.');
+          navigate(`/team-admin/${id}`);
+        })
+        .catch((err) => {
+          alert('주제 수정에 실패했습니다.');
+          console.error(err);
+        });
+      return;
+    }
+
     createSubject({
       teamId: parseInt(id),
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
-      articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
+      articleBody: articleBody,
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
     })
