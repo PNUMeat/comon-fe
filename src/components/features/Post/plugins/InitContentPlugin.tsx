@@ -52,9 +52,11 @@ function importHtmlToLexicalNodes(htmlString: string): LexicalNode[] {
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
             if (childLexicalNode) {
-              Array.isArray(childLexicalNode)
-                ? paragraph.append(...childLexicalNode)
-                : paragraph.append(childLexicalNode);
+              if (Array.isArray(childLexicalNode)) {
+                paragraph.append(...childLexicalNode);
+                return;
+              }
+              paragraph.append(childLexicalNode);
             }
           });
           return paragraph;
