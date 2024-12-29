@@ -188,6 +188,7 @@ export const TeamAdmin = () => {
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
+    setSelectedArticleId(null);
   };
 
   const handleShowArticleDetail = (articleId: number) => {
