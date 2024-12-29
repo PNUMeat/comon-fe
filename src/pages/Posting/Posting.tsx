@@ -45,7 +45,7 @@ export const Posting = () => {
         teamId: parseInt(id),
         image: (postImages && postImages[0]) ?? null,
         articleId: parseInt(articleId),
-        articleBody: articleBody,
+        articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
       })
         .then(() => {

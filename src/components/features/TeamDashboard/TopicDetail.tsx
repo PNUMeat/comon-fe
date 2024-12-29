@@ -4,19 +4,25 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Link } from 'react-router-dom';
+
 import { getTeamTopic } from '@/api/dashboard';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
+import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
+import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
 interface TopicDetailProps {
   teamId: number;
   selectedDate: string;
+  isTeamManager: boolean;
 }
 
 export const TopicDetail: React.FC<TopicDetailProps> = ({
   teamId,
   selectedDate,
+  isTeamManager,
 }) => {
   const { data } = useQuery({
     queryKey: ['team-topic', teamId, selectedDate],
@@ -27,12 +33,43 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
-        <Flex align="center" gap="8px">
-          <Icon src={AnnouncementIcon} />
-          <SText color="#333" fontSize="24px" fontWeight={700}>
-            {data?.articleTitle}
-          </SText>
+        <Flex justify="space-between">
+          <Flex align="center" gap="8px">
+            <Icon src={AnnouncementIcon} />
+            <SText color="#333" fontSize="24px" fontWeight={700}>
+              {data?.articleTitle}
+            </SText>
+          </Flex>
+          {isTeamManager && (
+            <Flex width={7} gap="16px">
+              <Link
+                to={`team-subject/${teamId}/${selectedDate}`}
+                state={{
+                  articleBody: data?.articleBody,
+                  articleId: data?.articleId,
+                  articleTitle: data?.articleTitle,
+                  articleCategory: data?.articleCategory,
+                }}
+              >
+                <LazyImage
+                  src={ModifyIcon}
+                  altText="수정"
+                  w={20}
+                  h={20}
+                  maxW={20}
+                />
+              </Link>
+              <LazyImage
+                src={DeleteIcon}
+                altText="삭제"
+                w={20}
+                h={20}
+                maxW={16}
+              />
+            </Flex>
+          )}
         </Flex>
+
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
           {data?.createdDate.slice(0, -3)}
