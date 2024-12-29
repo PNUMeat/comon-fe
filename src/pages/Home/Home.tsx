@@ -149,7 +149,8 @@ export const Home = () => {
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
         // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
-        effect.style.top = `${pos + 204 + 72}px`;
+        // effect.style.top = `${pos + 204 + 72}px`;
+        // effect.style.top = `${pos}px`;
         Array.from(effect.children).forEach((child) => {
           (child as HTMLElement).style.opacity = '1';
         });
@@ -175,7 +176,6 @@ export const Home = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // const { bottom } = entry.boundingClientRect;
           const { bottom } = document.body.getBoundingClientRect();
           if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
@@ -265,26 +265,28 @@ export const Home = () => {
         </Container>
       </CommonLayout>
       <Spacer h={4} ref={bottomRef} width={400} />
-      <WaitBox ref={effectRef}>
-        <SText
-          fontSize={'30px'}
-          fontWeight={700}
-          textAlign={'center'}
-          color={'#6E74FA'}
-          opacity={'0'}
-        >
-          공사중....
-        </SText>
-        <SText
-          fontSize={'16px'}
-          fontWeight={500}
-          textAlign={'center'}
-          color={'#777'}
-          opacity={'0'}
-        >
-          다음 업데이트를 기대해주세요!
-        </SText>
-      </WaitBox>
+      <div style={{ position: 'relative' }}>
+        <WaitBox ref={effectRef}>
+          <SText
+            fontSize={'30px'}
+            fontWeight={700}
+            textAlign={'center'}
+            color={'#6E74FA'}
+            opacity={'0'}
+          >
+            공사중....
+          </SText>
+          <SText
+            fontSize={'16px'}
+            fontWeight={500}
+            textAlign={'center'}
+            color={'#777'}
+            opacity={'0'}
+          >
+            다음 업데이트를 기대해주세요!
+          </SText>
+        </WaitBox>
+      </div>
     </ScrollSnapContainer>
   );
 };
@@ -304,15 +306,30 @@ const ScrollStart = styled.div`
 const WaitBox = styled.div`
   width: 100%;
   opacity: 1;
-  width: '100%';
   height: 200px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: end;
   align-items: center;
-  padding-bottom: 40px;
+  padding-bottom: 175px;
   gap: 10px;
-  // box-shadow: inset 0 -20px 40px -10px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 0 -45px 30px -30px rgba(0, 0, 0, 0.5);
+  position: absolute;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+
+    background: linear-gradient(
+      to top,
+      rgba(128, 128, 128, 1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+
+    pointer-events: none;
+  }
 `;
