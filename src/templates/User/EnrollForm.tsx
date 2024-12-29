@@ -30,8 +30,8 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
         subtitle={'가입 후에도 모든 정보를 수정할 수 있어요'}
       />
       <ComonFormGrid h={494}>
-        <FormFieldLabel>이름</FormFieldLabel>
-        <ComonTextInput maxLength={10} placeholder={'이름'} />
+        <FormFieldLabel>닉네임</FormFieldLabel>
+        <ComonTextInput maxLength={10} placeholder={'닉네임'} />
 
         <FormFieldLabel>프로필 이미지</FormFieldLabel>
         <ComonImageInput />
