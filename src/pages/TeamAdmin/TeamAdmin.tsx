@@ -328,22 +328,18 @@ export const TeamAdmin = () => {
             selectedDate={selectedDate}
           />
           <Spacer h={24} />
-          {articlesData && (
-            <>
-              <Posts
-                data={articlesData}
-                tags={tags}
-                selectedDate={selectedDate}
-                onShowTopicDetail={handleShowTopicDetail}
-                onShowArticleDetail={handleShowArticleDetail}
-              />
-              <Pagination
-                totalPages={articlesData.page.totalPages}
-                currentPageProp={page}
-                onPageChange={handlePageChange}
-              />
-            </>
-          )}
+          <Posts
+            data={articlesData}
+            tags={tags}
+            selectedDate={selectedDate}
+            onShowTopicDetail={handleShowTopicDetail}
+            onShowArticleDetail={handleShowArticleDetail}
+          />
+          <Pagination
+            totalPages={articlesData?.page?.totalPages ?? 0}
+            currentPageProp={page}
+            onPageChange={handlePageChange}
+          />
           <Spacer h={40} />
           {currentView === 'topic' && (
             <TopicDetail

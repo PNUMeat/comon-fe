@@ -12,7 +12,7 @@ import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 interface PostsProps {
-  data: IArticlesByDateResponse;
+  data?: IArticlesByDateResponse;
   tags: {
     subjectDate: string;
     articleCategory: string;
@@ -71,7 +71,7 @@ export const Posts: React.FC<PostsProps> = ({
           </Button>
         </Flex>
       </Box>
-      {data?.content.length === 0 ? (
+      {data?.content?.length === 0 ? (
         <NoArticleDiv>
           <Flex justify="center" align="center" style={{ minHeight: '216px' }}>
             <SText color="#ccc" fontSize="24px" fontWeight={400}>
@@ -81,7 +81,7 @@ export const Posts: React.FC<PostsProps> = ({
         </NoArticleDiv>
       ) : (
         <List>
-          {data?.content.map((article) => (
+          {data?.content?.map((article) => (
             <Box
               width="100%"
               height="104px"

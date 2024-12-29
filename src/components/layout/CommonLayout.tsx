@@ -22,9 +22,6 @@ export const CommonLayout: React.FC<{
         behavior: 'instant',
       });
     }
-    return () => {
-      prev = null;
-    };
   }, [location.pathname]);
 
   return (
