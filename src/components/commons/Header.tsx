@@ -4,7 +4,8 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { HeightInNumber } from '@/components/types';
 
-import { useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
@@ -74,12 +75,67 @@ const ComonLogoWrap = styled.div`
   cursor: pointer;
 `;
 
+const modalInitPos = '9999px';
+export const MyInfoModal = styled.div`
+  width: 301px;
+  height: 189px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid #7f7f7f;
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  position: fixed;
+  top: ${modalInitPos};
+`;
+
+type ModalControl = {
+  modal: HTMLDivElement | null;
+  isClicked: boolean;
+};
+
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const [isLoggedIn] = useState<boolean>(checkRemainingCookies());
+  const modalControlRef = useRef<ModalControl>({
+    modal: null,
+    isClicked: false,
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
-  // TODO: Link를 사용하면 보라색 밑줄이 그여짐
+  const setModalRef = (el: HTMLDivElement | null) => {
+    if (el) {
+      modalControlRef.current.modal = el;
+    }
+  };
+
+  useEffect(() => {
+    if (modalControlRef && modalControlRef.current) {
+      const { modal } = modalControlRef.current;
+      if (modal) {
+        const onClick = (e: DocumentEventMap['click']) => {
+          const target = e.target as HTMLElement;
+          if (target && target.textContent !== '내정보') {
+            modal.style.top = modalInitPos;
+            modalControlRef.current.isClicked = false;
+            return;
+          }
+
+          if (modalControlRef.current.isClicked) {
+            modal.style.top = `${72 + 52 + 10}px`;
+            modal.style.left = `${1190}px`;
+            return;
+          }
+          modal.style.top = modalInitPos;
+        };
+        document.addEventListener('click', onClick);
+
+        return () => {
+          document.removeEventListener('click', onClick);
+        };
+      }
+    }
+  }, []);
+
   const onClickHome = () => navigate(PATH.HOME);
   const onClickLogout = () =>
     logout()
@@ -107,7 +163,14 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       <UserMenu>
         {isLoggedIn ? (
           // <Link to={PATH.PROFILE}>프로필 수정</Link>
-          <button onClick={onClickLogout}>로그아웃</button>
+          <button
+            onClick={() => {
+              modalControlRef.current.isClicked =
+                !modalControlRef.current.isClicked;
+            }}
+          >
+            내정보
+          </button>
         ) : (
           <Link
             to={{
@@ -119,6 +182,17 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           </Link>
         )}
       </UserMenu>
+      {createPortal(
+        <MyInfoModal
+          ref={setModalRef}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation();
+          }}
+        >
+          <button onClick={onClickLogout}>로그아웃</button>
+        </MyInfoModal>,
+        document.body
+      )}
     </HeaderContainer>
   );
 };
