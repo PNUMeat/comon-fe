@@ -131,11 +131,12 @@ const PostEditor: React.FC<{
   forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
   content?: string;
+  title?: string;
   setTag?: (tag: string) => void;
   // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
   //  임시방편이다.
   // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
-}> = ({ forwardContent, forwardTitle, content, setTag }) => {
+}> = ({ forwardContent, forwardTitle, content, setTag, title }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -157,6 +158,7 @@ const PostEditor: React.FC<{
               forwardTitle(e.target.value);
             }
           }}
+          defaultValue={title}
         />
         <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} setTag={setTag} />
         <PostContainer ref={onRef}>
