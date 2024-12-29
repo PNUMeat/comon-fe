@@ -142,6 +142,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       .then(() => {
         sessionStorage.removeItem('Authorization');
         alert('로그아웃 되었습니다!');
+        navigate(PATH.HOME);
         window.location.reload();
       })
       .catch((err) => console.error(err));
