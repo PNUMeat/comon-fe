@@ -91,13 +91,13 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
               if (Array.isArray(childLexicalNode)) {
                 childLexicalNode.forEach((n) => {
                   if ($isTextNode(n)) {
-                    n.toggleFormat('bold');
+                    n.setFormat('bold');
                   }
                 });
                 nodes.push(...childLexicalNode);
               } else {
                 if ($isTextNode(childLexicalNode)) {
-                  childLexicalNode.toggleFormat('bold');
+                  childLexicalNode.setFormat('bold');
                 }
                 nodes.push(childLexicalNode);
               }
@@ -116,6 +116,7 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
           return $createImageNode({
             altText: alt,
             src: src,
+            maxWidth: 600,
           });
         }
 
