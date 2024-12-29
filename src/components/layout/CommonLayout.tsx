@@ -13,8 +13,9 @@ export const CommonLayout: React.FC<{
 
   useLayoutEffect(() => {
     let prev: string | null = null;
-    if (prev !== location.pathname) {
-      prev = location.pathname;
+    const currPath = location.pathname.split('/')[1];
+    if (prev !== currPath) {
+      prev = currPath;
       document.documentElement.scrollTo({
         top: 0,
         left: 0,
