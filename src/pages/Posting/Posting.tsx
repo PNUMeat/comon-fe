@@ -7,9 +7,14 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { Suspense, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 
-import { createPost } from '@/api/postings';
+import { createPost, mutatePost } from '@/api/postings';
 import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
@@ -19,21 +24,41 @@ import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const Posting = () => {
-  const [content, setContent] = useState<string>('');
+  const location = useLocation();
+  const { prevContent, articleId } = location.state;
+  const [content, setContent] = useState<string>(() => prevContent ?? '');
   const [postImages] = useAtom(postImagesAtom);
   const [postTitle, setPostTitle] = useAtom(postTitleAtom);
   const navigate = useNavigate();
   const { id } = useParams();
-
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const onClick = () =>
+  const onClick = () => {
+    const articleBody = content
+      .trim()
+      .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
+
+    if (prevContent && articleId) {
+      mutatePost({
+        teamId: parseInt(id),
+        image: (postImages && postImages[0]) ?? null,
+        articleId: parseInt(articleId),
+        articleBody: articleBody,
+        articleTitle: postTitle,
+      })
+        .then(() => {
+          navigate(`/team-dashboard/${id}`);
+          alert('게시글 수정이 완료되었습니다!');
+        })
+        .catch((err) => alert(err.response.data.data.articleTitle));
+      return;
+    }
     createPost({
       teamId: parseInt(id),
       image: (postImages && postImages[0]) ?? null,
-      articleBody: content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2'),
+      articleBody: articleBody,
       articleTitle: postTitle,
     })
       .then(() => {
@@ -41,6 +66,7 @@ export const Posting = () => {
         alert('게시글 작성이 완료되었습니다!');
       })
       .catch((err) => alert(err.response.data.data.articleTitle));
+  };
 
   return (
     <CommonLayout>
@@ -57,7 +83,11 @@ export const Posting = () => {
         <Spacer h={22} />
         <PageSectionHeader h={40}>✏️오늘의 글 등록하기</PageSectionHeader>
         <Spacer h={39} />
-        <PostEditor forwardContent={setContent} forwardTitle={setPostTitle} />
+        <PostEditor
+          forwardContent={setContent}
+          forwardTitle={setPostTitle}
+          content={prevContent}
+        />
         <Spacer h={38} />
         <ConfirmButtonWrap onClick={onClick}>
           <ClickImage src={click} />
