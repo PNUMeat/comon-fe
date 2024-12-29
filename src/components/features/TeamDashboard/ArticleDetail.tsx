@@ -4,15 +4,32 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+
 import { IArticle } from '@/api/dashboard';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 
 interface ArticleDetailProps {
   data: IArticle;
+  teamId: number;
 }
 
-export const ArticleDetail: React.FC<ArticleDetailProps> = ({ data }) => {
+export const ArticleDetail: React.FC<ArticleDetailProps> = ({
+  data,
+  teamId,
+}) => {
+  const article = useMemo(
+    () =>
+      data?.imageUrl
+        ? data?.articleBody.replace(
+            /(<img[^>]*src=")\?("[^>]*>)/g,
+            `$1${data?.imageUrl}$2`
+          )
+        : data?.articleBody,
+    [data]
+  );
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -22,13 +39,22 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({ data }) => {
           </SText>
           {data?.isAuthor && (
             <Flex width={7} gap="16px">
-              <LazyImage
-                src={ModifyIcon}
-                altText="수정"
-                w={20}
-                h={20}
-                maxW={20}
-              />
+              <Link
+                to={`/posting/${teamId}`}
+                state={{
+                  article: article,
+                  articleId: data?.articleId,
+                  articleTitle: data?.articleTitle,
+                }}
+              >
+                <LazyImage
+                  src={ModifyIcon}
+                  altText="수정"
+                  w={20}
+                  h={20}
+                  maxW={20}
+                />
+              </Link>
               <LazyImage
                 src={DeleteIcon}
                 altText="삭제"
@@ -60,12 +86,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({ data }) => {
         <Spacer h={36} />
         <div
           dangerouslySetInnerHTML={{
-            __html: data?.imageUrl
-              ? data?.articleBody.replace(
-                  /(<img[^>]*src=")\?("[^>]*>)/g,
-                  `$1${data?.imageUrl}$2`
-                )
-              : data?.articleBody,
+            __html: article,
           }}
         />
       </Flex>

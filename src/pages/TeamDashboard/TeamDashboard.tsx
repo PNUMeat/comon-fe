@@ -104,6 +104,7 @@ export const TeamDashboardPage = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              teamId={Number(teamId)}
             />
           )}
         </CalendarSection>

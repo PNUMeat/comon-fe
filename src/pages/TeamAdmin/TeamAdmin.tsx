@@ -243,6 +243,7 @@ export const TeamAdmin = () => {
 
   const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
+  const isTeamManager = teamInfoData?.teamManager ?? false;
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -324,7 +325,11 @@ export const TeamAdmin = () => {
           )}
           <Spacer h={40} />
           {currentView === 'topic' && (
-            <TopicDetail teamId={Number(id)} selectedDate={selectedDate} />
+            <TopicDetail
+              teamId={Number(id)}
+              selectedDate={selectedDate}
+              isTeamManager={isTeamManager}
+            />
           )}
           {currentView === 'article' && articlesData && selectedArticleId && (
             <ArticleDetail
@@ -333,6 +338,7 @@ export const TeamAdmin = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              teamId={Number(id)}
             />
           )}
         </CalendarSection>

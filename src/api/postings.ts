@@ -17,7 +17,6 @@ export const createPost = async ({
   articleTitle,
   articleBody,
   image,
-  // articleCategory = '스터디 전',
 }: PostingMutationArg) => {
   const formData = new FormData();
 
@@ -29,6 +28,38 @@ export const createPost = async ({
   }
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
+    'v1/articles',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return res.data.data;
+};
+
+export const mutatePost = async ({
+  teamId,
+  articleTitle,
+  articleBody,
+  image,
+  articleId,
+}: PostingMutationArg & {
+  articleId: number;
+}) => {
+  const formData = new FormData();
+
+  formData.append('teamId', teamId.toString());
+  formData.append('articleId', articleId.toString());
+  formData.append('articleTitle', articleTitle);
+  formData.append('articleBody', articleBody);
+  if (image) {
+    formData.append('image', image);
+  }
+
+  const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     'v1/articles',
     formData,
     {
