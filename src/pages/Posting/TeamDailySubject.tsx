@@ -14,15 +14,15 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { subjectImagesAtom, subjectTitleAtom } from '@/store/subject';
+import { subjectImagesAtom } from '@/store/subject';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>('');
+  const [subjectTitle, setSubjectTitle] = useState(() => '');
   const [tag, setTag] = useState<string>('');
   const [subjectImages] = useAtom(subjectImagesAtom);
-  const [subjectTitle, setSubjectTitle] = useAtom(subjectTitleAtom);
   const { id, selectedDate } = useParams();
   const navigate = useNavigate();
 

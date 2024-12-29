@@ -41,7 +41,11 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
             <Flex width={7} gap="16px">
               <Link
                 to={`/posting/${teamId}`}
-                state={{ article: article, articleId: data?.articleId }}
+                state={{
+                  article: article,
+                  articleId: data?.articleId,
+                  articleTitle: data?.articleTitle,
+                }}
               >
                 <LazyImage
                   src={ModifyIcon}

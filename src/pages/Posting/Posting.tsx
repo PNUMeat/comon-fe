@@ -19,16 +19,16 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { postImagesAtom, postTitleAtom } from '@/store/posting';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
 export const Posting = () => {
   const location = useLocation();
-  const { article, articleId } = location.state;
+  const { article, articleId, articleTitle } = location.state;
   const [content, setContent] = useState<string>(() => article ?? '');
+  const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [postImages] = useAtom(postImagesAtom);
-  const [postTitle, setPostTitle] = useAtom(postTitleAtom);
   const navigate = useNavigate();
   const { id } = useParams();
   if (!id) {
@@ -40,7 +40,7 @@ export const Posting = () => {
       .trim()
       .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
 
-    if (article && articleId) {
+    if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
         image: (postImages && postImages[0]) ?? null,
