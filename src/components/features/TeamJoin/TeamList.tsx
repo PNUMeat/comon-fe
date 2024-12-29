@@ -19,11 +19,20 @@ import { SearchBar } from './SearchBar';
 
 interface TeamListProps {
   teams: ITeamInfo[];
-  totalPages: number;
-  onPageChange: (page: number) => void;
+  onSearch: (keyword: string) => void;
 }
 
-export const TeamList = ({ teams }: TeamListProps) => {
+export const TeamList = ({ teams, onSearch }: TeamListProps) => {
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    onSearch(searchKeyword);
+  };
+
   return (
     <>
       <PageSectionHeader h={40}>🔍 활동 팀 찾기</PageSectionHeader>
@@ -34,8 +43,9 @@ export const TeamList = ({ teams }: TeamListProps) => {
       />
       <Spacer h={34} />
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
-      <Flex justify="flex-end">
-        <SearchBar value="" onChange={() => {}} /> {/*TODO: */}
+      <Flex justify="flex-end" align="center" gap="10px">
+        <SearchBar value={searchKeyword} onChange={handleSearchChange} />
+        <Button onClick={handleSearchSubmit}>검색</Button>
       </Flex>
       <Spacer h={34} />
       <List>
