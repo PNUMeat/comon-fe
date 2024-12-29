@@ -1,6 +1,8 @@
 import apiInstance from '@/api/apiInstance';
 import { ServerResponse } from '@/api/types';
 
+import { ITopicResponse } from './dashboard';
+
 // 생성
 interface ITeamCommon {
   teamName: string;
@@ -12,6 +14,10 @@ interface ITeamCommon {
 interface ICreateTeamRequest extends ITeamCommon {
   password: string;
   image?: File | null;
+}
+
+interface ICreateTeamResponse {
+  teamId: number;
 }
 
 // 조회
@@ -44,10 +50,6 @@ interface ITeamListResponse {
       totalPages: number;
     };
   };
-}
-
-interface ICreateTeamResponse {
-  teamId: number;
 }
 
 export const createTeam = async ({
@@ -108,6 +110,22 @@ export const joinTeam = async (teamId: number, password: string) => {
   const res = await apiInstance.post<ServerResponse<TeamJoinResp>>(
     `/v1/teams/${teamId}/join`,
     { password }
+  );
+
+  return res.data.data;
+};
+
+export const searchTeams = async (
+  keyword: string,
+  sort: string = 'recent',
+  page: number = 0,
+  size: number = 6
+): Promise<ITopicResponse> => {
+  const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
+    `/v1/teams/search`,
+    {
+      params: { keyword, sort, page, size },
+    }
   );
 
   return res.data.data;
