@@ -6,7 +6,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -42,6 +42,15 @@ export const TeamDashboardPage = () => {
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+
+  useEffect(() => {
+    if (currentView === 'article') {
+      scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'instant',
+      });
+    }
+  }, [currentView]);
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
