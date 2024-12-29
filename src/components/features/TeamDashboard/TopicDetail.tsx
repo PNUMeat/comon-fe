@@ -16,13 +16,13 @@ import { useQuery } from '@tanstack/react-query';
 interface TopicDetailProps {
   teamId: number;
   selectedDate: string;
-  isTeamManager: boolean;
+  isTeamManager?: boolean;
 }
 
 export const TopicDetail: React.FC<TopicDetailProps> = ({
   teamId,
   selectedDate,
-  isTeamManager,
+  isTeamManager = false,
 }) => {
   const { data } = useQuery({
     queryKey: ['team-topic', teamId, selectedDate],
