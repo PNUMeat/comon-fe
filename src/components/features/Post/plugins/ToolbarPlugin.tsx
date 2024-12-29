@@ -51,7 +51,8 @@ const TAG_LIST: {
 export const ToolbarPlugin: React.FC<{
   setIsLinkEditMode: Dispatch<boolean>;
   setTag?: (tag: string) => void;
-}> = ({ setIsLinkEditMode, setTag }) => {
+  articleCategory?: string;
+}> = ({ setIsLinkEditMode, setTag, articleCategory }) => {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
 
@@ -62,7 +63,7 @@ export const ToolbarPlugin: React.FC<{
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
 
-  const [tag, selectTag] = useState<string>('');
+  const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
 
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
