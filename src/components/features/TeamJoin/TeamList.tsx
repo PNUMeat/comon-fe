@@ -44,8 +44,11 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
       <Spacer h={34} />
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
       <Flex justify="flex-end" align="center" gap="10px">
-        <SearchBar value={searchKeyword} onChange={handleSearchChange} />
-        <Button onClick={handleSearchSubmit}>검색</Button>
+        <SearchBar
+          value={searchKeyword}
+          onChange={handleSearchChange}
+          onSearch={handleSearchSubmit}
+        />
       </Flex>
       <Spacer h={34} />
       <List>
