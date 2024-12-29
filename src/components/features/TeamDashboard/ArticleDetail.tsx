@@ -31,8 +31,6 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     [data]
   );
 
-  console.error('ad', article);
-
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -74,26 +72,26 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         </SText>
         <Spacer h={28} />
         <Flex align="center" gap="8px">
-          <LazyImage
-            src={data?.memberImage || ''}
-            altText={data?.memberName || ''}
-            w={16}
-            h={16}
-            maxW={16}
-            style={{ borderRadius: '50%' }}
-          />
+          {data?.memberImage || (
+            <LazyImage
+              src={data.memberImage}
+              altText={data?.memberName || ''}
+              w={16}
+              h={16}
+              maxW={16}
+              style={{ borderRadius: '50%' }}
+            />
+          )}
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {data?.memberName}
           </SText>
         </Flex>
         <Spacer h={36} />
-        {article || (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: article,
-            }}
-          />
-        )}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: article,
+          }}
+        />
       </Flex>
     </Box>
   );
