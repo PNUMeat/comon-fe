@@ -31,6 +31,10 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     [data]
   );
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
