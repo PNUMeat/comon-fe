@@ -93,7 +93,7 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
         case 'b':
         case 'strong': {
           const currentTagStyle = element.getAttribute('style') ?? '';
-          let nodes: LexicalNode[] = [];
+          const nodes: LexicalNode[] = [];
 
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
