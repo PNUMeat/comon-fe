@@ -21,13 +21,13 @@ export const Pagination = ({
   };
 
   const handlePrev = () => {
-    if (currentPageProp > 1) {
+    if (currentPageProp - 1 > 1) {
       handlePageChange(currentPageProp - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentPageProp < totalPages) {
+    if (currentPageProp < totalPages - 1) {
       handlePageChange(currentPageProp + 1);
     }
   };
