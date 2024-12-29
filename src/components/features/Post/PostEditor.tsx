@@ -40,6 +40,7 @@ const initialConfig = {
   namespace: 'comon',
   theme: editorTheme,
   nodes: [ImageNode, AutoLinkNode, LinkNode],
+  editorState: undefined,
   onError,
 };
 
