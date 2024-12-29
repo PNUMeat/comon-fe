@@ -248,6 +248,17 @@ export const TeamAdmin = () => {
   const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
   const isTeamManager = teamInfoData?.teamManager ?? false;
 
+  useEffect(() => {
+    if (currentView === 'article') {
+      setTimeout(() => {
+        scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'instant',
+        });
+      }, 200);
+    }
+  }, [currentView]);
+
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }

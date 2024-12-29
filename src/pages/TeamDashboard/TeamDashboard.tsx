@@ -45,15 +45,18 @@ export const TeamDashboardPage = () => {
 
   useEffect(() => {
     if (currentView === 'article') {
-      scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: 'instant',
-      });
+      setTimeout(() => {
+        scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'instant',
+        });
+      }, 200);
     }
   }, [currentView]);
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
+    setSelectedArticleId(null);
   };
 
   const handleShowArticleDetail = (articleId: number) => {
