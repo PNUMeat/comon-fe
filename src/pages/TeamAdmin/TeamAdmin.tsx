@@ -28,7 +28,7 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { selectedPostIdAtom } from '@/store/posts';
+import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
@@ -175,9 +175,9 @@ export const TeamAdmin = () => {
   const [selectedDate, setSelectedDate] = useState<string>(today);
   const [year, month] = selectedDate.split('-').map(Number);
 
-  const [currentView, setCurrentView] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
 
+  const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
   const { data: articlesData } = useQuery({

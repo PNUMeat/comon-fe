@@ -19,9 +19,10 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { subjectImagesAtom } from '@/store/subject';
 import styled from '@emotion/styled';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
@@ -36,6 +37,8 @@ export const TeamDailySubject = () => {
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [subjectImages] = useAtom(subjectImagesAtom);
+  const setSelectedPostId = useSetAtom(selectedPostIdAtom);
+  const setDashboardView = useSetAtom(currentViewAtom);
   const { id, selectedDate } = useParams();
   const navigate = useNavigate();
 
@@ -76,9 +79,13 @@ export const TeamDailySubject = () => {
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
     })
-      .then((r) => {
-        alert(r.message);
+      .then((data) => {
+        const articleId = data.articleId;
+        setDashboardView('topic');
+        setSelectedPostId(articleId);
+        alert(data.message);
         navigate(`/team-admin/${id}`);
+        scrollTo(0, document.body.scrollHeight);
       })
       .catch((err) => alert(err.data.message));
   };

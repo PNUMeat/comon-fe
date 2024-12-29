@@ -7,7 +7,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
 import { IArticlesByDateResponse } from '@/api/dashboard';
-import { selectedPostIdAtom } from '@/store/posts';
+import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 

@@ -19,8 +19,8 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { postImagesAtom } from '@/store/posting';
-import { selectedPostIdAtom } from '@/store/posts';
 import styled from '@emotion/styled';
 import { useAtom, useSetAtom } from 'jotai';
 
@@ -35,6 +35,7 @@ export const Posting = () => {
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [postImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
+  const setDashboardView = useSetAtom(currentViewAtom);
   const navigate = useNavigate();
   const { id } = useParams();
   if (!id) {
@@ -69,8 +70,10 @@ export const Posting = () => {
     })
       .then((data) => {
         const articleId = data.articleId;
+        setDashboardView('article');
         setSelectedPostId(articleId);
         navigate(`/team-dashboard/${id}`);
+        scrollTo(0, document.body.scrollHeight);
         alert('게시글 작성이 완료되었습니다!');
       })
       .catch((err) => alert(err.response.data.data.articleTitle));
