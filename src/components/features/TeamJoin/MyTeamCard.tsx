@@ -117,12 +117,13 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
               <div
                 style={{
                   scrollSnapAlign: 'start',
-                  minWidth: '1090px',
+                  minWidth: '917px',
+                  boxSizing: 'border-box',
                 }}
                 key={team.teamId}
               >
                 <Box width="100%">
-                  <Flex justify="space-around">
+                  <Flex justify="space-between">
                     <Box width="260px" height="260px">
                       <ImageContainer
                         src={team.imageUrl}
@@ -142,7 +143,12 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                         TEAM
                       </SText>
                       <Spacer h={12} />
-                      <SText fontSize="40px" color="#333" fontWeight={700}>
+                      <SText
+                        fontSize="40px"
+                        color="#333"
+                        fontWeight={700}
+                        whiteSpace={'nowrap'}
+                      >
                         {team.teamName}
                       </SText>
                       <Spacer h={8} />
@@ -184,7 +190,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                         style={{ textDecoration: 'none' }}
                       >
                         <Box
-                          width="360px"
+                          width="272px"
                           height="80px"
                           padding="0"
                           borderWidth="3px"
@@ -228,6 +234,9 @@ const CarouselWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  // width: calc(100% - 190px);
+  width: 100%;
+  // margin: 0 auto;
 `;
 
 const ArrowButton = styled.button`
@@ -251,12 +260,12 @@ const ArrowButton = styled.button`
 `;
 
 const LeftArrowButton = styled(ArrowButton)`
-  left: -60px;
+  left: -10px;
   transform: translateY(-50%);
 `;
 
 const RightArrowButton = styled(ArrowButton)`
-  right: -60px;
+  right: -10px;
   transform: translateY(-50%) rotate(180deg);
 `;
 
@@ -277,12 +286,14 @@ const ActionText = styled.div`
 `;
 
 const Carousel = styled.div`
-  width: 100%;
+  // width: calc(100% - 190px);
+  width: 917px;
   overflow-x: scroll;
   box-sizing: border-box;
   display: flex;
   scroll-snap-type: x mandatory;
   gap: 12px;
+  margin: 0 auto;
 
   &::-webkit-scrollbar {
     display: none;
