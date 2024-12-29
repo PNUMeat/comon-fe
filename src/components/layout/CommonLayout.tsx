@@ -21,7 +21,6 @@ export const CommonLayout: React.FC<{
         behavior: 'instant',
       });
     }
-    console.error('scrolled');
     return () => {
       prev = null;
     };
