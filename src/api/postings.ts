@@ -60,7 +60,7 @@ export const mutatePost = async ({
   }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
-    'v1/articles',
+    `v1/articles/${articleId}`,
     formData,
     {
       headers: {
