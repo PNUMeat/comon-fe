@@ -30,6 +30,9 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         : data?.articleBody,
     [data]
   );
+
+  console.error('ad', article);
+
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -84,6 +87,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
+
         <div
           dangerouslySetInnerHTML={{
             __html: article,

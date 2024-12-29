@@ -159,6 +159,7 @@ const CalendarSection = styled.section`
   background-color: #f8f8ff;
   border-radius: 20px;
   padding: 20px 36px 40px 36px;
+  margin-bottom: 100px;
 `;
 
 export const TeamAdmin = () => {
