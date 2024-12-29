@@ -92,6 +92,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         </Flex>
         <Spacer h={36} />
         <div
+          style={{ lineHeight: 1.5 }}
           dangerouslySetInnerHTML={{
             __html: article,
           }}
