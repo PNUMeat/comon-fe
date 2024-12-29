@@ -87,12 +87,13 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-
-        <div
-          dangerouslySetInnerHTML={{
-            __html: article,
-          }}
-        />
+        {article || (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: article,
+            }}
+          />
+        )}
       </Flex>
     </Box>
   );
