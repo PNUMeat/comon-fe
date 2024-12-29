@@ -54,9 +54,11 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
             if (childLexicalNode) {
-              Array.isArray(childLexicalNode)
-                ? paragraph.append(...childLexicalNode)
-                : paragraph.append(childLexicalNode);
+              if (Array.isArray(childLexicalNode)) {
+                paragraph.append(...childLexicalNode);
+              } else {
+                paragraph.append(childLexicalNode);
+              }
             }
           });
           return paragraph;
@@ -82,7 +84,7 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
         case 'b':
         case 'strong':
         case 'bold': {
-          let nodes: LexicalNode[] = [];
+          const nodes: LexicalNode[] = [];
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
             if (childLexicalNode) {
