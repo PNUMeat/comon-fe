@@ -18,6 +18,15 @@ const createStyledTextNode = (text: string, style: string): LexicalNode => {
   return textNode;
 };
 
+const mergeStyles = (parentStyle: string, childStyle: string): string => {
+  if (!parentStyle) {
+    return childStyle;
+  }
+  if (!childStyle) {
+    return parentStyle;
+  }
+  return parentStyle + '; ' + childStyle;
+};
 /** HTML -> LexicalNode[] 로 직접 변환해주는 함수 예시 */
 const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
   const parser = new DOMParser();
@@ -80,17 +89,23 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
           return nodes;
         }
 
-        // <b>, <strong>, <bold> -> 내부 TextNode에 bold 포맷 적용
+        // <b>, <strong> -> 내부 TextNode에 bold 포맷 적용
         case 'b':
-        case 'strong':
-        case 'bold': {
-          const nodes: LexicalNode[] = [];
+        case 'strong': {
+          const currentTagStyle = element.getAttribute('style') ?? '';
+          let nodes: LexicalNode[] = [];
+
           element.childNodes.forEach((child) => {
             const childLexicalNode = traverse(child);
             if (childLexicalNode) {
               if (Array.isArray(childLexicalNode)) {
                 childLexicalNode.forEach((n) => {
                   if ($isTextNode(n)) {
+                    if (currentTagStyle) {
+                      n.setStyle(
+                        mergeStyles(n.getStyle() ?? '', currentTagStyle)
+                      );
+                    }
                     n.setFormat('bold');
                   }
                 });
@@ -98,11 +113,20 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
               } else {
                 if ($isTextNode(childLexicalNode)) {
                   childLexicalNode.setFormat('bold');
+                  if (currentTagStyle) {
+                    childLexicalNode.setStyle(
+                      mergeStyles(
+                        childLexicalNode.getStyle() ?? '',
+                        currentTagStyle
+                      )
+                    );
+                  }
                 }
                 nodes.push(childLexicalNode);
               }
             }
           });
+
           return nodes;
         }
 
