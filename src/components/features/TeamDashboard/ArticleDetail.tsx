@@ -72,7 +72,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         </SText>
         <Spacer h={28} />
         <Flex align="center" gap="8px">
-          {data?.memberImage || (
+          {data?.memberImage && (
             <LazyImage
               src={data.memberImage}
               altText={data?.memberName || ''}
