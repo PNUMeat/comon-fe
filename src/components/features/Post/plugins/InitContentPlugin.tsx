@@ -14,7 +14,9 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
     return editor.update(() => {
       const parser = new DOMParser();
       const dom = parser.parseFromString(content, 'text/html');
+      console.error('dom', dom);
       const nodes = $generateNodesFromDOM(editor, dom);
+      console.error('nodes', nodes);
       $getRoot().select();
       const selection = $getSelection();
       if (selection && isInitializedRef.current) {
