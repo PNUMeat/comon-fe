@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, KeyboardEvent } from 'react';
 
 import MagnifierIcon from '@/assets/TeamJoin/search.png';
 import { colors } from '@/constants/colors';
@@ -8,21 +8,30 @@ interface SearchBarProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  onSearch: () => void;
 }
 
 export const SearchBar: FC<SearchBarProps> = ({
   value,
   onChange,
   placeholder,
+  onSearch,
 }) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSearch();
+    }
+  };
+
   return (
     <SearchBarWrapper>
       <SearchInput
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        onKeyDown={handleKeyDown}
       />
-      <SearchIcon />
+      <SearchIcon onClick={onSearch} />
     </SearchBarWrapper>
   );
 };

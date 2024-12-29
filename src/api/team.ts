@@ -1,8 +1,6 @@
 import apiInstance from '@/api/apiInstance';
 import { ServerResponse } from '@/api/types';
 
-import { ITopicResponse } from './dashboard';
-
 // 생성
 interface ITeamCommon {
   teamName: string;
@@ -33,7 +31,7 @@ export interface ITeamInfo extends ITeamCommon {
   imageUrl: string;
   memberCount: number;
   streakDays: number;
-  successMemberCount: number;
+  // successMemberCount: number;
   teamAnnouncement: string;
   createdAt: string;
   members: ITeamMember[];
@@ -49,6 +47,17 @@ interface ITeamListResponse {
       totalElements: number;
       totalPages: number;
     };
+  };
+}
+
+// 검색
+export interface ITeamSearchResponse {
+  content: ITeamInfo[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
   };
 }
 
@@ -120,8 +129,8 @@ export const searchTeams = async (
   sort: string = 'recent',
   page: number = 0,
   size: number = 6
-): Promise<ITopicResponse> => {
-  const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
+): Promise<ITeamSearchResponse> => {
+  const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
       params: { keyword, sort, page, size },
