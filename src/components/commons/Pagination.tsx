@@ -21,7 +21,7 @@ export const Pagination = ({
   };
 
   const handlePrev = () => {
-    if (currentPageProp - 1 > 1) {
+    if (currentPageProp > 0) {
       handlePageChange(currentPageProp - 1);
     }
   };
