@@ -1,4 +1,4 @@
-import ArrowButton from '@/assets/TeamJoin/arrow.png';
+import ArrowButton from '@/assets/TeamJoin/pagination_arrow.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 

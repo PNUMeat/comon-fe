@@ -52,13 +52,21 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
       </Flex>
       <Spacer h={34} />
       <List>
-        {teams.map((team) => {
-          const profiles = team.members.map((member) => member.imageUrl);
+        {teams.length === 0 ? (
+          <SText color="#777" fontSize="16px">
+            <Flex height={210} justify="center" align="center">
+              존재하지 않는 팀이에요.
+            </Flex>
+          </SText>
+        ) : (
+          teams.map((team) => {
+            const profiles = team.members.map((member) => member.imageUrl);
 
-          return (
-            <FlipCardItem key={team.teamId} team={team} profiles={profiles} />
-          );
-        })}
+            return (
+              <FlipCardItem key={team.teamId} team={team} profiles={profiles} />
+            );
+          })
+        )}
       </List>
       <Spacer h={34} />
     </>
