@@ -15,8 +15,10 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
+import { selectedPostIdAtom } from '@/store/posts';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai/index';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -27,9 +29,8 @@ export const TeamDashboardPage = () => {
 
   const [currentView, setCurrentView] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
-  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
-    null
-  );
+
+  const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
   const { data: teamInfoData } = useQuery({
     queryKey: ['team-info', teamId, year, month],

@@ -20,8 +20,9 @@ import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { postImagesAtom } from '@/store/posting';
+import { selectedPostIdAtom } from '@/store/posts';
 import styled from '@emotion/styled';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 export const Posting = () => {
   const location = useLocation();
@@ -29,6 +30,7 @@ export const Posting = () => {
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [postImages] = useAtom(postImagesAtom);
+  const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const navigate = useNavigate();
   const { id } = useParams();
   if (!id) {
@@ -61,7 +63,9 @@ export const Posting = () => {
       articleBody: articleBody,
       articleTitle: postTitle,
     })
-      .then(() => {
+      .then((data) => {
+        const articleId = data.articleId;
+        setSelectedPostId(articleId);
         navigate(`/team-dashboard/${id}`);
         alert('게시글 작성이 완료되었습니다!');
       })

@@ -28,8 +28,10 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { selectedPostIdAtom } from '@/store/posts';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 
 const Grid = styled.div`
   display: grid;
@@ -175,9 +177,8 @@ export const TeamAdmin = () => {
 
   const [currentView, setCurrentView] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
-  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
-    null
-  );
+
+  const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
   const { data: articlesData } = useQuery({
     queryKey: ['articles-by-date', id, selectedDate, page],

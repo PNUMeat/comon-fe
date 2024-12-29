@@ -6,10 +6,10 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
-import { useState } from 'react';
-
 import { IArticlesByDateResponse } from '@/api/dashboard';
+import { selectedPostIdAtom } from '@/store/posts';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 interface PostsProps {
   data: IArticlesByDateResponse;
@@ -36,7 +36,7 @@ export const Posts: React.FC<PostsProps> = ({
   onShowTopicDetail,
   onShowArticleDetail,
 }) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useAtom(selectedPostIdAtom);
   const getCategoryForSelectedDate = () => {
     if (!selectedDate) return null;
     return tags.find((tag) => tag.subjectDate === selectedDate) || null;

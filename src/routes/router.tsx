@@ -89,11 +89,7 @@ export const router = createBrowserRouter(
       children: [
         {
           path: `${PATH.TEAM_DASHBOARD}/:teamId`,
-          element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <TeamDashboardPage />
-            </Suspense>
-          ),
+          element: <TeamDashboardPage />,
         },
         {
           path: `${PATH.TEAM_ADMIN}/:id`,
