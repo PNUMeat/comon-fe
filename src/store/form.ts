@@ -24,7 +24,7 @@ import { atom } from 'jotai';
     Form
  */
 export const currentPathAtom = atom<string>(window.location.pathname);
-const userForm = [PATH.ENROLL, PATH.PROFILE];
+const userForm = [PATH.ENROLL, PATH.PROFILE, '/my-dashboard/profile'];
 const isOnUserFormAtom = atom(
   (get) => userForm.findIndex((path) => path === get(currentPathAtom)) !== -1
 );

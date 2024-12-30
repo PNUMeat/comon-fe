@@ -11,7 +11,7 @@ import { useAtom, useAtomValue } from 'jotai';
 
 const ImageContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
-  width: 200px;
+  width: ${(props) => props.h}px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -48,8 +48,9 @@ const SideContainer = styled.div<HeightInNumber>`
   justify-content: flex-end;
 `;
 
-const InfoText = styled.p`
-  font-size: 14px;
+const InfoText = styled.p<{ fontSize: string }>`
+  // font-size: 14px;
+  font-size: ${(props) => props.fontSize};
   font-style: normal;
   font-weight: 400;
   line-height: 19px;
@@ -80,17 +81,21 @@ const AttachImageButton = styled.label`
   }
 `;
 
-const ImageRestrictionNotice = () => {
+const ImageRestrictionNotice: React.FC<{
+  fontSize: string;
+}> = ({ fontSize }) => {
   const isEnrollImageFit = useAtomValue(isImageFitAtom);
 
   return (
-    <InfoText>
+    <InfoText fontSize={fontSize}>
       JPG, PNG
       <br />
       {isEnrollImageFit === null || isEnrollImageFit ? (
         `${MAX_IMAGE_SIZE}MB 용량 제한\n500x500 px 사이즈 권장`
       ) : (
-        <SText color="red">10MB 용량을 초과했습니다</SText>
+        <SText color="red" fontSize={fontSize}>
+          10MB 용량을 초과했습니다
+        </SText>
       )}
     </InfoText>
   );
@@ -102,7 +107,8 @@ const ImageRestrictionNotice = () => {
 export const ComonImageInput: React.FC<{
   imageUrl?: string;
   isDisabled?: boolean;
-}> = ({ imageUrl, isDisabled }) => {
+  h?: number;
+}> = ({ imageUrl, isDisabled, h = 200 }) => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
@@ -181,23 +187,25 @@ export const ComonImageInput: React.FC<{
     }
   }, [image]);
 
+  const fontSize = h === 80 ? '12px' : '14px';
   return (
     <Flex gap={'17px'}>
-      <ImageContainer h={200} onDragOver={handleDragOver} onDrop={handleDrop}>
+      <ImageContainer h={h} onDragOver={handleDragOver} onDrop={handleDrop}>
         {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
         {!imageStr && image && <SimpleLoader />}
         {!imageStr && !image && (
           <PlaceholderText>이미지를 드래그하세요</PlaceholderText>
         )}
       </ImageContainer>
-      <SideContainer h={200}>
-        <ImageRestrictionNotice />
+      <SideContainer h={h}>
+        <ImageRestrictionNotice fontSize={fontSize} />
         <AttachImageButton>
-          이미지 업로드
+          <SText fontSize={fontSize}>이미지 업로드</SText>
           <input
             type="file"
             accept="image/png, image/jpeg"
             onChange={handleImageChange}
+            name={'image'}
           />
         </AttachImageButton>
       </SideContainer>

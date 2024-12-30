@@ -79,6 +79,19 @@ export const router = createBrowserRouter(
           path: PATH.TEAM_MODIFICATION,
           element: <TeamModificationTemplate />,
         },
+        {
+          element: <MyDashboard />,
+          children: [
+            {
+              path: `${PATH.MY_PAGE}/profile`,
+              element: <Profile />,
+            },
+            {
+              path: `${PATH.MY_PAGE}/teams`,
+              element: <div>teams</div>,
+            },
+          ],
+        },
       ],
     },
     {
@@ -99,19 +112,6 @@ export const router = createBrowserRouter(
               <TeamAdmin />
             </Suspense>
           ),
-        },
-        {
-          element: <MyDashboard />,
-          children: [
-            {
-              path: `${PATH.MY_PAGE}/profile`,
-              element: <Profile />,
-            },
-            {
-              path: `${PATH.MY_PAGE}/teams`,
-              element: <div>teams</div>,
-            },
-          ],
         },
       ],
     },
