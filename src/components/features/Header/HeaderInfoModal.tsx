@@ -7,7 +7,10 @@ import {
   SimpleProfileWrap,
 } from '@/components/features/Header/segments';
 
+import { useNavigate } from 'react-router-dom';
+
 import { getMemberInfo } from '@/api/user';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
@@ -30,10 +33,15 @@ const InfoModal = styled.div`
   align-items: center;
 `;
 
+const MyPageButton = styled.button`
+  height: 48px;
+`;
+
 export const HeaderInfoModal: React.FC<{
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
 }> = ({ setModalRef, onClickLogout }) => {
+  const navigate = useNavigate();
   const { data } = useQuery({
     queryFn: getMemberInfo,
     queryKey: ['membersInfo'],
@@ -46,14 +54,16 @@ export const HeaderInfoModal: React.FC<{
     <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
-        <SText
-          color={'#777'}
-          lineHeight={'48px'}
-          fontSize={'12px'}
-          fontWeight={400}
-        >
-          마이페이지
-        </SText>
+        <MyPageButton onClick={() => navigate(`${PATH.MY_PAGE}/profile`)}>
+          <SText
+            color={'#777'}
+            lineHeight={'48px'}
+            fontSize={'12px'}
+            fontWeight={400}
+          >
+            마이페이지
+          </SText>
+        </MyPageButton>
       </SimpleProfileWrap>
       <GrayDivider />
 

@@ -24,7 +24,6 @@ const ProfileImage = styled.img`
   height: 48px;
   object-fit: cover;
   border-radius: 50%;
-  border: 1px dashed black;
 `;
 
 export const SimpleProfileWrap = styled.div`
@@ -104,19 +103,21 @@ const TeamImg = styled.img`
   border-radius: 50%;
 `;
 
+const NavWrap = styled.div`
+height: 100%;
+width: 50px
+cursor: pointer`;
+
 const TeamNavButton: React.FC<{ teamId: number }> = ({ teamId }) => {
   const navigate = useNavigate();
   return (
-    <img
-      src={navArrow}
-      alt={'jump button to team page'}
-      style={{
-        cursor: 'pointer',
-      }}
+    <NavWrap
       onClick={() => {
         navigate(`/team-dashboard/${teamId}`);
       }}
-    />
+    >
+      <img src={navArrow} alt={'jump button to team page'} />
+    </NavWrap>
   );
 };
 export const LogoutWrap = styled.div`
