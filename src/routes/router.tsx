@@ -19,21 +19,6 @@ import { MyDashboard } from '@/templates/MyDashboard/MyDashboard';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
 
-const Test = () => {
-  console.log('??');
-  return (
-    <div
-      style={{
-        width: '100%',
-        height: '500px',
-        backgroundColor: 'red',
-      }}
-    >
-      profile
-    </div>
-  );
-};
-
 export const router = createBrowserRouter(
   [
     {
@@ -85,10 +70,6 @@ export const router = createBrowserRouter(
             </Suspense>
           ),
         },
-        // {
-        //   path: PATH.PROFILE,
-        //   element: <ModificationTemplate />,
-        // },
         {
           path: PATH.TEAM_REGISTRATION,
           element: <TeamRegistrationTemplate />,
@@ -119,19 +100,18 @@ export const router = createBrowserRouter(
           ),
         },
         {
-          path: `${PATH.MY_PAGE}/:category`,
           element: <MyDashboard />,
           children: [
             {
-              path: 'profile',
-              element: <Test />,
+              path: `${PATH.MY_PAGE}/profile`,
+              element: <div>profile</div>,
             },
             {
-              path: 'teams',
+              path: `${PATH.MY_PAGE}/teams`,
               element: <div>teams</div>,
             },
             {
-              path: 'account',
+              path: `${PATH.MY_PAGE}/account`,
               element: <div>account</div>,
             },
           ],

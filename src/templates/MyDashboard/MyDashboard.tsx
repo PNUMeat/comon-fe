@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 
@@ -74,8 +74,9 @@ const categories: DashboardCategories[] = [
 ];
 
 export const MyDashboard = () => {
-  const { category } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const category = location.pathname.split('/')[2];
 
   if (!categories.some((valid) => valid.path === category)) {
     return <Navigate to={'/my-dashboard-category-not-found'} />;
