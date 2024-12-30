@@ -154,7 +154,10 @@ const StyledButton = styled.button<{ isClicked: boolean }>`
   cursor: pointer;
   position: relative;
   gap: 4px;
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  box-shadow: ${(props) =>
+    props.isClicked
+      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+      : 'none'};
   background: ${(props) => (props.isClicked ? '#E5E5E5' : '#fff')};
 
   &:before {
