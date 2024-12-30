@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -29,6 +30,10 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   onDateSelect,
   selectedDate,
 }) => {
+  const [activeStartDate, setActiveStartDate] = useState(
+    new Date(selectedDate)
+  );
+
   const getCategoryForDate = (date: Date) => {
     const formattedDate = formatDate(date);
     return (
@@ -45,8 +50,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   };
 
   const handleTodayClick = () => {
-    const today = formatDate(new Date());
-    onDateSelect(today);
+    const today = new Date();
+    const formattedToday = formatDate(today);
+
+    onDateSelect(formattedToday);
+    setActiveStartDate(today);
   };
 
   return (
@@ -69,7 +77,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
           const formattedDate = formatDate(value);
           onDateSelect(formattedDate);
         }}
+        onActiveStartDateChange={({ activeStartDate }) => {
+          setActiveStartDate(activeStartDate || new Date());
+        }}
         value={new Date(selectedDate)}
+        activeStartDate={activeStartDate}
       />
     </CalendarWrapper>
   );

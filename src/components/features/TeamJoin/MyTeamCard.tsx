@@ -8,8 +8,8 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Slider from 'react-slick';
 
 import { ITeamInfo } from '@/api/team';
 import Arrow from '@/assets/TeamJoin/carousel_arrow.png';
@@ -17,85 +17,27 @@ import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
 interface MyTeamCardProps {
   teams: ITeamInfo[];
 }
 
+interface CustomArrowProps {
+  onClick?: () => void;
+  direction: string;
+}
+
 export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const scrollContainer = containerRef.current;
-    if (!scrollContainer) return;
-
-    const handleScroll = () => {
-      const scrollLeft = scrollContainer.scrollLeft;
-      const clientWidth = scrollContainer.clientWidth;
-      const newIndex = Math.round(scrollLeft / clientWidth);
-
-      setCurrentIndex(newIndex);
-    };
-
-    // TODO: throttle?
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const handleDotClick = (index: number) => {
-    if (!containerRef.current) return;
-    const { clientWidth } = containerRef.current;
-
-    containerRef.current.scrollTo({
-      left: index * clientWidth,
-      behavior: 'smooth',
-    });
-  };
-
-  const handlePrev = () => {
-    const scrollContainer = containerRef.current;
-    if (!scrollContainer) return;
-
-    const scrollAmount = scrollContainer.clientWidth;
-
-    if (currentIndex === 0) {
-      const lastIndex = teams.length - 1;
-      scrollContainer.scrollTo({
-        left: lastIndex * scrollAmount,
-        behavior: 'smooth',
-      });
-      setCurrentIndex(lastIndex);
-    } else {
-      scrollContainer.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth',
-      });
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    const scrollContainer = containerRef.current;
-    if (!scrollContainer) return;
-
-    const scrollAmount = scrollContainer.clientWidth;
-
-    if (currentIndex === teams.length - 1) {
-      scrollContainer.scrollTo({
-        left: 0,
-        behavior: 'smooth',
-      });
-      setCurrentIndex(0);
-    } else {
-      scrollContainer.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth',
-      });
-      setCurrentIndex(currentIndex + 1);
-    }
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    prevArrow: <CustomArrow direction="left" />,
+    nextArrow: <CustomArrow direction="right" />,
   };
 
   return (
@@ -109,137 +51,122 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
 
       <Spacer h={30} />
 
-      <CarouselWrapper>
-        <LeftArrowButton onClick={handlePrev} />
-        <Carousel ref={containerRef}>
-          {teams.map((team) => {
-            return (
-              <div
-                style={{
-                  scrollSnapAlign: 'start',
-                  minWidth: '917px',
-                  boxSizing: 'border-box',
-                }}
-                key={team.teamId}
-              >
-                <Box width="100%">
-                  <Flex justify="space-between">
-                    <Box width="260px" height="260px">
-                      <ImageContainer
-                        src={team.imageUrl}
-                        altText={team.teamName}
-                        w="inherit"
-                        h="inherit"
-                        maxW={260}
-                      />
-                    </Box>
-                    <Flex
-                      direction="column"
-                      justify="center"
-                      align="center"
-                      width={30}
-                    >
-                      <SText fontSize="16px" fontWeight={600}>
-                        TEAM
-                      </SText>
-                      <Spacer h={12} />
-                      <SText
-                        fontSize="40px"
-                        color="#333"
-                        fontWeight={700}
-                        whiteSpace={'nowrap'}
-                      >
-                        {team.teamName}
-                      </SText>
-                      <Spacer h={8} />
-                      <SText fontSize="16px" color="#777" fontWeight={400}>
-                        since {team.createdAt}
-                      </SText>
-                      <Spacer h={8} />
-                      <Label>
-                        <SText fontSize="10px" fontWeight={600}>
-                          {team.topic}
-                        </SText>
-                      </Label>
-                      <Spacer h={24} />
-                      <Flex direction="column" align="center" gap="10px">
-                        {/* <Button backgroundColor={colors.buttonPink}>
-                    {team.streakDays}일 연속 코몬 중!
-                  </Button> */}
-                        <Button backgroundColor={colors.buttonPurple}>
-                          {team.memberCount} members
-                        </Button>
-                      </Flex>
-                    </Flex>
-                    <Flex
-                      direction="column"
-                      justify="space-evenly"
-                      align="center"
-                      width={35}
-                    >
-                      {/* <Box width="360px" height="80px">
-                  <Flex width={100} justify="space-evenly" align="center">
-                    <SText fontSize="16px" fontWeight={600} color="#333">
-                      오늘의 코테 {team.successMemberCount}명 업로드 완료!
+      <SliderWrapper>
+        <Slider {...settings}>
+          {teams.map((team) => (
+            <div key={team.teamId}>
+              <Box width="100%">
+                <Flex justify="space-between">
+                  <Box width="260px" height="260px">
+                    <ImageContainer
+                      src={team.imageUrl}
+                      altText={team.teamName}
+                      w="inherit"
+                      h="inherit"
+                      maxW={260}
+                    />
+                  </Box>
+                  <Flex
+                    direction="column"
+                    justify="center"
+                    align="center"
+                    width={30}
+                  >
+                    <SText fontSize="16px" fontWeight={600}>
+                      TEAM
                     </SText>
-                    <ProfileList profiles={profiles} />
-                  </Flex>
-                </Box> */}
-                      <Link
-                        to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <Box
-                          width="272px"
-                          height="80px"
-                          padding="0"
-                          borderWidth="3px"
-                        >
-                          <ClickImage src={click} />
-                          <ActionText>
-                            <SText
-                              fontSize="20px"
-                              fontWeight={700}
-                              color="#333"
-                            >
-                              팀 페이지로 이동하기
-                            </SText>
-                          </ActionText>
-                        </Box>
-                      </Link>
+                    <Spacer h={12} />
+                    <SText
+                      fontSize="40px"
+                      color="#333"
+                      fontWeight={700}
+                      whiteSpace="nowrap"
+                    >
+                      {team.teamName}
+                    </SText>
+                    <Spacer h={8} />
+                    <SText fontSize="16px" color="#777" fontWeight={400}>
+                      since {team.createdAt}
+                    </SText>
+                    <Spacer h={8} />
+                    <Label>
+                      <SText fontSize="10px" fontWeight={600}>
+                        {team.topic}
+                      </SText>
+                    </Label>
+                    <Spacer h={24} />
+                    <Flex direction="column" align="center" gap="10px">
+                      <Button backgroundColor={colors.buttonPurple}>
+                        {team.memberCount} members
+                      </Button>
                     </Flex>
                   </Flex>
-                </Box>
-              </div>
-            );
-          })}
-          <CircleNav>
-            {teams.map((_, index) => (
-              <DotButton
-                key={index}
-                isSelected={index === currentIndex}
-                onClick={() => handleDotClick(index)}
-              />
-            ))}
-          </CircleNav>
-        </Carousel>
-        <RightArrowButton onClick={handleNext} />
-      </CarouselWrapper>
+                  <Flex
+                    direction="column"
+                    justify="space-evenly"
+                    align="center"
+                    width={35}
+                  >
+                    <Link
+                      to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <Box
+                        width="272px"
+                        height="80px"
+                        padding="0"
+                        borderWidth="3px"
+                      >
+                        <ClickImage src={click} />
+                        <ActionText>
+                          <SText fontSize="20px" fontWeight={700} color="#333">
+                            팀 페이지로 이동하기
+                          </SText>
+                        </ActionText>
+                      </Box>
+                    </Link>
+                  </Flex>
+                </Flex>
+              </Box>
+            </div>
+          ))}
+        </Slider>
+      </SliderWrapper>
       <Spacer h={84} />
     </>
   );
 };
 
-const CarouselWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  // width: calc(100% - 190px);
-  width: 100%;
-  // margin: 0 auto;
+const SliderWrapper = styled.div`
+  width: 920px;
+  margin: 0 auto;
+
+  .slick-dots {
+    bottom: -36px;
+    .slick-active {
+      button:before {
+        font-size: 14px;
+        opacity: 1;
+        color: ${colors.buttonPurple};
+      }
+    }
+    li {
+      button:before {
+        font-size: 14px;
+        opacity: 1;
+        color: ${colors.borderPurple};
+      }
+    }
+  }
 `;
 
-const ArrowButton = styled.button`
+const CustomArrow: React.FC<CustomArrowProps> = ({ onClick, direction }) => (
+  <ArrowButton onClick={onClick} direction={direction}>
+    <ArrowImage src={Arrow} direction={direction} />
+  </ArrowButton>
+);
+
+const ArrowButton = styled.div<{ direction: string }>`
   position: absolute;
   top: 50%;
   width: 68px;
@@ -253,20 +180,16 @@ const ArrowButton = styled.button`
   justify-content: center;
   align-items: center;
   z-index: 2;
-  background-image: url(${Arrow});
-  background-repeat: no-repeat;
-  background-size: auto 56px;
-  background-position: center;
-`;
-
-const LeftArrowButton = styled(ArrowButton)`
-  left: -10px;
   transform: translateY(-50%);
+  ${({ direction }) =>
+    direction === 'right' ? 'right: -90px;' : 'left: -90px;'}
 `;
 
-const RightArrowButton = styled(ArrowButton)`
-  right: -10px;
-  transform: translateY(-50%) rotate(180deg);
+const ArrowImage = styled.img<{ direction: string }>`
+  width: auto;
+  height: 52px;
+  transform: ${({ direction }) =>
+    direction === 'right' ? 'rotate(180deg)' : 'none'};
 `;
 
 const ImageContainer = styled(LazyImage)`
@@ -283,43 +206,4 @@ const ClickImage = styled.img`
 const ActionText = styled.div`
   margin-left: 8px;
   color: #333;
-`;
-
-const Carousel = styled.div`
-  // width: calc(100% - 190px);
-  width: 917px;
-  overflow-x: scroll;
-  box-sizing: border-box;
-  display: flex;
-  scroll-snap-type: x mandatory;
-  gap: 12px;
-  margin: 0 auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-`;
-
-export const CircleNav = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 310px);
-  display: flex;
-  gap: 8px;
-`;
-
-const DotButton = styled.button<{ isSelected?: boolean }>`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background-color: ${({ isSelected }) => (isSelected ? '#8488ec' : '#cdcfff')};
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #999;
-  }
 `;
