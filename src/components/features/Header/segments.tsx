@@ -22,6 +22,7 @@ const ProfileUserWrapper = styled.div`
 const ProfileImage = styled.img`
   width: 48px;
   height: 48px;
+  object-fit: cover;
   border-radius: 50%;
   border: 1px dashed black;
 `;
@@ -40,8 +41,8 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
 }) => {
   return (
     <ProfileUserWrapper>
-      {name && <ProfileImage src={img} alt={'profile image'} />}
-      {img && (
+      {img && <ProfileImage src={img} alt={'profile image'} />}
+      {name && (
         <SText
           fontSize={'16px'}
           fontWeight={400}
@@ -66,6 +67,7 @@ const TeamNavWrapper = styled.div`
   height: 30px;
   display: flex;
   justify-content: space-between;
+  margin: 4px 0;
 `;
 
 export const MyTeamNav: React.FC<{

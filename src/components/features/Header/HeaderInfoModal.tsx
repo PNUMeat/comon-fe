@@ -43,7 +43,7 @@ export const HeaderInfoModal: React.FC<{
   const teams = data?.teamAbstractResponses ?? [];
 
   return (
-    <InfoModal ref={setModalRef}>
+    <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
         <SText
