@@ -31,7 +31,7 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
-import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
+import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -71,7 +71,9 @@ const Image = styled.img`
 
 const AnnouncementImage = styled(Image)`
   position: absolute;
-  transform: translate(-${leftPadding}, -4px);
+  transform: translate(-28px, 0px);
+  width: 18px;
+  height: 18px;
 `;
 
 const SubjectImage = styled(Image)`
