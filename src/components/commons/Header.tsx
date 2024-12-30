@@ -93,7 +93,7 @@ export const MyInfoModal = styled.div`
   position: absolute;
   top: 46px;
   right: -26px;
-  opacity: 1;
+  opacity: 0;
   z-index: 99999999;
   box-sizing: border-box;
   padding: 9px 0;
