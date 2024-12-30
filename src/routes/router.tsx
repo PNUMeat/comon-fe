@@ -15,9 +15,24 @@ import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
+import { MyDashboard } from '@/templates/MyDashboard/MyDashboard';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
-import { ModificationTemplate } from '@/templates/User/ModificationTemplate';
+
+const Test = () => {
+  console.log('??');
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '500px',
+        backgroundColor: 'red',
+      }}
+    >
+      profile
+    </div>
+  );
+};
 
 export const router = createBrowserRouter(
   [
@@ -70,10 +85,10 @@ export const router = createBrowserRouter(
             </Suspense>
           ),
         },
-        {
-          path: PATH.PROFILE,
-          element: <ModificationTemplate />,
-        },
+        // {
+        //   path: PATH.PROFILE,
+        //   element: <ModificationTemplate />,
+        // },
         {
           path: PATH.TEAM_REGISTRATION,
           element: <TeamRegistrationTemplate />,
@@ -102,6 +117,24 @@ export const router = createBrowserRouter(
               <TeamAdmin />
             </Suspense>
           ),
+        },
+        {
+          path: `${PATH.MY_PAGE}/:category`,
+          element: <MyDashboard />,
+          children: [
+            {
+              path: 'profile',
+              element: <Test />,
+            },
+            {
+              path: 'teams',
+              element: <div>teams</div>,
+            },
+            {
+              path: 'account',
+              element: <div>account</div>,
+            },
+          ],
         },
       ],
     },

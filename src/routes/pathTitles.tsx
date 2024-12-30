@@ -10,6 +10,10 @@ export const getTitle = (path: string): ReactNode => {
     return <span>🎂 팀 페이지 관리</span>;
   }
 
+  if (path.startsWith('/my-dashboard')) {
+    return <span>🎯 마이페이지</span>;
+  }
+
   const staticTitles: Record<string, ReactNode> = {
     '/login': <span>🔑 로그인</span>,
     '/enroll': <span>👑 프로필 생성</span>,

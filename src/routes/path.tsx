@@ -3,6 +3,7 @@ export const PATH = {
   LOGIN: '/login',
   ENROLL: '/enroll',
   PROFILE: '/profile',
+  MY_PAGE: '/my-dashboard',
   TEAMS: '/team-list',
   TEAM_REGISTRATION: '/team-registration',
   TEAM_MODIFICATION: '/team-modification',
