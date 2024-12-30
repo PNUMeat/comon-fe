@@ -12,7 +12,6 @@ import {
 import { HeightInNumber } from '@/components/types';
 
 import { MouseEvent, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
@@ -65,6 +64,7 @@ const UserMenu = styled.div`
   align-items: flex-end;
   white-space: nowrap;
   margin-right: 53px;
+  position: relative;
 
   a,
   button {
@@ -82,7 +82,6 @@ const ComonLogoWrap = styled.div`
   cursor: pointer;
 `;
 
-const modalInitPos = '9999px';
 export const MyInfoModal = styled.div`
   width: 326px;
   // height: 186px;
@@ -91,9 +90,11 @@ export const MyInfoModal = styled.div`
   border: 1px solid #8488ec;
   background: #fff;
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
-  position: fixed;
-  top: ${modalInitPos};
-  zindex: 99999999;
+  position: absolute;
+  top: 46px;
+  right: -26px;
+  opacity: 1;
+  z-index: 99999999;
   box-sizing: border-box;
   padding: 9px 0;
   display: flex;
@@ -123,23 +124,22 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   };
 
   useEffect(() => {
-    if (modalControlRef && modalControlRef.current) {
+    if (modalControlRef && modalControlRef.current && isLoggedIn) {
       const { modal } = modalControlRef.current;
       if (modal) {
         const onClick = (e: DocumentEventMap['click']) => {
           const target = e.target as HTMLElement;
           if (target && target.textContent !== '내정보') {
-            modal.style.top = modalInitPos;
+            modal.style.opacity = '0';
             modalControlRef.current.isClicked = false;
             return;
           }
 
           if (modalControlRef.current.isClicked) {
-            modal.style.top = `${72 + 52 + 2}px`;
-            modal.style.left = `${1190}px`;
+            modal.style.opacity = '1';
             return;
           }
-          modal.style.top = modalInitPos;
+          modal.style.opacity = '0';
         };
         document.addEventListener('click', onClick);
 
@@ -148,7 +148,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         };
       }
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const onClickHome = () => navigate(PATH.HOME);
   const onClickLogout = () =>
@@ -176,35 +176,25 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         </NavMenu>
       </Flex>
       <UserMenu>
-        <button
-          onClick={() => {
-            modalControlRef.current.isClicked =
-              !modalControlRef.current.isClicked;
-          }}
-        >
-          내정보
-        </button>
-        {/*{isLoggedIn ? (*/}
-        {/*  <button*/}
-        {/*    onClick={() => {*/}
-        {/*      modalControlRef.current.isClicked =*/}
-        {/*        !modalControlRef.current.isClicked;*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    내정보*/}
-        {/*  </button>*/}
-        {/*) : (*/}
-        {/*  <Link*/}
-        {/*    to={{*/}
-        {/*      pathname: PATH.LOGIN,*/}
-        {/*    }}*/}
-        {/*    state={{ redirect: location.pathname }}*/}
-        {/*  >*/}
-        {/*    로그인*/}
-        {/*  </Link>*/}
-        {/*)}*/}
-      </UserMenu>
-      {createPortal(
+        {isLoggedIn ? (
+          <button
+            onClick={() => {
+              modalControlRef.current.isClicked =
+                !modalControlRef.current.isClicked;
+            }}
+          >
+            내정보
+          </button>
+        ) : (
+          <Link
+            to={{
+              pathname: PATH.LOGIN,
+            }}
+            state={{ redirect: location.pathname }}
+          >
+            로그인
+          </Link>
+        )}
         <MyInfoModal
           ref={setModalRef}
           onClick={(e: MouseEvent<HTMLDivElement>) => {
@@ -239,9 +229,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
               </SText>
             </button>
           </LogoutWrap>
-        </MyInfoModal>,
-        document.body
-      )}
+        </MyInfoModal>
+      </UserMenu>
     </HeaderContainer>
   );
 };
