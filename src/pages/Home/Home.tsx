@@ -138,6 +138,7 @@ export const Home = () => {
     let animationFrameId: number | null = null;
     let startTime: number | null = null;
     let fadeOutStartTime: number | null = null;
+
     const animate = (pos: number) => (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -295,7 +296,7 @@ const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  // scroll-snap-type: y mandatory;
   position: relative;
 `;
 
@@ -313,9 +314,10 @@ const WaitBox = styled.div`
   justify-content: end;
   align-items: center;
   // padding-bottom: 175px;
-  padding-bottom: 125px;
+  padding-bottom: 135px;
   gap: 10px;
   position: absolute;
+  transform: translate(0, -100px);
 
   &::after {
     content: '';

@@ -2,6 +2,13 @@ import { checkRemainingCookies } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
+import {
+  GrayDivider,
+  LogoutWrap,
+  MyTeamNav,
+  SimpleProfile,
+  SimpleProfileWrap,
+} from '@/components/features/Header/segments';
 import { HeightInNumber } from '@/components/types';
 
 import { MouseEvent, useEffect, useRef, useState } from 'react';
@@ -77,16 +84,21 @@ const ComonLogoWrap = styled.div`
 
 const modalInitPos = '9999px';
 export const MyInfoModal = styled.div`
-  width: 301px;
-  height: 189px;
+  width: 326px;
+  // height: 186px;
   flex-shrink: 0;
-  border-radius: 8px;
-  border: 1px solid #7f7f7f;
+  border-radius: 10px;
+  border: 1px solid #8488ec;
   background: #fff;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   position: fixed;
   top: ${modalInitPos};
   zindex: 99999999;
+  box-sizing: border-box;
+  padding: 9px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 type ModalControl = {
@@ -96,6 +108,7 @@ type ModalControl = {
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const [isLoggedIn] = useState<boolean>(checkRemainingCookies());
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
     isClicked: false,
@@ -122,7 +135,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           }
 
           if (modalControlRef.current.isClicked) {
-            modal.style.top = `${72 + 52 + 10}px`;
+            modal.style.top = `${72 + 52 + 2}px`;
             modal.style.left = `${1190}px`;
             return;
           }
@@ -149,7 +162,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       .catch((err) => console.error(err));
 
   return (
-    <HeaderContainer h={h}>
+    <HeaderContainer h={h} ref={containerRef}>
       <Flex>
         <ComonLogoWrap onClick={onClickHome}>
           <ComonSLogo>
@@ -163,26 +176,33 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         </NavMenu>
       </Flex>
       <UserMenu>
-        {isLoggedIn ? (
-          // <Link to={PATH.PROFILE}>프로필 수정</Link>
-          <button
-            onClick={() => {
-              modalControlRef.current.isClicked =
-                !modalControlRef.current.isClicked;
-            }}
-          >
-            내정보
-          </button>
-        ) : (
-          <Link
-            to={{
-              pathname: PATH.LOGIN,
-            }}
-            state={{ redirect: location.pathname }}
-          >
-            로그인
-          </Link>
-        )}
+        <button
+          onClick={() => {
+            modalControlRef.current.isClicked =
+              !modalControlRef.current.isClicked;
+          }}
+        >
+          내정보
+        </button>
+        {/*{isLoggedIn ? (*/}
+        {/*  <button*/}
+        {/*    onClick={() => {*/}
+        {/*      modalControlRef.current.isClicked =*/}
+        {/*        !modalControlRef.current.isClicked;*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    내정보*/}
+        {/*  </button>*/}
+        {/*) : (*/}
+        {/*  <Link*/}
+        {/*    to={{*/}
+        {/*      pathname: PATH.LOGIN,*/}
+        {/*    }}*/}
+        {/*    state={{ redirect: location.pathname }}*/}
+        {/*  >*/}
+        {/*    로그인*/}
+        {/*  </Link>*/}
+        {/*)}*/}
       </UserMenu>
       {createPortal(
         <MyInfoModal
@@ -191,7 +211,34 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             e.stopPropagation();
           }}
         >
-          <button onClick={onClickLogout}>로그아웃</button>
+          <SimpleProfileWrap>
+            <SimpleProfile name={'한재안'} img={'sry'} />
+            <SText
+              color={'#777'}
+              lineHeight={'48px'}
+              fontSize={'12px'}
+              fontWeight={400}
+            >
+              마이페이지
+            </SText>
+          </SimpleProfileWrap>
+          <GrayDivider />
+
+          <MyTeamNav teamId={3} teamImg={'src'} teamName={'티리티리팀'} />
+
+          <GrayDivider />
+          <LogoutWrap>
+            <button onClick={onClickLogout}>
+              <SText
+                color={'#505050'}
+                fontSize={'12px'}
+                fontWeight={500}
+                fontFamily={'Pretendard'}
+              >
+                로그아웃
+              </SText>
+            </button>
+          </LogoutWrap>
         </MyInfoModal>,
         document.body
       )}
