@@ -300,12 +300,12 @@ export const TeamAdmin = () => {
               </SText>
               <Spacer h={32} />
 
-              <Box width="100%" height="60px" padding="0" borderWidth="3px">
+              <Box width="90%" height="50px" padding="0">
                 <Link
                   to={`${PATH.TEAM_DASHBOARD}/${id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <SText fontSize="16px" fontWeight={600} color="#333">
+                  <SText fontSize="14px" fontWeight={700} color="#333">
                     팀 페이지로 이동하기
                   </SText>
                 </Link>
