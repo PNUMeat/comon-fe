@@ -1,4 +1,6 @@
-import { Navigate, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
+
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 
@@ -8,6 +10,7 @@ const DashboardGird = styled.div`
   grid-template-columns: 260px 1fr;
   grid-template-rows: 100%;
   grid-template-areas: 'sidebar main';
+  gap: 121px;
   margin-top: 54px;
 `;
 
@@ -23,8 +26,9 @@ const DSidebar = styled.aside`
 
 const DContent = styled.div`
   grid-area: main;
-  margin-left: 121px;
+  // margin-left: 121px;
   display: flex;
+  width: 100%;
 `;
 
 const Category = styled.div<{ isSelected?: boolean }>`
@@ -68,14 +72,15 @@ type DashboardCategories = {
 };
 
 const categories: DashboardCategories[] = [
-  { label: '프로필', path: 'profile' },
+  { label: '계정 정보', path: 'profile' },
   { label: '내 팀 관리', path: 'teams' },
-  { label: '계정 정보', path: 'account' },
+  // { label: '계정 정보', path: 'account' },
 ];
 
 export const MyDashboard = () => {
-  const { category } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const category = location.pathname.split('/')[2];
 
   if (!categories.some((valid) => valid.path === category)) {
     return <Navigate to={'/my-dashboard-category-not-found'} />;
@@ -95,6 +100,10 @@ export const MyDashboard = () => {
         ))}
       </DSidebar>
       <DContent>
+        <BackgroundGradient
+          count={1}
+          positions={[{ top: '200px', left: '-280px' }]}
+        />
         <Outlet />
       </DContent>
     </DashboardGird>
