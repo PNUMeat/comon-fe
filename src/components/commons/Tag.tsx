@@ -16,6 +16,7 @@ const TagContainer = styled.div<{
   bgColor: string;
   padding?: string;
   height?: string;
+  isSelected?: boolean;
 }>`
   display: inline-flex;
   align-items: center;
@@ -24,7 +25,8 @@ const TagContainer = styled.div<{
   border-radius: 34px;
   padding: ${(props) => props.padding || '2px 6px'};
   cursor: pointer;
-  ${(props) => (props.height ? `height: ${props.height}` : null)}
+  ${(props) => (props.height ? `height: ${props.height};` : null)}
+  border: ${(props) => (props.isSelected ? '2px solid #333' : 'none')};
 `;
 
 const Dot = styled.div<{ isSelected?: boolean }>`
@@ -59,6 +61,7 @@ export const Tag: React.FC<TagProps> = ({
       onClick={onClick}
       padding={padding}
       height={height}
+      isSelected={isSelected}
     >
       <Dot isSelected={isSelected} />
       <TagText fontSize={fontSize}>{label}</TagText>
