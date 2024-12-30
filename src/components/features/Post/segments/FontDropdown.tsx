@@ -9,7 +9,13 @@ import styled from '@emotion/styled';
 import { $patchStyleText } from '@lexical/selection';
 import { $getSelection, LexicalEditor, TextFormatType } from 'lexical';
 
-const FONT_COLOR_OPTIONS: string[] = ['#F00', '#0F0', '#00F', '#000'];
+const FONT_COLOR_OPTIONS: string[] = [
+  '#000',
+  '#3C42E0',
+  '#6E74FA',
+  '#EF2528',
+  '#FF377F',
+];
 
 const FONT_SIZE_OPTIONS: [string, string][] = [
   ['10px', '10px'],

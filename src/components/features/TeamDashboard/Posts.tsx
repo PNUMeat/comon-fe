@@ -1,12 +1,14 @@
 import { Box } from '@/components/commons/Box';
-import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
+import { useState } from 'react';
+
 import { IArticlesByDateResponse } from '@/api/dashboard';
+import RocketImg from '@/assets/TeamDashboard/rocket.png';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -37,6 +39,8 @@ export const Posts: React.FC<PostsProps> = ({
   onShowArticleDetail,
 }) => {
   const [selectedId, setSelectedId] = useAtom(selectedPostIdAtom);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+
   const getCategoryForSelectedDate = () => {
     if (!selectedDate) return null;
     return tags.find((tag) => tag.subjectDate === selectedDate) || null;
@@ -44,14 +48,20 @@ export const Posts: React.FC<PostsProps> = ({
 
   const category = getCategoryForSelectedDate();
 
+  const handleButtonClick = () => {
+    setIsButtonClicked(true);
+    onShowTopicDetail();
+  };
+
   const handleArticleClick = (articleId: number) => {
+    setIsButtonClicked(false);
     onShowArticleDetail(articleId);
     setSelectedId(articleId);
   };
 
   return (
     <div style={{ position: 'relative' }}>
-      <Box width="100%" padding="20px 40px" style={{ zIndex: 2 }}>
+      <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex width={35} justify="space-between" align="center">
             <SText color="#333" fontSize="24px" fontWeight={700}>
@@ -66,9 +76,10 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <Button padding="8px 14px" onClick={onShowTopicDetail}>
+          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
+            <RocketIcon src={RocketImg} />
             주제 확인하기
-          </Button>
+          </StyledButton>
         </Flex>
       </Box>
       {data?.content?.length === 0 ? (
@@ -130,6 +141,42 @@ export const Posts: React.FC<PostsProps> = ({
   );
 };
 
+const StyledButton = styled.button<{ isClicked: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  gap: 4px;
+  box-shadow: ${(props) =>
+    props.isClicked
+      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+      : 'none'};
+  background: ${(props) => (props.isClicked ? '#E5E5E5' : '#fff')};
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #ffd482, #ff377f);
+    z-index: -1;
+  }
+`;
+
+const RocketIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
 const NoArticleDiv = styled.div`
   position: absolute;
   top: 0px;

@@ -8,7 +8,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Link, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
-import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
+import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
@@ -152,8 +152,8 @@ const Announcement = styled.header`
 `;
 
 const AnnouncementImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   margin-right: 8px;
 `;
 

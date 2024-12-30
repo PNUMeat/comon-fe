@@ -61,29 +61,27 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
   position: relative;
   ${(props) =>
     props.shouldHighlight
-      ? `&::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-
-    padding: 1px;
-
-    background: linear-gradient(45deg, #ff5080, #ffd482, #ff377f);
-
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-
-    z-index: -1;
-    pointer-events: none;`
+      ? `
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(45deg, #ff5080, #ffd482, #ff377f);
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      z-index: -1;
+      pointer-events: none;
+    }
+  `
       : ''}
-  }
 `;
 
 const EditorPlaceholder = styled.div`

@@ -31,7 +31,7 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
-import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
+import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -71,7 +71,9 @@ const Image = styled.img`
 
 const AnnouncementImage = styled(Image)`
   position: absolute;
-  transform: translate(-${leftPadding}, -4px);
+  transform: translate(-28px, 0px);
+  width: 18px;
+  height: 18px;
 `;
 
 const SubjectImage = styled(Image)`
@@ -300,12 +302,12 @@ export const TeamAdmin = () => {
               </SText>
               <Spacer h={32} />
 
-              <Box width="100%" height="60px" padding="0" borderWidth="3px">
+              <Box width="90%" height="50px" padding="0">
                 <Link
                   to={`${PATH.TEAM_DASHBOARD}/${id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <SText fontSize="16px" fontWeight={600} color="#333">
+                  <SText fontSize="14px" fontWeight={700} color="#333">
                     팀 페이지로 이동하기
                   </SText>
                 </Link>

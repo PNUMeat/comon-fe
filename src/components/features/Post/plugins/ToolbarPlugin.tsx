@@ -31,10 +31,10 @@ const ToolbarWrap = styled.div`
   height: 44px;
   width: calc(100% - 40px);
   border-bottom: 3px solid #c2c5fb;
-  padding: 0 20px;
+  padding: 0 20px 10px 20px;
   gap: 20px;
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -153,6 +153,7 @@ export const ToolbarPlugin: React.FC<{
             width: '405px',
             gap: '13px',
             marginRight: '78px',
+            alignItems: 'center',
           }}
         >
           <SText
@@ -174,8 +175,8 @@ export const ToolbarPlugin: React.FC<{
               }}
               isSelected={item.label === tag}
               fontSize={'10px'}
-              padding={'2px 10px'}
-              height={'15px'}
+              padding={'6px 10px'}
+              height="16px"
             />
           ))}
         </div>
