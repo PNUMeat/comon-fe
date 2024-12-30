@@ -1,5 +1,4 @@
 import { Box } from '@/components/commons/Box';
-import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
@@ -7,6 +6,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
 import { IArticlesByDateResponse } from '@/api/dashboard';
+import RocketImg from '@/assets/TeamDashboard/rocket.png';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -51,7 +51,7 @@ export const Posts: React.FC<PostsProps> = ({
 
   return (
     <div style={{ position: 'relative' }}>
-      <Box width="100%" padding="20px 40px" style={{ zIndex: 2 }}>
+      <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex width={35} justify="space-between" align="center">
             <SText color="#333" fontSize="24px" fontWeight={700}>
@@ -66,9 +66,10 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <Button padding="8px 14px" onClick={onShowTopicDetail}>
+          <StyledButton onClick={onShowTopicDetail}>
+            <RocketIcon src={RocketImg} />
             주제 확인하기
-          </Button>
+          </StyledButton>
         </Flex>
       </Box>
       {data?.content?.length === 0 ? (
@@ -130,6 +131,50 @@ export const Posts: React.FC<PostsProps> = ({
   );
 };
 
+const StyledButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  gap: 4px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    padding: 1px;
+    background: linear-gradient(90deg, #ffd482, #ff377f);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    z-index: -1;
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const RocketIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
 const NoArticleDiv = styled.div`
   position: absolute;
   top: 0px;
