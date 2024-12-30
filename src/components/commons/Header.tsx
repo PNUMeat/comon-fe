@@ -2,16 +2,10 @@ import { checkRemainingCookies } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
-import {
-  GrayDivider,
-  LogoutWrap,
-  MyTeamNav,
-  SimpleProfile,
-  SimpleProfileWrap,
-} from '@/components/features/Header/segments';
+import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
 
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
@@ -80,26 +74,6 @@ const UserMenu = styled.div`
 
 const ComonLogoWrap = styled.div`
   cursor: pointer;
-`;
-
-export const MyInfoModal = styled.div`
-  width: 326px;
-  // height: 186px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  border: 1px solid #8488ec;
-  background: #fff;
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
-  position: absolute;
-  top: 46px;
-  right: -26px;
-  opacity: 0;
-  z-index: 99999999;
-  box-sizing: border-box;
-  padding: 9px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 type ModalControl = {
@@ -177,14 +151,20 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       </Flex>
       <UserMenu>
         {isLoggedIn ? (
-          <button
-            onClick={() => {
-              modalControlRef.current.isClicked =
-                !modalControlRef.current.isClicked;
-            }}
-          >
-            내정보
-          </button>
+          <Fragment>
+            <button
+              onClick={() => {
+                modalControlRef.current.isClicked =
+                  !modalControlRef.current.isClicked;
+              }}
+            >
+              내정보
+            </button>
+            <HeaderInfoModal
+              setModalRef={setModalRef}
+              onClickLogout={onClickLogout}
+            />
+          </Fragment>
         ) : (
           <Link
             to={{
@@ -195,41 +175,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             로그인
           </Link>
         )}
-        <MyInfoModal
-          ref={setModalRef}
-          onClick={(e: MouseEvent<HTMLDivElement>) => {
-            e.stopPropagation();
-          }}
-        >
-          <SimpleProfileWrap>
-            <SimpleProfile name={'한재안'} img={'sry'} />
-            <SText
-              color={'#777'}
-              lineHeight={'48px'}
-              fontSize={'12px'}
-              fontWeight={400}
-            >
-              마이페이지
-            </SText>
-          </SimpleProfileWrap>
-          <GrayDivider />
-
-          <MyTeamNav teamId={3} teamImg={'src'} teamName={'티리티리팀'} />
-
-          <GrayDivider />
-          <LogoutWrap>
-            <button onClick={onClickLogout}>
-              <SText
-                color={'#505050'}
-                fontSize={'12px'}
-                fontWeight={500}
-                fontFamily={'Pretendard'}
-              >
-                로그아웃
-              </SText>
-            </button>
-          </LogoutWrap>
-        </MyInfoModal>
       </UserMenu>
     </HeaderContainer>
   );

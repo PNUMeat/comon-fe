@@ -82,3 +82,22 @@ export const logout = async () => {
 
   return res.data;
 };
+
+type TeamAbsInfo = {
+  teamId: number;
+  teamName: string;
+  teamImageUrl: string;
+};
+
+type MemberInfoResp = {
+  memberName: string;
+  memberImageUrl: string;
+  teamAbstractResponses: TeamAbsInfo[];
+};
+
+export const getMemberInfo = async () => {
+  const res =
+    await apiInstance.get<ServerResponse<MemberInfoResp>>('v1/members/info');
+
+  return res.data.data;
+};

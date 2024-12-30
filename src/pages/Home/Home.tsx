@@ -296,7 +296,7 @@ const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  // scroll-snap-type: y mandatory;
+  scroll-snap-type: y mandatory;
   position: relative;
 `;
 

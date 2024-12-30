@@ -16,6 +16,7 @@ export const ProfileBoxContainer = styled.div`
 const ProfileUserWrapper = styled.div`
   display: flex;
   gap: 18px;
+  height: 48px;
 `;
 
 const ProfileImage = styled.img`
@@ -33,21 +34,23 @@ export const SimpleProfileWrap = styled.div`
   justify-content: space-between;
 `;
 
-export const SimpleProfile: React.FC<{ img: string; name: string }> = ({
+export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
   img,
   name,
 }) => {
   return (
     <ProfileUserWrapper>
-      <ProfileImage src={img} alt={'profile image'} />
-      <SText
-        fontSize={'16px'}
-        fontWeight={400}
-        fontFamily={'Pretendard'}
-        lineHeight={'48px'}
-      >
-        {name}
-      </SText>
+      {name && <ProfileImage src={img} alt={'profile image'} />}
+      {img && (
+        <SText
+          fontSize={'16px'}
+          fontWeight={400}
+          fontFamily={'Pretendard'}
+          lineHeight={'48px'}
+        >
+          {name}
+        </SText>
+      )}
     </ProfileUserWrapper>
   );
 };
