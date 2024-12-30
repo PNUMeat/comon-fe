@@ -5,6 +5,8 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
+import { useState } from 'react';
+
 import { IArticlesByDateResponse } from '@/api/dashboard';
 import RocketImg from '@/assets/TeamDashboard/rocket.png';
 import { selectedPostIdAtom } from '@/store/dashboard';
@@ -37,6 +39,8 @@ export const Posts: React.FC<PostsProps> = ({
   onShowArticleDetail,
 }) => {
   const [selectedId, setSelectedId] = useAtom(selectedPostIdAtom);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+
   const getCategoryForSelectedDate = () => {
     if (!selectedDate) return null;
     return tags.find((tag) => tag.subjectDate === selectedDate) || null;
@@ -44,7 +48,13 @@ export const Posts: React.FC<PostsProps> = ({
 
   const category = getCategoryForSelectedDate();
 
+  const handleButtonClick = () => {
+    setIsButtonClicked(true);
+    onShowTopicDetail();
+  };
+
   const handleArticleClick = (articleId: number) => {
+    setIsButtonClicked(false);
     onShowArticleDetail(articleId);
     setSelectedId(articleId);
   };
@@ -66,7 +76,7 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <StyledButton onClick={onShowTopicDetail}>
+          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
             <RocketIcon src={RocketImg} />
             주제 확인하기
           </StyledButton>
@@ -131,11 +141,11 @@ export const Posts: React.FC<PostsProps> = ({
   );
 };
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ isClicked: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 20px;
+  padding: 14px;
   border: none;
   border-radius: 10px;
   color: #333;
@@ -144,30 +154,19 @@ const StyledButton = styled.button`
   cursor: pointer;
   position: relative;
   gap: 4px;
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  background: ${(props) => (props.isClicked ? '#E5E5E5' : '#fff')};
 
   &:before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
     border-radius: 10px;
-    padding: 1px;
     background: linear-gradient(90deg, #ffd482, #ff377f);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
     z-index: -1;
-  }
-
-  &:hover {
-    opacity: 0.9;
   }
 `;
 
