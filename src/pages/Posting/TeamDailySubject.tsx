@@ -103,7 +103,7 @@ export const TeamDailySubject = () => {
           />
         </Suspense>
         <Spacer h={22} />
-        <PageSectionHeader h={40}>✏️주제 작성하기</PageSectionHeader>
+        <PageSectionHeader h={40}>✏️ 주제 작성하기</PageSectionHeader>
         <Spacer h={39} />
         <PostEditor
           forwardContent={setContent}

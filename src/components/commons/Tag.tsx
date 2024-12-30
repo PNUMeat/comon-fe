@@ -19,7 +19,7 @@ const TagContainer = styled.div<{
 }>`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   background-color: ${({ bgColor }) => bgColor};
   border-radius: 34px;
   padding: ${(props) => props.padding || '2px 6px'};
