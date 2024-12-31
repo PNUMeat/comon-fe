@@ -5,8 +5,16 @@ import { Spacer } from '@/components/commons/Spacer';
 
 import { useState } from 'react';
 
+import {
+  MyArticle,
+  MyArticleResponse,
+  TeamAbstraction,
+  queryMyArticles,
+  queryMyTeamInfo,
+} from '@/api/mypage';
 import announcement from '@/assets/TeamDashboard/announcement.png';
 import styled from '@emotion/styled';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const ModeButtonsWrapper = styled.div`
   margin-bottom: 54px;
@@ -155,15 +163,19 @@ const ArticleWriter = styled.div`
 `;
 
 const MyArticles: React.FC<{
+  content: MyArticle[];
   selectedId: number | null;
   setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
-}> = ({ selectedId, setSelectedId }) => {
+}> = ({ selectedId, setSelectedId, content }) => {
   return (
     <ArticleGrid>
-      {Array.from({ length: 6 }, (_, index) => index).map((d) => (
+      {content.map((c) => (
         <ArticlePreview
-          isSelected={d === selectedId}
-          onClick={() => setSelectedId((prev) => (prev !== d ? d : prev))}
+          key={c.articleId}
+          isSelected={c.articleId === selectedId}
+          onClick={() =>
+            setSelectedId((prev) => (prev !== c.articleId ? c.articleId : prev))
+          }
         >
           <ArticlePreviewTitle>
             <SText
@@ -172,7 +184,7 @@ const MyArticles: React.FC<{
               fontSize={'16px'}
               fontWeight={600}
             >
-              타이틀
+              {c.articleTitle}
             </SText>
             <SText
               color={'#777'}
@@ -180,17 +192,17 @@ const MyArticles: React.FC<{
               fontSize={'10px'}
               fontWeight={400}
             >
-              2024.11.01 14:39
+              {c.createdDate}
             </SText>
           </ArticlePreviewTitle>
           <ArticleWriter>
             <img
-              src={'a'}
+              src={c.memberImage}
               alt={'profile picture'}
               style={{ width: '16px', height: '16px', objectFit: 'contain' }}
             />
             <SText fontSize={'12px'} fontWeight={600}>
-              한재안
+              {c.memberName}
             </SText>
           </ArticleWriter>
         </ArticlePreview>
@@ -201,26 +213,53 @@ const MyArticles: React.FC<{
 
 const ArticlesViewer: React.FC<{
   selectedId: number | null;
+  teamId: number;
   setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
-}> = ({ selectedId, setSelectedId }) => {
-  const selectedTeam = '티리티리팀';
-  const myArticles = 32;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ selectedId, setSelectedId, teamId, page, setPage }) => {
+  const { data } = useQuery({
+    queryKey: [`my-articles`, teamId, page],
+    queryFn: () => queryMyArticles(teamId, page),
+  });
+
+  const queryClient = useQueryClient();
+  const teams = (queryClient.getQueryData(['my-page-status']) ??
+    []) as TeamAbstraction[];
+
+  const onPageChange = (page: number) => setPage(page);
+
+  const myArticles: MyArticle[] = data?.content ?? [];
+  const pagination = data?.page;
+  const selectedTeam = teams.find((team) => team.teamId === teamId);
 
   return (
     <ArticleWrapper>
       <ArticleHeader>
-        <span>Team {selectedTeam}</span>
-        <SText
-          color={'#6e74fa'}
-          fontSize={'20px'}
-          fontWeight={200}
-          fontFamily={'Pretendard Variable'}
-        >
-          {myArticles}
-        </SText>
+        <span>Team {selectedTeam?.teamName ?? ''}</span>
+        {pagination && (
+          <SText
+            color={'#6e74fa'}
+            fontSize={'20px'}
+            fontWeight={200}
+            fontFamily={'Pretendard Variable'}
+          >
+            {pagination.totalElements}
+          </SText>
+        )}
       </ArticleHeader>
-      <MyArticles selectedId={selectedId} setSelectedId={setSelectedId} />
-      <Pagination totalPages={0} onPageChange={() => {}} currentPageProp={1} />
+      <MyArticles
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+        content={myArticles}
+      />
+      {pagination && (
+        <Pagination
+          totalPages={pagination.totalPages}
+          onPageChange={onPageChange}
+          currentPageProp={page}
+        />
+      )}
     </ArticleWrapper>
   );
 };
@@ -286,10 +325,20 @@ const ArticleDetailHeader = styled.div`
 
 const ArticleDetailViewer: React.FC<{
   selectedId: number;
-}> = ({ selectedId }) => {
-  console.log(selectedId);
-  const title = '11/26 코테풀이';
-  const date = '2024.10.31  14:39';
+  teamId: number;
+  page: number;
+}> = ({ selectedId, teamId, page }) => {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    `my-articles`,
+    teamId,
+    page,
+  ]) as MyArticleResponse;
+  console.error('qd', data);
+  const articles = data?.content ?? [];
+  const selectedArticle = articles.find(
+    (article) => article.articleId === selectedId
+  ) as MyArticle;
 
   return (
     <GradationArticleDetail>
@@ -307,7 +356,7 @@ const ArticleDetailViewer: React.FC<{
             fontWeight={700}
             fontFamily={'Pretendard Variable'}
           >
-            {title}
+            {selectedArticle.articleTitle}
           </SText>
         </Flex>
         <SText
@@ -316,23 +365,23 @@ const ArticleDetailViewer: React.FC<{
           fontWeight={400}
           lineHeight={'19px'}
         >
-          {date}
+          {selectedArticle.createdDate}
         </SText>
         <Spacer h={46} />
         <ArticleWriter>
           <img
-            src={'a'}
+            src={selectedArticle.memberImage}
             alt={'profile picture'}
             style={{ width: '16px', height: '16px', objectFit: 'contain' }}
           />
           <SText fontSize={'12px'} fontWeight={600}>
-            한재안
+            {selectedArticle.memberName}
           </SText>
         </ArticleWriter>
       </ArticleDetailHeader>
       <div
         style={{ lineHeight: 1.5 }}
-        // dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }}
+        dangerouslySetInnerHTML={{ __html: selectedArticle.articleBody }}
       />
     </GradationArticleDetail>
   );
@@ -345,17 +394,54 @@ const modes = [
 
 export const MyTeams = () => {
   const [mode, setMode] = useState('history');
-  const [selectedId, setSelectedId] = useState<number | null>(0);
+  const [teamId, setTeamId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [page, setPage] = useState(() => 0);
+
+  const { data } = useQuery({
+    queryKey: ['my-page-status'],
+    queryFn: queryMyTeamInfo,
+  });
 
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      {mode === 'history' && (
-        <ArticlesViewer selectedId={selectedId} setSelectedId={setSelectedId} />
+      <Flex gap={'8px'}>
+        {data &&
+          data.map((team: TeamAbstraction) => (
+            <button
+              style={{
+                borderRadius: '10px',
+                border: '1px solid black',
+              }}
+              onClick={() => setTeamId(team.teamId)}
+            >
+              {team.teamName}
+            </button>
+          ))}
+      </Flex>
+      {mode === 'history' && teamId != null && (
+        <ArticlesViewer
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          teamId={teamId}
+          page={page}
+          setPage={setPage}
+        />
       )}
       {mode === 'information' && <InformationViewer />}
-      {mode === 'history' && selectedId !== null && (
-        <ArticleDetailViewer selectedId={selectedId} />
+      {mode === 'history' && selectedId !== null && teamId !== null ? (
+        <ArticleDetailViewer
+          selectedId={selectedId}
+          teamId={teamId}
+          page={page}
+        />
+      ) : (
+        <div
+          style={{
+            minHeight: '672px',
+          }}
+        />
       )}
     </Flex>
   );
