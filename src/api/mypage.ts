@@ -41,7 +41,7 @@ export type MyArticleResponse = {
 
 export const queryMyArticles = async (teamId: number, page: number) => {
   const res = await apiInstance.get<ServerResponse<MyArticleResponse>>(
-    `v1/articles${teamId}/my-page`,
+    `v1/articles/${teamId}/my-page`,
     { params: { page } }
   );
   return res.data.data;

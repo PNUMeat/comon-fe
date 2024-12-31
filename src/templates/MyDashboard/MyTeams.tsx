@@ -3,7 +3,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   MyArticle,
@@ -402,6 +402,12 @@ export const MyTeams = () => {
     queryKey: ['my-page-status'],
     queryFn: queryMyTeamInfo,
   });
+
+  useEffect(() => {
+    if (data) {
+      setTeamId(data[0].teamId);
+    }
+  }, [data]);
 
   return (
     <Flex direction={'column'}>
