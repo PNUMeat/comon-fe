@@ -404,7 +404,7 @@ export const MyTeams = () => {
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && teamId === null) {
       setTeamId(data[0].teamId);
     }
   }, [data]);
