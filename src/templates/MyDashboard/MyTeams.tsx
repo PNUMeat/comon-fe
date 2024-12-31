@@ -3,7 +3,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   MyArticle,
@@ -259,11 +259,13 @@ const ArticlesViewer: React.FC<{
         content={myArticles}
       />
       {pagination && (
-        <Pagination
-          totalPages={pagination.totalPages}
-          onPageChange={onPageChange}
-          currentPageProp={page}
-        />
+        <div style={{ transform: 'translate(0, -18px)' }}>
+          <Pagination
+            totalPages={pagination.totalPages}
+            onPageChange={onPageChange}
+            currentPageProp={page}
+          />
+        </div>
       )}
     </ArticleWrapper>
   );
@@ -345,6 +347,17 @@ const ArticleDetailViewer: React.FC<{
     (article) => article.articleId === selectedId
   ) as MyArticle;
 
+  const selectedArticleBody = useMemo(
+    () =>
+      selectedArticle?.imageUrl
+        ? selectedArticle?.articleBody.replace(
+            /(<img[^>]*src=")\?("[^>]*>)/g,
+            `$1${selectedArticle?.imageUrl}$2`
+          )
+        : selectedArticle?.articleBody,
+    [data]
+  );
+
   return (
     <GradationArticleDetail>
       <ArticleDetailHeader>
@@ -386,7 +399,7 @@ const ArticleDetailViewer: React.FC<{
       </ArticleDetailHeader>
       <div
         style={{ lineHeight: 1.5 }}
-        dangerouslySetInnerHTML={{ __html: selectedArticle?.articleBody ?? '' }}
+        dangerouslySetInnerHTML={{ __html: selectedArticleBody ?? '' }}
       />
     </GradationArticleDetail>
   );
@@ -425,6 +438,7 @@ export const MyTeams = () => {
         {data &&
           data.map((team: TeamAbstraction) => (
             <button
+              key={team.teamId}
               style={{
                 borderRadius: '10px',
                 border: '1px solid black',

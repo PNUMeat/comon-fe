@@ -71,3 +71,9 @@ export const mutatePost = async ({
 
   return res.data.data;
 };
+
+export const deletePost = async (articleId: number) => {
+  const res = await apiInstance.delete(`v1/articles/${articleId}`);
+
+  return res.data;
+};

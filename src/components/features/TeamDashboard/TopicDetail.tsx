@@ -7,6 +7,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Link } from 'react-router-dom';
 
 import { getTeamTopic } from '@/api/dashboard';
+import { deleteSubject } from '@/api/subject';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
@@ -29,6 +30,14 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     queryFn: () => getTeamTopic(teamId, selectedDate),
     enabled: !!teamId && !!selectedDate,
   });
+
+  const onClickDelete = () => {
+    if (data) {
+      deleteSubject(teamId, data.articleId)
+        .then(() => alert('주제 삭제 성공'))
+        .catch(() => alert('주제 삭제 실패'));
+    }
+  };
 
   return data ? (
     <Box width="100%" padding="30px 40px">
@@ -59,13 +68,15 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                   maxW={20}
                 />
               </Link>
-              <LazyImage
-                src={DeleteIcon}
-                altText="삭제"
-                w={20}
-                h={20}
-                maxW={16}
-              />
+              <div onClick={onClickDelete}>
+                <LazyImage
+                  src={DeleteIcon}
+                  altText="삭제"
+                  w={20}
+                  h={20}
+                  maxW={16}
+                />
+              </div>
             </Flex>
           )}
         </Flex>

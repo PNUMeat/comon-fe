@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IArticle } from '@/api/dashboard';
+import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 
@@ -35,6 +36,11 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     return null;
   }
 
+  const onClickDelete = () =>
+    deletePost(data.articleId)
+      .then(() => alert('게시글 삭제 성공'))
+      .catch(() => alert('게시글 삭제 실패'));
+
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -60,13 +66,15 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
                   maxW={20}
                 />
               </Link>
-              <LazyImage
-                src={DeleteIcon}
-                altText="삭제"
-                w={20}
-                h={20}
-                maxW={16}
-              />
+              <div onClick={onClickDelete}>
+                <LazyImage
+                  src={DeleteIcon}
+                  altText="삭제"
+                  w={20}
+                  h={20}
+                  maxW={16}
+                />
+              </div>
             </Flex>
           )}
         </Flex>

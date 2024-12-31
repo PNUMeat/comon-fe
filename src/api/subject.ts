@@ -79,3 +79,11 @@ export const mutateSubject = async ({
 
   return res.data;
 };
+
+export const deleteSubject = async (teamId: number, articleId: number) => {
+  const res = await apiInstance.delete(
+    `v1/articles/teams/${teamId}/subjects/${articleId}`
+  );
+
+  return res.data;
+};
