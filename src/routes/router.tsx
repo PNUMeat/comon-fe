@@ -16,6 +16,7 @@ import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import { MyDashboard } from '@/templates/MyDashboard/MyDashboard';
+import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
@@ -88,7 +89,7 @@ export const router = createBrowserRouter(
             },
             {
               path: `${PATH.MY_PAGE}/teams`,
-              element: <div>teams</div>,
+              element: <MyTeams />,
             },
           ],
         },

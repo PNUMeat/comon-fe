@@ -8,24 +8,6 @@ import { changeProfile, getMyProfile } from '@/api/user';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
-const SubHeader = styled.div`
-  margin-top: 12px;
-  margin-bottom: 50px;
-  color: #333;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-
-  leading-trim: both;
-
-  text-edge: cap;
-  font-family: 'Pretendard Variable';
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-`;
-
 // margin-bottom이 하단 여백
 const ProfileWrap = styled.div`
   box-sizing: border-box;
@@ -46,6 +28,24 @@ const ProfileWrap = styled.div`
 
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   backdrop-filter: blur(20px);
+`;
+
+const SubHeader = styled.div`
+  margin-top: 12px;
+  margin-bottom: 50px;
+  color: #333;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  leading-trim: both;
+
+  text-edge: cap;
+  font-family: 'Pretendard Variable';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 `;
 
 const Heading = styled.div`
