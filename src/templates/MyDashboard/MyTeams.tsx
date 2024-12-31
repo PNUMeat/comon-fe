@@ -218,12 +218,17 @@ const ArticlesViewer: React.FC<{
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }> = ({ selectedId, setSelectedId, teamId, page, setPage }) => {
+  const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: [`my-articles`, teamId, page],
     queryFn: () => queryMyArticles(teamId, page),
+    enabled: teamId !== -1,
   });
 
-  const queryClient = useQueryClient();
+  if (teamId === -1) {
+    return <ArticleWrapper />;
+  }
+
   const teams = (queryClient.getQueryData(['my-page-status']) ??
     []) as TeamAbstraction[];
 
@@ -334,7 +339,7 @@ const ArticleDetailViewer: React.FC<{
     teamId,
     page,
   ]) as MyArticleResponse;
-  console.error('qd', data);
+
   const articles = data?.content ?? [];
   const selectedArticle = articles.find(
     (article) => article.articleId === selectedId
@@ -405,6 +410,10 @@ export const MyTeams = () => {
 
   useEffect(() => {
     if (data && teamId === null) {
+      if (data.length === 0) {
+        setTeamId(-1);
+        return;
+      }
       setTeamId(data[0].teamId);
     }
   }, [data]);
@@ -420,7 +429,10 @@ export const MyTeams = () => {
                 borderRadius: '10px',
                 border: '1px solid black',
               }}
-              onClick={() => setTeamId(team.teamId)}
+              onClick={() => {
+                setTeamId(team.teamId);
+                setPage(0);
+              }}
             >
               {team.teamName}
             </button>
