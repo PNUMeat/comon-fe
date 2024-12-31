@@ -82,11 +82,13 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
   line-height: normal;
 `;
 
-const ArticleWrapper = styled.div`
+const ArticleWrapper = styled.div<{
+  height?: string;
+}>`
   margin-bottom: 20px;
   display: flex;
   width: 700px;
-  height: 360px;
+  height: ${(props) => (props.height ? props.height : '360px')};
   padding: 18px 27px;
   flex-direction: column;
   gap: 8px;
@@ -271,8 +273,71 @@ const ArticlesViewer: React.FC<{
   );
 };
 
-const InformationViewer = () => {
-  return <ArticleWrapper></ArticleWrapper>;
+const InformationHeader = styled.div`
+  height: 24px;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: Pretendard Variable;
+  margin-bottom: 48px;
+`;
+
+const InformationContent = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 16px;
+`;
+
+const InformationLabel = styled.div`
+  color: #000;
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 19px; /* 105.556% */
+  letter-spacing: -0.36px;
+`;
+
+const InformationValue = styled.div`
+  color: #727272;
+
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 19px; /* 105.556% */
+  letter-spacing: -0.36px;
+`;
+
+const InformationViewer: React.FC<{
+  teamId: number;
+}> = ({ teamId }) => {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    'my-page-status',
+  ]) as TeamAbstraction[];
+
+  const selectedTeamData = data.find((team) => team.teamId === teamId);
+  const teamName = selectedTeamData?.teamName ?? '';
+  const teamDate = selectedTeamData?.registerDate ?? '';
+  const role = selectedTeamData?.teamManager ? '방장' : '일반 회원';
+
+  return (
+    <ArticleWrapper height={'178px'}>
+      <InformationHeader>Team {teamName}</InformationHeader>
+      <InformationContent>
+        <InformationLabel>
+          <SText whiteSpace={'nowrap'}>가입일</SText>
+        </InformationLabel>
+        <InformationValue>{teamDate}</InformationValue>
+
+        <InformationLabel>
+          <SText whiteSpace={'nowrap'}>상태</SText>
+        </InformationLabel>
+        <InformationValue>{role}</InformationValue>
+      </InformationContent>
+    </ArticleWrapper>
+  );
 };
 
 const ModeSwitcher: React.FC<{
@@ -461,7 +526,9 @@ export const MyTeams = () => {
           setPage={setPage}
         />
       )}
-      {mode === 'information' && <InformationViewer />}
+      {mode === 'information' && teamId && (
+        <InformationViewer teamId={teamId} />
+      )}
       {mode === 'history' && selectedId !== null && teamId !== null ? (
         <ArticleDetailViewer
           selectedId={selectedId}
