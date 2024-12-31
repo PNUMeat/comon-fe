@@ -14,7 +14,7 @@ import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { currentViewAtom } from '@/store/dashboard';
+import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
 
@@ -28,7 +28,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   isTeamManager,
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
-  const setSelectedId = useSetAtom(currentViewAtom);
+  const setSelectedId = useSetAtom(selectedPostIdAtom);
 
   return (
     <>
