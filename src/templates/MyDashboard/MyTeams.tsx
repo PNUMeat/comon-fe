@@ -226,7 +226,7 @@ const ArticlesViewer: React.FC<{
   });
 
   if (teamId === -1) {
-    return <ArticleWrapper />;
+    return <ArticleWrapper>팀에 가입해 보세요</ArticleWrapper>;
   }
 
   const teams = (queryClient.getQueryData(['my-page-status']) ??
@@ -361,7 +361,7 @@ const ArticleDetailViewer: React.FC<{
             fontWeight={700}
             fontFamily={'Pretendard Variable'}
           >
-            {selectedArticle.articleTitle}
+            {selectedArticle?.articleTitle ?? ''}
           </SText>
         </Flex>
         <SText
@@ -370,23 +370,23 @@ const ArticleDetailViewer: React.FC<{
           fontWeight={400}
           lineHeight={'19px'}
         >
-          {selectedArticle.createdDate}
+          {selectedArticle?.createdDate ?? ''}
         </SText>
         <Spacer h={46} />
         <ArticleWriter>
           <img
-            src={selectedArticle.memberImage}
+            src={selectedArticle?.memberImage ?? ''}
             alt={'profile picture'}
             style={{ width: '16px', height: '16px', objectFit: 'contain' }}
           />
           <SText fontSize={'12px'} fontWeight={600}>
-            {selectedArticle.memberName}
+            {selectedArticle?.memberName ?? ''}
           </SText>
         </ArticleWriter>
       </ArticleDetailHeader>
       <div
         style={{ lineHeight: 1.5 }}
-        dangerouslySetInnerHTML={{ __html: selectedArticle.articleBody }}
+        dangerouslySetInnerHTML={{ __html: selectedArticle?.articleBody ?? '' }}
       />
     </GradationArticleDetail>
   );
