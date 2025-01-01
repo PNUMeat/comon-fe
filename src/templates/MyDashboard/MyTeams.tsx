@@ -3,7 +3,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import {
   MyArticle,
@@ -421,20 +421,24 @@ const ArticleDetailViewer: React.FC<{
     <GradationArticleDetail>
       <ArticleDetailHeader>
         <Flex gap={'8px'} align={'center'} padding={'0 0 4px 0'}>
-          <img
-            src={announcement}
-            alt={'announcement icon'}
-            width={24}
-            height={24}
-            style={{ objectFit: 'contain' }}
-          />
-          <SText
-            fontSize={'24px'}
-            fontWeight={700}
-            fontFamily={'Pretendard Variable'}
-          >
-            {selectedArticle?.articleTitle ?? ''}
-          </SText>
+          {selectedArticle?.articleTitle && (
+            <Fragment>
+              <img
+                src={announcement}
+                alt={'announcement icon'}
+                width={24}
+                height={24}
+                style={{ objectFit: 'contain' }}
+              />
+              <SText
+                fontSize={'24px'}
+                fontWeight={700}
+                fontFamily={'Pretendard Variable'}
+              >
+                {selectedArticle.articleTitle}
+              </SText>
+            </Fragment>
+          )}
         </Flex>
         <SText
           color={'#777'}
@@ -446,11 +450,13 @@ const ArticleDetailViewer: React.FC<{
         </SText>
         <Spacer h={46} />
         <ArticleWriter>
-          <img
-            src={selectedArticle?.memberImage ?? ''}
-            alt={'profile picture'}
-            style={{ width: '16px', height: '16px', objectFit: 'contain' }}
-          />
+          {selectedArticle?.memberImage && (
+            <img
+              src={selectedArticle?.memberImage ?? ''}
+              alt={'profile picture'}
+              style={{ width: '16px', height: '16px', objectFit: 'contain' }}
+            />
+          )}
           <SText fontSize={'12px'} fontWeight={600}>
             {selectedArticle?.memberName ?? ''}
           </SText>
