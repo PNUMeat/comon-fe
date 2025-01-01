@@ -3,7 +3,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import {
   MyArticle,
@@ -408,19 +408,16 @@ const ArticleDetailViewer: React.FC<{
     (article) => article.articleId === selectedId
   ) as MyArticle;
 
-  const selectedArticleBody = useMemo(
-    () =>
-      selectedArticle?.imageUrl
-        ? selectedArticle?.articleBody.replace(
-            /(<img[^>]*src=")\?("[^>]*>)/g,
-            `$1${selectedArticle?.imageUrl}$2`
-          )
-        : selectedArticle?.articleBody,
-    [data]
-  );
+  // imageUrl은 S3에 올라간 이미지 주소를 줌
+
+  const selectedArticleBody = selectedArticle?.imageUrl
+    ? selectedArticle?.articleBody.replace(
+        /src="\?"/,
+        `src="${selectedArticle.imageUrl}"`
+      )
+    : selectedArticle?.articleBody;
 
   console.error('??', selectedArticle, selectedArticleBody);
-
   return (
     <GradationArticleDetail>
       <ArticleDetailHeader>
