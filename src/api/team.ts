@@ -123,15 +123,12 @@ export const joinTeam = async (teamId: number, password: string) => {
 };
 
 export const searchTeams = async (
-  keyword: string,
-  sort: string = 'recent',
-  page: number = 0,
-  size: number = 6
+  keyword: string
 ): Promise<ITeamSearchResponse> => {
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
-      params: { keyword, sort, page, size },
+      params: { keyword },
     }
   );
 

@@ -121,7 +121,11 @@ export const router = createBrowserRouter(
       children: [
         {
           path: PATH.TEAMS,
-          element: <TeamJoinPage />,
+          element: (
+            <Suspense fallback={<LazySkeleton />}>
+              <TeamJoinPage />
+            </Suspense>
+          ),
         },
       ],
     },
