@@ -105,15 +105,18 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           const target = e.target as HTMLElement;
           if (target && target.textContent !== '내정보') {
             modal.style.opacity = '0';
+            modal.style.zIndex = '-100';
             modalControlRef.current.isClicked = false;
             return;
           }
 
           if (modalControlRef.current.isClicked) {
             modal.style.opacity = '1';
+            modal.style.zIndex = '100';
             return;
           }
           modal.style.opacity = '0';
+          modal.style.zIndex = '-100';
         };
         document.addEventListener('click', onClick);
 
