@@ -400,14 +400,20 @@ const SubmitWithdrawButton = styled.button<{ isEnabled: boolean }>`
 const WithdrawTemplate: React.FC<{
   setMode: React.Dispatch<React.SetStateAction<string>>;
 }> = ({ setMode }) => {
-  const onClickWithdraw = () =>
-    withdrawMember()
-      .then(() => {
-        sessionStorage.removeItem('Authorization');
-        alert('계정 탈퇴에 성공했습니다.');
-        window.location.href = '/';
-      })
-      .catch(() => alert('계정 탈퇴 요청에 실패했습니다.'));
+  const onClickWithdraw = () => {
+    const isConfirmed = window.confirm(
+      '코몬을 탈퇴하시겠습니까?\n모든 정보와 게시글은 복구되지 않아요'
+    );
+    if (isConfirmed) {
+      withdrawMember()
+        .then(() => {
+          sessionStorage.removeItem('Authorization');
+          alert('계정 탈퇴에 성공했습니다.');
+          window.location.href = '/';
+        })
+        .catch(() => alert('계정 탈퇴 요청에 실패했습니다.'));
+    }
+  };
 
   const [isChecked, setIsChecked] = useState(false);
 
