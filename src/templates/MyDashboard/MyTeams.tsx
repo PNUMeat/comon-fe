@@ -413,7 +413,7 @@ const ArticleDetailViewer: React.FC<{
   const selectedArticleBody = selectedArticle?.imageUrl
     ? selectedArticle?.articleBody.replace(
         /src="\?"/,
-        `src="${selectedArticle.imageUrl}"`
+        `src="${selectedArticle.imageUrl}" style="max-width: 600px; object-fit: contain;"`
       )
     : selectedArticle?.articleBody;
 
