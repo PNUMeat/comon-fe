@@ -274,14 +274,6 @@ const ArticlesViewer: React.FC<{
   );
 };
 
-const InformationHeader = styled.div`
-  height: 24px;
-  font-size: 20px;
-  font-weight: 700;
-  font-family: Pretendard Variable;
-  margin-bottom: 48px;
-`;
-
 const InformationContent = styled.div`
   width: 100%;
   display: grid;
@@ -326,7 +318,9 @@ const InformationViewer: React.FC<{
 
   return (
     <ArticleWrapper height={'178px'}>
-      <InformationHeader>Team {teamName}</InformationHeader>
+      <ArticleHeader>
+        <span>Team {teamName}</span>
+      </ArticleHeader>
       <InformationContent>
         <InformationLabel>가입일</InformationLabel>
         <InformationValue>{teamDate}</InformationValue>
