@@ -12,6 +12,7 @@ import {
   queryMyArticles,
   queryMyTeamInfo,
 } from '@/api/mypage';
+import { withdrawTeam } from '@/api/team';
 import announcement from '@/assets/TeamDashboard/announcement.png';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -279,7 +280,7 @@ const ArticlesViewer: React.FC<{
 const InformationContent = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 68px 1fr;
   gap: 16px;
 `;
 
@@ -304,6 +305,24 @@ const InformationValue = styled.div`
   letter-spacing: -0.36px;
 `;
 
+const TeamWithdrawButton = styled.button`
+  color: #aa3232;
+
+  text-align: right;
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 19px;
+  letter-spacing: -0.28px;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+`;
+
 const InformationViewer: React.FC<{
   teamId: number;
 }> = ({ teamId }) => {
@@ -311,6 +330,12 @@ const InformationViewer: React.FC<{
   const data = queryClient.getQueryData([
     'my-page-status',
   ]) as TeamAbstraction[];
+
+  const onClickTeamWithdraw = () => {
+    withdrawTeam(teamId)
+      .then((res) => alert(res.message))
+      .catch((res) => alert(res.message));
+  };
 
   const selectedTeamData = data.find((team) => team.teamId === teamId);
   const teamName = selectedTeamData?.teamName ?? '';
@@ -332,6 +357,11 @@ const InformationViewer: React.FC<{
         </InformationLabel>
         <InformationValue>{role}</InformationValue>
       </InformationContent>
+      {!selectedTeamData?.teamManager && (
+        <TeamWithdrawButton onClick={() => onClickTeamWithdraw()}>
+          팀 나가기
+        </TeamWithdrawButton>
+      )}
     </ArticleWrapper>
   );
 };

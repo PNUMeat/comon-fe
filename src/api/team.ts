@@ -134,3 +134,11 @@ export const searchTeams = async (
 
   return res.data.data;
 };
+
+export const withdrawTeam = async (teamId: number) => {
+  const res = await apiInstance.delete<ServerResponse<null>>(
+    `v1/teams/${teamId}/members/me`
+  );
+
+  return res.data;
+};
