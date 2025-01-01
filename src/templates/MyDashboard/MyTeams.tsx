@@ -39,7 +39,7 @@ const ModeButtonsWrapper = styled.div`
     border-radius: 2px;
     height: 3px;
     bottom: 0;
-    width: 214px;
+    width: 184px;
     background-color: #c8c8c8;
     transform: translateX(5px);
   }
@@ -407,8 +407,6 @@ const ArticleDetailViewer: React.FC<{
   const selectedArticle = articles.find(
     (article) => article.articleId === selectedId
   ) as MyArticle;
-
-  // imageUrl은 S3에 올라간 이미지 주소를 줌
 
   const selectedArticleBody = selectedArticle?.imageUrl
     ? selectedArticle?.articleBody.replace(
