@@ -5,7 +5,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
 import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
@@ -84,7 +84,7 @@ const TeamData = () => {
 
 export const TeamJoinPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       <TeamData />
       <SText color="#333" fontSize="14px" textAlign="center">
         혹은, 새로운 팀을 생성하시겠나요?
@@ -101,7 +101,7 @@ export const TeamJoinPage = () => {
         </Box>
       </Link>
       <Spacer h={100} />
-    </Suspense>
+    </>
   );
 };
 
