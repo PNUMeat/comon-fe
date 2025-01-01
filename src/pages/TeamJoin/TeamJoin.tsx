@@ -41,7 +41,7 @@ const TeamData = () => {
       return;
     }
 
-    const res = await searchTeams(searchKeyword, 'recent', page, 6);
+    const res = await searchTeams(searchKeyword);
     setTeams(res.content || []);
     setTotalPages(res.page.totalPages || 1);
   };
@@ -57,7 +57,7 @@ const TeamData = () => {
       });
     } else {
       // 검색어가 있을 때
-      searchTeams(keyword, 'recent', newPage, 6).then((result) => {
+      searchTeams(keyword).then((result) => {
         setTeams(result.content || []);
         setTotalPages(result.page.totalPages || 1);
       });
