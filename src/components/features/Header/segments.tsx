@@ -55,8 +55,11 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
   );
 };
 
-export const GrayDivider = styled.hr`
-  margin: 9px 0;
+export const GrayDivider = styled.hr<{
+  margin?: string;
+}>`
+  margin: ${(props) => props.margin};
+  // margin: 9px 0;
   width: 100%;
   background-color: #ccc;
 `;
@@ -66,7 +69,14 @@ const TeamNavWrapper = styled.div`
   height: 30px;
   display: flex;
   justify-content: space-between;
-  margin: 4px 0;
+  // margin: 4px 0;
+  padding: 4px 0;
+  box-sizing: content-box;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
 
 export const MyTeamNav: React.FC<{
@@ -74,8 +84,14 @@ export const MyTeamNav: React.FC<{
   teamName: string;
   teamId: number;
 }> = ({ teamImg, teamName, teamId }) => {
+  const navigate = useNavigate();
+
   return (
-    <TeamNavWrapper>
+    <TeamNavWrapper
+      onClick={() => {
+        navigate(`/team-dashboard/${teamId}`);
+      }}
+    >
       <TeamInfoWrap>
         <TeamImg src={teamImg} />
         <SText
@@ -87,7 +103,7 @@ export const MyTeamNav: React.FC<{
           {teamName}
         </SText>
       </TeamInfoWrap>
-      <TeamNavButton teamId={teamId} />
+      <TeamNavButton />
     </TeamNavWrapper>
   );
 };
@@ -106,16 +122,13 @@ const TeamImg = styled.img`
 const NavWrap = styled.div`
 height: 100%;
 width: 50px
-cursor: pointer`;
+display: flex;
+align-items: center;
+`;
 
-const TeamNavButton: React.FC<{ teamId: number }> = ({ teamId }) => {
-  const navigate = useNavigate();
+const TeamNavButton = () => {
   return (
-    <NavWrap
-      onClick={() => {
-        navigate(`/team-dashboard/${teamId}`);
-      }}
-    >
+    <NavWrap>
       <img src={navArrow} alt={'jump button to team page'} />
     </NavWrap>
   );

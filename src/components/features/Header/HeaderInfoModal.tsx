@@ -65,7 +65,7 @@ export const HeaderInfoModal: React.FC<{
           </SText>
         </MyPageButton>
       </SimpleProfileWrap>
-      <GrayDivider />
+      <GrayDivider margin={'9px 0 0 0'} />
 
       {teams &&
         teams.map((team) => (
@@ -77,7 +77,7 @@ export const HeaderInfoModal: React.FC<{
           />
         ))}
 
-      <GrayDivider />
+      <GrayDivider margin={'0 0 9px 0'} />
       <LogoutWrap>
         <button onClick={onClickLogout}>
           <SText
