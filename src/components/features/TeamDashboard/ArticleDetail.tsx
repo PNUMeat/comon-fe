@@ -11,6 +11,7 @@ import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
+import styled from '@emotion/styled';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -26,7 +27,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       data?.imageUrl
         ? data?.articleBody.replace(
             /(<img[^>]*src=")\?("[^>]*>)/g,
-            `$1${data?.imageUrl}$2 style="max-width: 600px; object-fit: contain;"`
+            `$1${data?.imageUrl}$2`
           )
         : data?.articleBody,
     [data]
@@ -99,8 +100,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        <div
-          style={{ lineHeight: 1.5 }}
+        <ArticleViewer
           dangerouslySetInnerHTML={{
             __html: article,
           }}
@@ -109,3 +109,12 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     </Box>
   );
 };
+
+const ArticleViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
+`;

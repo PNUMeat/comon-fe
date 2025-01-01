@@ -113,8 +113,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             <Spacer h={36} />
           </>
         )}
-        <div
-          style={{ lineHeight: 1.5 }}
+        <TopicViewer
           dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }}
         />
       </Flex>
@@ -131,4 +130,13 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
 const Icon = styled.img`
   width: 24px;
   height: 24px;
+`;
+
+const TopicViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
 `;

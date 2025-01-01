@@ -412,6 +412,10 @@ const GradationArticleDetail = styled.div`
     background: linear-gradient(90deg, #ffd482, #ff377f);
     z-index: -1;
   }
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
 `;
 
 const ArticleDetailHeader = styled.div`
@@ -441,7 +445,7 @@ const ArticleDetailViewer: React.FC<{
   const selectedArticleBody = selectedArticle?.imageUrl
     ? selectedArticle?.articleBody.replace(
         /src="\?"/,
-        `src="${selectedArticle.imageUrl}" style="max-width: 600px; object-fit: contain;"`
+        `src="${selectedArticle.imageUrl}"`
       )
     : selectedArticle?.articleBody;
 
