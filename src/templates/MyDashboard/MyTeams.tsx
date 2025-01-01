@@ -136,6 +136,7 @@ const ArticlePreview = styled.div<{
   padding: 20px 0px 7px 21px;
   border-radius: 10px;
   max-height: 108px;
+  box-sizing: border-box;
   border: 1px solid #cdcfff;
   ${(props) =>
     props.isSelected
