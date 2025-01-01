@@ -1,8 +1,9 @@
 import { Flex } from '@/components/commons/Flex';
 import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 
-import { Fragment, useState } from 'react';
+import { Fragment, Suspense, useState } from 'react';
 
 import {
   ProfileQueryResp,
@@ -267,16 +268,23 @@ const ProfileViewer = () => {
   const memberName = data?.memberName;
   const memberExplain = data?.memberExplain;
 
+  console.error('??', imageUrl, data);
+
   return (
     <ProfileInfoGrid>
       <PInfoLabel>이미지</PInfoLabel>
       {/*  이거 프로필 수정하기에서 사진 안넣고 저장하면 fallback이 나옴*/}
       {imageUrl ? (
-        <img
-          src={imageUrl}
-          style={{ width: '80px', height: '80px', objectFit: 'contain' }}
-          alt={'profile image'}
-        />
+        // <img src={imageUrl} style={{ width: '80px', height: '80px', objectFit: 'contain'}} alt />
+        <Suspense fallback={<FallbackImg />}>
+          <LazyImage
+            altText={'profile image'}
+            w={80}
+            maxW={80}
+            h={80}
+            src={imageUrl}
+          />
+        </Suspense>
       ) : (
         <FallbackImg />
       )}
