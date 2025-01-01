@@ -149,7 +149,6 @@ const FlipCardContent = ({
               placeholder="PASSWORD"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoFocus={true}
             />
             <Spacer h={14} />
             <Button
