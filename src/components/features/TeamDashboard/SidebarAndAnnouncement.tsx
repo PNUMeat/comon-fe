@@ -91,12 +91,17 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                   </Flex>
                 </Link>
                 <Spacer h={4} />
-                <Flex justify="center" align="center">
-                  <SettingImage src={SettingsRedIcon} />
-                  <SText color="#ccc" fontWeight={600} fontSize="14px">
-                    팀 설정
-                  </SText>
-                </Flex>
+                <Link
+                  to={`${PATH.TEAM_MODIFICATION}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Flex justify="center" align="center">
+                    <SettingImage src={SettingsRedIcon} />
+                    <SText color="#ccc" fontWeight={600} fontSize="14px">
+                      팀 설정
+                    </SText>
+                  </Flex>
+                </Link>
               </>
             )}
           </Flex>
