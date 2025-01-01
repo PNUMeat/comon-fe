@@ -360,9 +360,7 @@ const GradationArticleDetail = styled.div`
   margin-bottom: 100px;
   display: flex;
   flex-direction: column;
-  // width: 700px;
   width: 699px;
-  min-height: 672px;
   padding: 31px 21px 20px 21px;
   flex-shrink: 0;
   box-sizing: border-box;
