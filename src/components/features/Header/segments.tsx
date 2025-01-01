@@ -65,10 +65,11 @@ export const GrayDivider = styled.hr<{
 `;
 
 const TeamNavWrapper = styled.div`
-  width: 271px;
+  width: 100%;
   height: 30px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   // margin: 4px 0;
   padding: 4px 0;
   box-sizing: content-box;
@@ -119,19 +120,8 @@ const TeamImg = styled.img`
   border-radius: 50%;
 `;
 
-const NavWrap = styled.div`
-height: 100%;
-width: 50px
-display: flex;
-align-items: center;
-`;
-
 const TeamNavButton = () => {
-  return (
-    <NavWrap>
-      <img src={navArrow} alt={'jump button to team page'} />
-    </NavWrap>
-  );
+  return <img src={navArrow} alt={'jump button to team page'} />;
 };
 export const LogoutWrap = styled.div`
   width: calc(100% - 34px);
