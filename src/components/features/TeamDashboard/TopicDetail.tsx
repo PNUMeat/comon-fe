@@ -39,6 +39,10 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     }
   };
 
+  const selectedTopicBody = data?.imageUrl
+    ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
+    : data?.articleBody;
+
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -114,7 +118,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
           </>
         )}
         <TopicViewer
-          dangerouslySetInnerHTML={{ __html: data?.articleBody || '' }}
+          dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
         />
       </Flex>
     </Box>
