@@ -5,7 +5,12 @@ import { SText } from '@/components/commons/SText';
 
 import { Fragment, Suspense, useState } from 'react';
 
-import { changeProfile, getMyProfile, withdrawMember } from '@/api/user';
+import {
+  ProfileQueryResp,
+  changeProfile,
+  getMyProfile,
+  withdrawMember,
+} from '@/api/user';
 import comon from '@/assets/Home/comon500x500.png';
 import Alarm from '@/assets/Withdraw/alarm.svg';
 import { imageAtom } from '@/store/form';
@@ -183,7 +188,7 @@ const WithdrawButton: React.FC<{
 
 export const Profile = () => {
   const queryClient = useQueryClient();
-  const { data } = useQuery({
+  useQuery({
     queryKey: ['my-profile-query'],
     queryFn: getMyProfile,
   });
@@ -235,13 +240,13 @@ export const Profile = () => {
         {mode === 'withdraw' && <WithdrawTemplate setMode={setMode} />}
         {mode === 'modify' && (
           <ProfileForm onSubmit={handleSubmit}>
-            <ProfileModifier {...data} />
+            <ProfileModifier />
             <ModifyButton type={'submit'}>저장하기</ModifyButton>
           </ProfileForm>
         )}
         {mode === 'query' && (
           <Fragment>
-            <ProfileViewer {...data} />
+            <ProfileViewer />
             <ModifyButton onClick={() => setMode('modify')} type={'button'}>
               수정하기
             </ModifyButton>
@@ -253,66 +258,80 @@ export const Profile = () => {
   );
 };
 
-const ProfileViewer: React.FC<{
-  imageUrl?: string;
-  memberName?: string;
-  memberExplain?: string;
-}> = ({ memberName, memberExplain, imageUrl }) => (
-  <ProfileInfoGrid>
-    <PInfoLabel>이미지</PInfoLabel>
-    {imageUrl ? (
-      <Suspense fallback={<FallbackImg />}>
-        <LazyImage
-          altText={'profile image'}
-          w={80}
-          maxW={80}
-          h={80}
-          src={imageUrl}
-        />
-      </Suspense>
-    ) : (
-      <FallbackImg />
-    )}
-    <PInfoLabel>이름</PInfoLabel>
-    <ProfileTextValue fontWeight={700}>
-      {memberName ?? '이름을 알려주세요'}
-    </ProfileTextValue>
+const ProfileViewer = () => {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    'my-profile-query',
+  ]) as ProfileQueryResp;
 
-    <PInfoLabel>자기소개</PInfoLabel>
-    <ProfileTextValue fontWeight={500}>
-      {memberExplain ?? '간단한 소개를 해주세요'}
-    </ProfileTextValue>
-  </ProfileInfoGrid>
-);
+  const imageUrl = data?.imageUrl;
+  const memberName = data?.memberName;
+  const memberExplain = data?.memberExplain;
 
-const ProfileModifier: React.FC<{
-  imageUrl?: string;
-  memberName?: string;
-  memberExplain?: string;
-}> = ({ memberName, memberExplain, imageUrl }) => (
-  <ProfileInfoGrid>
-    <PInfoLabel>이미지</PInfoLabel>
-    <ComonImageInput key={`${imageUrl}`} imageUrl={imageUrl} h={80} />
+  return (
+    <ProfileInfoGrid>
+      <PInfoLabel>이미지</PInfoLabel>
+      {/*  이거 프로필 수정하기에서 사진 안넣고 저장하면 fallback이 나옴*/}
+      {imageUrl ? (
+        <Suspense fallback={<FallbackImg />}>
+          <LazyImage
+            altText={'profile image'}
+            w={80}
+            maxW={80}
+            h={80}
+            src={imageUrl}
+          />
+        </Suspense>
+      ) : (
+        <FallbackImg />
+      )}
+      <PInfoLabel>이름</PInfoLabel>
+      <ProfileTextValue fontWeight={700}>
+        {memberName ?? '이름을 알려주세요'}
+      </ProfileTextValue>
 
-    <PInfoLabel>이름</PInfoLabel>
-    <TextInput
-      fontWeight={700}
-      defaultValue={memberName ?? '홍길동'}
-      name={'memberName'}
-      maxLength={10}
-    />
+      <PInfoLabel>자기소개</PInfoLabel>
+      <ProfileTextValue fontWeight={500}>
+        {memberExplain ?? '간단한 소개를 해주세요'}
+      </ProfileTextValue>
+    </ProfileInfoGrid>
+  );
+};
+const ProfileModifier = () => {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    'my-profile-query',
+  ]) as ProfileQueryResp;
 
-    <PInfoLabel>자기소개</PInfoLabel>
-    <TextInput
-      fontWeight={500}
-      defaultValue={
-        memberExplain ?? '나의 관심분야, 목표 등으로 소개글을 채워보세요'
-      }
-      name={'memberExplain'}
-      maxLength={50}
-    />
-  </ProfileInfoGrid>
-);
+  const imageUrl = data?.imageUrl;
+  const memberName = data?.memberName;
+  const memberExplain = data?.memberExplain;
+
+  return (
+    <ProfileInfoGrid>
+      <PInfoLabel>이미지</PInfoLabel>
+      <ComonImageInput key={`${imageUrl}`} imageUrl={imageUrl} h={80} />
+
+      <PInfoLabel>이름</PInfoLabel>
+      <TextInput
+        fontWeight={700}
+        defaultValue={memberName ?? '홍길동'}
+        name={'memberName'}
+        maxLength={10}
+      />
+
+      <PInfoLabel>자기소개</PInfoLabel>
+      <TextInput
+        fontWeight={500}
+        defaultValue={
+          memberExplain ?? '나의 관심분야, 목표 등으로 소개글을 채워보세요'
+        }
+        name={'memberExplain'}
+        maxLength={50}
+      />
+    </ProfileInfoGrid>
+  );
+};
 
 const WithdrawTemplateWrapper = styled.div`
   margin: 50px auto;
