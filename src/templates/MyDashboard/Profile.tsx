@@ -444,7 +444,12 @@ const WithdrawTemplate: React.FC<{
         코몬 탈퇴 전에 꼭 확인하세요
       </SText>
       <Desc>
-        <SText fontFamily={'Pretendard'} fontSize={'15px'} fontWeight={500}>
+        <SText
+          fontFamily={'Pretendard'}
+          fontSize={'15px'}
+          fontWeight={500}
+          lineHeight={'15px'}
+        >
           탈퇴하시면 이용 중인 계정이 폐쇄되며 <br /> 모든 데이터는 복구가
           불가능합니다.
         </SText>
