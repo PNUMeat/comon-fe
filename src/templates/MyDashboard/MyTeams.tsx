@@ -319,16 +319,15 @@ const InformationViewer: React.FC<{
 
   const selectedTeamData = data.find((team) => team.teamId === teamId);
   const teamName = selectedTeamData?.teamName ?? '';
-  const teamDate = selectedTeamData?.registerDate ?? '';
+  const date = selectedTeamData?.registerDate;
+  const teamDate = date ? date.split('T')[0].replace(/-/g, '.') : '';
   const role = selectedTeamData?.teamManager ? '방장' : '일반 회원';
 
   return (
     <ArticleWrapper height={'178px'}>
       <InformationHeader>Team {teamName}</InformationHeader>
       <InformationContent>
-        <InformationLabel>
-          <SText whiteSpace={'nowrap'}>가입일</SText>
-        </InformationLabel>
+        <InformationLabel>가입일</InformationLabel>
         <InformationValue>{teamDate}</InformationValue>
 
         <InformationLabel>
