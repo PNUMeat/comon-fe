@@ -1,6 +1,7 @@
 import { Flex } from '@/components/commons/Flex';
 import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
 import { LazyImage } from '@/components/commons/LazyImage';
+import { SText } from '@/components/commons/SText';
 
 import { Fragment, Suspense, useState } from 'react';
 
@@ -13,6 +14,7 @@ const ProfileWrap = styled.div`
   box-sizing: border-box;
   margin-bottom: 400px;
   display: flex;
+  position: relative;
 
   width: 700px;
   min-height: 370px;
@@ -62,7 +64,7 @@ const Heading = styled.div`
   margin-bottom: 33px;
 `;
 
-const ProfileInfoGrid = styled.form`
+const ProfileInfoGrid = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 128px 1fr;
@@ -140,6 +142,19 @@ const TextInput = styled.input<{ fontWeight: number }>`
   }
 `;
 
+const ProfileForm = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const WithdrawButton = styled.button`
+  width: 89px;
+  position: absolute;
+  bottom: 0;
+  transform: translate(9px, 40px);
+`;
 export const Profile = () => {
   const { data } = useQuery({
     queryKey: ['my-profile-query'],
@@ -178,10 +193,10 @@ export const Profile = () => {
       <ProfileWrap>
         <Heading>내 프로필</Heading>
         {isModifyMode ? (
-          <Fragment>
-            <ProfileModifier {...data} onSubmit={handleSubmit} />
+          <ProfileForm onSubmit={handleSubmit}>
+            <ProfileModifier {...data} />
             <ModifyButton type={'submit'}>저장하기</ModifyButton>
-          </Fragment>
+          </ProfileForm>
         ) : (
           <Fragment>
             <ProfileViewer {...data} />
@@ -190,7 +205,16 @@ export const Profile = () => {
             </ModifyButton>
           </Fragment>
         )}
-        {/*</form>*/}
+        <WithdrawButton>
+          <SText
+            color={'#777'}
+            fontFamily={'Pretendard Variable'}
+            fontSize={'14px'}
+            fontWeight={500}
+          >
+            계정 탈퇴 {'>'}
+          </SText>
+        </WithdrawButton>
       </ProfileWrap>
     </Flex>
   );
@@ -232,9 +256,8 @@ const ProfileModifier: React.FC<{
   imageUrl?: string;
   memberName?: string;
   memberExplain?: string;
-  onSubmit?: (e: React.FormEvent) => void;
-}> = ({ memberName, memberExplain, imageUrl, onSubmit }) => (
-  <ProfileInfoGrid onSubmit={onSubmit}>
+}> = ({ memberName, memberExplain, imageUrl }) => (
+  <ProfileInfoGrid>
     <PInfoLabel>이미지</PInfoLabel>
     <ComonImageInput key={`${imageUrl}`} imageUrl={imageUrl} h={80} />
 
@@ -243,6 +266,7 @@ const ProfileModifier: React.FC<{
       fontWeight={700}
       defaultValue={memberName ?? '홍길동'}
       name={'memberName'}
+      maxLength={10}
     />
 
     <PInfoLabel>자기소개</PInfoLabel>
@@ -252,6 +276,7 @@ const ProfileModifier: React.FC<{
         memberExplain ?? '나의 관심분야, 목표 등으로 소개글을 채워보세요'
       }
       name={'memberExplain'}
+      maxLength={50}
     />
   </ProfileInfoGrid>
 );
