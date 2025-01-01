@@ -474,6 +474,55 @@ const modes = [
   { label: '정보 관리', value: 'information' },
 ];
 
+const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
+  display: flex;
+  width: 121px;
+  height: 45px;
+  padding: 7px 18px;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 16px 16px 0px 0px;
+  background: ${(props) => (props.isSelected ? '#6e74fa' : '#3D3F6A')};
+  cursor: pointer;
+`;
+
+const TeamButtonLabel = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: #fff;
+
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 17px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const TeamButton: React.FC<{
+  isSelected: boolean;
+  onClick: () => void;
+  teamName: string;
+}> = ({ isSelected, onClick, teamName }) => {
+  return (
+    <TeamButtonWrap onClick={onClick} isSelected={isSelected}>
+      <SText
+        color={'#fff'}
+        fontFamily={'Pretendard Variable'}
+        fontSize={'10px'}
+        fontWeight={500}
+        lineHeight={'12px'}
+      >
+        team
+      </SText>
+      <TeamButtonLabel>{teamName}</TeamButtonLabel>
+    </TeamButtonWrap>
+  );
+};
+
 export const MyTeams = () => {
   const [mode, setMode] = useState('history');
   const [teamId, setTeamId] = useState<number | null>(null);
@@ -498,22 +547,18 @@ export const MyTeams = () => {
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      <Flex gap={'8px'}>
+      <Flex padding={'0 0 0 25px'}>
         {data &&
           data.map((team: TeamAbstraction) => (
-            <button
+            <TeamButton
               key={team.teamId}
-              style={{
-                borderRadius: '10px',
-                border: '1px solid black',
-              }}
+              isSelected={teamId === team.teamId}
               onClick={() => {
                 setTeamId(team.teamId);
                 setPage(0);
               }}
-            >
-              {team.teamName}
-            </button>
+              teamName={team.teamName}
+            />
           ))}
       </Flex>
       {mode === 'history' && teamId != null && (
