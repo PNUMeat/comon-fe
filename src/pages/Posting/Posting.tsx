@@ -135,8 +135,8 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: #fff;
-  color: ${(props) => (props.isPending ? '#919191' : '#fff')};
+  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
+  color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
   width: 712px;
