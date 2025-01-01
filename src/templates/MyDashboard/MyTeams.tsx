@@ -417,7 +417,6 @@ const ArticleDetailViewer: React.FC<{
       )
     : selectedArticle?.articleBody;
 
-  console.error('??', selectedArticle, selectedArticleBody);
   return (
     <GradationArticleDetail>
       <ArticleDetailHeader>

@@ -26,7 +26,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       data?.imageUrl
         ? data?.articleBody.replace(
             /(<img[^>]*src=")\?("[^>]*>)/g,
-            `$1${data?.imageUrl}$2`
+            `$1${data?.imageUrl}$2 style="max-width: 600px; object-fit: contain;"`
           )
         : data?.articleBody,
     [data]
