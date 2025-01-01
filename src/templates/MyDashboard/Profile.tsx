@@ -220,9 +220,8 @@ export const Profile = () => {
           })
           .then(() => {
             setMode('query');
-            const newImage = (formValues['image'] ?? null) as File | null;
-            if (newImage) {
-              setImage(newImage);
+            if (image) {
+              setImage(image);
             }
             alert('프로필 변환에 성공했습니다');
           })
