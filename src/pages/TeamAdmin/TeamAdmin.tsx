@@ -438,8 +438,9 @@ const PromptModal = forwardRef<
         <CancelButton onClick={onClose}>취소</CancelButton>
         <SaveButton
           onClick={() => {
-            updateAnnouncement(teamId, announcement);
-            window.location.reload();
+            updateAnnouncement(teamId, announcement).then(() => {
+              window.location.reload();
+            });
           }}
         >
           저장하기
