@@ -9,12 +9,14 @@ interface IPaginationProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   currentPageProp: number;
+  hideShadow?: boolean;
 }
 
 export const Pagination = ({
   totalPages,
   onPageChange,
   currentPageProp,
+  hideShadow,
 }: IPaginationProps) => {
   const handlePageChange = (page: number) => {
     onPageChange(page);
@@ -34,7 +36,7 @@ export const Pagination = ({
 
   return (
     <Flex justify="center">
-      <PaginationContainer>
+      <PaginationContainer hideShadow={hideShadow}>
         <LeftArrow src={ArrowButton} onClick={handlePrev} />
         <Spacer width={12} h={0} />
         <PageList>
@@ -55,7 +57,7 @@ export const Pagination = ({
   );
 };
 
-const PaginationContainer = styled.div`
+const PaginationContainer = styled.div<{ hideShadow?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +65,8 @@ const PaginationContainer = styled.div`
   padding: 5px 50px;
   border-radius: 30px;
   background: #fff;
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  box-shadow: ${(props) =>
+    props.hideShadow ? '' : '5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)'};
   max-width: 270px;
   z-index: 999;
 `;

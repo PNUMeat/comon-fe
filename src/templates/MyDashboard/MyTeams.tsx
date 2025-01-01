@@ -266,6 +266,7 @@ const ArticlesViewer: React.FC<{
             totalPages={pagination.totalPages}
             onPageChange={onPageChange}
             currentPageProp={page}
+            hideShadow
           />
         </div>
       )}
