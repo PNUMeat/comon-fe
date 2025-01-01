@@ -206,10 +206,12 @@ export const Profile = () => {
     });
     console.error('formValues', formValues);
 
+    const image = (formValues['image'] ?? null) as File;
+
     changeProfile({
       memberName: formValues['memberName'] as string,
       memberExplain: formValues['memberExplain'] as string,
-      image: (formValues['image'] ?? null) as File | null,
+      image: image.size !== 0 ? image : null,
     })
       .then(() => {
         queryClient
