@@ -71,7 +71,7 @@ const TeamNavWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   // margin: 4px 0;
-  padding: 4px 0;
+  padding: 23px 0;
   box-sizing: content-box;
   cursor: pointer;
 
