@@ -164,7 +164,6 @@ const AnnouncementAndSubject = forwardRef<
 });
 AnnouncementAndSubject.displayName = 'AnnouncementAndSubject';
 
-// TODO: TeamDashboard에서 가져옴
 const CalendarSection = styled.section`
   grid-area: calendar;
   background-color: #f8f8ff;
@@ -368,6 +367,9 @@ export const TeamAdmin = () => {
           ref={modalRef}
           teamId={Number(id)}
           onClose={() => setShow(false)}
+          initialAnnouncement={
+            teamInfoData?.myTeamResponse.teamAnnouncement || ''
+          }
         />,
         document.body
       )}
@@ -392,9 +394,11 @@ const ModalWrap = styled.div<HeightInNumber>`
 
 const PromptModal = forwardRef<
   HTMLDivElement,
-  { teamId: number; onClose: () => void }
->(({ teamId, onClose }, ref) => {
-  const [announcement, setAnnouncement] = useState<string>('');
+  { teamId: number; onClose: () => void; initialAnnouncement: string }
+>(({ teamId, onClose, initialAnnouncement }, ref) => {
+  const [announcement, setAnnouncement] = useState<string>(
+    initialAnnouncement || ''
+  );
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAnnouncement(e.target.value);
