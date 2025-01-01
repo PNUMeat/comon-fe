@@ -204,7 +204,7 @@ export const Profile = () => {
     formData.forEach((value, key) => {
       formValues[key] = value;
     });
-    console.error('formData', formData);
+    console.error('formValues', formValues);
 
     changeProfile({
       memberName: formValues['memberName'] as string,
