@@ -12,7 +12,7 @@ type ProfileMutationArgs = ProfileCommonArgs & {
   image: File | null;
 };
 
-type ProfileQueryResp = ProfileCommonArgs & {
+export type ProfileQueryResp = ProfileCommonArgs & {
   imageUrl: string;
   uuid: string;
 };
