@@ -33,6 +33,7 @@ export const Posting = () => {
   };
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
+  const [isPending, setIsPending] = useState(false);
   const [postImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -43,6 +44,11 @@ export const Posting = () => {
   }
 
   const onClick = () => {
+    if (isPending) {
+      return;
+    }
+    setIsPending(true);
+
     const articleBody = content
       .trim()
       .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
@@ -59,7 +65,10 @@ export const Posting = () => {
           navigate(`/team-dashboard/${id}`);
           alert('게시글 수정이 완료되었습니다!');
         })
-        .catch((err) => alert(err.response.data.data.articleTitle));
+        .catch(() => {
+          alert('게시글 수정에 실패했습니다');
+          setIsPending(false);
+        });
       return;
     }
     createPost({
@@ -75,7 +84,10 @@ export const Posting = () => {
         navigate(`/team-dashboard/${id}`);
         alert('게시글 작성이 완료되었습니다!');
       })
-      .catch((err) => alert(err.response.data.data.articleTitle));
+      .catch(() => {
+        alert('게시글 작성에 실패했습니다.');
+        setIsPending(false);
+      });
   };
 
   return (
@@ -100,7 +112,11 @@ export const Posting = () => {
           title={articleTitle}
         />
         <Spacer h={38} />
-        <ConfirmButtonWrap onClick={onClick}>
+        <ConfirmButtonWrap
+          disabled={isPending}
+          isPending={isPending}
+          onClick={onClick}
+        >
           <ClickImage src={click} />
           <ActionText>
             <SText fontSize="20px" fontWeight={700}>
@@ -114,12 +130,12 @@ export const Posting = () => {
   );
 };
 
-const ConfirmButtonWrap = styled.div`
+const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: #fff;
+  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;

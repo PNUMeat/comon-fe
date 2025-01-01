@@ -36,6 +36,7 @@ export const TeamDailySubject = () => {
   const [content, setContent] = useState<string>(() => articleBody ?? '');
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
+  const [isPending, setIsPending] = useState(false);
   const [subjectImages] = useAtom(subjectImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -47,11 +48,16 @@ export const TeamDailySubject = () => {
   }
 
   const onClick = () => {
+    if (isPending) {
+      return;
+    }
+
     const articleBody = content
       .trim()
       .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
 
     if (articleId && articleCategory && articleBody && articleTitle) {
+      setIsPending(true);
       mutateSubject({
         teamId: parseInt(id),
         articleId: parseInt(articleId),
@@ -67,10 +73,22 @@ export const TeamDailySubject = () => {
         .catch((err) => {
           alert('주제 수정에 실패했습니다.');
           console.error(err);
+          setIsPending(false);
         });
       return;
     }
 
+    if (
+      !articleId ||
+      !articleCategory ||
+      !articleBody ||
+      !articleTitle ||
+      !tag
+    ) {
+      alert('모든 필드를 채워주세요');
+      return;
+    }
+    setIsPending(true);
     createSubject({
       teamId: parseInt(id),
       articleTitle: subjectTitle,
@@ -87,7 +105,10 @@ export const TeamDailySubject = () => {
         navigate(`/team-admin/${id}`);
         scrollTo(0, document.body.scrollHeight);
       })
-      .catch((err) => alert(err.data.message));
+      .catch((err) => {
+        alert(err.data.message);
+        setIsPending(false);
+      });
   };
 
   return (
@@ -114,7 +135,11 @@ export const TeamDailySubject = () => {
           tag={articleCategory}
         />
         <Spacer h={38} />
-        <ConfirmButtonWrap onClick={onClick}>
+        <ConfirmButtonWrap
+          disabled={isPending}
+          isPending={isPending}
+          onClick={onClick}
+        >
           <ClickImage src={click} />
           <ActionText>
             <SText fontSize="20px" fontWeight={700}>
@@ -128,12 +153,12 @@ export const TeamDailySubject = () => {
   );
 };
 
-const ConfirmButtonWrap = styled.div`
+const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: #fff;
+  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
