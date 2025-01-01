@@ -37,7 +37,7 @@ const Dot = styled.div<{ isSelected?: boolean }>`
 `;
 
 const TagText = styled.span<{ fontSize?: string }>`
-  font-family: 'Pretendard Variable', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: ${(props) => props.fontSize || '8px'};
   line-height: 12px;

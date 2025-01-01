@@ -59,7 +59,7 @@ const Category = styled.div<{ isSelected?: boolean }>`
   color: #333;
   leading-trim: both;
   text-edge: cap;
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 18px;
   font-style: normal;
   font-weight: 700;

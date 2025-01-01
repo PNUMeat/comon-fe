@@ -43,7 +43,7 @@ const StartButton = styled.button`
   text-align: center;
   leading-trim: both;
   text-edge: cap;
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 36px;
   font-style: normal;
   font-weight: 400;
@@ -53,7 +53,7 @@ const StartButton = styled.button`
 const StartButtonDescription = styled.p`
   color: #777;
   text-align: center;
-  font-family: 'Pretendard Variable', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;
