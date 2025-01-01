@@ -45,24 +45,22 @@ apiInstance.interceptors.response.use(
         error.response.status === 401 &&
         message === '토큰이 만료되었습니다.'
       ) {
-        return apiInstance
-          .post('v1/reissue')
-          .then(() => {
-            handleCookieOnRedirect();
-            const originalRequest = error.config;
-            if (originalRequest) {
-              originalRequest.headers.set(
-                'Authorization',
-                `Bearer ${sessionStorage.getItem('Authorization')}`
-              );
+        return apiInstance.post('v1/reissue').then(() => {
+          handleCookieOnRedirect();
+          const originalRequest = error.config;
+          if (originalRequest) {
+            originalRequest.headers.set(
+              'Authorization',
+              `Bearer ${sessionStorage.getItem('Authorization')}`
+            );
 
-              return apiInstance(originalRequest);
-            }
-          })
-          .catch(() => {
-            alert('로그인을 다시 해주세요');
-            window.location.href = PATH.LOGIN;
-          });
+            return apiInstance(originalRequest);
+          }
+        });
+        // .catch(() => {
+        //   alert('로그인을 다시 해주세요');
+        //   window.location.href = PATH.LOGIN;
+        // });
       }
     }
 
