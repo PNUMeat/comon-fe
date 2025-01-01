@@ -369,7 +369,7 @@ const StrongWrapper = styled.div`
     color: #9e2a2f;
     font-size: 20px;
     position: absolute;
-    left: 0;
+    left: -2px;
     top: -2px;
   }
 `;
@@ -448,7 +448,7 @@ const WithdrawTemplate: React.FC<{
           fontFamily={'Pretendard'}
           fontSize={'15px'}
           fontWeight={500}
-          lineHeight={'15px'}
+          lineHeight={'20px'}
         >
           탈퇴하시면 이용 중인 계정이 폐쇄되며 <br /> 모든 데이터는 복구가
           불가능합니다.
@@ -491,7 +491,7 @@ const WithdrawTemplate: React.FC<{
           탈퇴하기
         </SText>
       </SubmitWithdrawButton>
-      <div onClick={() => setMode('query')}>
+      <div onClick={() => setMode('query')} style={{ cursor: 'pointer' }}>
         <SText
           color={'#777'}
           fontFamily={'Pretendard'}
