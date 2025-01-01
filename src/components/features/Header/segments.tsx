@@ -66,13 +66,11 @@ export const GrayDivider = styled.hr<{
 
 const TeamNavWrapper = styled.div`
   width: 100%;
-  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // margin: 4px 0;
-  padding: 16px 23px;
-  box-sizing: content-box;
+  padding: 8px 23px;
+  box-sizing: border-box;
   cursor: pointer;
 
   &:hover {

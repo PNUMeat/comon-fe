@@ -37,19 +37,6 @@ const MyPageButton = styled.button`
   height: 48px;
 `;
 
-const ParentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  & > div:first-child {
-    padding-top: 24px;
-  }
-
-  & > div:last-child {
-    padding-bottom: 24px;
-  }
-`;
-
 export const HeaderInfoModal: React.FC<{
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
@@ -80,17 +67,15 @@ export const HeaderInfoModal: React.FC<{
       </SimpleProfileWrap>
       <GrayDivider margin={'9px 0 0 0'} />
 
-      <ParentWrapper>
-        {teams &&
-          teams.map((team) => (
-            <MyTeamNav
-              key={team.teamId}
-              teamImg={team.teamImageUrl}
-              teamName={team.teamName}
-              teamId={team.teamId}
-            />
-          ))}
-      </ParentWrapper>
+      {teams &&
+        teams.map((team) => (
+          <MyTeamNav
+            key={team.teamId}
+            teamImg={team.teamImageUrl}
+            teamName={team.teamName}
+            teamId={team.teamId}
+          />
+        ))}
 
       <GrayDivider margin={'0 0 9px 0'} />
       <LogoutWrap>
