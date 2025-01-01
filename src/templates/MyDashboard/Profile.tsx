@@ -8,8 +8,10 @@ import { Fragment, Suspense, useState } from 'react';
 import { changeProfile, getMyProfile, withdrawMember } from '@/api/user';
 import comon from '@/assets/Home/comon500x500.png';
 import Alarm from '@/assets/Withdraw/alarm.svg';
+import { imageAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSetAtom } from 'jotai';
 
 // margin-bottom이 하단 여백
 const ProfileWrap = styled.div<{ doBlur: boolean }>`
@@ -186,6 +188,7 @@ export const Profile = () => {
     queryFn: getMyProfile,
   });
   const [mode, setMode] = useState<string>('query');
+  const setImage = useSetAtom(imageAtom);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,6 +212,10 @@ export const Profile = () => {
           })
           .then(() => {
             setMode('query');
+            const newImage = (formValues['image'] ?? null) as File | null;
+            if (newImage) {
+              setImage(newImage);
+            }
             alert('프로필 변환에 성공했습니다');
           })
           .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
