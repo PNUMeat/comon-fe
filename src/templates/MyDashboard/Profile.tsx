@@ -7,7 +7,7 @@ import { Fragment, Suspense, useState } from 'react';
 
 import { changeProfile, getMyProfile } from '@/api/user';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // margin-bottom이 하단 여백
 const ProfileWrap = styled.div`
@@ -155,12 +155,16 @@ const WithdrawButton = styled.button`
   bottom: 0;
   transform: translate(9px, 40px);
 `;
+
+// const profileModes = ['query', 'modify', 'withdraw'];
+
 export const Profile = () => {
+  const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: ['my-profile-query'],
     queryFn: getMyProfile,
   });
-  const [isModifyMode, setIsModifyMode] = useState(false);
+  const [mode, setMode] = useState<string>('query');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,8 +182,15 @@ export const Profile = () => {
       image: (formValues['image'] ?? null) as File | null,
     })
       .then(() => {
-        setIsModifyMode(false);
-        alert('프로필 변환에 성공했습니다');
+        queryClient
+          .invalidateQueries({
+            queryKey: ['my-profile-query'],
+          })
+          .then(() => {
+            setMode('query');
+            alert('프로필 변환에 성공했습니다');
+          })
+          .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
       })
       .catch(() => alert('프로필 변환에 실패했습니다'));
   };
@@ -188,24 +199,25 @@ export const Profile = () => {
     <Flex direction={'column'}>
       <SubHeader>
         <span>📋</span>
-        <span>프로필</span>
+        <span> {mode === 'withdraw' ? '회원탈퇴' : '프로필'}</span>
       </SubHeader>
       <ProfileWrap>
         <Heading>내 프로필</Heading>
-        {isModifyMode ? (
+        {mode === 'modify' && (
           <ProfileForm onSubmit={handleSubmit}>
             <ProfileModifier {...data} />
             <ModifyButton type={'submit'}>저장하기</ModifyButton>
           </ProfileForm>
-        ) : (
+        )}
+        {mode === 'query' && (
           <Fragment>
             <ProfileViewer {...data} />
-            <ModifyButton onClick={() => setIsModifyMode(true)} type={'button'}>
+            <ModifyButton onClick={() => setMode('modify')} type={'button'}>
               수정하기
             </ModifyButton>
           </Fragment>
         )}
-        <WithdrawButton>
+        <WithdrawButton onClick={() => setMode('withdraw')}>
           <SText
             color={'#777'}
             fontFamily={'Pretendard Variable'}
