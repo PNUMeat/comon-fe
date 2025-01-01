@@ -145,11 +145,11 @@ const StyledButton = styled.button<{ isClicked: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 10px 20px;
   border: none;
   border-radius: 10px;
   color: #333;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   position: relative;
