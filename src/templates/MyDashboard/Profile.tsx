@@ -31,7 +31,6 @@ const ProfileWrap = styled.div`
 `;
 
 const SubHeader = styled.div`
-  margin-top: 12px;
   margin-bottom: 50px;
   color: #333;
   display: flex;
