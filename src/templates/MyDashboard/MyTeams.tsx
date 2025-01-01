@@ -3,7 +3,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import {
   MyArticle,
@@ -75,7 +75,7 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
   color: ${(props) => (props.isSelected ? '#333' : '#777')};
   leading-trim: both;
   text-edge: cap;
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
@@ -111,7 +111,7 @@ const ArticleHeader = styled.div`
 
   color: #333;
 
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
@@ -135,6 +135,8 @@ const ArticlePreview = styled.div<{
   gap: 13px;
   padding: 20px 0px 7px 21px;
   border-radius: 10px;
+  max-height: 108px;
+  box-sizing: border-box;
   border: 1px solid #cdcfff;
   ${(props) =>
     props.isSelected
@@ -182,7 +184,7 @@ const MyArticles: React.FC<{
           <ArticlePreviewTitle>
             <SText
               color={'#333'}
-              fontFamily={'Pretendard Variable'}
+              fontFamily={'Pretendard'}
               fontSize={'16px'}
               fontWeight={600}
             >
@@ -190,7 +192,7 @@ const MyArticles: React.FC<{
             </SText>
             <SText
               color={'#777'}
-              fontFamily={'Pretendard Variable'}
+              fontFamily={'Pretendard'}
               fontSize={'10px'}
               fontWeight={400}
             >
@@ -249,7 +251,7 @@ const ArticlesViewer: React.FC<{
             color={'#6e74fa'}
             fontSize={'20px'}
             fontWeight={200}
-            fontFamily={'Pretendard Variable'}
+            fontFamily={'Pretendard'}
           >
             {pagination.totalElements}
           </SText>
@@ -283,18 +285,18 @@ const InformationContent = styled.div`
 
 const InformationLabel = styled.div`
   color: #000;
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  line-height: 19px; /* 105.556% */
+  line-height: 19px;
   letter-spacing: -0.36px;
 `;
 
 const InformationValue = styled.div`
   color: #727272;
 
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -340,6 +342,8 @@ const ModeSwitcher: React.FC<{
 }> = ({ mode, setMode }) => {
   return (
     <ModeButtonsWrapper>
+      {/* 배포떄 적용 */}
+      {/*{modes.slice(0, 5).map((m) => (*/}
       {modes.map((m) => (
         <ModeButton
           key={m.value}
@@ -357,9 +361,7 @@ const GradationArticleDetail = styled.div`
   margin-bottom: 100px;
   display: flex;
   flex-direction: column;
-  // width: 700px;
   width: 699px;
-  min-height: 672px;
   padding: 31px 21px 20px 21px;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -417,24 +419,30 @@ const ArticleDetailViewer: React.FC<{
     [data]
   );
 
+  console.error('??', selectedArticle, selectedArticleBody);
+
   return (
     <GradationArticleDetail>
       <ArticleDetailHeader>
         <Flex gap={'8px'} align={'center'} padding={'0 0 4px 0'}>
-          <img
-            src={announcement}
-            alt={'announcement icon'}
-            width={24}
-            height={24}
-            style={{ objectFit: 'contain' }}
-          />
-          <SText
-            fontSize={'24px'}
-            fontWeight={700}
-            fontFamily={'Pretendard Variable'}
-          >
-            {selectedArticle?.articleTitle ?? ''}
-          </SText>
+          {selectedArticle?.articleTitle && (
+            <Fragment>
+              <img
+                src={announcement}
+                alt={'announcement icon'}
+                width={24}
+                height={24}
+                style={{ objectFit: 'contain' }}
+              />
+              <SText
+                fontSize={'24px'}
+                fontWeight={700}
+                fontFamily={'Pretendard'}
+              >
+                {selectedArticle.articleTitle}
+              </SText>
+            </Fragment>
+          )}
         </Flex>
         <SText
           color={'#777'}
@@ -446,11 +454,13 @@ const ArticleDetailViewer: React.FC<{
         </SText>
         <Spacer h={46} />
         <ArticleWriter>
-          <img
-            src={selectedArticle?.memberImage ?? ''}
-            alt={'profile picture'}
-            style={{ width: '16px', height: '16px', objectFit: 'contain' }}
-          />
+          {selectedArticle?.memberImage && (
+            <img
+              src={selectedArticle?.memberImage ?? ''}
+              alt={'profile picture'}
+              style={{ width: '16px', height: '16px', objectFit: 'contain' }}
+            />
+          )}
           <SText fontSize={'12px'} fontWeight={600}>
             {selectedArticle?.memberName ?? ''}
           </SText>
@@ -488,7 +498,7 @@ const TeamButtonLabel = styled.div`
   color: #fff;
 
   text-align: center;
-  font-family: 'Pretendard Variable';
+  font-family: 'Pretendard';
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
@@ -506,7 +516,7 @@ const TeamButton: React.FC<{
     <TeamButtonWrap onClick={onClick} isSelected={isSelected}>
       <SText
         color={'#fff'}
-        fontFamily={'Pretendard Variable'}
+        fontFamily={'Pretendard'}
         fontSize={'10px'}
         fontWeight={500}
         lineHeight={'12px'}

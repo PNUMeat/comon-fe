@@ -101,3 +101,9 @@ export const getMemberInfo = async () => {
 
   return res.data.data;
 };
+
+export const withdrawMember = async () => {
+  const res = await apiInstance.delete('v1/members');
+
+  return res.data;
+};

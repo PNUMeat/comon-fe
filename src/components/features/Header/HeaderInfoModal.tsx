@@ -25,7 +25,8 @@ const InfoModal = styled.div`
   top: 46px;
   right: -26px;
   opacity: 0;
-  z-index: 99999999;
+  // z-index: 99999999;
+  z-index: -100;
   box-sizing: border-box;
   padding: 9px 0;
   display: flex;
