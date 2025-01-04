@@ -35,34 +35,31 @@ apiInstance.interceptors.response.use(
      */
     if (error.response) {
       const data = error.response.data;
-      const { message, code } = data;
-      console.error('??? axios error', error.response);
-      if (error.response.status === 401 && code === 100) {
-        window.location.href = PATH.ENROLL;
+      const { code } = data;
+      if (error.response.status === 401) {
+        if (code === 100) {
+          // window.location.href = PATH.ENROLL;
+          console.error('TO ENROLL');
 
-        return Promise.resolve();
-      }
+          return Promise.resolve();
+        }
+        if (code === 101) {
+          return apiInstance.post('v1/reissue').then(() => {
+            handleCookieOnRedirect();
+            const originalRequest = error.config;
+            if (originalRequest) {
+              originalRequest.headers.set(
+                'Authorization',
+                `Bearer ${sessionStorage.getItem('Authorization')}`
+              );
 
-      if (
-        error.response.status === 401 &&
-        message === '토큰이 만료되었습니다.'
-      ) {
-        return apiInstance.post('v1/reissue').then(() => {
-          handleCookieOnRedirect();
-          const originalRequest = error.config;
-          if (originalRequest) {
-            originalRequest.headers.set(
-              'Authorization',
-              `Bearer ${sessionStorage.getItem('Authorization')}`
-            );
+              return apiInstance(originalRequest);
+            }
+          });
+        }
 
-            return apiInstance(originalRequest);
-          }
-        });
-        // .catch(() => {
-        //   alert('로그인을 다시 해주세요');
-        //   window.location.href = PATH.LOGIN;
-        // });
+        sessionStorage.removeItem('Authorization');
+        window.location.href = PATH.LOGIN;
       }
     }
 

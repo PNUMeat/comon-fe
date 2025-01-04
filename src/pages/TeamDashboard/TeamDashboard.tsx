@@ -18,7 +18,7 @@ import { ITeamInfo } from '@/api/team';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useAtom } from 'jotai/index';
+import { useAtom } from 'jotai';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
