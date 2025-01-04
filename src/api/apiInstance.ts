@@ -36,8 +36,10 @@ apiInstance.interceptors.response.use(
     if (error.response) {
       const data = error.response.data;
       const { message, code } = data;
+      console.error('??? axios error', error.response);
       if (error.response.status === 401 && code === 100) {
         window.location.href = PATH.ENROLL;
+
         return Promise.resolve();
       }
 
