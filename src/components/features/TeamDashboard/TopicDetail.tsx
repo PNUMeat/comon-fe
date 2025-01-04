@@ -57,7 +57,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     : data?.articleBody;
 
   if (data) {
-    console.error('TD', data?.articleBody, data?.imageUrl);
+    console.error('TD', data?.articleBody, selectedTopicBody);
   }
 
   return data ? (

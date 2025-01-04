@@ -127,6 +127,9 @@ export const TeamDailySubject = () => {
             setDashboardView('topic');
             setSelectedPostId(articleId);
             alert(data.message);
+          })
+          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'))
+          .finally(() => {
             setSubjectImages([]);
             navigate(`/team-admin/${id}`);
 
@@ -134,11 +137,10 @@ export const TeamDailySubject = () => {
               top: document.body.scrollHeight,
               behavior: 'instant',
             });
-          })
-          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'));
+          });
       })
       .catch((err) => {
-        alert(err.data.message);
+        alert(err.response.data.message);
         setIsPending(false);
       });
   };
