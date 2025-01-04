@@ -9,10 +9,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
+import { ServerResponse } from '@/api/types';
 import click from '@/assets/TeamJoin/click.png';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 const TeamData = () => {
   const [page, setPage] = useState(0);
@@ -23,9 +25,9 @@ const TeamData = () => {
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
     queryFn: () => getTeamList('recent', page, 6),
-    retry: (failureCount, error: any) => {
+    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (error.response) {
-        if (error.response.status === 401 && error.response.code === 100) {
+        if (error.response.status === 401 && error.response.data.code === 100) {
           return false;
         }
       }
