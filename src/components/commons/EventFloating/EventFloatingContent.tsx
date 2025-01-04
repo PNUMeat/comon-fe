@@ -17,15 +17,16 @@ const Bubble = styled.div`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 30px 25px 25px 20px;
+  padding: 36px 0px 0px 36px;
   font-size: 10px;
   line-height: 1.4;
+  width: 312px;
 `;
 
 const ButtonStyle = styled.button`
   position: absolute;
   font-size: 12px;
-  right: 30px;
+  right: 32px;
   bottom: 30px;
   width: 100px;
   height: 30px;
