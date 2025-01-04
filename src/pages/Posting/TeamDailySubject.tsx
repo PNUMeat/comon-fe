@@ -78,16 +78,11 @@ export const TeamDailySubject = () => {
       return;
     }
 
-    if (
-      !articleId ||
-      !articleCategory ||
-      !articleBody ||
-      !articleTitle ||
-      !tag
-    ) {
+    if (!subjectTitle || !articleBody || !tag) {
       alert('모든 필드를 채워주세요');
       return;
     }
+
     setIsPending(true);
     createSubject({
       teamId: parseInt(id),

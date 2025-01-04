@@ -9,6 +9,6 @@ export const PATH = {
   TEAM_MODIFICATION: '/team-modification',
   TEAM_DASHBOARD: '/team-dashboard',
   TEAM_ADMIN: '/team-admin',
-  SUBJECT: 'team-subject/:id/:selectedDate',
+  SUBJECT: '/team-subject/:id/:selectedDate',
   POSTING: '/posting/:id',
 };
