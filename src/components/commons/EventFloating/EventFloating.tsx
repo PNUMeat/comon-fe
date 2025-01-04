@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const FloatingButtonContainer = styled.div`
   position: fixed;
-  bottom: 115px;
+  bottom: 60px;
   right: 60px;
   z-index: 1000;
 `;
