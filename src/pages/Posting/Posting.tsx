@@ -79,7 +79,7 @@ export const Posting = () => {
               navigate(`/team-dashboard/${id}`);
               alert('게시글 수정이 완료되었습니다!');
             })
-            .catch(() => alert('최신 게시글 조회에 실패했습니다.'));
+            .catch(() => alert('최신 게시글 조회를 실패했습니다.'));
         })
         .catch(() => {
           alert('게시글 수정에 실패했습니다');
