@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const FloatingButtonContainer = styled.div`
   position: fixed;
-  bottom: 200px;
+  bottom: 115px;
   right: 60px;
   z-index: 1000;
 `;
@@ -15,7 +15,7 @@ export const EventFloating: React.FC = () => {
   return (
     <FloatingButtonContainer>
       <EventFloatingContent open={open} setOpen={setOpen}/>
-      <EventFloatingButton />
+      <EventFloatingButton setOpen={setOpen}/>
     </FloatingButtonContainer>
   );
 }
