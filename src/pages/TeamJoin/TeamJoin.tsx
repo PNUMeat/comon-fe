@@ -6,7 +6,7 @@ import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
 import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
@@ -24,22 +24,22 @@ const TeamData = () => {
   const [keyword, setKeyword] = useState('');
   const [teams, setTeams] = useState<ITeamInfo[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
     queryFn: () => getTeamList('recent', page, 6),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
-      if (error.response) {
-        console.error('RETRY', error.response);
-        if (error.response.status === 401 && error.response.data.code === 100) {
-          navigate(PATH.ENROLL);
-          return false;
-        }
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.code === 100
+      ) {
+        return false;
       }
+
       return failureCount < 3;
     },
-    // retry: false,
   });
 
   useEffect(() => {

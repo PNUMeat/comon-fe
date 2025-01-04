@@ -38,8 +38,7 @@ apiInstance.interceptors.response.use(
       const { code } = data;
       if (error.response.status === 401) {
         if (code === 100) {
-          // window.location.href = PATH.ENROLL;
-          console.error('TO ENROLL');
+          window.location.href = PATH.ENROLL;
 
           return Promise.reject(error);
         }
@@ -60,6 +59,7 @@ apiInstance.interceptors.response.use(
 
         sessionStorage.removeItem('Authorization');
         window.location.href = PATH.LOGIN;
+        return Promise.reject(error);
       }
     }
 
