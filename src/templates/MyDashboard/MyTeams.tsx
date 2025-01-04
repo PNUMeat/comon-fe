@@ -333,7 +333,10 @@ const InformationViewer: React.FC<{
 
   const onClickTeamWithdraw = () => {
     withdrawTeam(teamId)
-      .then((res) => alert(res.message))
+      .then((res) => {
+        queryClient.invalidateQueries({ queryKey: ['my-profile-query'] });
+        alert(res.message);
+      })
       .catch((res) => alert(res.message));
   };
 
