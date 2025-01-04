@@ -332,12 +332,15 @@ const InformationViewer: React.FC<{
   ]) as TeamAbstraction[];
 
   const onClickTeamWithdraw = () => {
-    withdrawTeam(teamId)
-      .then((res) => {
-        queryClient.invalidateQueries({ queryKey: ['my-profile-query'] });
-        alert(res.message);
-      })
-      .catch((res) => alert(res.message));
+    const isConfirmed = confirm('팀을 정말 탈퇴하시겠습니까?');
+    if (isConfirmed) {
+      withdrawTeam(teamId)
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['my-page-status'] });
+          alert(res.message);
+        })
+        .catch((res) => alert(res.message));
+    }
   };
 
   const selectedTeamData = data.find((team) => team.teamId === teamId);
