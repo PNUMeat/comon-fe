@@ -31,8 +31,8 @@ interface CustomArrowProps {
 
 export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: teams.length > 1,
+    infinite: teams.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
