@@ -6,6 +6,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
+import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 
 import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -205,6 +206,7 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
+        <EventFloating />
         <Container
           padding={'0 149px'}
           maxW={1002}
