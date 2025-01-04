@@ -56,15 +56,15 @@ export const TeamDailySubject = () => {
       .trim()
       .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
 
-    if (articleId && articleCategory && articleBody && articleTitle) {
+    if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
       mutateSubject({
         teamId: parseInt(id),
         articleId: parseInt(articleId),
-        articleTitle: articleTitle,
+        articleTitle: subjectTitle,
         articleBody: articleBody,
         image: subjectImages ? subjectImages[0] : null,
-        articleCategory: articleCategory,
+        articleCategory: tag,
       })
         .then(() => {
           alert('주제 수정이 완료되었습니다.');
