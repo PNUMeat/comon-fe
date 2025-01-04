@@ -40,7 +40,7 @@ export const Posting = () => {
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [isPending, setIsPending] = useState(false);
-  const [postImages] = useAtom(postImagesAtom);
+  const [postImages, setPostImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
   const selectedDate = useAtomValue(selectedDateAtom);
@@ -76,6 +76,9 @@ export const Posting = () => {
               queryKey: ['articles-by-date', id, selectedDate, page],
             })
             .then(() => {
+              setDashboardView('article');
+              setSelectedPostId(articleId);
+              setPostImages([]);
               navigate(`/team-dashboard/${id}`);
               alert('게시글 수정이 완료되었습니다!');
             })
@@ -102,6 +105,7 @@ export const Posting = () => {
           .then(() => {
             setDashboardView('article');
             setSelectedPostId(articleId);
+            setPostImages([]);
             navigate(`/team-dashboard/${id}`);
             alert('게시글 작성이 완료되었습니다!');
           })

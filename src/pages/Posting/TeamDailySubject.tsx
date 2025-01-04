@@ -20,7 +20,7 @@ import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
-import { subjectImagesAtom } from '@/store/subject';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useAtom, useSetAtom } from 'jotai';
 
@@ -37,7 +37,7 @@ export const TeamDailySubject = () => {
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
-  const [subjectImages] = useAtom(subjectImagesAtom);
+  const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
   const { id, selectedDate } = useParams();
@@ -97,6 +97,7 @@ export const TeamDailySubject = () => {
         setDashboardView('topic');
         setSelectedPostId(articleId);
         alert(data.message);
+        setSubjectImages([]);
         navigate(`/team-admin/${id}`);
         scrollTo(0, document.body.scrollHeight);
       })
