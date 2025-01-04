@@ -31,6 +31,7 @@ const TeamData = () => {
     queryFn: () => getTeamList('recent', page, 6),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (error.response) {
+        console.error('RETRY', error.response);
         if (error.response.status === 401 && error.response.data.code === 100) {
           navigate(PATH.ENROLL);
           return false;
