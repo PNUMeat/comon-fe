@@ -164,7 +164,7 @@ export const TeamDailySubject = () => {
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
           setTag={setTag}
-          content={articleBody}
+          content={content}
           title={articleTitle}
           tag={articleCategory}
         />
