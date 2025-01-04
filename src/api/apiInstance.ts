@@ -57,8 +57,9 @@ apiInstance.interceptors.response.use(
           });
         }
 
-        sessionStorage.removeItem('Authorization');
-        window.location.href = PATH.LOGIN;
+        console.error('??', error.response);
+        // sessionStorage.removeItem('Authorization');
+        // window.location.href = PATH.LOGIN;
         return Promise.reject(error);
       }
     }
