@@ -57,9 +57,9 @@ apiInstance.interceptors.response.use(
           });
         }
 
-        console.error('??', error.response);
-        // sessionStorage.removeItem('Authorization');
-        // window.location.href = PATH.LOGIN;
+        // 리프레시 토큰이 만료됨
+        sessionStorage.removeItem('Authorization');
+        window.location.href = PATH.LOGIN;
         return Promise.reject(error);
       }
     }
