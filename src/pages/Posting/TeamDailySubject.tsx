@@ -27,14 +27,25 @@ import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
-  const { articleId, articleCategory, articleBody, articleTitle } =
-    location?.state ?? {
-      articleId: null,
-      articleCategory: null,
-      articleBody: null,
-      articleTitle: null,
-    };
-  const [content, setContent] = useState<string>(() => articleBody ?? '');
+  const {
+    articleId,
+    articleCategory,
+    articleBody,
+    articleTitle,
+    articleImageUrl,
+  } = location?.state ?? {
+    articleId: null,
+    articleCategory: null,
+    articleBody: null,
+    articleTitle: null,
+    articleImageUrl: null,
+  };
+  const [content, setContent] = useState<string>(
+    () =>
+      (articleImageUrl
+        ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
+        : articleBody) ?? ''
+  );
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
@@ -55,9 +66,9 @@ export const TeamDailySubject = () => {
       return;
     }
 
-    const articleBody = content
-      .trim()
-      .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
+    const replacedArticleBody = subjectImages
+      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : content;
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
@@ -65,7 +76,7 @@ export const TeamDailySubject = () => {
         teamId: parseInt(id),
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
-        articleBody: articleBody,
+        articleBody: replacedArticleBody,
         image: subjectImages ? subjectImages[0] : null,
         articleCategory: tag,
       })
@@ -92,7 +103,7 @@ export const TeamDailySubject = () => {
       return;
     }
 
-    if (!subjectTitle || !articleBody || !tag) {
+    if (!subjectTitle || !content || !tag) {
       alert('모든 필드를 채워주세요');
       return;
     }
@@ -102,7 +113,7 @@ export const TeamDailySubject = () => {
       teamId: parseInt(id),
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
-      articleBody: articleBody,
+      articleBody: replacedArticleBody,
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
     })

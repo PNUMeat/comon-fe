@@ -56,6 +56,10 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
     : data?.articleBody;
 
+  if (data) {
+    console.error('TD', data?.articleBody, data?.imageUrl);
+  }
+
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -75,6 +79,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                   articleId: data?.articleId,
                   articleTitle: data?.articleTitle,
                   articleCategory: data?.articleCategory,
+                  articleImageUrl: data?.imageUrl,
                 }}
               >
                 <LazyImage
