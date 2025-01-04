@@ -44,7 +44,10 @@ export const ComonTextarea: React.FC<{
   const handleInput = () => {
     if (editableRef.current && !isDisabled) {
       const text = editableRef.current.innerText;
-      setContent(text);
+      editableRef.current.innerText = text.slice(0, 50);
+      if (text.length < 50) {
+        setContent(text);
+      }
     }
   };
 
