@@ -72,7 +72,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                   maxW={20}
                 />
               </Link>
-              <div onClick={onClickDelete}>
+              <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
                 <LazyImage
                   src={DeleteIcon}
                   altText="삭제"

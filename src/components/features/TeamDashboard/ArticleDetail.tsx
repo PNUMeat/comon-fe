@@ -29,19 +29,17 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
             /(<img[^>]*src=")\?("[^>]*>)/g,
             `$1${data?.imageUrl}$2`
           )
-        : data?.articleBody,
+        : (data?.articleBody ?? ''),
     [data]
   );
 
-  if (!data) {
-    return null;
-  }
-
-  const onClickDelete = () =>
-    deletePost(data.articleId)
-      .then(() => alert('게시글 삭제 성공'))
-      .catch(() => alert('게시글 삭제 실패'));
-
+  const onClickDelete = () => {
+    if (data?.articleId) {
+      deletePost(data.articleId)
+        .then(() => alert('게시글 삭제 성공'))
+        .catch(() => alert('게시글 삭제 실패'));
+    }
+  };
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -67,7 +65,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
                   maxW={20}
                 />
               </Link>
-              <div onClick={onClickDelete}>
+              <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
                 <LazyImage
                   src={DeleteIcon}
                   altText="삭제"
