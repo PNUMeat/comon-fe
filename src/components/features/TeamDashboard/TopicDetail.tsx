@@ -122,22 +122,11 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        {data?.imageUrl && (
-          <>
-            <LazyImage
-              src={data.imageUrl}
-              altText="이미지 불러오기 실패"
-              w={600}
-              h="auto"
-              maxW={600}
-              style={{ padding: '0px 20px' }}
-            />
-            <Spacer h={36} />
-          </>
-        )}
-        <TopicViewer
-          dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
-        />
+        {data ? (
+          <TopicViewer
+            dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
+          />
+        ) : null}
       </Flex>
     </Box>
   ) : (
