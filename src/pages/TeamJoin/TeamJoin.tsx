@@ -10,21 +10,18 @@ import { Link } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
-// import { ServerResponse } from '@/api/types';
 import click from '@/assets/TeamJoin/click.png';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-// import { AxiosError } from 'axios';
-
 const TeamData = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
-  const [teams, setTeams] = useState<ITeamInfo[]>([]);
+  const [myTeam, setMyTeam] = useState<ITeamInfo[]>([]);
+  const [otherTeams, setOtherTeams] = useState<ITeamInfo[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  // const navigate = useNavigate();
 
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
@@ -44,7 +41,8 @@ const TeamData = () => {
 
   useEffect(() => {
     if (initialData) {
-      setTeams(initialData.allTeams.content || []);
+      setMyTeam(initialData.myTeams || []);
+      setOtherTeams(initialData.allTeams.content || []);
       setTotalPages(initialData.allTeams.page.totalPages || 1);
     }
   }, [initialData]);
@@ -53,13 +51,14 @@ const TeamData = () => {
     setKeyword(searchKeyword);
 
     if (!searchKeyword.trim()) {
-      setTeams(initialData?.allTeams.content || []);
+      setMyTeam(initialData?.myTeams || []);
+      setOtherTeams(initialData?.allTeams.content || []);
       setTotalPages(initialData?.allTeams.page.totalPages || 1);
       return;
     }
 
     const res = await searchTeams(searchKeyword);
-    setTeams(res.content || []);
+    setOtherTeams(res.content || []);
     setTotalPages(res.page.totalPages || 1);
   };
 
@@ -69,13 +68,14 @@ const TeamData = () => {
     if (!keyword.trim()) {
       // 검색어가 없을 때
       getTeamList('recent', newPage, 6).then((data) => {
-        setTeams(data.allTeams.content || []);
+        setMyTeam(data.myTeams || []);
+        setOtherTeams(data.allTeams.content || []);
         setTotalPages(data.allTeams.page.totalPages || 1);
       });
     } else {
       // 검색어가 있을 때
       searchTeams(keyword).then((result) => {
-        setTeams(result.content || []);
+        setOtherTeams(result.content || []);
         setTotalPages(result.page.totalPages || 1);
       });
     }
@@ -84,11 +84,9 @@ const TeamData = () => {
   return (
     <>
       {/* 나의 팀 */}
-      {(initialData?.myTeams || []).length > 0 && (
-        <MyTeamCard teams={initialData?.myTeams || []} />
-      )}
+      {myTeam.length > 0 && <MyTeamCard teams={myTeam || []} />}
       {/* 활동 팀 찾기 */}
-      <TeamList teams={teams} onSearch={handleSearch} />
+      <TeamList teams={otherTeams} onSearch={handleSearch} />
       <Pagination
         totalPages={totalPages}
         onPageChange={handlePageChange}
