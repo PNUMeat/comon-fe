@@ -1,8 +1,22 @@
 import { handleCookieOnRedirect } from '@/utils/cookie';
 
+import { NavigateFunction } from 'react-router-dom';
+
 import { ServerIntendedError } from '@/api/types';
 import { PATH } from '@/routes/path';
 import axios, { AxiosError, AxiosInstance } from 'axios';
+
+let navigator: NavigateFunction | null = null;
+
+export const setNavigator = (nav: NavigateFunction) => {
+  navigator = nav;
+};
+
+export const navigate = (path: string) => {
+  if (navigator) {
+    navigator(path);
+  }
+};
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `/api/`,
@@ -38,7 +52,7 @@ apiInstance.interceptors.response.use(
       const { code } = data;
       if (error.response.status === 401) {
         if (code === 100) {
-          window.location.href = PATH.ENROLL;
+          navigate(PATH.ENROLL);
 
           return Promise.reject(error);
         }
@@ -59,7 +73,7 @@ apiInstance.interceptors.response.use(
 
         // 리프레시 토큰이 만료됨
         sessionStorage.removeItem('Authorization');
-        window.location.href = PATH.LOGIN;
+        navigate(PATH.LOGIN);
         return Promise.reject(error);
       }
     }

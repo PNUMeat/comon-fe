@@ -1,8 +1,10 @@
 import { Container } from '@/components/commons/Container';
 import { Header } from '@/components/commons/Header';
 
-import React, { useLayoutEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { setNavigator } from '@/api/apiInstance';
 
 const headerHeight = 72;
 
@@ -23,6 +25,12 @@ export const CommonLayout: React.FC<{
       });
     }
   }, [location.pathname]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setNavigator(navigate);
+  }, [navigate]);
 
   return (
     <Container padding={'0'}>
