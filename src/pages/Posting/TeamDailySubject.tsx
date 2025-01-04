@@ -22,6 +22,7 @@ import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
@@ -40,12 +41,14 @@ export const TeamDailySubject = () => {
   const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
-  const { id, selectedDate } = useParams();
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
+  const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
   }
+
+  const [year, month] = selectedDate.split('-').map(Number);
 
   const onClick = () => {
     if (isPending) {
@@ -67,8 +70,19 @@ export const TeamDailySubject = () => {
         articleCategory: tag,
       })
         .then(() => {
-          alert('주제 수정이 완료되었습니다.');
-          navigate(`/team-admin/${id}`);
+          queryClient
+            .invalidateQueries({
+              queryKey: ['team-info', parseInt(id), year, month],
+            })
+            .then(() => {
+              alert('주제 수정이 완료되었습니다.');
+              navigate(`/team-admin/${id}`);
+              scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'instant',
+              });
+            })
+            .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'));
         })
         .catch((err) => {
           alert('주제 수정에 실패했습니다.');
@@ -93,13 +107,24 @@ export const TeamDailySubject = () => {
       articleCategory: tag,
     })
       .then((data) => {
-        const articleId = data.articleId;
-        setDashboardView('topic');
-        setSelectedPostId(articleId);
-        alert(data.message);
-        setSubjectImages([]);
-        navigate(`/team-admin/${id}`);
-        scrollTo(0, document.body.scrollHeight);
+        queryClient
+          .invalidateQueries({
+            queryKey: ['team-info', parseInt(id), year, month],
+          })
+          .then(() => {
+            const articleId = data.articleId;
+            setDashboardView('topic');
+            setSelectedPostId(articleId);
+            alert(data.message);
+            setSubjectImages([]);
+            navigate(`/team-admin/${id}`);
+
+            scrollTo({
+              top: document.body.scrollHeight,
+              behavior: 'instant',
+            });
+          })
+          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'));
       })
       .catch((err) => {
         alert(err.data.message);
