@@ -6,21 +6,25 @@ import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
 import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
+// import { ServerResponse } from '@/api/types';
 import click from '@/assets/TeamJoin/click.png';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
+// import { AxiosError } from 'axios';
+
 const TeamData = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
   const [teams, setTeams] = useState<ITeamInfo[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
@@ -28,11 +32,13 @@ const TeamData = () => {
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (error.response) {
         if (error.response.status === 401 && error.response.data.code === 100) {
+          navigate(PATH.ENROLL);
           return false;
         }
       }
       return failureCount < 3;
     },
+    // retry: false,
   });
 
   useEffect(() => {
