@@ -23,6 +23,7 @@ const TeamData = () => {
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
     queryFn: () => getTeamList('recent', page, 6),
+    retry: false,
   });
 
   useEffect(() => {

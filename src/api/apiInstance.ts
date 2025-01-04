@@ -41,7 +41,7 @@ apiInstance.interceptors.response.use(
           // window.location.href = PATH.ENROLL;
           console.error('TO ENROLL');
 
-          return Promise.resolve();
+          return Promise.reject();
         }
         if (code === 101) {
           return apiInstance.post('v1/reissue').then(() => {
