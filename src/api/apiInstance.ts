@@ -38,7 +38,8 @@ apiInstance.interceptors.response.use(
       const { code } = data;
       if (error.response.status === 401) {
         if (code === 100) {
-          window.location.href = PATH.ENROLL;
+          // window.location.href = PATH.ENROLL;
+          console.error('TO ENROLL');
 
           return Promise.resolve();
         }
