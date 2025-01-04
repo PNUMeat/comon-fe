@@ -19,10 +19,16 @@ import commonToday from '@/assets/Posting/comonToday.png';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
-import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
+import {
+  currentViewAtom,
+  pageAtom,
+  selectedDateAtom,
+  selectedPostIdAtom,
+} from '@/store/dashboard';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useAtom, useSetAtom } from 'jotai';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 export const Posting = () => {
   const location = useLocation();
@@ -37,7 +43,10 @@ export const Posting = () => {
   const [postImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
+  const selectedDate = useAtomValue(selectedDateAtom);
+  const page = useAtomValue(pageAtom);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { id } = useParams();
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -62,8 +71,15 @@ export const Posting = () => {
         articleTitle: postTitle,
       })
         .then(() => {
-          navigate(`/team-dashboard/${id}`);
-          alert('게시글 수정이 완료되었습니다!');
+          queryClient
+            .invalidateQueries({
+              queryKey: ['articles-by-date', id, selectedDate, page],
+            })
+            .then(() => {
+              navigate(`/team-dashboard/${id}`);
+              alert('게시글 수정이 완료되었습니다!');
+            })
+            .catch(() => alert('최신 게시글 조회를 실패했습니다.'));
         })
         .catch(() => {
           alert('게시글 수정에 실패했습니다');
@@ -79,10 +95,17 @@ export const Posting = () => {
     })
       .then((data) => {
         const articleId = data.articleId;
-        setDashboardView('article');
-        setSelectedPostId(articleId);
-        navigate(`/team-dashboard/${id}`);
-        alert('게시글 작성이 완료되었습니다!');
+        queryClient
+          .invalidateQueries({
+            queryKey: ['articles-by-date', id, selectedDate, page],
+          })
+          .then(() => {
+            setDashboardView('article');
+            setSelectedPostId(articleId);
+            navigate(`/team-dashboard/${id}`);
+            alert('게시글 작성이 완료되었습니다!');
+          })
+          .catch(() => alert('최신 게시글 조회에 실패했습니다.'));
       })
       .catch(() => {
         alert('게시글 작성에 실패했습니다.');

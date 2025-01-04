@@ -43,6 +43,8 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
     : data?.articleBody;
 
+  console.error('TD', data?.imageUrl, data?.articleBody);
+
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -87,7 +89,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
 
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
-          {data?.createdDate.slice(0, -3)}
+          {data?.createdDate?.slice(0, -3) || ''}
         </SText>
         <Spacer h={28} />
         <Flex align="center" gap="8px">

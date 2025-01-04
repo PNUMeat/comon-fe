@@ -204,7 +204,6 @@ export const Profile = () => {
     formData.forEach((value, key) => {
       formValues[key] = value;
     });
-    console.error('formValues', formValues);
 
     const image = (formValues['image'] ?? null) as File;
 
@@ -269,8 +268,6 @@ const ProfileViewer = () => {
   const imageUrl = data?.imageUrl;
   const memberName = data?.memberName;
   const memberExplain = data?.memberExplain;
-
-  console.error('??', imageUrl, data);
 
   return (
     <ProfileInfoGrid>
