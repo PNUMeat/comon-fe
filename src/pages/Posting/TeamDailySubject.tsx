@@ -93,7 +93,15 @@ export const TeamDailySubject = () => {
                 behavior: 'instant',
               });
             })
-            .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'));
+            .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
+            .finally(() => {
+              setDashboardView('topic');
+              setSelectedPostId(parseInt(articleId));
+              scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'instant',
+              });
+            });
         })
         .catch((err) => {
           alert('주제 수정에 실패했습니다.');
@@ -131,6 +139,9 @@ export const TeamDailySubject = () => {
           .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'))
           .finally(() => {
             setSubjectImages([]);
+            setDashboardView('topic');
+            setSelectedPostId(parseInt(articleId));
+
             navigate(`/team-admin/${id}`);
 
             scrollTo({
