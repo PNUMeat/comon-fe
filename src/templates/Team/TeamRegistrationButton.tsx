@@ -12,6 +12,7 @@ import {
   teamPasswordAtom,
   teamSubjectAtom,
 } from '@/store/form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtomValue } from 'jotai';
 
 export const TeamRegistrationButton = () => {
@@ -23,6 +24,7 @@ export const TeamRegistrationButton = () => {
   const password = useAtomValue(teamPasswordAtom);
   const image = useAtomValue(imageAtom);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
@@ -38,6 +40,7 @@ export const TeamRegistrationButton = () => {
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
           alert('팀 생성에 성공했습니다!');
+          queryClient.invalidateQueries({ queryKey: ['team-list', 0] });
         })
         .catch(() => alert('팀 생성에 실패했습니다.'));
     }
