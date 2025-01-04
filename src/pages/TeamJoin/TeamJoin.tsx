@@ -23,7 +23,14 @@ const TeamData = () => {
   const { data: initialData } = useQuery({
     queryKey: ['team-list', page],
     queryFn: () => getTeamList('recent', page, 6),
-    retry: false,
+    retry: (failureCount, error: any) => {
+      if (error.response) {
+        if (error.response.status === 401 && error.response.code === 100) {
+          return false;
+        }
+      }
+      return failureCount < 3;
+    },
   });
 
   useEffect(() => {
