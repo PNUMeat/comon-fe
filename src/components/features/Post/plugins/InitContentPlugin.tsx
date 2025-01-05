@@ -2,6 +2,7 @@ import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
 import { useEffect, useRef } from 'react';
 
+import { $createLinkNode } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createParagraphNode,
@@ -57,6 +58,34 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const tagName = element.tagName.toLowerCase();
 
       switch (tagName) {
+        // <a> -> LinkNode
+        case 'a': {
+          const href = element.getAttribute('href') ?? '';
+          const target = element.getAttribute('target');
+          const linkNode = $createLinkNode(href);
+
+          if (target === '_blank') {
+            linkNode.setTarget('_blank');
+          }
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                linkNode.append(...childLexicalNode);
+              } else {
+                linkNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          if (target === '_blank') {
+            linkNode.setRel('noopener noreferrer');
+          }
+
+          return linkNode;
+        }
+
         // <p> -> ParagraphNode
         case 'p': {
           const paragraph = $createParagraphNode();
