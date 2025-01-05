@@ -218,6 +218,7 @@ const FloatingLinkEditor: React.FC<{
           }
         }
       });
+      setIsLinkEditMode(false);
     }
   };
 
