@@ -40,12 +40,11 @@ export const TeamDailySubject = () => {
     articleTitle: null,
     articleImageUrl: null,
   };
-  const [content, setContent] = useState<string>(
-    () =>
-      (articleImageUrl
-        ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
-        : articleBody) ?? ''
-  );
+  const regroupedArticleContent =
+    (articleImageUrl
+      ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
+      : articleBody) ?? '';
+  const [content, setContent] = useState<string>(() => regroupedArticleContent);
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
@@ -175,7 +174,7 @@ export const TeamDailySubject = () => {
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
           setTag={setTag}
-          content={content}
+          content={regroupedArticleContent}
           title={articleTitle}
           tag={articleCategory}
         />
