@@ -36,6 +36,8 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
 
   const lexicalNodes: LexicalNode[] = [];
 
+  console.error('??', body);
+
   const traverse = (node: ChildNode): LexicalNode | LexicalNode[] | null => {
     // 텍스트 노드
     if (node.nodeType === Node.TEXT_NODE) {
