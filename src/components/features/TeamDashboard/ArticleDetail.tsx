@@ -11,10 +11,15 @@ import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
-import { pageAtom, selectedDateAtom } from '@/store/dashboard';
+import {
+  pageAtom,
+  selectedDateAtom,
+  selectedPostIdAtom,
+} from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAtomValue } from 'jotai/index';
+import { useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -38,6 +43,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateAtom);
   const page = useAtomValue(pageAtom);
+  const setSelectedArticleId = useSetAtom(selectedPostIdAtom);
 
   const onClickDelete = () => {
     if (data?.articleId) {
@@ -49,6 +55,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
             })
             .then(() => {
               alert('게시글 삭제 성공');
+              setSelectedArticleId(null);
             })
             .catch(() => alert('최신 게시글 조회가 실패했습니다.'));
         })
