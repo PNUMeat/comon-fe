@@ -183,10 +183,13 @@ const FloatingLinkEditor: React.FC<{
       event.preventDefault();
       handleLinkSubmission();
       setEditedLinkUrl('https://');
+
       setIsLinkEditMode(false);
     } else if (event.key === 'Escape') {
       event.preventDefault();
       setIsLinkEditMode(false);
+
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
   };
 
