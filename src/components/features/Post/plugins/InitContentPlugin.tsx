@@ -36,15 +36,12 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
 
   const lexicalNodes: LexicalNode[] = [];
 
-  console.error('??', body);
-
   const traverse = (node: ChildNode): LexicalNode | LexicalNode[] | null => {
     // 텍스트 노드
     if (node.nodeType === Node.TEXT_NODE) {
       const textContent = node.textContent ?? '';
       if (!textContent) return null;
 
-      // 부모가 <span style="..."> 일 경우
       const parentEl = node.parentElement;
       if (parentEl?.tagName === 'SPAN') {
         const style = parentEl.getAttribute('style') ?? '';
@@ -218,7 +215,7 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);
-      $getRoot().select();
+      $getRoot().clear().select();
       const selection = $getSelection();
       if (selection && isInitializedRef.current) {
         selection.insertNodes(nodes);
