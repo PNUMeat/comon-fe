@@ -1,9 +1,11 @@
+import { checkRemainingCookies } from '@/utils/cookie';
+
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
 
 import { Suspense } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { NotFound } from '@/pages/NotFound/NotFound';
@@ -21,6 +23,34 @@ import { Profile } from '@/templates/MyDashboard/Profile';
 import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
 import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
 
+const useAuth = () => {
+  if (import.meta.env.MODE === 'development') {
+    return {
+      isAuthenticated: true,
+    };
+  }
+  return {
+    isAuthenticated: checkRemainingCookies(),
+  };
+};
+
+export const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return (
+      <Navigate
+        to={PATH.LOGIN}
+        state={{ from: location, redirect: location.pathname }}
+        replace
+      />
+    );
+  }
+
+  return <>{children}</>;
+};
+
 export const router = createBrowserRouter(
   [
     {
@@ -31,11 +61,19 @@ export const router = createBrowserRouter(
     // TODO : 아래 Posting이랑 Subject 공통 레이어 묶어야함
     {
       path: PATH.POSTING,
-      element: <Posting />,
+      element: (
+        <PrivateRoute>
+          <Posting />
+        </PrivateRoute>
+      ),
     },
     {
       path: PATH.SUBJECT,
-      element: <TeamDailySubject />,
+      element: (
+        <PrivateRoute>
+          <TeamDailySubject />
+        </PrivateRoute>
+      ),
     },
     {
       /**
@@ -67,21 +105,35 @@ export const router = createBrowserRouter(
         {
           path: PATH.ENROLL,
           element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <LazyEnrollTemplate />
-            </Suspense>
+            <PrivateRoute>
+              <Suspense fallback={<LazySkeleton />}>
+                <LazyEnrollTemplate />
+              </Suspense>
+            </PrivateRoute>
           ),
         },
         {
           path: PATH.TEAM_REGISTRATION,
-          element: <TeamRegistrationTemplate />,
+          element: (
+            <PrivateRoute>
+              <TeamRegistrationTemplate />
+            </PrivateRoute>
+          ),
         },
         {
           path: PATH.TEAM_MODIFICATION,
-          element: <TeamModificationTemplate />,
+          element: (
+            <PrivateRoute>
+              <TeamModificationTemplate />
+            </PrivateRoute>
+          ),
         },
         {
-          element: <MyDashboard />,
+          element: (
+            <PrivateRoute>
+              <MyDashboard />
+            </PrivateRoute>
+          ),
           children: [
             {
               path: `${PATH.MY_PAGE}/profile`,
@@ -96,7 +148,11 @@ export const router = createBrowserRouter(
       ],
     },
     {
-      element: <SingleSectionLayout />,
+      element: (
+        <PrivateRoute>
+          <SingleSectionLayout />
+        </PrivateRoute>
+      ),
       children: [
         {
           path: `${PATH.TEAM_DASHBOARD}/:teamId`,
