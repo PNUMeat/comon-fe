@@ -33,11 +33,11 @@ export const SText = styled.div<TextProps>`
   white-space: ${(props) => props.whiteSpace || 'inherit'};
   opacity: ${(props) => props.opacity || 'inherit'};
 
-  width: 100%;
   ${(props) =>
     props.shouldCut
       ? `
-    display: -webkit-box;
+  width: 100%;
+  display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
