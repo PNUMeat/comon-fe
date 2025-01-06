@@ -55,10 +55,9 @@ export const TeamFormLayout: React.FC<
       <ComonFormTitle title={title} subtitle={subtitle} />
       <Spacer h={78} />
       <ComonFormGrid h={683}>{children}</ComonFormGrid>
-      <Spacer h={99} />
+      <Spacer h={120} />
       {isOnTeamReg && <TeamRegistrationButton />}
       {isOnTeamMod && <TeamModificationButton />}
-      <Spacer h={300} />
     </TeamContainer>
   );
 };
