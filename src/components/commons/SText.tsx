@@ -17,7 +17,8 @@ export const SText = styled.div<TextProps>`
   font-family: ${(props) => props.fontFamily || 'inherit'};
   font-size: ${(props) => props.fontSize || 'inherit'};
   font-weight: ${(props) => props.fontWeight || 'inherit'};
-  line-height: ${(props) => props.lineHeight || 'inherit'};
+  line-height: ${(props) =>
+    props.lineHeight ? props.lineHeight : (props?.fontSize ?? 'inherit')};
   letter-spacing: ${(props) => props.letterSpacing || 'inherit'};
   text-align: ${(props) => props.textAlign || 'inherit'};
   white-space: ${(props) => props.whiteSpace || 'inherit'};

@@ -110,7 +110,12 @@ export const Posts: React.FC<PostsProps> = ({
               onClick={() => handleArticleClick(article.articleId)}
             >
               <Flex direction="column">
-                <SText color="#333" fontSize="16px" fontWeight={600}>
+                <SText
+                  color="#333"
+                  fontSize="16px"
+                  fontWeight={600}
+                  lineHeight={'16px'}
+                >
                   {article.articleTitle}
                 </SText>
                 <Spacer h={8} />
@@ -127,7 +132,12 @@ export const Posts: React.FC<PostsProps> = ({
                     maxW={16}
                     style={{ borderRadius: '50%' }}
                   />
-                  <SText color="#333" fontSize="12px" fontWeight={600}>
+                  <SText
+                    color="#333"
+                    fontSize="12px"
+                    fontWeight={600}
+                    lineHeight={'12px'}
+                  >
                     {article.memberName}
                   </SText>
                 </Flex>

@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 
 const Title = styled.div`
   font-size: 32px;
+  line-height: 32px;
   font-weight: 700;
   font-style: normal;
   line-height: 38.19px;
