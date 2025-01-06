@@ -12,7 +12,7 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface TopicDetailProps {
   teamId: number;
@@ -30,11 +30,24 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     queryFn: () => getTeamTopic(teamId, selectedDate),
     enabled: !!teamId && !!selectedDate,
   });
+  const queryClient = useQueryClient();
 
   const onClickDelete = () => {
     if (data) {
       deleteSubject(teamId, data.articleId)
-        .then(() => alert('주제 삭제 성공'))
+        .then(() => {
+          alert('주제 삭제 성공');
+          queryClient
+            .invalidateQueries({
+              queryKey: ['team-topic', teamId, selectedDate],
+            })
+            .then(() => {
+              scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'instant',
+              });
+            });
+        })
         .catch(() => alert('주제 삭제 실패'));
     }
   };
@@ -43,7 +56,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
     : data?.articleBody;
 
-  console.error('TD', data?.imageUrl, data?.articleBody);
+  if (data) {
+    console.error('TD', data?.articleBody, selectedTopicBody);
+  }
 
   return data ? (
     <Box width="100%" padding="30px 40px">
@@ -64,6 +79,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                   articleId: data?.articleId,
                   articleTitle: data?.articleTitle,
                   articleCategory: data?.articleCategory,
+                  articleImageUrl: data?.imageUrl,
                 }}
               >
                 <LazyImage
@@ -106,22 +122,11 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        {data?.imageUrl && (
-          <>
-            <LazyImage
-              src={data.imageUrl}
-              altText="이미지 불러오기 실패"
-              w={600}
-              h="auto"
-              maxW={600}
-              style={{ padding: '0px 20px' }}
-            />
-            <Spacer h={36} />
-          </>
-        )}
-        <TopicViewer
-          dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
-        />
+        {data ? (
+          <TopicViewer
+            dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
+          />
+        ) : null}
       </Flex>
     </Box>
   ) : (

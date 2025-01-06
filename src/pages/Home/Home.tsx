@@ -101,7 +101,7 @@ const GoalSubtitle = styled.div`
 const aims = [
   {
     title: 'TOGETHER',
-    subtitle: '팀원들과 함께해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
+    subtitle: '팀원들과 함께\n 꾸준히 남기는 공부 흔적',
     img: together,
   },
   {

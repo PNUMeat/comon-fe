@@ -116,10 +116,12 @@ const TitleInput = styled.input`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  // color: #ccc;
   border: none;
-  margin: 40px 10px;
+  padding: 0 10px;
+  margin: 40px 0;
   outline: none;
+  width: calc(100% - 20px);
+  height: calc(100% - 1px);
 
   ::placeholder {
     color: #ccc;
@@ -149,7 +151,10 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostWrap shouldHighlight={Boolean(setTag)}>
+      <PostWrap
+        shouldHighlight={Boolean(setTag)}
+        onClick={() => console.log('??')}
+      >
         <TitleInput
           type={'text'}
           placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}

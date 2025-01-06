@@ -41,7 +41,7 @@ export const TeamDashboardPage = () => {
     enabled: !!teamId,
   });
 
-  const { data: articlesData } = useQuery({
+  const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
@@ -99,6 +99,7 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
+            key={`${['articles-by-date', teamId, selectedDate, page]}+${dataUpdatedAt}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}

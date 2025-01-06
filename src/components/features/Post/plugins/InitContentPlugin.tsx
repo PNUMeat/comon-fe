@@ -2,6 +2,7 @@ import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
 import { useEffect, useRef } from 'react';
 
+import { $createLinkNode } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createParagraphNode,
@@ -41,7 +42,6 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const textContent = node.textContent ?? '';
       if (!textContent) return null;
 
-      // 부모가 <span style="..."> 일 경우
       const parentEl = node.parentElement;
       if (parentEl?.tagName === 'SPAN') {
         const style = parentEl.getAttribute('style') ?? '';
@@ -57,6 +57,34 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const tagName = element.tagName.toLowerCase();
 
       switch (tagName) {
+        // <a> -> LinkNode
+        case 'a': {
+          const href = element.getAttribute('href') ?? '';
+          const target = element.getAttribute('target');
+          const linkNode = $createLinkNode(href);
+
+          if (target === '_blank') {
+            linkNode.setTarget('_blank');
+          }
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                linkNode.append(...childLexicalNode);
+              } else {
+                linkNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          if (target === '_blank') {
+            linkNode.setRel('noopener noreferrer');
+          }
+
+          return linkNode;
+        }
+
         // <p> -> ParagraphNode
         case 'p': {
           const paragraph = $createParagraphNode();
@@ -187,7 +215,7 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);
-      $getRoot().select();
+      $getRoot().clear().select();
       const selection = $getSelection();
       if (selection && isInitializedRef.current) {
         selection.insertNodes(nodes);

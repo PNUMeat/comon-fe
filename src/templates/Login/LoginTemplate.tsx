@@ -21,7 +21,7 @@ export const LoginTemplate = () => {
           ? PATH.TEAMS
           : PATH.HOME
         : PATH.HOME;
-      navigate(navigatePath);
+      navigate(navigatePath, { replace: true });
     }
   }, []);
 

@@ -22,39 +22,52 @@ import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
-  const { articleId, articleCategory, articleBody, articleTitle } =
-    location?.state ?? {
-      articleId: null,
-      articleCategory: null,
-      articleBody: null,
-      articleTitle: null,
-    };
-  const [content, setContent] = useState<string>(() => articleBody ?? '');
+  const {
+    articleId,
+    articleCategory,
+    articleBody,
+    articleTitle,
+    articleImageUrl,
+  } = location?.state ?? {
+    articleId: null,
+    articleCategory: null,
+    articleBody: null,
+    articleTitle: null,
+    articleImageUrl: null,
+  };
+  const regroupedArticleContent =
+    (articleImageUrl
+      ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
+      : articleBody) ?? '';
+  const [content, setContent] = useState<string>(() => regroupedArticleContent);
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
   const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
-  const { id, selectedDate } = useParams();
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
+  const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
   }
+
+  const [year, month] = selectedDate.split('-').map(Number);
 
   const onClick = () => {
     if (isPending) {
       return;
     }
 
-    const articleBody = content
-      .trim()
-      .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
+    const replacedArticleBody = subjectImages
+      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : content;
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
@@ -62,13 +75,32 @@ export const TeamDailySubject = () => {
         teamId: parseInt(id),
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
-        articleBody: articleBody,
+        articleBody: replacedArticleBody,
         image: subjectImages ? subjectImages[0] : null,
         articleCategory: tag,
       })
         .then(() => {
-          alert('주제 수정이 완료되었습니다.');
-          navigate(`/team-admin/${id}`);
+          queryClient
+            .invalidateQueries({
+              queryKey: ['team-info', parseInt(id), year, month],
+            })
+            .then(() => {
+              alert('주제 수정이 완료되었습니다.');
+              navigate(`/team-admin/${id}`);
+              scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'instant',
+              });
+            })
+            .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
+            .finally(() => {
+              setDashboardView('topic');
+              setSelectedPostId(parseInt(articleId));
+              scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'instant',
+              });
+            });
         })
         .catch((err) => {
           alert('주제 수정에 실패했습니다.');
@@ -78,7 +110,7 @@ export const TeamDailySubject = () => {
       return;
     }
 
-    if (!subjectTitle || !articleBody || !tag) {
+    if (!subjectTitle || !content || !tag) {
       alert('모든 필드를 채워주세요');
       return;
     }
@@ -88,21 +120,37 @@ export const TeamDailySubject = () => {
       teamId: parseInt(id),
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
-      articleBody: articleBody,
+      articleBody: replacedArticleBody,
       image: subjectImages ? subjectImages[0] : null,
       articleCategory: tag,
     })
       .then((data) => {
-        const articleId = data.articleId;
-        setDashboardView('topic');
-        setSelectedPostId(articleId);
-        alert(data.message);
-        setSubjectImages([]);
-        navigate(`/team-admin/${id}`);
-        scrollTo(0, document.body.scrollHeight);
+        queryClient
+          .invalidateQueries({
+            queryKey: ['team-info', parseInt(id), year, month],
+          })
+          .then(() => {
+            const articleId = data.articleId;
+            setDashboardView('topic');
+            setSelectedPostId(articleId);
+            alert(data.message);
+          })
+          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'))
+          .finally(() => {
+            setSubjectImages([]);
+            setDashboardView('topic');
+            setSelectedPostId(parseInt(articleId));
+
+            navigate(`/team-admin/${id}`);
+
+            scrollTo({
+              top: document.body.scrollHeight,
+              behavior: 'instant',
+            });
+          });
       })
       .catch((err) => {
-        alert(err.data.message);
+        alert(err.response.data.message);
         setIsPending(false);
       });
   };
@@ -126,7 +174,7 @@ export const TeamDailySubject = () => {
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
           setTag={setTag}
-          content={articleBody}
+          content={regroupedArticleContent}
           title={articleTitle}
           tag={articleCategory}
         />
