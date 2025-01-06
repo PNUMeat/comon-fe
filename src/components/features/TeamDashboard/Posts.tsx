@@ -115,6 +115,7 @@ export const Posts: React.FC<PostsProps> = ({
                   fontSize="16px"
                   fontWeight={600}
                   lineHeight={'16px'}
+                  shouldCut
                 >
                   {article.articleTitle}
                 </SText>

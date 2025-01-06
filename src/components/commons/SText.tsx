@@ -10,6 +10,7 @@ interface TextProps {
   whiteSpace?: string;
   textAlign?: React.CSSProperties['textAlign'];
   opacity?: string;
+  shouldCut?: boolean;
 }
 
 export const SText = styled.div<TextProps>`
@@ -33,9 +34,13 @@ export const SText = styled.div<TextProps>`
   opacity: ${(props) => props.opacity || 'inherit'};
 
   width: 100%;
-  display: -webkit-box;
+  ${(props) =>
+    props.shouldCut
+      ? `
+    display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis;`
+      : ''}
 `;
