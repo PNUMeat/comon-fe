@@ -1,4 +1,5 @@
 import { Container } from '@/components/commons/Container';
+import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
@@ -6,13 +7,12 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
-import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 
 import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
-import achivement from '@/assets/Home/goalAchievement.svg';
+import achievement from '@/assets/Home/goalAchievement.svg';
 import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
 import { PATH } from '@/routes/path';
@@ -39,11 +39,8 @@ const StartButton = styled.button`
   border-radius: 42px;
   background: #333;
   cursor: pointer;
-
   color: #fff;
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 36px;
   font-style: normal;
@@ -110,11 +107,11 @@ const aims = [
   {
     title: 'ACHIEVEMENT',
     subtitle: '연속으로 코몬하고\n실력 상승, 랭킹 상승!',
-    img: achivement,
+    img: achievement,
   },
   {
     title: 'EVERYDAY',
-    subtitle: '매일 남기는 코테 기록,\n효율을 높이는 스터디 학습',
+    subtitle: '매일매일 새로운 코딩테스트\n1일 1회 업로드!',
     img: continually,
   },
 ];
@@ -150,7 +147,7 @@ export const Home = () => {
 
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
-        // TODO : ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
+        // TODO: ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
         // effect.style.top = `${pos + 204 + 72}px`;
         // effect.style.top = `${pos}px`;
         Array.from(effect.children).forEach((child) => {
@@ -228,7 +225,7 @@ export const Home = () => {
                 <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
               </HomeComment>
             </Suspense>
-            <Spacer h={34} />
+            {/* <Spacer h={34} /> */}
             <Wrap>
               <StartButton onClick={onClickLogin}>시작하기</StartButton>
               <StartButtonDescription>
@@ -236,9 +233,9 @@ export const Home = () => {
               </StartButtonDescription>
             </Wrap>
             <Spacer h={93} />
-            <Flex gap={'27px'} height={282}>
+            <Flex gap={'27px'}>
               {aims.map((aim) => (
-                <GoalBox key={aim.title} h={204}>
+                <GoalBox key={aim.title} h={140}>
                   <Suspense
                     fallback={
                       <div

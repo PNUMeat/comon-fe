@@ -6,4 +6,5 @@ export const FormFieldLabel = styled.label`
   font-weight: 700;
   line-height: normal;
   display: block;
+  color: #333;
 `;

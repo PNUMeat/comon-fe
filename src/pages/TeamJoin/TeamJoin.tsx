@@ -104,7 +104,7 @@ export const TeamJoinPage = () => {
       <SText color="#333" fontSize="14px" textAlign="center">
         혹은, 새로운 팀을 생성하시겠나요?
       </SText>
-      <Spacer h={12} />
+      <Spacer h={48} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
         <Box width="100%" height="80px" padding="0" borderWidth="3px">
           <ClickImage src={click} />

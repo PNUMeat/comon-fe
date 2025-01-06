@@ -125,21 +125,10 @@ export const ComonImageInput: React.FC<{
           const { compressedImage, error = undefined } = e.data;
           if (compressedImage && !error) {
             console.log('after: ', readableBytes(compressedImage.size));
-
-            // 이미지 다운
-            // const imageUrl = URL.createObjectURL(compressedImage);
-            // const img = new Image();
-            // img.src = imageUrl;
-            // const downloadLink = document.createElement('a');
-            // downloadLink.href = imageUrl;
-            // downloadLink.download = 'processed-image.png';
-            // downloadLink.click();
-
             setImage(compressedImage);
             return;
           }
           console.error('이미지 압축에 실패했습니다.', error);
-          // 그래도 일단 돌아는 가야 하지 않을까
           setImage(file);
         };
       }

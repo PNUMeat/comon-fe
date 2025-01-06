@@ -91,10 +91,9 @@ export const LoginForm: React.FC<HeightInNumber> = ({ h }) => {
       <KakaoLinkButton href={kakaoOauth2LoginUrl}>
         <SText
           fontFamily={'Pretendard'}
-          color={'#3A2929'}
+          color="#333"
           fontSize={'16px'}
           fontWeight={500}
-          lineHeight={'19px'}
           letterSpacing={'-0.32px'}
         >
           카카오로 시작하기
