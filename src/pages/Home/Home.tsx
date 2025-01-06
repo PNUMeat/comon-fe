@@ -1,4 +1,5 @@
 import { Container } from '@/components/commons/Container';
+import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
@@ -6,7 +7,6 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
-import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 
 import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -104,7 +104,7 @@ const GoalSubtitle = styled.div`
 const aims = [
   {
     title: 'TOGETHER',
-    subtitle: '팀원들과 함께해서 더욱 꾸준하게!\n코딩테스트와 코드 스터디!',
+    subtitle: '팀원들과 함께\n 꾸준히 남기는 공부 흔적',
     img: together,
   },
   {
