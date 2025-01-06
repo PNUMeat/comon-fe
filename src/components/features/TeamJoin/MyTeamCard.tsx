@@ -72,10 +72,10 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     align="center"
                     width={30}
                   >
-                    <SText fontSize="16px" fontWeight={600}>
+                    <SText color="#333" fontSize="16px" fontWeight={600}>
                       TEAM
                     </SText>
-                    <Spacer h={12} />
+                    <Spacer h={8} />
                     <SText
                       fontSize="40px"
                       color="#333"
