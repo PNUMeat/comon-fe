@@ -1,3 +1,5 @@
+import { viewStyle } from '@/utils/viewStyle';
+
 import { Flex } from '@/components/commons/Flex';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
@@ -500,13 +502,22 @@ const ArticleDetailViewer: React.FC<{
           </SText>
         </ArticleWriter>
       </ArticleDetailHeader>
-      <div
-        style={{ lineHeight: 1.5 }}
+      <TeamArticleViewer
         dangerouslySetInnerHTML={{ __html: selectedArticleBody ?? '' }}
       />
     </GradationArticleDetail>
   );
 };
+
+const TeamArticleViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
+  ${viewStyle}
+`;
 
 const modes = [
   { label: '내가 쓴 글', value: 'history' },
