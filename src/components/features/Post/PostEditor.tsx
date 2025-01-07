@@ -197,7 +197,7 @@ const EditorPlaceholder = styled.div`
   pointer-events: none;
   user-select: none;
   color: #ccc;
-  top: 18px;
+  top: 24px;
 `;
 
 const PostContainer = forwardRef<
