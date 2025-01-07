@@ -22,10 +22,11 @@ import {
   forwardRef,
   memo,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 
-import { imageAtom } from '@/store/form';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
@@ -42,7 +43,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   $isLineBreakNode,
   DOMExportOutput,
@@ -209,6 +210,29 @@ const EditorPlaceholder = styled.div`
   top: 24px;
 `;
 
+const useDetectImageDeletion = () => {
+  const [editor] = useLexicalComposerContext();
+  const setImages = useSetAtom(postImagesAtom);
+
+  useEffect(() => {
+    const unregisterMutationListener = editor.registerMutationListener(
+      ImageNode,
+      (mutations) => {
+        // mutations.forEach((mutation, nodeKey) => {
+        mutations.forEach((mutation) => {
+          if (mutation === 'destroyed') {
+            setImages([]);
+          }
+        });
+      }
+    );
+
+    return () => {
+      unregisterMutationListener();
+    };
+  }, [editor]);
+};
+
 const PostWriteSection = forwardRef<
   HTMLDivElement,
   {
@@ -216,7 +240,8 @@ const PostWriteSection = forwardRef<
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
-  const [image, setImage] = useAtom(imageAtom);
+  const [images, setImages] = useAtom(postImagesAtom);
+  useDetectImageDeletion();
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     const items = event.clipboardData.items;
@@ -224,7 +249,7 @@ const PostWriteSection = forwardRef<
       if (items[i].type.startsWith('image/')) {
         const file = items[i].getAsFile();
         // TODO: 이미지 여러개 들어갈때 수정
-        if (file && image === null) {
+        if (file && images.length === 0) {
           const imageURL = URL.createObjectURL(file);
           const imgPayload: InsertImagePayload = {
             altText: '붙여넣은 이미지',
@@ -232,7 +257,7 @@ const PostWriteSection = forwardRef<
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImage(file);
+          setImages([file]);
         }
         break;
       }
@@ -276,7 +301,7 @@ const PostSectionWrap: React.FC<{
   children: ReactNode;
 }> = ({ shouldHighlight, children }) => {
   const [editor] = useLexicalComposerContext();
-  const [image, setImage] = useAtom(imageAtom);
+  const [images, setImages] = useAtom(postImagesAtom);
 
   const onDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -284,7 +309,7 @@ const PostSectionWrap: React.FC<{
       const files = event.dataTransfer.files;
       if (files.length > 0) {
         const file = files[0];
-        if (file.type.startsWith('image/') && image === null) {
+        if (file.type.startsWith('image/') && images.length === 0) {
           const imageURL = URL.createObjectURL(file);
           const imgPayload: InsertImagePayload = {
             altText: '붙여넣은 이미지',
@@ -292,11 +317,11 @@ const PostSectionWrap: React.FC<{
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImage(file);
+          setImages([file]);
         }
       }
     },
-    [image]
+    [images]
   );
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
