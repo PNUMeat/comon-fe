@@ -6,6 +6,7 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import magnifier from '@/assets/TeamJoin/magnifier.png';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,10 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
 
   return (
     <>
-      <PageSectionHeader h={40}>🔍 활동 팀 찾기</PageSectionHeader>
+      <PageSectionHeader h={40}>
+        <Icon src={magnifier} alt="magnifier" />
+        활동 팀 찾기
+      </PageSectionHeader>
       <BackgroundGradient
         count={1}
         positions={[{ top: '90px' }]}
@@ -251,4 +255,11 @@ const FlipCardBack = styled.div`
   align-items: center;
   border: 1px solid ${colors.buttonPurple};
   z-index: 999;
+`;
+
+const Icon = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-bottom: 5px;
+  margin-right: 8px;
 `;
