@@ -18,15 +18,17 @@ interface Position {
   right: string;
 }
 
-const debounce = <T extends (...args: any[]) => void>(
+type AnyFunction = (...args: unknown[]) => unknown;
+
+const debounce = <T extends AnyFunction>(
   func: T,
   wait: number,
   options: { maxWait?: number } = {}
 ) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  // @ts-expect-error
   let lastCallTime: number | null = null;
   let lastInvokeTime: number | null = null;
+  console.log(lastCallTime);
 
   const { maxWait } = options;
 
@@ -84,9 +86,9 @@ const useDebounce = <T extends (...args: never[]) => void>(
   return useMemo(
     () =>
       debounce(
-        (...args: Parameters<T>) => {
+        (...args) => {
           if (funcRef.current) {
-            funcRef.current(...args);
+            funcRef.current(...(args as Parameters<T>));
           }
         },
         ms,
