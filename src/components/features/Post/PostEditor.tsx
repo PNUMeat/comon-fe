@@ -10,16 +10,22 @@ import { InitContentPlugin } from '@/components/features/Post/plugins/InitConten
 import { MaxIndentPlugin } from '@/components/features/Post/plugins/MaxIndentPlugin';
 import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin';
 import { SHORTCUTS } from '@/components/features/Post/plugins/markdownShortcuts';
+import {
+  INSERT_IMAGE_COMMAND,
+  InsertImagePayload,
+} from '@/components/features/Post/utils';
 
 import {
   ChangeEvent,
   Fragment,
+  ReactNode,
   forwardRef,
   memo,
   useCallback,
   useState,
 } from 'react';
 
+import { imageAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
@@ -36,6 +42,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
+import { useAtom } from 'jotai';
 import {
   $isLineBreakNode,
   DOMExportOutput,
@@ -167,6 +174,8 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
   padding: 0 30px;
   box-sizing: border-box;
   position: relative;
+  // drag event
+  z-index: 20;
   ${(props) =>
     props.shouldHighlight
       ? `
@@ -200,20 +209,46 @@ const EditorPlaceholder = styled.div`
   top: 24px;
 `;
 
-const PostContainer = forwardRef<
+const PostWriteSection = forwardRef<
   HTMLDivElement,
   {
     children: React.ReactNode;
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
+  const [image, setImage] = useAtom(imageAtom);
+
+  const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith('image/')) {
+        const file = items[i].getAsFile();
+        // TODO: 이미지 여러개 들어갈때 수정
+        if (file && image === null) {
+          const imageURL = URL.createObjectURL(file);
+          const imgPayload: InsertImagePayload = {
+            altText: '붙여넣은 이미지',
+            maxWidth: 600,
+            src: imageURL,
+          };
+          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+          setImage(file);
+        }
+        break;
+      }
+    }
+  };
 
   const onClick = useCallback(() => {
     editor.focus();
   }, []);
 
   return (
-    <EditorContainer ref={ref as React.Ref<HTMLDivElement>} onClick={onClick}>
+    <EditorContainer
+      ref={ref as React.Ref<HTMLDivElement>}
+      onClick={onClick}
+      onPaste={onPaste}
+    >
       {children}
     </EditorContainer>
   );
@@ -236,6 +271,49 @@ const TitleInput = styled.input`
   }
 `;
 
+const PostSectionWrap: React.FC<{
+  shouldHighlight?: boolean;
+  children: ReactNode;
+}> = ({ shouldHighlight, children }) => {
+  const [editor] = useLexicalComposerContext();
+  const [image, setImage] = useAtom(imageAtom);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const files = event.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/') && image === null) {
+          const imageURL = URL.createObjectURL(file);
+          const imgPayload: InsertImagePayload = {
+            altText: '붙여넣은 이미지',
+            maxWidth: 600,
+            src: imageURL,
+          };
+          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+          setImage(file);
+        }
+      }
+    },
+    [image]
+  );
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  }, []);
+
+  return (
+    <PostWrap
+      shouldHighlight={shouldHighlight}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+    >
+      {children}
+    </PostWrap>
+  );
+};
+
 const PostEditor: React.FC<{
   forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
@@ -250,7 +328,6 @@ const PostEditor: React.FC<{
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
-
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -259,7 +336,7 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostWrap shouldHighlight={Boolean(setTag)}>
+      <PostSectionWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
           placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
@@ -275,7 +352,7 @@ const PostEditor: React.FC<{
           setTag={setTag}
           articleCategory={tag}
         />
-        <PostContainer ref={onRef}>
+        <PostWriteSection ref={onRef}>
           <RichTextPlugin
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
@@ -305,8 +382,8 @@ const PostEditor: React.FC<{
           <TabIndentationPlugin />
           <MaxIndentPlugin />
           <HighlightCodePlugin />
-        </PostContainer>
-      </PostWrap>
+        </PostWriteSection>
+      </PostSectionWrap>
     </LexicalComposer>
   );
 };
