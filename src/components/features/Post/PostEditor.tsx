@@ -218,7 +218,8 @@ const useDetectImageDeletion = () => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
       (mutations) => {
-        mutations.forEach((mutation, _nodeKey) => {
+        // mutations.forEach((mutation, nodeKey) => {
+        mutations.forEach((mutation) => {
           if (mutation === 'destroyed') {
             setImages([]);
           }
