@@ -1,5 +1,9 @@
-import { TextMatchTransformer } from '@/components/features/Post/utils';
+import {
+  MultilineElementTransformer,
+  TextMatchTransformer,
+} from '@/components/features/Post/utils';
 
+import { $createCodeNode, $isCodeNode, CodeNode } from '@lexical/code';
 import { $createLinkNode, $isLinkNode, LinkNode } from '@lexical/link';
 import {
   $createListItemNode,
@@ -307,9 +311,83 @@ const LINK: TextMatchTransformer = {
   type: 'text-match',
 };
 
+// const CODE_START_REGEX = /^[ \t]*```(\w+)?/;
+const CODE_START_REGEX = /^[ \t]*```(\w+)?[ \t]*\n?/;
+const CODE_END_REGEX = /^[ \t]*```$/;
+
+const CODE: MultilineElementTransformer = {
+  dependencies: [CodeNode],
+  export: (node: LexicalNode) => {
+    if (!$isCodeNode(node)) {
+      return null;
+    }
+    const textContent = node.getTextContent();
+    return (
+      '```' +
+      (node.getLanguage() || '') +
+      (textContent ? '\n' + textContent : '') +
+      '\n' +
+      '```'
+    );
+  },
+  regExpEnd: {
+    optional: true,
+    regExp: CODE_END_REGEX,
+  },
+  regExpStart: CODE_START_REGEX,
+  replace: (rootNode, children, startMatch, endMatch, linesInBetween) => {
+    let codeBlockNode: CodeNode;
+    let code: string;
+
+    if (!children && linesInBetween) {
+      if (linesInBetween.length === 1) {
+        if (endMatch) {
+          codeBlockNode = $createCodeNode();
+          code = startMatch[1] + linesInBetween[0];
+        } else {
+          codeBlockNode = $createCodeNode(startMatch[1]);
+          code = linesInBetween[0].startsWith(' ')
+            ? linesInBetween[0].slice(1)
+            : linesInBetween[0];
+        }
+      } else {
+        codeBlockNode = $createCodeNode(startMatch[1]);
+
+        if (linesInBetween[0].trim().length === 0) {
+          while (linesInBetween.length > 0 && !linesInBetween[0].length) {
+            linesInBetween.shift();
+          }
+        } else {
+          linesInBetween[0] = linesInBetween[0].startsWith(' ')
+            ? linesInBetween[0].slice(1)
+            : linesInBetween[0];
+        }
+
+        while (
+          linesInBetween.length > 0 &&
+          !linesInBetween[linesInBetween.length - 1].length
+        ) {
+          linesInBetween.pop();
+        }
+
+        code = linesInBetween.join('\n');
+      }
+      const textNode = $createTextNode(code);
+      codeBlockNode.append(textNode);
+      rootNode.append(codeBlockNode);
+    } else if (children) {
+      createBlockNode((match) => {
+        return $createCodeNode(match ? match[1] : undefined);
+      })(rootNode, children, startMatch);
+    }
+  },
+  type: 'multiline-element',
+};
+
 export const SHORTCUTS: Array<Transformer> = [
   HEADING,
   LINK,
+  CODE,
   QUOTE,
   UNORDERED_LIST,
   ORDERED_LIST,
