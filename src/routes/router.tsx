@@ -34,7 +34,7 @@ const useAuth = () => {
   };
 };
 
-export const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
