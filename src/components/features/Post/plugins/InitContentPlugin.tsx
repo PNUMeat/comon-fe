@@ -2,6 +2,7 @@ import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
 import { useEffect, useRef } from 'react';
 
+import { $createCodeNode } from '@lexical/code';
 import { $createLinkNode } from '@lexical/link';
 import { $createListItemNode, $createListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -101,6 +102,26 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
             }
           });
           return paragraph;
+        }
+
+        case 'pre': {
+          const language = element.getAttribute('data-language') ?? '';
+          // const highlight = element.getAttribute('data-language') ?? '';
+          // const className = element.getAttribute('class') ?? '';
+          const codeNode = $createCodeNode(language);
+          // codeNode.
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                codeNode.append(...childLexicalNode);
+              } else {
+                codeNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          return codeNode;
         }
 
         // <h1>, <h2>, <h3>, <h4>, <h5>, <h6> -> HeadingNode
@@ -276,7 +297,6 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
 }) => {
   const isInitializedRef = useRef(true);
   const [editor] = useLexicalComposerContext();
-
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);
