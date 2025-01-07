@@ -1,3 +1,5 @@
+import { viewStyle } from '@/utils/viewStyle';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -150,4 +152,5 @@ const TopicViewer = styled.div`
     max-width: 600px;
     object-fit: contain;
   }
+  ${viewStyle}
 `;
