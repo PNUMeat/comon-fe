@@ -24,7 +24,7 @@ const debounce = <T extends (...args: any[]) => void>(
   options: { maxWait?: number } = {}
 ) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  // @ts-ignore
+  // @ts-expect-error
   let lastCallTime: number | null = null;
   let lastInvokeTime: number | null = null;
 
@@ -70,7 +70,6 @@ const debounce = <T extends (...args: any[]) => void>(
     timeout = null;
     lastCallTime = null;
   };
-
   return debounced;
 };
 
@@ -149,7 +148,7 @@ const CodeActionMenuContainer = ({
   anchorElem,
 }: {
   anchorElem: HTMLElement;
-}): JSX.Element => {
+}) => {
   const [editor] = useLexicalComposerContext();
 
   const [lang, setLang] = useState('');
@@ -271,8 +270,7 @@ const getMouseInfo = (
 } => {
   const target = event.target;
 
-  // @ts-ignore
-  if (isHTMLElement(target)) {
+  if (target && isHTMLElement(target)) {
     const codeDOMNode = target.closest<HTMLElement>('code.codeblock');
     const isOutside = !(
       codeDOMNode ||
