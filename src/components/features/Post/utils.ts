@@ -111,3 +111,72 @@ export type TextMatchTransformer = Readonly<{
   trigger?: string;
   type: 'text-match';
 }>;
+
+export type MultilineElementTransformer = {
+  /**
+   * Use this function to manually handle the import process, once the `regExpStart` has matched successfully.
+   * Without providing this function, the default behavior is to match until `regExpEnd` is found, or until the end of the document if `regExpEnd.optional` is true.
+   *
+   * @returns a tuple or null. The first element of the returned tuple is a boolean indicating if a multiline element was imported. The second element is the index of the last line that was processed. If null is returned, the next multilineElementTransformer will be tried. If undefined is returned, the default behavior will be used.
+   */
+  handleImportAfterStartMatch?: (args: {
+    lines: Array<string>;
+    rootNode: ElementNode;
+    startLineIndex: number;
+    startMatch: RegExpMatchArray;
+    transformer: MultilineElementTransformer;
+  }) => [boolean, number] | null | undefined;
+  dependencies: Array<Klass<LexicalNode>>;
+  /**
+   * `export` is called when the `$convertToMarkdownString` is called to convert the editor state into markdown.
+   *
+   * @return return null to cancel the export, even though the regex matched. Lexical will then search for the next transformer.
+   */
+  export?: (
+    node: LexicalNode,
+    // eslint-disable-next-line no-shadow
+    traverseChildren: (node: ElementNode) => string
+  ) => string | null;
+  /**
+   * This regex determines when to start matching
+   */
+  regExpStart: RegExp;
+  /**
+   * This regex determines when to stop matching. Anything in between regExpStart and regExpEnd will be matched
+   */
+  regExpEnd?:
+    | RegExp
+    | {
+        /**
+         * Whether the end match is optional. If true, the end match is not required to match for the transformer to be triggered.
+         * The entire text from regexpStart to the end of the document will then be matched.
+         */
+        optional?: true;
+        regExp: RegExp;
+      };
+  /**
+   * `replace` is called only when markdown is imported in the editor, not when it's typed
+   *
+   * @return return false to cancel the transform, even though the regex matched. Lexical will then search for the next transformer.
+   */
+  replace: (
+    rootNode: ElementNode,
+    /**
+     * During markdown shortcut transforms, children nodes may be provided to the transformer. If this is the case, no `linesInBetween` will be provided and
+     * the children nodes should be used instead of the `linesInBetween` to create the new node.
+     */
+    children: Array<LexicalNode> | null,
+    startMatch: Array<string>,
+    endMatch: Array<string> | null,
+    /**
+     * linesInBetween includes the text between the start & end matches, split up by lines, not including the matches themselves.
+     * This is null when the transformer is triggered through markdown shortcuts (by typing in the editor)
+     */
+    linesInBetween: Array<string> | null,
+    /**
+     * Whether the match is from an import operation (e.g. through `$convertFromMarkdownString`) or not (e.g. through typing in the editor).
+     */
+    isImport: boolean
+  ) => boolean | void;
+  type: 'multiline-element';
+};
