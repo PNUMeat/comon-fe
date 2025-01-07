@@ -1,3 +1,6 @@
+import { TextMatchTransformer } from '@/components/features/Post/utils';
+
+import { $createLinkNode, $isLinkNode, LinkNode } from '@lexical/link';
 import {
   $createListItemNode,
   $createListNode,
@@ -16,7 +19,13 @@ import {
   HeadingTagType,
   QuoteNode,
 } from '@lexical/rich-text';
-import { $createLineBreakNode, ElementNode, LexicalNode } from 'lexical';
+import {
+  $createLineBreakNode,
+  $createTextNode,
+  $isTextNode,
+  ElementNode,
+  LexicalNode,
+} from 'lexical';
 
 const BOLD_ITALIC_STAR: Transformer = {
   format: ['bold', 'italic'] as const,
@@ -265,8 +274,42 @@ const ORDERED_LIST: Transformer = {
   type: 'element',
 };
 
+const LINK: TextMatchTransformer = {
+  dependencies: [LinkNode],
+  export: (node, _exportChildren, exportFormat) => {
+    if (!$isLinkNode(node)) {
+      return null;
+    }
+    const title = node.getTitle();
+    const linkContent = title
+      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+      : `[${node.getTextContent()}](${node.getURL()})`;
+    const firstChild = node.getFirstChild();
+    if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
+      return exportFormat(firstChild, linkContent);
+    } else {
+      return linkContent;
+    }
+  },
+  importRegExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))/,
+  regExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))$/,
+  replace: (textNode, match) => {
+    const [, linkText, linkUrl, linkTitle] = match;
+    const linkNode = $createLinkNode(linkUrl, { title: linkTitle });
+    const linkTextNode = $createTextNode(linkText);
+    linkTextNode.setFormat(textNode.getFormat());
+    linkNode.append(linkTextNode);
+    textNode.replace(linkNode);
+  },
+  trigger: ')',
+  type: 'text-match',
+};
+
 export const SHORTCUTS: Array<Transformer> = [
   HEADING,
+  LINK,
   QUOTE,
   UNORDERED_LIST,
   ORDERED_LIST,

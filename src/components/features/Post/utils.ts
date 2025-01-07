@@ -3,7 +3,9 @@ import { ImagePayload } from '@/components/features/Post/nodes/ImageNode';
 import { $isAtNodeEnd } from '@lexical/selection';
 import {
   ElementNode,
+  Klass,
   LexicalCommand,
+  LexicalNode,
   RangeSelection,
   TextNode,
   createCommand,
@@ -70,3 +72,42 @@ export const setFloatingElemPositionForLinkEditor = (
   floatingElem.style.opacity = '1';
   floatingElem.style.transform = `translate(${left}px, ${top}px)`;
 };
+
+export type TextMatchTransformer = Readonly<{
+  dependencies: Array<Klass<LexicalNode>>;
+  /**
+   * Determines how a node should be exported to markdown
+   */
+  export?: (
+    node: LexicalNode,
+    exportChildren: (node: ElementNode) => string,
+    exportFormat: (node: TextNode, textContent: string) => string
+  ) => string | null;
+  /**
+   * This regex determines what text is matched during markdown imports
+   */
+  importRegExp?: RegExp;
+  /**
+   * This regex determines what text is matched for markdown shortcuts while typing in the editor
+   */
+  regExp: RegExp;
+  /**
+   * Determines how the matched markdown text should be transformed into a node during the markdown import process
+   */
+  replace?: (node: TextNode, match: RegExpMatchArray) => void;
+  /**
+   * For import operations, this function can be used to determine the end index of the match, after `importRegExp` has matched.
+   * Without this function, the end index will be determined by the length of the match from `importRegExp`. Manually determining the end index can be useful if
+   * the match from `importRegExp` is not the entire text content of the node. That way, `importRegExp` can be used to match only the start of the node, and `getEndIndex`
+   * can be used to match the end of the node.
+   *
+   * @returns The end index of the match, or false if the match was unsuccessful and a different transformer should be tried.
+   */
+  getEndIndex?: (node: TextNode, match: RegExpMatchArray) => number | false;
+  /**
+   * Single character that allows the transformer to trigger when typed in the editor. This does not affect markdown imports outside of the markdown shortcut plugin.
+   * If the trigger is matched, the `regExp` will be used to match the text in the second step.
+   */
+  trigger?: string;
+  type: 'text-match';
+}>;
