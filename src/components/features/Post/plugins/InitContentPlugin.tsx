@@ -8,6 +8,7 @@ import { $createListItemNode, $createListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import {
+  $createLineBreakNode,
   $createParagraphNode,
   $createTextNode,
   $getRoot,
@@ -106,17 +107,25 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
 
         case 'pre': {
           const language = element.getAttribute('data-language') ?? '';
-          // const highlight = element.getAttribute('data-language') ?? '';
-          // const className = element.getAttribute('class') ?? '';
           const codeNode = $createCodeNode(language);
-          // codeNode.
+
           element.childNodes.forEach((child) => {
-            const childLexicalNode = traverse(child);
-            if (childLexicalNode) {
-              if (Array.isArray(childLexicalNode)) {
-                codeNode.append(...childLexicalNode);
-              } else {
-                codeNode.append(childLexicalNode);
+            if (
+              child.nodeType === Node.ELEMENT_NODE &&
+              (child as HTMLElement).tagName.toLowerCase() === 'br'
+            ) {
+              const lineBreakNode = $createLineBreakNode();
+              codeNode.append(lineBreakNode);
+            } else {
+              const childLexicalNode = traverse(child);
+              if (childLexicalNode) {
+                if (Array.isArray(childLexicalNode)) {
+                  childLexicalNode.forEach((childNode) => {
+                    codeNode.append(childNode);
+                  });
+                } else {
+                  codeNode.append(childLexicalNode);
+                }
               }
             }
           });
