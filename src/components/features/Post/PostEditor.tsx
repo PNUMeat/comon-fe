@@ -3,19 +3,26 @@ import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/Flo
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
 import { ImagePlugin } from '@/components/features/Post/plugins/ImagePlugin';
 import { InitContentPlugin } from '@/components/features/Post/plugins/InitContentPlugin';
+import { MaxIndentPlugin } from '@/components/features/Post/plugins/MaxIndentPlugin';
 import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin';
+import { SHORTCUTS } from '@/components/features/Post/plugins/markdownShortcuts';
 
 import { ChangeEvent, forwardRef, memo, useCallback, useState } from 'react';
 
 import styled from '@emotion/styled';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
+import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 
 import './editor.css';
 
@@ -24,6 +31,13 @@ const onError = (error: Error) => console.error(error);
 const editorTheme = {
   image: 'editor-image',
   link: 'editor-link',
+  list: {
+    nested: {
+      listitem: 'nested',
+    },
+    listitem: 'editor-listitem',
+  },
+  quote: 'editor-quote',
   text: {
     bold: 'editor-text-bold',
     italic: 'editor-text-italic',
@@ -39,7 +53,15 @@ const editorTheme = {
 const initialConfig = {
   namespace: 'comon',
   theme: editorTheme,
-  nodes: [ImageNode, AutoLinkNode, LinkNode],
+  nodes: [
+    ImageNode,
+    AutoLinkNode,
+    LinkNode,
+    HeadingNode,
+    QuoteNode,
+    ListNode,
+    ListItemNode,
+  ],
   editorState: undefined,
   onError,
 };
@@ -47,7 +69,140 @@ const initialConfig = {
 const EditorContainer = styled.div`
   position: relative;
   padding: 20px 50px;
-  // min-height: 600px;
+  & {
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    h4 {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    h5 {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: rgba(55, 53, 47, 0.8);
+    }
+
+    h6 {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: rgba(55, 53, 47, 0.6);
+    }
+
+    p + h1,
+    p + h2,
+    p + h3,
+    p + h4,
+    p + h5,
+    p + h6 {
+      margin-top: 32px;
+    }
+
+    .editor-text-italic {
+      font-style: italic;
+    }
+
+    .editor-text-underline {
+      text-decoration: underline;
+    }
+
+    .editor-text-strikethrough {
+      text-decoration: line-through;
+    }
+
+    .editor-quote {
+      margin: 0;
+      margin-left: 20px;
+      font-size: 15px;
+      color: rgb(101, 103, 107);
+      border-left-color: rgb(206, 208, 212);
+      border-left-width: 4px;
+      border-left-style: solid;
+      padding-left: 16px;
+    }
+
+    ul,
+    ol {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+    }
+
+    .editor-listitem {
+      margin: 8px 32px 8px 32px;
+    }
+
+    .nested {
+      list-style-type: none;
+    }
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+
+  & ul ul {
+    list-style-type: circle;
+  }
+
+  & ul ul ul {
+    list-style-type: square;
+  }
+
+  & ul ul ul ul {
+    list-style-type: disc;
+  }
+
+  & ul ul ul ul ul {
+    list-style-type: circle;
+  }
+
+  & ul ul ul ul ul ul {
+    list-style-type: square;
+  }
+
+  & ol {
+    list-style-type: decimal;
+  }
+
+  & ol ol {
+    list-style-type: lower-alpha;
+  }
+
+  & ol ol ol {
+    list-style-type: lower-roman;
+  }
+
+  & ol ol ol ol {
+    list-style-type: decimal;
+  }
+
+  & ol ol ol ol ol {
+    list-style-type: lower-alpha;
+  }
+
+  & ol ol ol ol ol ol {
+    list-style-type: lower-roman;
+  }
 `;
 
 const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
@@ -153,7 +308,7 @@ const PostEditor: React.FC<{
     <LexicalComposer initialConfig={initialConfig}>
       <PostWrap
         shouldHighlight={Boolean(setTag)}
-        onClick={() => console.log('??')}
+        // onClick={() => console.log('??')}
       >
         <TitleInput
           type={'text'}
@@ -192,6 +347,10 @@ const PostEditor: React.FC<{
           {forwardContent && (
             <GrabContentPlugin forwardContent={forwardContent} />
           )}
+          <MarkdownShortcutPlugin transformers={SHORTCUTS} />
+          <ListPlugin />
+          <TabIndentationPlugin />
+          <MaxIndentPlugin />
         </PostContainer>
       </PostWrap>
     </LexicalComposer>
