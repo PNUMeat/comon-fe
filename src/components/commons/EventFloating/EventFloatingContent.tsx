@@ -17,7 +17,7 @@ const Bubble = styled.div`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 36px 0px 0px 36px;
+  padding: 24px 0px 0px 24px;
   font-size: 10px;
   line-height: 1.4;
   width: 312px;
