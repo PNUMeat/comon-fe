@@ -83,6 +83,45 @@ export const viewStyle = `& {
     .nested {
       list-style-type: none;
     }
+    
+    
+.code-action-menu-container {
+    height: 36px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    user-select: none;
+}
+
+.code-action-menu-container .code-highlight-language {
+    margin-right: 4px;
+}
+
+.code-action-menu-container button.menu-item {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 4px;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+}
+
+.code-action-menu-container button.menu-item:hover {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    opacity: 0.9;
+}
+
+.code-action-menu-container button.menu-item:active {
+    background-color: rgba(223, 232, 250);
+    border: 1px solid rgba(0, 0, 0, 0.45);
+}
   }
 
   & ul {
@@ -131,4 +170,58 @@ export const viewStyle = `& {
 
   & ol ol ol ol ol ol {
     list-style-type: lower-roman;
-  }`;
+  }
+  
+.codeblock {
+    background-color: #f8f6f2;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    display: block;
+    padding: 8px 8px 8px 52px;
+    line-height: 1.53;
+    font-size: 16px;
+    margin: 8px 0;
+    overflow-x: auto;
+    position: relative;
+    tab-size: 2;
+}
+.codeblock:before {
+    content: attr(data-gutter);
+    position: absolute;
+    background-color: #eee;
+    left: 0;
+    top: 0;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+    color: #777;
+    white-space: pre-wrap;
+    text-align: right;
+    min-width: 25px;
+}
+
+.tokenComment {
+    color: slategray;
+}
+.tokenPunctuation {
+    color: #999;
+}
+.tokenProperty {
+    color: #905;
+}
+.tokenSelector {
+    color: #690;
+}
+.tokenOperator {
+    color: #9a6e3a;
+}
+.tokenAttr {
+    color: #07a;
+}
+.tokenVariable {
+    color: #e90;
+}
+.tokenFunction {
+    color: #dd4a68;
+}
+
+  
+  `;

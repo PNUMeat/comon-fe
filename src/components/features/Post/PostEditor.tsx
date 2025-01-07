@@ -1,17 +1,27 @@
 import { viewStyle } from '@/utils/viewStyle';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
+import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
+import { HighlightCodePlugin } from '@/components/features/Post/plugins/HighlightCodePlugin';
 import { ImagePlugin } from '@/components/features/Post/plugins/ImagePlugin';
 import { InitContentPlugin } from '@/components/features/Post/plugins/InitContentPlugin';
 import { MaxIndentPlugin } from '@/components/features/Post/plugins/MaxIndentPlugin';
 import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin';
 import { SHORTCUTS } from '@/components/features/Post/plugins/markdownShortcuts';
 
-import { ChangeEvent, forwardRef, memo, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  Fragment,
+  forwardRef,
+  memo,
+  useCallback,
+  useState,
+} from 'react';
 
 import styled from '@emotion/styled';
+import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -50,6 +60,39 @@ const editorTheme = {
     underlineStrikethrough: 'editor-text-underlineStrikethrough',
     code: 'editor-text-code',
   },
+  code: 'codeblock',
+  codeHighlight: {
+    atrule: 'tokenAttr',
+    attr: 'tokenAttr',
+    boolean: 'tokenProperty',
+    builtin: 'tokenSelector',
+    cdata: 'tokenComment',
+    char: 'tokenSelector',
+    class: 'tokenFunction',
+    'class-name': 'tokenFunction',
+    comment: 'tokenComment',
+    constant: 'tokenProperty',
+    deleted: 'tokenProperty',
+    doctype: 'tokenComment',
+    entity: 'tokenOperator',
+    function: 'tokenFunction',
+    important: 'tokenVariable',
+    inserted: 'tokenSelector',
+    keyword: 'tokenAttr',
+    namespace: 'tokenVariable',
+    number: 'tokenProperty',
+    operator: 'tokenOperator',
+    prolog: 'tokenComment',
+    property: 'tokenProperty',
+    punctuation: 'tokenPunctuation',
+    regex: 'tokenVariable',
+    selector: 'tokenSelector',
+    string: 'tokenSelector',
+    symbol: 'tokenProperty',
+    tag: 'tokenProperty',
+    url: 'tokenOperator',
+    variable: 'tokenVariable',
+  },
 };
 
 const initialConfig = {
@@ -63,6 +106,8 @@ const initialConfig = {
     QuoteNode,
     ListNode,
     ListItemNode,
+    CodeNode,
+    CodeHighlightNode,
   ],
   editorState: undefined,
   onError,
@@ -203,11 +248,14 @@ const PostEditor: React.FC<{
             }
           />
           {floatingAnchorElem && (
-            <FloatingLinkEditorPlugin
-              anchorElem={floatingAnchorElem}
-              isLinkEditMode={isLinkEditMode}
-              setIsLinkEditMode={setIsLinkEditMode}
-            />
+            <Fragment>
+              <FloatingLinkEditorPlugin
+                anchorElem={floatingAnchorElem}
+                isLinkEditMode={isLinkEditMode}
+                setIsLinkEditMode={setIsLinkEditMode}
+              />
+              <CodeActionPlugin anchorElem={floatingAnchorElem} />
+            </Fragment>
           )}
           <ImagePlugin />
           <LinkPlugin />
@@ -220,6 +268,7 @@ const PostEditor: React.FC<{
           <ListPlugin />
           <TabIndentationPlugin />
           <MaxIndentPlugin />
+          <HighlightCodePlugin />
         </PostContainer>
       </PostWrap>
     </LexicalComposer>
