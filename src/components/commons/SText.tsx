@@ -21,10 +21,10 @@ export const SText = styled.div<TextProps>`
   line-height: ${(props) => {
     if (props.lineHeight) return props.lineHeight;
 
-    if (props.fontSize?.endsWith('px')) {
-      const fontSizeValue = parseInt(props.fontSize, 10);
-      return `${fontSizeValue + 4}px`;
-    }
+    // if (props.fontSize?.endsWith('px')) {
+    //   const fontSizeValue = parseInt(props.fontSize, 10);
+    //   return `${fontSizeValue + 4}px`;
+    // }
 
     return 'inherit';
   }};
