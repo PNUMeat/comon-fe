@@ -128,7 +128,7 @@ const FlipCardContent = ({
   return (
     <Box width="100%" height="100%">
       <Flex direction="column" justify="center" align="center" width={100}>
-        <SText fontSize="12px" fontWeight={600}>
+        <SText color="#333" fontSize="12px" fontWeight={600}>
           TEAM
         </SText>
         <Spacer h={4} />

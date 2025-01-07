@@ -6,7 +6,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useLayoutEffect, useState } from 'react';
+import { Fragment, useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -15,19 +15,23 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
-import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
+import {
+  currentViewAtom,
+  pageAtom,
+  selectedDateAtom,
+  selectedPostIdAtom,
+} from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useAtom } from 'jotai/index';
+import { useAtom } from 'jotai';
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
-  const today = new Date().toISOString().split('T')[0];
-  const [selectedDate, setSelectedDate] = useState<string>(today);
+  const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [year, month] = selectedDate.split('-').map(Number);
 
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useAtom(pageAtom);
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
@@ -37,7 +41,7 @@ export const TeamDashboardPage = () => {
     enabled: !!teamId,
   });
 
-  const { data: articlesData } = useQuery({
+  const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
@@ -89,22 +93,19 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
           />
           <Spacer h={24} />
-          {articlesData && (
-            <>
-              <Posts
-                data={articlesData}
-                tags={tags}
-                selectedDate={selectedDate}
-                onShowTopicDetail={handleShowTopicDetail}
-                onShowArticleDetail={handleShowArticleDetail}
-              />
-              <Pagination
-                totalPages={articlesData.page.totalPages}
-                currentPageProp={page}
-                onPageChange={handlePageChange}
-              />
-            </>
-          )}
+          <Posts
+            data={articlesData}
+            tags={tags}
+            selectedDate={selectedDate}
+            onShowTopicDetail={handleShowTopicDetail}
+            onShowArticleDetail={handleShowArticleDetail}
+            key={`${['articles-by-date', teamId, selectedDate, page]}+${dataUpdatedAt}`}
+          />
+          <Pagination
+            totalPages={articlesData?.page?.totalPages ?? 0}
+            currentPageProp={page}
+            onPageChange={handlePageChange}
+          />
           <Spacer h={40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />

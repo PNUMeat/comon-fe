@@ -9,9 +9,12 @@ import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabe
 import { HeightInNumber } from '@/components/types';
 
 import { getMyProfile } from '@/api/user';
+import { formTextInputAtom, formTextareaAtom, imageAtom } from '@/store/form';
 import { ModificationSubmitButton } from '@/templates/User/ModificationSubmitButton';
+import { serializeForm } from '@/templates/User/utils';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai/index';
 
 const ModificationFormContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -31,7 +34,14 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
     queryFn: getMyProfile,
   });
 
-  usePrompt(true);
+  const [memberName] = useAtom(formTextInputAtom);
+  const [memberExplain] = useAtom(formTextareaAtom);
+  const [image] = useAtom(imageAtom);
+
+  usePrompt(
+    serializeForm(`${data?.memberName}`, `${data?.memberExplain}`, null) !==
+      serializeForm(memberName, memberExplain, image)
+  );
 
   return (
     <ModificationFormContainer h={h}>

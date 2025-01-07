@@ -1,8 +1,22 @@
 import { handleCookieOnRedirect } from '@/utils/cookie';
 
+import { NavigateFunction } from 'react-router-dom';
+
 import { ServerIntendedError } from '@/api/types';
 import { PATH } from '@/routes/path';
 import axios, { AxiosError, AxiosInstance } from 'axios';
+
+let navigator: NavigateFunction | null = null;
+
+export const setNavigator = (nav: NavigateFunction) => {
+  navigator = nav;
+};
+
+export const navigate = (path: string) => {
+  if (navigator) {
+    navigator(path);
+  }
+};
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `/api/`,
@@ -35,32 +49,32 @@ apiInstance.interceptors.response.use(
      */
     if (error.response) {
       const data = error.response.data;
-      const { message, code } = data;
-      if (error.response.status === 401 && code === 100) {
-        window.location.href = PATH.ENROLL;
-        return Promise.resolve();
-      }
+      const { code } = data;
+      if (error.response.status === 401) {
+        if (code === 100) {
+          navigate(PATH.ENROLL);
 
-      if (
-        error.response.status === 401 &&
-        message === '토큰이 만료되었습니다.'
-      ) {
-        return apiInstance.post('v1/reissue').then(() => {
-          handleCookieOnRedirect();
-          const originalRequest = error.config;
-          if (originalRequest) {
-            originalRequest.headers.set(
-              'Authorization',
-              `Bearer ${sessionStorage.getItem('Authorization')}`
-            );
+          return Promise.reject(error);
+        }
+        if (code === 101) {
+          return apiInstance.post('v1/reissue').then(() => {
+            handleCookieOnRedirect();
+            const originalRequest = error.config;
+            if (originalRequest) {
+              originalRequest.headers.set(
+                'Authorization',
+                `Bearer ${sessionStorage.getItem('Authorization')}`
+              );
 
-            return apiInstance(originalRequest);
-          }
-        });
-        // .catch(() => {
-        //   alert('로그인을 다시 해주세요');
-        //   window.location.href = PATH.LOGIN;
-        // });
+              return apiInstance(originalRequest);
+            }
+          });
+        }
+
+        // 리프레시 토큰이 만료됨
+        sessionStorage.removeItem('Authorization');
+        navigate(PATH.LOGIN);
+        return Promise.reject(error);
       }
     }
 

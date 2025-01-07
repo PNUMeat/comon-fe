@@ -1,3 +1,5 @@
+import { viewStyle } from '@/utils/viewStyle';
+
 import { Flex } from '@/components/commons/Flex';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
@@ -332,9 +334,15 @@ const InformationViewer: React.FC<{
   ]) as TeamAbstraction[];
 
   const onClickTeamWithdraw = () => {
-    withdrawTeam(teamId)
-      .then((res) => alert(res.message))
-      .catch((res) => alert(res.message));
+    const isConfirmed = confirm('팀을 정말 탈퇴하시겠습니까?');
+    if (isConfirmed) {
+      withdrawTeam(teamId)
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['my-page-status'] });
+          alert(res.message);
+        })
+        .catch((res) => alert(res.message));
+    }
   };
 
   const selectedTeamData = data.find((team) => team.teamId === teamId);
@@ -494,13 +502,22 @@ const ArticleDetailViewer: React.FC<{
           </SText>
         </ArticleWriter>
       </ArticleDetailHeader>
-      <div
-        style={{ lineHeight: 1.5 }}
+      <TeamArticleViewer
         dangerouslySetInnerHTML={{ __html: selectedArticleBody ?? '' }}
       />
     </GradationArticleDetail>
   );
 };
+
+const TeamArticleViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
+  ${viewStyle}
+`;
 
 const modes = [
   { label: '내가 쓴 글', value: 'history' },

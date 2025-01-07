@@ -9,10 +9,12 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 
+import { ServerResponse } from '@/api/types';
 import { getMemberInfo } from '@/api/user';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 const InfoModal = styled.div`
   width: 326px;
@@ -46,6 +48,16 @@ export const HeaderInfoModal: React.FC<{
   const { data } = useQuery({
     queryFn: getMemberInfo,
     queryKey: ['membersInfo'],
+    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.code === 100
+      ) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
   const myName = data?.memberName;
   const myImg = data?.memberImageUrl;

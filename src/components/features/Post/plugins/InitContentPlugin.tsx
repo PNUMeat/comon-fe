@@ -2,7 +2,10 @@ import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
 import { useEffect, useRef } from 'react';
 
+import { $createLinkNode } from '@lexical/link';
+import { $createListItemNode, $createListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import {
   $createParagraphNode,
   $createTextNode,
@@ -41,7 +44,6 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const textContent = node.textContent ?? '';
       if (!textContent) return null;
 
-      // 부모가 <span style="..."> 일 경우
       const parentEl = node.parentElement;
       if (parentEl?.tagName === 'SPAN') {
         const style = parentEl.getAttribute('style') ?? '';
@@ -57,6 +59,34 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const tagName = element.tagName.toLowerCase();
 
       switch (tagName) {
+        // <a> -> LinkNode
+        case 'a': {
+          const href = element.getAttribute('href') ?? '';
+          const target = element.getAttribute('target');
+          const linkNode = $createLinkNode(href);
+
+          if (target === '_blank') {
+            linkNode.setTarget('_blank');
+          }
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                linkNode.append(...childLexicalNode);
+              } else {
+                linkNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          if (target === '_blank') {
+            linkNode.setRel('noopener noreferrer');
+          }
+
+          return linkNode;
+        }
+
         // <p> -> ParagraphNode
         case 'p': {
           const paragraph = $createParagraphNode();
@@ -71,6 +101,69 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
             }
           });
           return paragraph;
+        }
+
+        // <h1>, <h2>, <h3>, <h4>, <h5>, <h6> -> HeadingNode
+        case 'h1':
+        case 'h2':
+        case 'h3':
+        case 'h4':
+        case 'h5':
+        case 'h6': {
+          const headingLevel = ('h' +
+            parseInt(tagName[1], 10)) as HeadingTagType;
+          const headingNode = $createHeadingNode(headingLevel);
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                headingNode.append(...childLexicalNode);
+              } else {
+                headingNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          return headingNode;
+        }
+
+        // <ul>, <ol> -> ListNode
+        case 'ul':
+        case 'ol': {
+          const isOrdered = tagName === 'ol';
+          const listNode = $createListNode(isOrdered ? 'number' : 'bullet');
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                listNode.append(...childLexicalNode);
+              } else {
+                listNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          return listNode;
+        }
+
+        // <li> -> ListItemNode
+        case 'li': {
+          const listItemNode = $createListItemNode();
+
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                listItemNode.append(...childLexicalNode);
+              } else {
+                listItemNode.append(childLexicalNode);
+              }
+            }
+          });
+
+          return listItemNode;
         }
 
         // <span> -> 자식 텍스트 노드들 처리
@@ -187,7 +280,7 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);
-      $getRoot().select();
+      $getRoot().clear().select();
       const selection = $getSelection();
       if (selection && isInitializedRef.current) {
         selection.insertNodes(nodes);

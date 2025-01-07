@@ -1,3 +1,5 @@
+import { viewStyle } from '@/utils/viewStyle';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -11,7 +13,15 @@ import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
+import {
+  pageAtom,
+  selectedDateAtom,
+  selectedPostIdAtom,
+} from '@/store/dashboard';
 import styled from '@emotion/styled';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -29,19 +39,31 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
             /(<img[^>]*src=")\?("[^>]*>)/g,
             `$1${data?.imageUrl}$2`
           )
-        : data?.articleBody,
+        : (data?.articleBody ?? ''),
     [data]
   );
+  const queryClient = useQueryClient();
+  const selectedDate = useAtomValue(selectedDateAtom);
+  const page = useAtomValue(pageAtom);
+  const setSelectedArticleId = useSetAtom(selectedPostIdAtom);
 
-  if (!data) {
-    return null;
-  }
-
-  const onClickDelete = () =>
-    deletePost(data.articleId)
-      .then(() => alert('게시글 삭제 성공'))
-      .catch(() => alert('게시글 삭제 실패'));
-
+  const onClickDelete = () => {
+    if (data?.articleId) {
+      deletePost(data.articleId)
+        .then(() => {
+          queryClient
+            .invalidateQueries({
+              queryKey: ['articles-by-date', teamId, selectedDate, page],
+            })
+            .then(() => {
+              alert('게시글 삭제 성공');
+              setSelectedArticleId(null);
+            })
+            .catch(() => alert('최신 게시글 조회가 실패했습니다.'));
+        })
+        .catch(() => alert('게시글 삭제 실패'));
+    }
+  };
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -67,7 +89,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
                   maxW={20}
                 />
               </Link>
-              <div onClick={onClickDelete}>
+              <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
                 <LazyImage
                   src={DeleteIcon}
                   altText="삭제"
@@ -117,4 +139,5 @@ const ArticleViewer = styled.div`
     max-width: 600px;
     object-fit: contain;
   }
+  ${viewStyle}
 `;

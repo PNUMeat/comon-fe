@@ -24,6 +24,7 @@ const ContentContainer = styled.div`
   color: #333;
 `;
 
+const MAX_LENGTH = 50;
 /**
  * 상태가 매핑됨 (formTextareaAtom)
  */
@@ -41,9 +42,23 @@ export const ComonTextarea: React.FC<{
   const [path] = useAtom(currentPathAtom);
   const editableRef = useRef<HTMLDivElement>(null);
 
-  const handleInput = () => {
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     if (editableRef.current && !isDisabled) {
       const text = editableRef.current.innerText;
+      if (text.length > MAX_LENGTH) {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          e.currentTarget.textContent = text.slice(0, MAX_LENGTH);
+
+          range.setStart(e.currentTarget.firstChild!, MAX_LENGTH);
+          range.setEnd(e.currentTarget.firstChild!, MAX_LENGTH);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+        return;
+      }
       setContent(text);
     }
   };

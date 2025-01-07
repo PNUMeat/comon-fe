@@ -45,7 +45,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         <Spacer h={20} />
         <Box width="100%" padding="24px 40px">
           <Flex direction="column" justify="center" align="center" width={100}>
-            <SText fontSize="12px" fontWeight={600}>
+            <SText color="#333" fontSize="12px" fontWeight={600}>
               TEAM
             </SText>
             <Spacer h={2} />

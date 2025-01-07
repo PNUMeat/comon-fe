@@ -75,11 +75,13 @@ const LeftArrow = styled.img`
   width: 20px;
   height: 20px;
   transform: rotate(180deg);
+  cursor: pointer;
 `;
 
 const RightArrow = styled.img`
   width: 20px;
   height: 20px;
+  cursor: pointer;
 `;
 
 const PageList = styled.div`

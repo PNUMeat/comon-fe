@@ -110,7 +110,13 @@ export const Posts: React.FC<PostsProps> = ({
               onClick={() => handleArticleClick(article.articleId)}
             >
               <Flex direction="column">
-                <SText color="#333" fontSize="16px" fontWeight={600}>
+                <SText
+                  color="#333"
+                  fontSize="16px"
+                  lineHeight={'20px'}
+                  fontWeight={600}
+                  shouldCut
+                >
                   {article.articleTitle}
                 </SText>
                 <Spacer h={8} />

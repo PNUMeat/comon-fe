@@ -188,7 +188,7 @@ export const TeamAdmin = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { data: articlesData } = useQuery({
+  const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', id, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(id), selectedDate, page),
     enabled: !!id && !!selectedDate,
@@ -335,6 +335,7 @@ export const TeamAdmin = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
+            key={`${['articles-by-date', id, selectedDate, page]}+${dataUpdatedAt}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
