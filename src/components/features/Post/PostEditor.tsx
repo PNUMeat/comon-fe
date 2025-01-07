@@ -35,6 +35,13 @@ import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPl
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { addClassNamesToElement } from '@lexical/utils';
+import {
+  $isLineBreakNode,
+  DOMExportOutput,
+  LexicalEditor,
+  LexicalNode,
+} from 'lexical';
 
 import './editor.css';
 
@@ -109,6 +116,38 @@ const initialConfig = {
     CodeNode,
     CodeHighlightNode,
   ],
+  html: {
+    export: new Map([
+      [
+        CodeNode,
+        (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
+          const codeNode = node as CodeNode;
+          const element = document.createElement('pre');
+          addClassNamesToElement(element, 'codeblock');
+          element.setAttribute('spellcheck', 'false');
+          const language = codeNode.getLanguage();
+
+          if (language) {
+            element.setAttribute('data-highlight-language', language);
+          }
+
+          const children = codeNode.getChildren();
+          const childrenLength = children.length;
+
+          let gutter = '1';
+          let count = 1;
+          for (let i = 0; i < childrenLength; i++) {
+            if ($isLineBreakNode(children[i])) {
+              gutter += '\n' + ++count;
+            }
+          }
+
+          element.setAttribute('data-gutter', gutter);
+          return { element };
+        },
+      ],
+    ]),
+  },
   editorState: undefined,
   onError,
 };
@@ -220,10 +259,7 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostWrap
-        shouldHighlight={Boolean(setTag)}
-        // onClick={() => console.log('??')}
-      >
+      <PostWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
           placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
