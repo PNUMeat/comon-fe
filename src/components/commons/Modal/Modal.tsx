@@ -57,11 +57,12 @@ const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 999;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(215, 215, 215, 0.5);
 `;
 
 const ModalContainer = styled.div`
   position: fixed;
+  display: flex;
   width: 316px;
   height: 144px;
   top: 50%;
@@ -69,7 +70,9 @@ const ModalContainer = styled.div`
   padding: 0 20px;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  border-radius: 20px;
   background-color: #fff;
+  border: 1px solid #cdcfff;
+  justify-content: center;
+  box-shadow: 5px 7px 11.6px 0px #3F3F4D12;
 `;
