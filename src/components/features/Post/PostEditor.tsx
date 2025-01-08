@@ -208,6 +208,7 @@ const EditorPlaceholder = styled.div`
   user-select: none;
   color: #ccc;
   top: 24px;
+  left: 50px;
 `;
 
 const useDetectImageDeletion = () => {
