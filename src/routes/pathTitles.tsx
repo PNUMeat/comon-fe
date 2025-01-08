@@ -1,25 +1,28 @@
 import { ReactNode } from 'react';
+import { Title } from '@/components/commons/Title';
+import crown from '@/assets/TeamJoin/crown.png';
+import calendar from '@/assets/TeamDashboard/calendar.svg';
 
 // 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸
 export const getTitle = (path: string): ReactNode => {
   if (path.startsWith('/team-dashboard')) {
-    return <span>🗓️ 팀 페이지</span>;
+    return <Title src={calendar} title='팀 페이지' />;
   }
 
   if (path.startsWith('/team-admin')) {
-    return <span>🎂 팀 페이지 관리</span>;
+    return <Title src={calendar} title='팀 페이지 관리' />;
   }
 
   if (path.startsWith('/my-dashboard')) {
-    return <span>🎯 마이페이지</span>;
+    return <Title src={calendar} title='마이 페이지' />;
   }
 
   const staticTitles: Record<string, ReactNode> = {
-    '/login': <span>🔑 로그인</span>,
-    '/enroll': <span>👑 프로필 생성</span>,
+    '/login': <Title src={crown} title='로그인'/>,
+    '/enroll': <Title src={crown} title='프로필 생성'/>,
     '/modification': <span>👑 프로필 수정</span>,
-    '/team-registration': <span>👑 팀 생성</span>,
-    '/team-modification': <span>👑 팀 수정</span>,
+    '/team-registration': <Title src={crown} title='팀 생성'/>,
+    '/team-modification': <Title src={crown} title='팀 수정'/>,
   };
 
   return staticTitles[path];
