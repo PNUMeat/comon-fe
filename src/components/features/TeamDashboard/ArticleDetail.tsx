@@ -59,7 +59,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               queryKey: ['articles-by-date', teamId, selectedDate, page],
             })
             .then(() => {
-              alert({message: '게시글을 삭제했어요', isVisible: true });
+              setAlert({message: '게시글을 삭제했어요', isVisible: true });
               setSelectedArticleId(null);
             })
             .catch(() => setAlert({ message : '최신 게시글 조회가 실패했습니다.', isVisible: true }));
