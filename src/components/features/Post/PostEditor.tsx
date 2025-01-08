@@ -163,8 +163,6 @@ const initialConfig = {
 
 const EditorContainer = styled.div`
   position: relative;
-  padding: 20px 50px;
-  // padding: 20px 20px;
   ${viewStyle}
 `;
 
