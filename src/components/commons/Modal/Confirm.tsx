@@ -11,6 +11,11 @@ export const Confirm: React.FC = () => {
     setModal({ message: '', description: '', isVisible: false, onConfirm: () => {} });
   }
 
+  const confirm = () => {
+    setModal({ message: '', description: '', isVisible: false, onConfirm: () => {} });
+    onConfirm();
+  }
+
   return (
     <Modal open={isVisible} onClose={() => {}} height={168}>
       <ConfirmStyle>
@@ -18,7 +23,7 @@ export const Confirm: React.FC = () => {
         <DescriptionStyle>{description}</DescriptionStyle>
         <ButtonContainer>
           <CancelButton onClick={cancel}>취소</CancelButton>
-          <AcceptButton onClick={onConfirm}>나가기</AcceptButton>
+          <AcceptButton onClick={confirm}>나가기</AcceptButton>
         </ButtonContainer>
       </ConfirmStyle>
     </Modal>
