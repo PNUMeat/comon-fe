@@ -32,6 +32,7 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { alertAtom } from '@/store/modal';
 
 export const Posting = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ export const Posting = () => {
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
+  const setAlert = useSetAtom(alertAtom);
   const selectedDate = useAtomValue(selectedDateAtom);
   const page = useAtomValue(pageAtom);
   const navigate = useNavigate();
@@ -83,12 +85,12 @@ export const Posting = () => {
               setSelectedPostId(articleId);
               setPostImages([]);
               navigate(`/team-dashboard/${id}`);
-              alert('게시글 수정이 완료되었습니다!');
+              setAlert({message: '게시글을 수정했어요', isVisible: true });
             })
-            .catch(() => alert('최신 게시글 조회를 실패했습니다.'));
+            .catch(() => setAlert({message: '최신 게시글 조회를 실패했습니다.', isVisible: true }));
         })
         .catch(() => {
-          alert('게시글 수정에 실패했습니다');
+          setAlert({message: '게시글 수정에 실패했어요', isVisible: true});
           setIsPending(false);
         });
       return;
@@ -110,12 +112,12 @@ export const Posting = () => {
             setSelectedPostId(articleId);
             setPostImages([]);
             navigate(`/team-dashboard/${id}`);
-            alert('게시글 작성이 완료되었습니다!');
+            setAlert({message: '글쓰기를 완료했어요', isVisible: true});
           })
-          .catch(() => alert('최신 게시글 조회에 실패했습니다.'));
+          .catch(() => setAlert({ message: '최신 게시글 조회에 실패했습니다.', isVisible: true }));
       })
       .catch(() => {
-        alert('게시글 작성에 실패했습니다.');
+        setAlert({message: '글쓰기에 실패했어요', isVisible: true});
         setIsPending(false);
       });
   };

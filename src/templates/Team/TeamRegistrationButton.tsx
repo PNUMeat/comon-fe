@@ -41,7 +41,7 @@ export const TeamRegistrationButton = () => {
       })
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
-          alert('팀 생성에 성공했습니다!');
+          setAlert({ message : '팀 생성을 완료했어요', isVisible: true });
           queryClient.invalidateQueries({ queryKey: ['team-list', 0] });
         })
         .catch(() => setAlert({ message: '팀 생성에 실패했습니다.', isVisible: true }));

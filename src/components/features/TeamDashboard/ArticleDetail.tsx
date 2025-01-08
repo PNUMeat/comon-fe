@@ -22,6 +22,7 @@ import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useAtomValue } from 'jotai';
+import { alertAtom, confirmAtom } from '@/store/modal';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -46,8 +47,10 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   const selectedDate = useAtomValue(selectedDateAtom);
   const page = useAtomValue(pageAtom);
   const setSelectedArticleId = useSetAtom(selectedPostIdAtom);
+  const setConfirm = useSetAtom(confirmAtom);
+  const setAlert = useSetAtom(alertAtom);
 
-  const onClickDelete = () => {
+  const deleteArticle = () => {
     if (data?.articleId) {
       deletePost(data.articleId)
         .then(() => {
@@ -56,14 +59,25 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               queryKey: ['articles-by-date', teamId, selectedDate, page],
             })
             .then(() => {
-              alert('게시글 삭제 성공');
+              alert({message: '게시글을 삭제했어요', isVisible: true });
               setSelectedArticleId(null);
             })
-            .catch(() => alert('최신 게시글 조회가 실패했습니다.'));
+            .catch(() => setAlert({ message : '최신 게시글 조회가 실패했습니다.', isVisible: true }));
         })
-        .catch(() => alert('게시글 삭제 실패'));
+        .catch(() => setAlert({message: '게시글 삭제를 실패했어요', isVisible: true }));
     }
   };
+
+  const onClickDelete = () => {
+    setConfirm({
+      message: '게시글을 삭제하시겠습니까?',
+      description: '삭제된 게시글은 복구되지 않아요',
+      isVisible: true,
+      onConfirm : deleteArticle,
+    });
+  }
+
+
   return (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">

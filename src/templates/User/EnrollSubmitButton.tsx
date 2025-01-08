@@ -10,7 +10,8 @@ import {
   imageAtom,
   isEnrollSatisfiedAtom,
 } from '@/store/form';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { alertAtom } from '@/store/modal';
 
 export const EnrollSubmitButton = () => {
   const isAllFieldSatisfied = useAtomValue(isEnrollSatisfiedAtom);
@@ -19,6 +20,7 @@ export const EnrollSubmitButton = () => {
   const image = useAtomValue(imageAtom);
   const navigate = useNavigate();
   const location = useLocation();
+  const setAlert = useSetAtom(alertAtom);
 
   const onClick = () => {
     createProfile({
@@ -35,11 +37,11 @@ export const EnrollSubmitButton = () => {
             : PATH.HOME
           : PATH.HOME;
         navigate(navigatePath);
-        alert('회원가입에 성공했습니다');
+        setAlert({message: '회원가입에 성공했습니다', isVisible: true});
       })
       .catch((err) => {
         console.error(err);
-        alert('회원가입에 실패했습니다');
+        setAlert({message: '회원가입에 실패했습니다', isVisible: true});
       });
   };
 
