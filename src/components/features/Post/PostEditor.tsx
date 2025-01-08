@@ -2,6 +2,7 @@ import { viewStyle } from '@/utils/viewStyle';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
+import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
 import { HighlightCodePlugin } from '@/components/features/Post/plugins/HighlightCodePlugin';
@@ -163,6 +164,7 @@ const initialConfig = {
 const EditorContainer = styled.div`
   position: relative;
   padding: 20px 50px;
+  // padding: 20px 20px;
   ${viewStyle}
 `;
 
@@ -393,6 +395,7 @@ const PostEditor: React.FC<{
                 setIsLinkEditMode={setIsLinkEditMode}
               />
               <CodeActionPlugin anchorElem={floatingAnchorElem} />
+              <DraggablePlugin anchorElem={floatingAnchorElem} />
             </Fragment>
           )}
           <ImagePlugin />
