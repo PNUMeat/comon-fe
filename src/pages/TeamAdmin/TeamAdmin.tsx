@@ -27,6 +27,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { updateAnnouncement } from '@/api/announcement';
 import {
   IArticle,
+  ITopicResponse,
   getArticlesByDate,
   getTeamInfoAndTags,
 } from '@/api/dashboard';
@@ -37,7 +38,7 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
 const Grid = styled.div`
@@ -99,9 +100,26 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    'team-topic',
+    id,
+    selectedDate,
+  ]) as ITopicResponse;
+
   return (
     <SubjectControlButtonWrap
-      onClick={() => navigate(`/team-subject/${id}/${selectedDate}`)}
+      onClick={() =>
+        navigate(`/team-subject/${id}/${selectedDate}`, {
+          state: {
+            articleBody: data?.articleBody,
+            articleId: data?.articleId,
+            articleTitle: data?.articleTitle,
+            articleCategory: data?.articleCategory,
+            articleImageUrl: data?.imageUrl,
+          },
+        })
+      }
     >
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
