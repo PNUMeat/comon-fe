@@ -7,6 +7,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { Title } from '@/components/commons/Title';
 
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
@@ -14,6 +15,7 @@ import Slider from 'react-slick';
 import { ITeamInfo } from '@/api/team';
 import Arrow from '@/assets/TeamJoin/carousel_arrow.png';
 import click from '@/assets/TeamJoin/click.png';
+import crown from '@/assets/TeamJoin/crown.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -42,7 +44,9 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
 
   return (
     <>
-      <PageSectionHeader h={40}>👑 나의 팀</PageSectionHeader>
+      <PageSectionHeader h={40}>
+        <Title src={crown} title="나의 팀" />
+      </PageSectionHeader>
       <BackgroundGradient
         count={1}
         positions={[{ top: '-4px' }]}

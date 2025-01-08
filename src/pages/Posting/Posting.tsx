@@ -5,6 +5,9 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
+import { Title } from '@/components/commons/Title';
+
+import write from '@/assets/Posting/write.svg';
 
 import { Suspense, useState } from 'react';
 import {
@@ -130,7 +133,9 @@ export const Posting = () => {
           />
         </Suspense>
         <Spacer h={22} />
-        <PageSectionHeader h={40}>✏️오늘의 글 등록하기</PageSectionHeader>
+        <PageSectionHeader h={40}>
+          <Title src={write} title="오늘의 글 등록하기" />
+        </PageSectionHeader>
         <Spacer h={39} />
         <PostEditor
           forwardContent={setContent}
