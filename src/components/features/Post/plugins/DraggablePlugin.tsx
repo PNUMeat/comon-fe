@@ -444,8 +444,8 @@ const setTargetLine = (
     anchorElem.getBoundingClientRect();
   const { marginTop, marginBottom } = getCollapsedMargins(targetBlockElem);
   let lineTop = targetBlockElemTop;
-
-  if (mouseY >= targetBlockElemTop) {
+  const clientY = mouseY - window.scrollY;
+  if (clientY >= targetBlockElemTop) {
     lineTop += targetBlockElemHeight + marginBottom / 2;
   } else {
     lineTop -= marginTop / 2;
@@ -536,7 +536,6 @@ const useDraggableBlockMenu = (
       if (targetBlockElem === null || targetLineElem === null) {
         return false;
       }
-
       setTargetLine(
         targetLineElem,
         targetBlockElem,
@@ -584,7 +583,10 @@ const useDraggableBlockMenu = (
       }
 
       const targetBlockElemTop = targetBlockElem.getBoundingClientRect().top;
-      if (pageY / calculateZoomLevel(target as Element) >= targetBlockElemTop) {
+
+      const clientY =
+        pageY / calculateZoomLevel(target as Element) - window.scrollY;
+      if (clientY >= targetBlockElemTop) {
         targetNode.insertAfter(draggedNode);
       } else {
         targetNode.insertBefore(draggedNode);
