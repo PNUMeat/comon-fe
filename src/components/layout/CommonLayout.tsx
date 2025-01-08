@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
 import { Alert } from '@/components/commons/Modal/Alert';
+import { Confirm } from '../commons/Modal/Confirm';
 
 const headerHeight = 72;
 
@@ -36,6 +37,7 @@ export const CommonLayout: React.FC<{
   return (
     <Container padding={'0'}>
       <Alert />
+      <Confirm />
       <Header h={headerHeight} />
       {children}
     </Container>

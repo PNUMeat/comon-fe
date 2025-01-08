@@ -14,7 +14,7 @@ import {
 } from '@/store/form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { modalAtom } from '@/store/modal';
+import { alertAtom } from '@/store/modal';
 
 export const TeamRegistrationButton = () => {
   const isRegistrationFormValid = useAtomValue(isTeamRegistrationValidAtom);
@@ -26,7 +26,7 @@ export const TeamRegistrationButton = () => {
   const image = useAtomValue(imageAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const setAlert = useSetAtom(modalAtom);
+  const setAlert = useSetAtom(alertAtom);
 
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음

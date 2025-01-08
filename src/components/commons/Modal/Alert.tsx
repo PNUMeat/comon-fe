@@ -1,11 +1,11 @@
-import { modalAtom } from "@/store/modal";
+import { alertAtom } from "@/store/modal";
 import Modal from "./Modal";
 import { useAtomValue, useSetAtom } from "jotai";
 import styled from "@emotion/styled";
 
 export const Alert: React.FC = () => {
-  const { message, isVisible } = useAtomValue(modalAtom);
-  const setModal = useSetAtom(modalAtom);
+  const { message, isVisible } = useAtomValue(alertAtom);
+  const setModal = useSetAtom(alertAtom);
 
   const onClick = () => {
     setModal({ message: '', isVisible: false });
@@ -16,7 +16,7 @@ export const Alert: React.FC = () => {
       <AlertStyle>
         <p>{message}</p>
       </AlertStyle>
-        <AlertButton onClick={onClick}>확인</AlertButton>
+      <AlertButton onClick={onClick}>확인</AlertButton>
     </Modal>
   );
 }

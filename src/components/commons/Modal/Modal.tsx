@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 
 interface ModalProps {
   onClose: () => void;
+  height?: number;
   children: React.ReactNode;
   open?: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose, children, open = false }) => {
+const Modal: React.FC<ModalProps> = ({ onClose, children, open = false, height = 144}) => {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -42,7 +43,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, open = false }) => {
 
   return ReactDOM.createPortal(
     <ModalOverlay onClick={handleOverlayClick}>
-      <ModalContainer onClick={handleModalClick}>{children}</ModalContainer>
+      <ModalContainer onClick={handleModalClick} height={height}>{children}</ModalContainer>
     </ModalOverlay>,
     modalRoot
   );
@@ -60,11 +61,11 @@ const ModalOverlay = styled.div`
   background-color: rgba(215, 215, 215, 0.5);
 `;
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ height: number}>`
   position: fixed;
   display: flex;
   width: 316px;
-  height: 144px;
+  height: ${({ height }) => height}px;
   top: 50%;
   left: 50%;
   padding: 0 20px;
