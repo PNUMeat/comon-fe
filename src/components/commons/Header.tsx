@@ -31,6 +31,8 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
+    margin: 40px 0;
+    max-width: 360px;
   }
 `;
 
@@ -179,44 +181,46 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       .catch((err) => console.error(err));
 
   return (
-    <HeaderContainer h={h} ref={containerRef}>
-      <Flex align="center">
-        <ComonLogoWrap onClick={onClickHome}>
-          <LogoEngImg src={LogoEng} />
-          <LogoKoImg src={LogoKo} />
-        </ComonLogoWrap>
-        <NavMenu>
-          <a href={PATH.HOME}>서비스 소개</a>
-          <a href={PATH.TEAMS}>활동 팀</a>
-        </NavMenu>
-      </Flex>
-      <UserMenu>
-        {isLoggedIn ? (
-          <Fragment>
-            <button
-              onClick={() => {
-                modalControlRef.current.isClicked =
-                  !modalControlRef.current.isClicked;
+    <Flex justify="center">
+      <HeaderContainer h={h} ref={containerRef}>
+        <Flex align="center">
+          <ComonLogoWrap onClick={onClickHome}>
+            <LogoEngImg src={LogoEng} />
+            <LogoKoImg src={LogoKo} />
+          </ComonLogoWrap>
+          <NavMenu>
+            <a href={PATH.HOME}>서비스 소개</a>
+            <a href={PATH.TEAMS}>활동 팀</a>
+          </NavMenu>
+        </Flex>
+        <UserMenu>
+          {isLoggedIn ? (
+            <Fragment>
+              <button
+                onClick={() => {
+                  modalControlRef.current.isClicked =
+                    !modalControlRef.current.isClicked;
+                }}
+              >
+                내정보
+              </button>
+              <HeaderInfoModal
+                setModalRef={setModalRef}
+                onClickLogout={onClickLogout}
+              />
+            </Fragment>
+          ) : (
+            <Link
+              to={{
+                pathname: PATH.LOGIN,
               }}
+              state={{ redirect: location.pathname }}
             >
-              내정보
-            </button>
-            <HeaderInfoModal
-              setModalRef={setModalRef}
-              onClickLogout={onClickLogout}
-            />
-          </Fragment>
-        ) : (
-          <Link
-            to={{
-              pathname: PATH.LOGIN,
-            }}
-            state={{ redirect: location.pathname }}
-          >
-            로그인
-          </Link>
-        )}
-      </UserMenu>
-    </HeaderContainer>
+              로그인
+            </Link>
+          )}
+        </UserMenu>
+      </HeaderContainer>
+    </Flex>
   );
 };
