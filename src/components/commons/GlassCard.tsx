@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -14,4 +15,12 @@ export const GlassCard = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
+    background: rgba(255, 255, 255, 0);
+    border: none;
+    box-shadow: none;
+    justify-content: flex-start;
+  }
 `;

@@ -24,9 +24,11 @@ export const ContainerStyle = styled.div<ContainerProps>`
       : `scroll-snap-type: ${props.scrollSnapType};`};
   scroll-snap-align: ${(props) => props.scrollSnapAlign};
   transform: ${(props) => props.transform};
-
+  min-width: 390px;
   @media (max-width: ${breakpoints.mobile}px) {
-    max-width: 360px;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
   }
 `;
 
