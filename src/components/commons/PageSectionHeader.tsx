@@ -1,5 +1,6 @@
 import { Flex } from '@/components/commons/Flex';
 import { HeightInNumber } from '@/components/types';
+import { breakpoints } from '@/constants/breakpoints';
 
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -19,4 +20,7 @@ export const PageSectionHeader = styled(Flex)<IPageSectionHeader>`
   line-height: 23.87px;
   text-align: center;
   color: #333;
+  @media (max-width: ${breakpoints.mobile}px) {
+    background-color: transparent;
+  }
 `;
