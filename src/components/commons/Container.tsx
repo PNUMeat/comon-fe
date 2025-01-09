@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 interface ContainerProps {
@@ -25,6 +26,10 @@ export const ContainerStyle = styled.div<ContainerProps>`
   transform: ${(props) => props.transform};
   min-width: 390px;
   box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: ${(props) => props.padding || '0 10px'};
+  }
 `;
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
