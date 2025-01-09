@@ -1,7 +1,6 @@
 import { checkRemainingCookies } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
-import { SText } from '@/components/commons/SText';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
 
@@ -9,11 +8,12 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
+import LogoEng from '@/assets/Header/logo_eng.png';
+import LogoKo from '@/assets/Header/logo_ko.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
-// padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
 const HeaderContainer = styled(Flex)<HeightInNumber>`
   height: ${(props) => props.h}px;
   align-items: center;
@@ -28,14 +28,6 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
     linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
-`;
-
-const ComonSLogo = styled.div`
-  display: flex;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  margin-left: 53px;
 `;
 
 const NavMenu = styled.div`
@@ -74,6 +66,18 @@ const UserMenu = styled.div`
 
 const ComonLogoWrap = styled.div`
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-left: 56px;
+`;
+
+const LogoEngImg = styled.img`
+  height: 16.7px;
+  margin-right: 8px;
+`;
+
+const LogoKoImg = styled.img`
+  height: 20px;
 `;
 
 type ModalControl = {
@@ -142,10 +146,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
     <HeaderContainer h={h} ref={containerRef}>
       <Flex>
         <ComonLogoWrap onClick={onClickHome}>
-          <ComonSLogo>
-            C<SText color={'#8488EC'}>O</SText>M
-            <SText color={'#F15CA7'}>O</SText>N 코몬
-          </ComonSLogo>
+          <LogoEngImg src={LogoEng} />
+          <LogoKoImg src={LogoKo} />
         </ComonLogoWrap>
         <NavMenu>
           <a href={PATH.HOME}>서비스 소개</a>
