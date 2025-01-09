@@ -127,7 +127,7 @@ const SubjectControlButton: React.FC<{
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        주제 작성 및 수정
+        {data?.articleId ? '주제 수정' : '주제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
