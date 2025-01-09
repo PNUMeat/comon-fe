@@ -1,28 +1,30 @@
-import { ReactNode } from 'react';
 import { Title } from '@/components/commons/Title';
-import crown from '@/assets/TeamJoin/crown.png';
+
+import { ReactNode } from 'react';
+
 import calendar from '@/assets/TeamDashboard/calendar.svg';
+import crown from '@/assets/TeamJoin/crown.png';
 
 // 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸
 export const getTitle = (path: string): ReactNode => {
   if (path.startsWith('/team-dashboard')) {
-    return <Title src={calendar} title='팀 페이지' />;
+    return <Title src={calendar} title="팀 페이지" />;
   }
 
   if (path.startsWith('/team-admin')) {
-    return <Title src={calendar} title='팀 페이지 관리' />;
+    return <Title src={calendar} title="팀 페이지 관리" />;
   }
 
   if (path.startsWith('/my-dashboard')) {
-    return <Title src={calendar} title='마이 페이지' />;
+    return <Title src={calendar} title="마이 페이지" />;
   }
 
   const staticTitles: Record<string, ReactNode> = {
-    '/login': <Title src={crown} title='로그인'/>,
-    '/enroll': <Title src={crown} title='프로필 생성'/>,
+    '/login': <Title src={crown} title="로그인" />,
+    '/enroll': <Title src={crown} title="프로필 생성" />,
     '/modification': <span>👑 프로필 수정</span>,
-    '/team-registration': <Title src={crown} title='팀 생성'/>,
-    '/team-modification': <Title src={crown} title='팀 수정'/>,
+    '/team-registration': <Title src={crown} title="팀 생성" />,
+    '/team-modification': <Title src={crown} title="팀 수정" />,
   };
 
   return staticTitles[path];

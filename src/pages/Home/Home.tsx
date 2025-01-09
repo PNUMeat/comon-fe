@@ -231,7 +231,6 @@ export const Home = () => {
       <CommonLayout>
         <EventFloating />
         <Container
-          padding="0"
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
           margin={'0 auto 100px auto'}

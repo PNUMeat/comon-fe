@@ -58,7 +58,7 @@ const KakaoLinkButton = styled(LinkButton)`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 90%;
+    width: 80%;
   }
 `;
 

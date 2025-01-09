@@ -49,10 +49,6 @@ const SubHeader = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
-
-  leading-trim: both;
-
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
@@ -63,10 +59,6 @@ const SubHeader = styled.div`
 const Heading = styled.div`
   width: 100%;
   color: #333;
-
-  leading-trim: both;
-
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
@@ -85,8 +77,6 @@ const ProfileInfoGrid = styled.div`
 
 const PInfoLabel = styled.div`
   color: #333;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;
@@ -96,8 +86,6 @@ const PInfoLabel = styled.div`
 
 const ProfileTextValue = styled.div<{ fontWeight: number }>`
   color: #333;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;
@@ -136,8 +124,6 @@ const FallbackImg = styled.div`
 
 const TextInput = styled.input<{ fontWeight: number }>`
   color: #333;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;

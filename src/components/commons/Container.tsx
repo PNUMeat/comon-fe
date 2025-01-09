@@ -16,7 +16,7 @@ interface ContainerProps {
 export const ContainerStyle = styled.div<ContainerProps>`
   width: 100%;
   max-width: ${(props) => props.maxW || 1300}px;
-  padding: ${(props) => props.padding || '0 70px'};
+  padding: ${(props) => props.padding || '0'};
   margin: ${(props) => props.margin || '0 auto'};
   ${(props) =>
     props.scrollSnapType === 'y mandatory'
@@ -28,7 +28,7 @@ export const ContainerStyle = styled.div<ContainerProps>`
   box-sizing: border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: ${(props) => props.padding || '0 10px'};
+    padding: ${(props) => props.padding || '0 20px'};
   }
 `;
 
