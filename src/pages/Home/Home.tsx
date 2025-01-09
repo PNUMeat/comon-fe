@@ -232,7 +232,7 @@ export const Home = () => {
         <EventFloating />
         <Container
           padding={isMobile ? '0' : '0 149px'}
-          maxW={isMobile ? 300 : 1002}
+          maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
           margin={'0 auto 100px auto'}
           transform={'translate(0, -30px)'}
@@ -326,7 +326,7 @@ export const Home = () => {
 const ScrollSnapContainer = styled.div`
   height: 100vh;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   scroll-snap-type: y mandatory;
   position: relative;
 `;
