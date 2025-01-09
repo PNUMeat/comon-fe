@@ -1,7 +1,7 @@
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 import { Flex } from './Flex';
-import { breakpoints } from '@/constants/breakpoints';
 
 interface GradientBackgroundProps {
   count: number;
@@ -59,7 +59,7 @@ const GradientCircle = styled.div<{
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
-    height: 280px;
+    height: 160px;
     border-radius: 400px 400px 0 0;
     top: ${(props) => props.top || '10%'};
     filter: blur(30px);

@@ -8,9 +8,9 @@ import { Suspense } from 'react';
 import { kakaoOauth2LoginUrl } from '@/api/user';
 import kakaoTalk from '@/assets/Login/kakaoTalkIcon.png';
 import loginVector from '@/assets/Login/loginVector.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
-import { breakpoints } from '@/constants/breakpoints';
 
 const Container = styled.div<HeightInNumber>`
   width: 424px;
@@ -56,8 +56,9 @@ const KakaoLinkButton = styled(LinkButton)`
     background-position: center;
     background-size: contain;
   }
+
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 100%;
+    width: 90%;
   }
 `;
 
