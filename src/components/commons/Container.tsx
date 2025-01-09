@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 interface ContainerProps {
@@ -23,6 +24,10 @@ export const ContainerStyle = styled.div<ContainerProps>`
       : `scroll-snap-type: ${props.scrollSnapType};`};
   scroll-snap-align: ${(props) => props.scrollSnapAlign};
   transform: ${(props) => props.transform};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    max-width: 360px;
+  }
 `;
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
