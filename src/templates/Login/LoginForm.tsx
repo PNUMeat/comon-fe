@@ -10,6 +10,7 @@ import kakaoTalk from '@/assets/Login/kakaoTalkIcon.png';
 import loginVector from '@/assets/Login/loginVector.png';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
+import { breakpoints } from '@/constants/breakpoints';
 
 const Container = styled.div<HeightInNumber>`
   width: 424px;
@@ -17,9 +18,8 @@ const Container = styled.div<HeightInNumber>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
   }
 `;
@@ -56,7 +56,7 @@ const KakaoLinkButton = styled(LinkButton)`
     background-position: center;
     background-size: contain;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
   }
 `;
