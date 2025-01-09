@@ -28,7 +28,7 @@ export const ContainerStyle = styled.div<ContainerProps>`
   box-sizing: border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: ${(props) => props.padding || '0 10px'};
+    padding: ${(props) => props.padding || '0 20px'};
   }
 `;
 
