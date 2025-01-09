@@ -18,6 +18,10 @@ const Container = styled.div<HeightInNumber>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const LinkButton = styled.a`
@@ -51,6 +55,9 @@ const KakaoLinkButton = styled(LinkButton)`
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 

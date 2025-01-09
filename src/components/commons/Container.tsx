@@ -23,6 +23,11 @@ export const ContainerStyle = styled.div<ContainerProps>`
       : `scroll-snap-type: ${props.scrollSnapType};`};
   scroll-snap-align: ${(props) => props.scrollSnapAlign};
   transform: ${(props) => props.transform};
+  box-sizing: border-box;
+  min-width: 390px;
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
 `;
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(

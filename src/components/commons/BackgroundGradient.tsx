@@ -55,4 +55,12 @@ const GradientCircle = styled.div<{
   opacity: 0.3;
   transform-origin: center;
   z-index: -1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 280px;
+    border-radius: 400px 400px 0 0;
+    top: ${(props) => props.top || '10%'};
+    filter: blur(30px);
+  }
 `;
