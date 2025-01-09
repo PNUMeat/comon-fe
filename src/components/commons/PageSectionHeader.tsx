@@ -24,5 +24,6 @@ export const PageSectionHeader = styled(Flex)<IPageSectionHeader>`
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 14px;
     background-color: transparent;
+    padding: 0 12px;
   }
 `;
