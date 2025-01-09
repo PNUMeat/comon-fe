@@ -112,7 +112,12 @@ export const TeamJoinPage = () => {
       </SText>
       <Spacer h={48} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
-        <Box width="100%" height="48px" padding="0" borderWidth="1.5px">
+        <Box
+          width="100%"
+          height={isMobile ? '48px' : '80px'}
+          padding="0"
+          borderWidth={isMobile ? '1.5px' : '3px'}
+        >
           <ClickImage src={click} />
           <ActionText>
             <SText
