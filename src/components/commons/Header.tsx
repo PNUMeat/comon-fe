@@ -31,6 +31,7 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
+    margin: 40px 0;
   }
 `;
 

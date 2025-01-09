@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Container } from '@/components/commons/Container';
 import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 import { Flex } from '@/components/commons/Flex';
@@ -15,19 +17,27 @@ import comon from '@/assets/Home/comonBanner.png';
 import achievement from '@/assets/Home/goalAchievement.svg';
 import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
+import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 const HomeComment = styled.div`
   color: #333;
   text-align: center;
-  font-family: Pretendard;
+  font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 19px;
   letter-spacing: -0.32px;
   transform: translateY(-50px);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.28px;
+    margin-top: 40px;
+  }
 `;
 
 const StartButton = styled.button`
@@ -36,16 +46,20 @@ const StartButton = styled.button`
   justify-content: center;
   height: 74px;
   padding: 23px 60px;
-  border-radius: 42px;
+  border-radius: 40px;
   background: #333;
   cursor: pointer;
   color: #fff;
   text-align: center;
   font-family: 'Pretendard';
   font-size: 36px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 210px;
+    height: 60px;
+    font-size: 24px;
+  }
 `;
 
 const StartButtonDescription = styled.p`
@@ -56,7 +70,13 @@ const StartButtonDescription = styled.p`
   font-weight: 400;
   line-height: 22px;
   letter-spacing: -0.32px;
-  margin-top: 13px;
+  margin-top: 12px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    letter-spacing: -0.24px;
+    margin-top: 10px;
+  }
 `;
 
 const GoalBox = styled.div<HeightInNumber>`
@@ -67,12 +87,15 @@ const GoalBox = styled.div<HeightInNumber>`
   padding: 33px 66px 44px 66px;
   justify-content: center;
   align-items: center;
-
   border-radius: 20px;
   border: 1px solid #cdcfff;
   background: #fff;
-
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 300px;
+    padding: 24px 0;
+  }
 `;
 
 const GoalTitle = styled.div`
@@ -199,14 +222,17 @@ export const Home = () => {
     };
   }, []);
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
         <EventFloating />
         <Container
-          padding={'0 149px'}
-          maxW={1002}
+          padding={isMobile ? '0' : '0 149px'}
+          maxW={isMobile ? 300 : 1002}
           scrollSnapAlign={'end'}
           margin={'0 auto 100px auto'}
           transform={'translate(0, -30px)'}
@@ -215,25 +241,31 @@ export const Home = () => {
             <Suspense fallback={<div style={{ height: '491px' }}>배너</div>}>
               <LazyImage
                 altText={'코몬 배너 이미지'}
-                w={940}
-                maxW={940}
-                h={491}
+                w={isMobile ? 310 : 940}
+                maxW={isMobile ? 310 : 940}
+                h={isMobile ? 200 : 491}
                 src={comon}
               />
               <HomeComment>
-                코몬! 오늘부터 코드몬스터와 함께 매일의 도전을 시작해보세요.
-                <br /> 당신의 코드가 곧 성장의 발판이 됩니다! 🚀
+                코드몬스터에서 팀원들과 {isMobile && <br />}함께 공부하고 흔적을
+                남겨보세요.
+                <br /> 당신의 기록이 곧 성장의 발판이 됩니다! 🚀
               </HomeComment>
             </Suspense>
-            {/* <Spacer h={34} /> */}
+
             <Wrap>
               <StartButton onClick={onClickLogin}>시작하기</StartButton>
               <StartButtonDescription>
                 계정 생성 or 로그인하러 가기
               </StartButtonDescription>
             </Wrap>
-            <Spacer h={93} />
-            <Flex gap={'27px'}>
+            <Spacer h={90} />
+            <Flex
+              direction={isMobile ? 'column' : 'row'}
+              justify="center"
+              align="center"
+              gap={'28px'}
+            >
               {aims.map((aim) => (
                 <GoalBox key={aim.title} h={140}>
                   <Suspense
