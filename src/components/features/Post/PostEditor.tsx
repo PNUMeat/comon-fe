@@ -1,17 +1,35 @@
 import { viewStyle } from '@/utils/viewStyle';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
+import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
+import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
+import { HighlightCodePlugin } from '@/components/features/Post/plugins/HighlightCodePlugin';
 import { ImagePlugin } from '@/components/features/Post/plugins/ImagePlugin';
 import { InitContentPlugin } from '@/components/features/Post/plugins/InitContentPlugin';
 import { MaxIndentPlugin } from '@/components/features/Post/plugins/MaxIndentPlugin';
 import { ToolbarPlugin } from '@/components/features/Post/plugins/ToolbarPlugin';
 import { SHORTCUTS } from '@/components/features/Post/plugins/markdownShortcuts';
+import {
+  INSERT_IMAGE_COMMAND,
+  InsertImagePayload,
+} from '@/components/features/Post/utils';
 
-import { ChangeEvent, forwardRef, memo, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  Fragment,
+  ReactNode,
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
+import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -25,6 +43,14 @@ import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPl
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { addClassNamesToElement } from '@lexical/utils';
+import { useAtom, useSetAtom } from 'jotai';
+import {
+  $isLineBreakNode,
+  DOMExportOutput,
+  LexicalEditor,
+  LexicalNode,
+} from 'lexical';
 
 import './editor.css';
 
@@ -50,6 +76,39 @@ const editorTheme = {
     underlineStrikethrough: 'editor-text-underlineStrikethrough',
     code: 'editor-text-code',
   },
+  code: 'codeblock',
+  codeHighlight: {
+    atrule: 'tokenAttr',
+    attr: 'tokenAttr',
+    boolean: 'tokenProperty',
+    builtin: 'tokenSelector',
+    cdata: 'tokenComment',
+    char: 'tokenSelector',
+    class: 'tokenFunction',
+    'class-name': 'tokenFunction',
+    comment: 'tokenComment',
+    constant: 'tokenProperty',
+    deleted: 'tokenProperty',
+    doctype: 'tokenComment',
+    entity: 'tokenOperator',
+    function: 'tokenFunction',
+    important: 'tokenVariable',
+    inserted: 'tokenSelector',
+    keyword: 'tokenAttr',
+    namespace: 'tokenVariable',
+    number: 'tokenProperty',
+    operator: 'tokenOperator',
+    prolog: 'tokenComment',
+    property: 'tokenProperty',
+    punctuation: 'tokenPunctuation',
+    regex: 'tokenVariable',
+    selector: 'tokenSelector',
+    string: 'tokenSelector',
+    symbol: 'tokenProperty',
+    tag: 'tokenProperty',
+    url: 'tokenOperator',
+    variable: 'tokenVariable',
+  },
 };
 
 const initialConfig = {
@@ -63,14 +122,47 @@ const initialConfig = {
     QuoteNode,
     ListNode,
     ListItemNode,
+    CodeNode,
+    CodeHighlightNode,
   ],
+  html: {
+    export: new Map([
+      [
+        CodeNode,
+        (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
+          const codeNode = node as CodeNode;
+          const element = document.createElement('pre');
+          addClassNamesToElement(element, 'codeblock');
+          element.setAttribute('spellcheck', 'false');
+          const language = codeNode.getLanguage();
+
+          if (language) {
+            element.setAttribute('data-highlight-language', language);
+          }
+
+          const children = codeNode.getChildren();
+          const childrenLength = children.length;
+
+          let gutter = '1';
+          let count = 1;
+          for (let i = 0; i < childrenLength; i++) {
+            if ($isLineBreakNode(children[i])) {
+              gutter += '\n' + ++count;
+            }
+          }
+
+          element.setAttribute('data-gutter', gutter);
+          return { element };
+        },
+      ],
+    ]),
+  },
   editorState: undefined,
   onError,
 };
 
 const EditorContainer = styled.div`
   position: relative;
-  padding: 20px 50px;
   ${viewStyle}
 `;
 
@@ -83,6 +175,8 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
   padding: 0 30px;
   box-sizing: border-box;
   position: relative;
+  // drag event
+  z-index: 20;
   ${(props) =>
     props.shouldHighlight
       ? `
@@ -113,23 +207,74 @@ const EditorPlaceholder = styled.div`
   pointer-events: none;
   user-select: none;
   color: #ccc;
-  top: 18px;
+  top: 24px;
+  left: 50px;
 `;
 
-const PostContainer = forwardRef<
+const useDetectImageDeletion = () => {
+  const [editor] = useLexicalComposerContext();
+  const setImages = useSetAtom(postImagesAtom);
+
+  useEffect(() => {
+    const unregisterMutationListener = editor.registerMutationListener(
+      ImageNode,
+      (mutations) => {
+        // mutations.forEach((mutation, nodeKey) => {
+        mutations.forEach((mutation) => {
+          if (mutation === 'destroyed') {
+            setImages([]);
+          }
+        });
+      }
+    );
+
+    return () => {
+      unregisterMutationListener();
+    };
+  }, [editor]);
+};
+
+const PostWriteSection = forwardRef<
   HTMLDivElement,
   {
     children: React.ReactNode;
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
+  const [images, setImages] = useAtom(postImagesAtom);
+  useDetectImageDeletion();
+
+  const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith('image/')) {
+        const file = items[i].getAsFile();
+        // TODO: 이미지 여러개 들어갈때 수정
+        if (file && images.length === 0) {
+          const imageURL = URL.createObjectURL(file);
+          const imgPayload: InsertImagePayload = {
+            altText: '붙여넣은 이미지',
+            maxWidth: 600,
+            src: imageURL,
+          };
+          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+          setImages([file]);
+        }
+        break;
+      }
+    }
+  };
 
   const onClick = useCallback(() => {
     editor.focus();
   }, []);
 
   return (
-    <EditorContainer ref={ref as React.Ref<HTMLDivElement>} onClick={onClick}>
+    <EditorContainer
+      ref={ref as React.Ref<HTMLDivElement>}
+      onClick={onClick}
+      onPaste={onPaste}
+    >
       {children}
     </EditorContainer>
   );
@@ -152,6 +297,49 @@ const TitleInput = styled.input`
   }
 `;
 
+const PostSectionWrap: React.FC<{
+  shouldHighlight?: boolean;
+  children: ReactNode;
+}> = ({ shouldHighlight, children }) => {
+  const [editor] = useLexicalComposerContext();
+  const [images, setImages] = useAtom(postImagesAtom);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const files = event.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/') && images.length === 0) {
+          const imageURL = URL.createObjectURL(file);
+          const imgPayload: InsertImagePayload = {
+            altText: '붙여넣은 이미지',
+            maxWidth: 600,
+            src: imageURL,
+          };
+          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+          setImages([file]);
+        }
+      }
+    },
+    [images]
+  );
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  }, []);
+
+  return (
+    <PostWrap
+      shouldHighlight={shouldHighlight}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+    >
+      {children}
+    </PostWrap>
+  );
+};
+
 const PostEditor: React.FC<{
   forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
@@ -166,7 +354,6 @@ const PostEditor: React.FC<{
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
-
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -175,10 +362,7 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostWrap
-        shouldHighlight={Boolean(setTag)}
-        // onClick={() => console.log('??')}
-      >
+      <PostSectionWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
           placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
@@ -194,7 +378,7 @@ const PostEditor: React.FC<{
           setTag={setTag}
           articleCategory={tag}
         />
-        <PostContainer ref={onRef}>
+        <PostWriteSection ref={onRef}>
           <RichTextPlugin
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
@@ -203,11 +387,15 @@ const PostEditor: React.FC<{
             }
           />
           {floatingAnchorElem && (
-            <FloatingLinkEditorPlugin
-              anchorElem={floatingAnchorElem}
-              isLinkEditMode={isLinkEditMode}
-              setIsLinkEditMode={setIsLinkEditMode}
-            />
+            <Fragment>
+              <FloatingLinkEditorPlugin
+                anchorElem={floatingAnchorElem}
+                isLinkEditMode={isLinkEditMode}
+                setIsLinkEditMode={setIsLinkEditMode}
+              />
+              <CodeActionPlugin anchorElem={floatingAnchorElem} />
+              <DraggablePlugin anchorElem={floatingAnchorElem} />
+            </Fragment>
           )}
           <ImagePlugin />
           <LinkPlugin />
@@ -220,8 +408,9 @@ const PostEditor: React.FC<{
           <ListPlugin />
           <TabIndentationPlugin />
           <MaxIndentPlugin />
-        </PostContainer>
-      </PostWrap>
+          <HighlightCodePlugin />
+        </PostWriteSection>
+      </PostSectionWrap>
     </LexicalComposer>
   );
 };

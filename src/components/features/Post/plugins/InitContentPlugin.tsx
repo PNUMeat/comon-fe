@@ -2,11 +2,13 @@ import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
 import { useEffect, useRef } from 'react';
 
+import { $createCodeNode } from '@lexical/code';
 import { $createLinkNode } from '@lexical/link';
 import { $createListItemNode, $createListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import {
+  $createLineBreakNode,
   $createParagraphNode,
   $createTextNode,
   $getRoot,
@@ -101,6 +103,34 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
             }
           });
           return paragraph;
+        }
+
+        case 'pre': {
+          const language = element.getAttribute('data-language') ?? '';
+          const codeNode = $createCodeNode(language);
+
+          element.childNodes.forEach((child) => {
+            if (
+              child.nodeType === Node.ELEMENT_NODE &&
+              (child as HTMLElement).tagName.toLowerCase() === 'br'
+            ) {
+              const lineBreakNode = $createLineBreakNode();
+              codeNode.append(lineBreakNode);
+            } else {
+              const childLexicalNode = traverse(child);
+              if (childLexicalNode) {
+                if (Array.isArray(childLexicalNode)) {
+                  childLexicalNode.forEach((childNode) => {
+                    codeNode.append(childNode);
+                  });
+                } else {
+                  codeNode.append(childLexicalNode);
+                }
+              }
+            }
+          });
+
+          return codeNode;
         }
 
         // <h1>, <h2>, <h3>, <h4>, <h5>, <h6> -> HeadingNode
@@ -276,7 +306,6 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
 }) => {
   const isInitializedRef = useRef(true);
   const [editor] = useLexicalComposerContext();
-
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);

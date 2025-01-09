@@ -1,7 +1,6 @@
 import { checkRemainingCookies } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
-import { SText } from '@/components/commons/SText';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
 
@@ -9,11 +8,13 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
+import LogoEng from '@/assets/Header/logo_eng.png';
+import LogoKo from '@/assets/Header/logo_ko.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
-// padding: 0 53px 사용하면 border gradient 이상해져서 자식의 margin으로 대체
 const HeaderContainer = styled(Flex)<HeightInNumber>`
   height: ${(props) => props.h}px;
   align-items: center;
@@ -22,20 +23,15 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 40px;
   box-sizing: border-box;
-
   border: 1px solid transparent;
   background-image: linear-gradient(#333333, #333333),
     linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
-`;
 
-const ComonSLogo = styled.div`
-  display: flex;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  margin-left: 53px;
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 50px;
+  }
 `;
 
 const NavMenu = styled.div`
@@ -49,6 +45,19 @@ const NavMenu = styled.div`
     text-decoration: none;
     font-size: 20px;
     font-weight: 600;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-left: 30px;
+    height: 100%;
+
+    a {
+      font-size: 14px;
+    }
+
+    a:first-of-type {
+      display: none;
+    }
   }
 `;
 
@@ -70,10 +79,41 @@ const UserMenu = styled.div`
     font-weight: 800;
     text-decoration: none;
   }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-right: 32px;
+
+    a,
+    button {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
 `;
 
 const ComonLogoWrap = styled.div`
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-left: 56px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-left: 32px;
+  }
+`;
+
+const LogoEngImg = styled.img`
+  height: 16.7px;
+  margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: none;
+    margin-right: 0px;
+  }
+`;
+
+const LogoKoImg = styled.img`
+  height: 20px;
 `;
 
 type ModalControl = {
@@ -140,12 +180,10 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
 
   return (
     <HeaderContainer h={h} ref={containerRef}>
-      <Flex>
+      <Flex align="center">
         <ComonLogoWrap onClick={onClickHome}>
-          <ComonSLogo>
-            C<SText color={'#8488EC'}>O</SText>M
-            <SText color={'#F15CA7'}>O</SText>N 코몬
-          </ComonSLogo>
+          <LogoEngImg src={LogoEng} />
+          <LogoKoImg src={LogoKo} />
         </ComonLogoWrap>
         <NavMenu>
           <a href={PATH.HOME}>서비스 소개</a>

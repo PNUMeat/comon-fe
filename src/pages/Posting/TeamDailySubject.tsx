@@ -3,11 +3,9 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
-import { Title } from '@/components/commons/Title';
-
-import write from '@/assets/Posting/write.svg';
 
 import { Suspense, useState } from 'react';
 import {
@@ -19,6 +17,7 @@ import {
 
 import { createSubject, mutateSubject } from '@/api/subject';
 import commonToday from '@/assets/Posting/comonToday.png';
+import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -43,6 +42,7 @@ export const TeamDailySubject = () => {
     articleTitle: null,
     articleImageUrl: null,
   };
+
   const regroupedArticleContent =
     (articleImageUrl
       ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
@@ -172,7 +172,7 @@ export const TeamDailySubject = () => {
         </Suspense>
         <Spacer h={22} />
         <PageSectionHeader h={40}>
-          <Title src={write} title='주제 작성하기' />
+          <Title src={write} title="주제 작성하기" />
         </PageSectionHeader>
         <Spacer h={39} />
         <PostEditor

@@ -58,10 +58,6 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
     : data?.articleBody;
 
-  if (data) {
-    console.error('TD', data?.articleBody, selectedTopicBody);
-  }
-
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">

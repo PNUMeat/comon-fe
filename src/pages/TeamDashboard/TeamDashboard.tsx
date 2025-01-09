@@ -6,11 +6,12 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useLayoutEffect } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
   IArticle,
+  ICalendarTag,
   getArticlesByDate,
   getTeamInfoAndTags,
 } from '@/api/dashboard';
@@ -35,11 +36,38 @@ export const TeamDashboardPage = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { data: teamInfoData } = useQuery({
+  const [tags, setTags] = useState<ICalendarTag[]>([]);
+
+  const addTags = (newTags: ICalendarTag[]) => {
+    setTags((prevTags) => {
+      const updatedTags = [...prevTags];
+
+      newTags.forEach((newTag) => {
+        const existingIndex = updatedTags.findIndex(
+          (tag) => tag.subjectDate === newTag.subjectDate
+        );
+        if (existingIndex !== -1) {
+          updatedTags[existingIndex] = newTag;
+        } else {
+          updatedTags.push(newTag);
+        }
+      });
+
+      return updatedTags;
+    });
+  };
+
+  const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
+
+  useEffect(() => {
+    if (isSuccess && teamInfoData) {
+      addTags(teamInfoData.subjectArticleDateAndTagResponses);
+    }
+  }, [isSuccess]);
 
   const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
@@ -74,7 +102,7 @@ export const TeamDashboardPage = () => {
 
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
-  const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
+  // const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
     <Fragment>

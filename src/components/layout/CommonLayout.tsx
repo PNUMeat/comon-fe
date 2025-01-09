@@ -1,11 +1,12 @@
 import { Container } from '@/components/commons/Container';
 import { Header } from '@/components/commons/Header';
+import { Alert } from '@/components/commons/Modal/Alert';
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
-import { Alert } from '@/components/commons/Modal/Alert';
+
 import { Confirm } from '../commons/Modal/Confirm';
 
 const headerHeight = 72;

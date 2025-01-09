@@ -27,8 +27,10 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { updateAnnouncement } from '@/api/announcement';
 import {
   IArticle,
+  ICalendarTag,
   getArticlesByDate,
   getTeamInfoAndTags,
+  getTeamTopic,
 } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
@@ -99,9 +101,24 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
+  const { data } = useQuery({
+    queryKey: ['team-topic', id, selectedDate],
+    queryFn: () => getTeamTopic(parseInt(id), selectedDate),
+  });
+
   return (
     <SubjectControlButtonWrap
-      onClick={() => navigate(`/team-subject/${id}/${selectedDate}`)}
+      onClick={() =>
+        navigate(`/team-subject/${id}/${selectedDate}`, {
+          state: {
+            articleBody: data?.articleBody,
+            articleId: data?.articleId,
+            articleTitle: data?.articleTitle,
+            articleCategory: data?.articleCategory,
+            articleImageUrl: data?.imageUrl,
+          },
+        })
+      }
     >
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
@@ -110,7 +127,7 @@ const SubjectControlButton: React.FC<{
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        주제 작성 및 수정
+        {data?.articleId ? '주제 수정' : '주제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -187,6 +204,39 @@ export const TeamAdmin = () => {
 
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
+  //TODO: useCalendarTag
+  const [tags, setTags] = useState<ICalendarTag[]>([]);
+
+  const addTags = (newTags: ICalendarTag[]) => {
+    setTags((prevTags) => {
+      const updatedTags = [...prevTags];
+
+      newTags.forEach((newTag) => {
+        const existingIndex = updatedTags.findIndex(
+          (tag) => tag.subjectDate === newTag.subjectDate
+        );
+        if (existingIndex !== -1) {
+          updatedTags[existingIndex] = newTag;
+        } else {
+          updatedTags.push(newTag);
+        }
+      });
+
+      return updatedTags;
+    });
+  };
+
+  const { data: teamInfoData, isSuccess } = useQuery({
+    queryKey: ['team-info', id, year, month],
+    queryFn: () => getTeamInfoAndTags(Number(id), year, month),
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (isSuccess && teamInfoData) {
+      addTags(teamInfoData.subjectArticleDateAndTagResponses);
+    }
+  }, [isSuccess]);
 
   const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', id, selectedDate, page],
@@ -246,14 +296,7 @@ export const TeamAdmin = () => {
     }
   }, [show]);
 
-  const { data: teamInfoData } = useQuery({
-    queryKey: ['team-info', id, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(id), year, month),
-    enabled: !!id,
-  });
-
   const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
-  const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
   const isTeamManager = teamInfoData?.teamManager ?? false;
 
   useLayoutEffect(() => {
