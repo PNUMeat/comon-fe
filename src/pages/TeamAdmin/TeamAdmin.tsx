@@ -27,9 +27,9 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { updateAnnouncement } from '@/api/announcement';
 import {
   IArticle,
-  ITopicResponse,
   getArticlesByDate,
   getTeamInfoAndTags,
+  getTeamTopic,
 } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
@@ -38,7 +38,7 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
 const Grid = styled.div`
@@ -100,12 +100,10 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const data = queryClient.getQueryData([
-    'team-topic',
-    id,
-    selectedDate,
-  ]) as ITopicResponse;
+  const { data } = useQuery({
+    queryKey: ['team-topic', id, selectedDate],
+    queryFn: () => getTeamTopic(parseInt(id), selectedDate),
+  });
 
   return (
     <SubjectControlButtonWrap
