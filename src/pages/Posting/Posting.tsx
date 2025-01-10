@@ -64,7 +64,7 @@ export const Posting = () => {
 
     const articleBodyTrim = content.trim();
     const articleBody = postImages
-      ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
       : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
