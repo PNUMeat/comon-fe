@@ -3,11 +3,9 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
-import { Title } from '@/components/commons/Title';
-
-import write from '@/assets/Posting/write.svg';
 
 import { Suspense, useState } from 'react';
 import {
@@ -19,6 +17,7 @@ import {
 
 import { createPost, mutatePost } from '@/api/postings';
 import commonToday from '@/assets/Posting/comonToday.png';
+import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -28,11 +27,11 @@ import {
   selectedDateAtom,
   selectedPostIdAtom,
 } from '@/store/dashboard';
+import { alertAtom } from '@/store/modal';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { alertAtom } from '@/store/modal';
 
 export const Posting = () => {
   const location = useLocation();
@@ -63,9 +62,10 @@ export const Posting = () => {
     }
     setIsPending(true);
 
-    const articleBody = content
-      .trim()
-      .replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2');
+    const articleBodyTrim = content.trim();
+    const articleBody = postImages
+      ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
       mutatePost({
@@ -85,12 +85,17 @@ export const Posting = () => {
               setSelectedPostId(articleId);
               setPostImages([]);
               navigate(`/team-dashboard/${id}`);
-              setAlert({message: '게시글을 수정했어요', isVisible: true });
+              setAlert({ message: '게시글을 수정했어요', isVisible: true });
             })
-            .catch(() => setAlert({message: '최신 게시글 조회를 실패했습니다.', isVisible: true }));
+            .catch(() =>
+              setAlert({
+                message: '최신 게시글 조회를 실패했습니다.',
+                isVisible: true,
+              })
+            );
         })
         .catch(() => {
-          setAlert({message: '게시글 수정에 실패했어요', isVisible: true});
+          setAlert({ message: '게시글 수정에 실패했어요', isVisible: true });
           setIsPending(false);
         });
       return;
@@ -112,12 +117,17 @@ export const Posting = () => {
             setSelectedPostId(articleId);
             setPostImages([]);
             navigate(`/team-dashboard/${id}`);
-            setAlert({message: '글쓰기를 완료했어요', isVisible: true});
+            setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
           })
-          .catch(() => setAlert({ message: '최신 게시글 조회에 실패했습니다.', isVisible: true }));
+          .catch(() =>
+            setAlert({
+              message: '최신 게시글 조회에 실패했습니다.',
+              isVisible: true,
+            })
+          );
       })
       .catch(() => {
-        setAlert({message: '글쓰기에 실패했어요', isVisible: true});
+        setAlert({ message: '글쓰기에 실패했어요', isVisible: true });
         setIsPending(false);
       });
   };
