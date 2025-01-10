@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+  workflow_run:
+    workflows: ["Develop to Main 브랜치 동기화"] # 실행할 워크플로우 이름
+    types:
+      - completed  # 동기화 워크플로우가 완료된 경우
 
 jobs:
   deploy:
