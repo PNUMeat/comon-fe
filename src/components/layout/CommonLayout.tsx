@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
 import { breakpoints } from '@/constants/breakpoints';
+import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
 
@@ -48,8 +49,17 @@ export const CommonLayout: React.FC<{
     >
       <Alert />
       <Confirm />
+      <ScrollStart />
       <Header h={headerHeight} />
       {children}
     </Container>
   );
 };
+
+const ScrollStart = styled.div`
+  scroll-snap-align: start;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-top: 50px;
+  }
+`;
