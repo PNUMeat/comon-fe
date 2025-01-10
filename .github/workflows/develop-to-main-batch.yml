@@ -5,18 +5,19 @@ on:
     - cron: '0 17 * * *'  # UTC 17:00 = KST 02:00
   workflow_dispatch:  # 수동 실행 가능
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   develop-to-main:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: 저장소 체크아웃
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: develop
 
       - name: Git 설정
         run: |
@@ -25,8 +26,17 @@ jobs:
 
       - name: Develop 브랜치 변경사항 확인 및 동기화
         run: |
-          # develop 브랜치의 새로운 커밋 확인 (지난 24시간)
-          NEW_COMMITS=$(git log --since="@{24 hours ago}" --format="%H" develop)
+          # 먼저 모든 브랜치 정보 가져오기
+          git fetch origin
+          
+          # develop 브랜치가 있는지 확인
+          if ! git show-ref --verify --quiet refs/heads/develop; then
+            echo "❌ develop 브랜치를 찾을 수 없습니다."
+            exit 1
+          fi
+          
+          # 새로운 커밋 확인 (지난 24시간)
+          NEW_COMMITS=$(git log --since="@{24 hours ago}" --format="%H" origin/develop)
           
           if [ ! -z "$NEW_COMMITS" ]; then
             echo "✨ develop 브랜치에 새로운 커밋이 발견되었습니다."
@@ -36,7 +46,7 @@ jobs:
             git pull origin main
           
             # develop의 변경사항을 main으로 머지
-            git merge develop --no-ff -m "🔄 develop → main 자동 동기화"
+            git merge origin/develop --no-ff -m "🔄 develop → main 자동 동기화"
           
             # 변경사항 푸시
             git push origin main
