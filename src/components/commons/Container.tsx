@@ -29,6 +29,11 @@ export const ContainerStyle = styled.div<ContainerProps>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: ${(props) => props.padding || '0 20px'};
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
   }
 `;
 
