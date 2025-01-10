@@ -76,7 +76,12 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     align="center"
                     width={30}
                   >
-                    <SText color="#333" fontSize="16px" fontWeight={600}>
+                    <SText
+                      color="#333"
+                      fontSize="16px"
+                      fontWeight={600}
+                      fontFamily={'Pretendard'}
+                    >
                       TEAM
                     </SText>
                     <Spacer h={8} />
@@ -85,16 +90,26 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                       color="#333"
                       fontWeight={700}
                       whiteSpace="nowrap"
+                      fontFamily={'Pretendard'}
                     >
                       {team.teamName}
                     </SText>
                     <Spacer h={8} />
-                    <SText fontSize="16px" color="#777" fontWeight={400}>
+                    <SText
+                      fontSize="16px"
+                      color="#777"
+                      fontWeight={400}
+                      fontFamily={'Pretendard'}
+                    >
                       since {team.createdAt}
                     </SText>
                     <Spacer h={8} />
                     <Label>
-                      <SText fontSize="10px" fontWeight={600}>
+                      <SText
+                        fontSize="10px"
+                        fontWeight={600}
+                        fontFamily={'Pretendard'}
+                      >
                         {team.topic}
                       </SText>
                     </Label>
@@ -123,7 +138,12 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                       >
                         <ClickImage src={click} />
                         <ActionText>
-                          <SText fontSize="20px" fontWeight={700} color="#333">
+                          <SText
+                            fontSize="20px"
+                            fontWeight={700}
+                            color="#333"
+                            fontFamily={'Pretendard'}
+                          >
                             팀 페이지로 이동하기
                           </SText>
                         </ActionText>

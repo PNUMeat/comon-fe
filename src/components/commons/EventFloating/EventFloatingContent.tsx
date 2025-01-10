@@ -10,7 +10,6 @@ const Bubble = styled.div`
   background-image: url(${SpeechBubble});
   background-repeat: no-repeat;
   background-size: cover;
-  width: 340px;
   height: 380px;
 `;
 
@@ -20,7 +19,7 @@ const ContentWrapper = styled.div`
   padding: 24px 0px 0px 24px;
   font-size: 10px;
   line-height: 1.4;
-  width: 312px;
+  min-width: 312px;
 `;
 
 const ButtonStyle = styled.button`
@@ -33,10 +32,6 @@ const ButtonStyle = styled.button`
   border-radius: 20px;
   color: #fff;
   background: #6e74fa;
-`;
-
-const BoldText = styled.p`
-  font-weight: 700;
 `;
 
 const TitleText = styled.div`
@@ -70,17 +65,19 @@ export const EventFloatingContent: React.FC<EventFloatingContentProps> = ({
         <Bubble>
           <ContentWrapper>
             <TitleText>
-              <SText color="#ff377f" fontWeight={700}>
+              <SText color="#ff377f" fontWeight={700} fontFamily={'Pretendard'}>
                 공지
               </SText>
-              <SText fontSize="16px" fontWeight={700}>
+              <SText fontSize="16px" fontWeight={700} fontFamily={'Pretendard'}>
                 버그 찾기 이벤트
               </SText>
             </TitleText>
             <br />
-            <p>안녕하세요. 코몬 운영진입니다.</p>
+            <SText fontFamily={'Pretendard'} fontWeight={300}>
+              안녕하세요. 코몬 운영진입니다.
+            </SText>
             <br />
-            <p>
+            <SText fontFamily={'Pretendard'} fontWeight={300}>
               서비스의 사용성을 개선하기 위해 사용자분들이{' '}
               <UnderlinedText>
                 서비스에서 발견한
@@ -90,20 +87,24 @@ export const EventFloatingContent: React.FC<EventFloatingContentProps> = ({
               따라{' '}
               <UnderlinedText>커피 기프티콘을 전송해 드릴 예정</UnderlinedText>
               입니다.
-            </p>
+            </SText>
             <br />
-            <p>
+            <SText fontFamily={'Pretendard'} fontWeight={300}>
               대학생들이 만든 프로젝트이기에 미흡한 점이 있음을 널리 이해 부탁
               <br />
               드리고, 소중한 의견을 통해 점차 보완해 나갈 것을 약속드립니다.
-            </p>
+            </SText>
             <br />
-            <BoldText>
+            <SText fontFamily={'Pretendard'} fontWeight={700}>
               참여 조건: 1개 이상의 팀에 참여 & 1개 이상 게시글 작성한 사용자
-            </BoldText>
-            <BoldText>문의 방법: 하단의 구글 폼 이용</BoldText>
+            </SText>
+            <SText fontFamily={'Pretendard'} fontWeight={700}>
+              문의 방법: 하단의 구글 폼 이용
+            </SText>
             <br />
-            <p>감사합니다. 좋은 하루 보내세요!</p>
+            <SText fontFamily={'Pretendard'} fontWeight={300}>
+              감사합니다. 좋은 하루 보내세요!
+            </SText>
             <br />
             <Link href="https://forms.gle/6KqTsqQxbvZwAizU9" target="_blank">
               https://forms.gle/6KqTsqQxbvZwAizU9
