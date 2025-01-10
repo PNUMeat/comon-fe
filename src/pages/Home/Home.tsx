@@ -351,7 +351,6 @@ const WaitBox = styled.div`
   flex-direction: column;
   justify-content: end;
   align-items: center;
-  // padding-bottom: 175px;
   padding-bottom: 135px;
   gap: 10px;
   position: absolute;
@@ -363,7 +362,6 @@ const WaitBox = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    // height: 200px;
     height: 150px;
 
     background: linear-gradient(
