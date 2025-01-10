@@ -7,7 +7,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
@@ -18,11 +18,11 @@ import {
   selectedDateAtom,
   selectedPostIdAtom,
 } from '@/store/dashboard';
+import { alertAtom, confirmAtom } from '@/store/modal';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useAtomValue } from 'jotai';
-import { alertAtom, confirmAtom } from '@/store/modal';
 
 interface ArticleDetailProps {
   data: IArticle;
@@ -49,6 +49,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   const setSelectedArticleId = useSetAtom(selectedPostIdAtom);
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);
+  const navigate = useNavigate();
 
   const deleteArticle = () => {
     if (data?.articleId) {
@@ -59,12 +60,20 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               queryKey: ['articles-by-date', teamId, selectedDate, page],
             })
             .then(() => {
-              setAlert({message: '게시글을 삭제했어요', isVisible: true });
+              setAlert({ message: '게시글을 삭제했어요', isVisible: true });
               setSelectedArticleId(null);
+              navigate(`/team-dashboard/${teamId}`);
             })
-            .catch(() => setAlert({ message : '최신 게시글 조회가 실패했습니다.', isVisible: true }));
+            .catch(() =>
+              setAlert({
+                message: '최신 게시글 조회가 실패했습니다.',
+                isVisible: true,
+              })
+            );
         })
-        .catch(() => setAlert({message: '게시글 삭제를 실패했어요', isVisible: true }));
+        .catch(() =>
+          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true })
+        );
     }
   };
 
@@ -73,10 +82,9 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       message: '게시글을 삭제하시겠습니까?',
       description: '삭제된 게시글은 복구되지 않아요',
       isVisible: true,
-      onConfirm : deleteArticle,
+      onConfirm: deleteArticle,
     });
-  }
-
+  };
 
   return (
     <Box width="100%" padding="30px 40px">

@@ -68,13 +68,13 @@ export const TeamDashboardPage = () => {
     }
   }, [isSuccess]);
 
-  const { data: articlesData } = useQuery({
+  const { data: articlesData, status } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
 
-  console.error('??', articlesData);
+  console.error('??', articlesData, status);
 
   useLayoutEffect(() => {
     if (currentView === 'article') {
@@ -103,7 +103,6 @@ export const TeamDashboardPage = () => {
 
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
-  // const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
     <Fragment>
@@ -128,7 +127,7 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}`}
+            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
