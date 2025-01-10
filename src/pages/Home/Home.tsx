@@ -328,6 +328,15 @@ const ScrollSnapContainer = styled.div`
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    // 크롬 사파리
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    // 파이어폭스
+    scrollbar-width: none;
+  }
 `;
 
 const ScrollStart = styled.div`

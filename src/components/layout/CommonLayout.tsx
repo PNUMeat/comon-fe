@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Container } from '@/components/commons/Container';
 import { Header } from '@/components/commons/Header';
 import { Alert } from '@/components/commons/Modal/Alert';
@@ -6,6 +8,7 @@ import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
+import { breakpoints } from '@/constants/breakpoints';
 
 import { Confirm } from '../commons/Modal/Confirm';
 
@@ -35,8 +38,14 @@ export const CommonLayout: React.FC<{
     setNavigator(navigate);
   }, [navigate]);
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
-    <Container padding={'0'}>
+    <Container
+      padding={'0'}
+      scrollSnapType={isMobile ? 'y mandatory' : undefined}
+    >
       <Alert />
       <Confirm />
       <Header h={headerHeight} />
