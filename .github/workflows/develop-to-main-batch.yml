@@ -2,7 +2,7 @@ name: Develop to Main 브랜치 동기화
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # UTC 16:00 = KST 01:00
+    - cron: '0 17 * * *'  # UTC 17:00 = KST 02:00
   workflow_dispatch:  # 수동 실행 가능
 
 jobs:

@@ -331,11 +331,9 @@ const ScrollSnapContainer = styled.div`
   position: relative;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    // 크롬 사파리
     &::-webkit-scrollbar {
       display: none;
     }
-    // 파이어폭스
     scrollbar-width: none;
   }
 `;
