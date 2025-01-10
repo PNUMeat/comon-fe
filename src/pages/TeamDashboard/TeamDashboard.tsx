@@ -68,13 +68,13 @@ export const TeamDashboardPage = () => {
     }
   }, [isSuccess]);
 
-  const { data: articlesData, status } = useQuery({
+  const { data: articlesData, refetch } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
 
-  console.error('??', articlesData, status);
+  console.error('??', articlesData);
 
   useLayoutEffect(() => {
     if (currentView === 'article') {
@@ -145,6 +145,7 @@ export const TeamDashboardPage = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              refetchArticles={refetch}
               teamId={Number(teamId)}
             />
           )}
