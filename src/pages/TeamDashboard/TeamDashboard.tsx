@@ -6,7 +6,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useEffect, useLayoutEffect, useState } from 'react';
+import { Fragment, useLayoutEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -57,23 +57,29 @@ export const TeamDashboardPage = () => {
     });
   };
 
-  const { data: teamInfoData, isSuccess } = useQuery({
+  const {
+    data: teamInfoData,
+    // isSuccess,
+    promise,
+  } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
-
-  useEffect(() => {
-    if (isSuccess && teamInfoData) {
-      addTags(teamInfoData.subjectArticleDateAndTagResponses);
-    }
-  }, [isSuccess]);
+  promise.then((data) => addTags(data.subjectArticleDateAndTagResponses));
+  // useEffect(() => {
+  //   if (isSuccess && teamInfoData) {
+  //     addTags(teamInfoData.subjectArticleDateAndTagResponses);
+  //   }
+  // }, [isSuccess]);
 
   const { data: articlesData, dataUpdatedAt } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+
+  console.error('DUA', dataUpdatedAt);
 
   useLayoutEffect(() => {
     if (currentView === 'article') {
@@ -127,7 +133,7 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}+${dataUpdatedAt}`}
+            key={`${['articles-by-date', teamId, selectedDate, page]}?${dataUpdatedAt}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
