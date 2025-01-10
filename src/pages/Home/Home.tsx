@@ -170,9 +170,6 @@ export const Home = () => {
 
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
-        // TODO: ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
-        // effect.style.top = `${pos + 204 + 72}px`;
-        // effect.style.top = `${pos}px`;
         Array.from(effect.children).forEach((child) => {
           (child as HTMLElement).style.opacity = '1';
         });
