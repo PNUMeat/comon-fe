@@ -324,7 +324,8 @@ export const Home = () => {
 
 const ScrollSnapContainer = styled.div`
   height: 100vh;
-  width: 100%;
+  width: 100vw;
+  overflow-x: hidden;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   position: relative;
