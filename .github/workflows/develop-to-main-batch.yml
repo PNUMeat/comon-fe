@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  sync-to-main:
+  develop-to-main:
     runs-on: ubuntu-latest
     steps:
       - name: 저장소 체크아웃
