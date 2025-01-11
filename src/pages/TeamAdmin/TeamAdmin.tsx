@@ -101,7 +101,7 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
-  const { data } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
@@ -123,11 +123,11 @@ const SubjectControlButton: React.FC<{
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
         fontSize="18px"
-        color="#fff"
+        color={isSuccess ? '#fff' : 'transparent'}
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        {!data ? '' : data.articleId ? '주제 수정' : '주제 작성'}
+        {!isSuccess ? '요청 대기' : data?.articleId ? '주제 수정' : '주제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
