@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -16,4 +17,8 @@ export const Label = styled.div<{
   border-radius: 34px;
   box-sizing: border-box;
   height: 18px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 16px;
+  }
 `;

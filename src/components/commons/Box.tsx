@@ -8,13 +8,26 @@ interface BoxProps {
   height?: string;
   padding?: string;
   borderWidth?: string;
+  borderRadius?: string;
   children?: React.ReactNode;
   style?: CSSProperties;
   onClick?: () => void;
 }
 
 export const Box = forwardRef<HTMLDivElement, BoxProps>(
-  ({ width, height, padding, borderWidth, children, style, onClick }, ref) => {
+  (
+    {
+      width,
+      height,
+      padding,
+      borderWidth,
+      borderRadius,
+      children,
+      style,
+      onClick,
+    },
+    ref
+  ) => {
     return (
       <StyledBox
         ref={ref}
@@ -22,6 +35,7 @@ export const Box = forwardRef<HTMLDivElement, BoxProps>(
         height={height}
         padding={padding}
         borderWidth={borderWidth}
+        borderRadius={borderRadius}
         style={style}
         onClick={onClick}
       >
@@ -41,7 +55,7 @@ const StyledBox = styled.div<BoxProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: ${(props) => props.borderRadius || '20px'};
   background: #fff;
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
