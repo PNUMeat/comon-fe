@@ -1,0 +1,68 @@
+name: Develop to Main 브랜치 동기화
+
+on:
+  schedule:
+    - cron: '0 17 * * *'  # UTC 17:00 = KST 02:00
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  develop-to-main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Git 설정
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Develop 브랜치 변경사항 확인 및 동기화
+        run: |
+          git fetch origin develop
+          
+          NEW_COMMITS=$(git log --since="@{24 hours ago}" --format="%H" origin/develop)
+          
+          if [ ! -z "$NEW_COMMITS" ]; then
+            echo "✨ develop 브랜치에 새로운 커밋이 발견되었습니다."
+          
+            git checkout main
+            git pull origin main
+          
+            git merge origin/develop --no-ff -m "🔄 develop → main 자동 동기화"
+          
+            git push origin main
+          
+            echo "✅ main 브랜치 동기화가 완료되었습니다."
+          else
+            echo "💡 develop 브랜치에 새로운 변경사항이 없습니다."
+          fi
+
+      - name: 실패 시 알림
+        if: failure()
+#        env:
+#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#          uses: Ilshidur/action-discord@master
+#          with:
+#            args: |
+#              🚨 **브랜치 동기화 실패 알림**
+#
+#              **저장소:** ${{ github.repository }}
+#              **워크플로우:** ${{ github.workflow }}
+#              **실행자:** ${{ github.actor }}
+#              **실행 시간:** ${{ github.event.schedule }}
+#
+#              **상세 정보:**
+#              - 작업 URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#
+#              빠른 확인이 필요합니다! 🔍
+        run: |
+          echo "❌ 브랜치 동기화 중 오류가 발생했습니다."
+          exit 1

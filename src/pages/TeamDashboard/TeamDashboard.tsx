@@ -74,8 +74,6 @@ export const TeamDashboardPage = () => {
     enabled: !!teamId && !!selectedDate,
   });
 
-  console.error('??', articlesData);
-
   useLayoutEffect(() => {
     if (currentView === 'article') {
       setTimeout(() => {

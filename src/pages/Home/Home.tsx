@@ -170,9 +170,6 @@ export const Home = () => {
 
       if (effect.style.opacity === '' || effect.style.opacity === '0') {
         effect.style.opacity = '1';
-        // TODO: ???? 왜 이렇게 더해줘야지 가장 하단에 뜨는지는 좀 더 봐야힘
-        // effect.style.top = `${pos + 204 + 72}px`;
-        // effect.style.top = `${pos}px`;
         Array.from(effect.children).forEach((child) => {
           (child as HTMLElement).style.opacity = '1';
         });
@@ -324,7 +321,8 @@ export const Home = () => {
 
 const ScrollSnapContainer = styled.div`
   height: 100vh;
-  width: 100%;
+  width: 100vw;
+  overflow-x: hidden;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   position: relative;
@@ -343,7 +341,6 @@ const WaitBox = styled.div`
   flex-direction: column;
   justify-content: end;
   align-items: center;
-  // padding-bottom: 175px;
   padding-bottom: 135px;
   gap: 10px;
   position: absolute;
@@ -355,7 +352,6 @@ const WaitBox = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    // height: 200px;
     height: 150px;
 
     background: linear-gradient(
