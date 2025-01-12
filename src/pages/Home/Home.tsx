@@ -226,7 +226,7 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
-        <EventFloating />
+        {!isMobile && <EventFloating />}
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
@@ -326,13 +326,6 @@ const ScrollSnapContainer = styled.div`
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   position: relative;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    scrollbar-width: none;
-  }
 `;
 
 const ScrollStart = styled.div`
