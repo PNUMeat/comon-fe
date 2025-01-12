@@ -7,7 +7,16 @@ on:
       - dlwltn0430
       - mingkyeongg
   workflow_dispatch:
-
+  inputs:
+    branch:
+      description: "Select the branch to build and deploy"
+      required: true
+      default: "main"
+      type: choice
+      options:
+        - jaeanhan
+        - dlwltn0430
+        - mingkyeongg
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,6 +24,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name || github.event.inputs.branch }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -41,7 +52,9 @@ jobs:
         run: npm run lint
 
       - name: Build project
-        run: npm run build
+        run: |
+          echo "Building for branch: ${{ github.ref_name || github.event.inputs.branch }}"
+          npm run build
 
       - name: Deploy
         env:
