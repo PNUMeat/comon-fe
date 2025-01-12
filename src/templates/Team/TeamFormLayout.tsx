@@ -11,6 +11,7 @@ import { TeamModificationButton } from '@/templates/Team/TeamModificationButton'
 import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
 import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 const TeamContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -22,7 +23,7 @@ const TeamContainer = styled.div<HeightInNumber>`
   width: 100%;
   
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 0;
+    padding: 0 12px;
   }
 `;
 
@@ -54,6 +55,8 @@ export const TeamFormLayout: React.FC<
   const { title, subtitle } = FORM_TITLES[currentPath];
   const isOnTeamReg = currentPath === PATH.TEAM_REGISTRATION;
   const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     //   <form>의 onSubmit을 통해서 입력 값을 전달 받을 것이였으면 사용자 값들을 전역 상태로 만들면 안됐다.
@@ -61,7 +64,7 @@ export const TeamFormLayout: React.FC<
       <ComonFormTitle title={title} subtitle={subtitle} />
       <Spacer h={78} />
       <ComonFormGrid h={683}>{children}</ComonFormGrid>
-      <Spacer h={120} />
+      {isMobile ? <Spacer h={56} /> : <Spacer h={120} />}
       {isOnTeamReg && <TeamRegistrationButton />}
       {isOnTeamMod && <TeamModificationButton />}
     </TeamContainer>
