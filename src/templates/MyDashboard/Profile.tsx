@@ -66,6 +66,7 @@ const SubHeader = styled.div`
     font-size: 14px;
     margin-top: 50px;
     margin-bottom: 20px;
+    padding-left: 12px;
   }
 `;
 
@@ -158,6 +159,7 @@ const FallbackImg = styled.div`
   background: linear-gradient(146deg, #fda2d0 6.57%, #8488ec 93.43%);
   border-radius: 10px;
 `;
+
 const TextInput = styled.input<{ fontWeight: number }>`
   color: #333;
   font-family: 'Pretendard';
@@ -172,6 +174,15 @@ const TextInput = styled.input<{ fontWeight: number }>`
 
   &:focus {
     box-shadow: 0 1px 0 0 #ccc;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    letter-spacing: -0.24px;
+
+    &::placeholder {
+      color: #ccc;
+    }
   }
 `;
 
