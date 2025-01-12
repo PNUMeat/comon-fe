@@ -61,7 +61,7 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
         />
       </Flex>
       <Spacer h={34} />
-      <List>
+      <List itemCount={teams.length}>
         {teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
             <Flex height={210} justify="center" align="center">
@@ -203,8 +203,8 @@ const FlipCardContent = ({
   );
 };
 
-const List = styled.div`
-  display: grid;
+const List = styled.div<{ itemCount: number }>`
+  display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
