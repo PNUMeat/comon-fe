@@ -18,6 +18,7 @@ const TeamContainer = styled.div<HeightInNumber>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  width: 100%;
 `;
 
 // 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸

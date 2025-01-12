@@ -5,6 +5,8 @@ import { ComonTextInput } from '@/components/commons/Form/ComonTextInput';
 import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabel';
 import { HeightInNumber } from '@/components/types';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 import { EnrollSubmitButton } from '@/templates/User/EnrollSubmitButton';
 import { EnrollAgreementCheckbox } from '@/templates/User/segments/EnrollAgreementCheckbox';
@@ -20,9 +22,28 @@ const EnrollFormContainer = styled.div<HeightInNumber>`
   box-sizing: border-box;
   margin: 50px 86px;
   gap: 78px;
+  min-width: 390px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin: 0;
+    gap: 20px;
+    width: 100%;
+  }
 `;
 
 export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
+  const { width } = useWindowSize();
+
+  const MobileComponent = () => (
+    <>
+      <FormFieldLabel>프로필 이미지</FormFieldLabel>
+      <ComonImageInput />
+      <FormFieldLabel>닉네임</FormFieldLabel>
+      <ComonTextInput maxLength={10} placeholder={'닉네임'} />
+
+    </>
+  );
+
   return (
     <EnrollFormContainer h={h}>
       <ComonFormTitle
@@ -30,11 +51,17 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
         subtitle={'가입 후에도 모든 정보를 수정할 수 있어요'}
       />
       <ComonFormGrid h={494}>
-        <FormFieldLabel>닉네임</FormFieldLabel>
-        <ComonTextInput maxLength={10} placeholder={'닉네임'} />
+        {width > breakpoints.mobile ? (
+          <>
+            <FormFieldLabel>닉네임</FormFieldLabel>
+            <ComonTextInput maxLength={10} placeholder={'닉네임'} />
 
-        <FormFieldLabel>프로필 이미지</FormFieldLabel>
-        <ComonImageInput />
+            <FormFieldLabel>프로필 이미지</FormFieldLabel>
+            <ComonImageInput />
+          </>
+        ) : (
+          <MobileComponent />
+        )}
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>
         <ComonTextarea maxLength={50} placeholder={'자신을 소개해주세요!'} />
