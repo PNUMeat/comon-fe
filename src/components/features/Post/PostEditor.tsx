@@ -401,7 +401,7 @@ const PostEditor: React.FC<{
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
             placeholder={
-              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요.</EditorPlaceholder>
+              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요!</EditorPlaceholder>
             }
           />
           {floatingAnchorElem && (
