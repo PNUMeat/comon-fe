@@ -10,6 +10,7 @@ import { PATH } from '@/routes/path';
 import { TeamModificationButton } from '@/templates/Team/TeamModificationButton';
 import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
+import { breakpoints } from '@/constants/breakpoints';
 
 const TeamContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -19,6 +20,10 @@ const TeamContainer = styled.div<HeightInNumber>`
   align-items: center;
   box-sizing: border-box;
   width: 100%;
+  
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0;
+  }
 `;
 
 // 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸
