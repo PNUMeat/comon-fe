@@ -62,6 +62,8 @@ export const TeamDailySubject = () => {
   const isMobile = width <= breakpoints.mobile;
   const buttonFontSize = isMobile ? '16px' : '20px';
   const padding = isMobile ? '0 12px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
+  const spacingImg = isMobile ? 0 : 22;
   const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
@@ -185,11 +187,11 @@ export const TeamDailySubject = () => {
           />
         }
         </Suspense>
-        <Spacer h={22} />
+        <Spacer h={spacingImg} />
         <PageSectionHeader h={40}>
           <Title src={write} title="주제 작성하기" />
         </PageSectionHeader>
-        <Spacer h={39} />
+        <Spacer h={spacing} />
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}

@@ -204,7 +204,6 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 0 10px;
-    min-width: 390px;
     width: calc(100% - 12px);
     min-height: 500px;
   }
@@ -217,6 +216,11 @@ const EditorPlaceholder = styled.div`
   color: #ccc;
   top: 24px;
   left: 50px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    size: 14px;
+    left: 20px;
+  }
 `;
 
 const useDetectImageMutation = () => {
@@ -312,6 +316,7 @@ const TitleInput = styled.input`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 18px;
+    margin: 30px 0;
   }
 `;
 
@@ -401,7 +406,7 @@ const PostEditor: React.FC<{
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
             placeholder={
-              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요!</EditorPlaceholder>
+              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요.</EditorPlaceholder>
             }
           />
           {floatingAnchorElem && (

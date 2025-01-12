@@ -138,6 +138,7 @@ export const Posting = () => {
   };
 
   const padding = isMobile ? '0 10px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
 
   return (
     <CommonLayout>
@@ -171,7 +172,7 @@ export const Posting = () => {
           content={article}
           title={articleTitle}
         />
-        <Spacer h={38} />
+        <Spacer h={spacing} />
         <ConfirmButtonWrap
           disabled={isPending}
           isPending={isPending}

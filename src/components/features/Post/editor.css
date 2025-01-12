@@ -3,6 +3,10 @@
     font-family: Pretendard, serif;
     line-height: 1.5;
     padding: 20px 50px;
+
+    @media screen and (max-width: 768px) {
+        padding: 20px 20px;
+    }
 }
 
 .content-editable:focus {

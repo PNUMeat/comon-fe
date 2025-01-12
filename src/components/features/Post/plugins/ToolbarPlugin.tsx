@@ -45,6 +45,9 @@ const ToolbarWrap = styled.div`
     align-items: flex-start;
     border-bottom: none;
     padding: 0 8px;
+    height: auto;
+    width: 100%;
+    box-sizing: border-box;
   }
 `;
 
@@ -187,8 +190,8 @@ export const ToolbarPlugin: React.FC<{
                 selectTag(item.label);
               }}
               isSelected={item.label === tag}
-              fontSize={'8px'}
-              padding={'4px 8px'}
+              fontSize={'6px'}
+              padding={'2px 4px'}
               height="12px"
             />
           ))}
