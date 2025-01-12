@@ -1,5 +1,3 @@
-import { useWindowWidth } from '@/hooks/useWindowWidth';
-
 import { Container } from '@/components/commons/Container';
 import { Header } from '@/components/commons/Header';
 import { Alert } from '@/components/commons/Modal/Alert';
@@ -39,14 +37,8 @@ export const CommonLayout: React.FC<{
     setNavigator(navigate);
   }, [navigate]);
 
-  const width = useWindowWidth();
-  const isMobile = width <= breakpoints.mobile;
-
   return (
-    <Container
-      padding={'0'}
-      scrollSnapType={isMobile ? 'y mandatory' : undefined}
-    >
+    <Container padding={'0'}>
       <Alert />
       <Confirm />
       <ScrollStart />
