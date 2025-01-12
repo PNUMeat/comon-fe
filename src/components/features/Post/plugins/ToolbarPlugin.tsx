@@ -26,6 +26,8 @@ import {
   SELECTION_CHANGE_COMMAND,
   TextFormatType,
 } from 'lexical';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 const ToolbarWrap = styled.div`
   height: 44px;
@@ -36,7 +38,22 @@ const ToolbarWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    border-bottom: none;
+    padding: 0 8px;
+  }
 `;
+
+const HorizontalLine = styled.div`
+  height: 1px;
+  background-color: #c2c5fb;
+  width: 100%;
+`;
+
 
 const TAG_LIST: {
   color: string;
@@ -135,6 +152,95 @@ export const ToolbarPlugin: React.FC<{
   const dispatchTextFormat = (command: TextFormatType) => () => {
     activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, command);
   };
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
+  if (isMobile) {
+    return (
+      <ToolbarWrap>
+        {setTag ? (
+          <>
+        <div
+          style={{
+            display: 'flex',
+            width: '405px',
+            gap: '4px',
+            alignItems: 'center',
+          }}
+        >
+          <SText
+            whiteSpace={'nowrap'}
+            color={'#CCC'}
+            fontSize={'10px'}
+            fontWeight={'600'}
+          >
+            태그 선택:
+          </SText>
+          {TAG_LIST.map((item) => (
+            <Tag
+              key={item.label}
+              bgColor={item.color}
+              label={item.label}
+              onClick={() => {
+                setTag(item.label);
+                selectTag(item.label);
+              }}
+              isSelected={item.label === tag}
+              fontSize={'8px'}
+              padding={'4px 8px'}
+              height="12px"
+            />
+          ))}
+        </div>
+        <HorizontalLine />
+        </>
+      ) : null}
+
+      <div
+      style={{
+        display: 'flex',
+        width: '100%',
+        justifyContent: 'space-between',
+        gap: '20px',
+        alignItems: 'center',
+        zIndex: 100,
+      }}
+      >
+        <FontDropdown
+          editor={activeEditor}
+          currentFontFamily={fontFamily}
+          currentFontSize={fontSize}
+          currentFontColor={fontColor}
+          dispatchTextFormat={dispatchTextFormat}
+          isBold={isBold}
+        />
+        <div
+          style={{
+            display: 'flex',
+            width: '69px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <button onClick={insertLink}>
+            <InsertIcon
+              src={linkIcon}
+              alt={'insert link button'}
+              isSelected={isLink}
+            />
+          </button>
+          <InsertImageButton
+            insertImage={insertImage}
+            buttonLabel={
+              <InsertIcon src={imgIcon} alt={'insert image button'} />
+            }
+          />
+        </div>
+        </div>
+        <HorizontalLine />
+      </ToolbarWrap>
+    );
+  }
 
   return (
     <ToolbarWrap>
