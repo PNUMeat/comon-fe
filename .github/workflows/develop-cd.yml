@@ -5,7 +5,7 @@ on:
     branches:
       - jaeanhan
       - dlwltn0430
-      - mingkeongg
+      - mingkyeongg
   workflow_dispatch:
 
 jobs:
