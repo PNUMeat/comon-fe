@@ -229,7 +229,7 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
-        <EventFloating />
+        {!isMobile && <EventFloating />}
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
