@@ -53,6 +53,7 @@ import {
 } from 'lexical';
 
 import './editor.css';
+import { breakpoints } from '@/constants/breakpoints';
 
 const onError = (error: Error) => console.error(error);
 
@@ -200,6 +201,13 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
     }
   `
       : ''}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 10px;
+    min-width: 390px;
+    width: calc(100% - 12px);
+    min-height: 500px;
+  }
 `;
 
 const EditorPlaceholder = styled.div`
@@ -300,6 +308,10 @@ const TitleInput = styled.input`
 
   ::placeholder {
     color: #ccc;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 18px;
   }
 `;
 

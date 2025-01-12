@@ -34,6 +34,11 @@ button {
     background-color: #fff;
     position: fixed;
     padding: 8px;
+    z-index: 1000;
+
+    @media screen and (max-width: 768px) {
+        font-size: 12px;
+    }
 }
 
 .editor-dropdown-item:hover {
