@@ -7,16 +7,16 @@ on:
       - dlwltn0430
       - mingkyeongg
   workflow_dispatch:
-  inputs:
-    branch:
-      description: "Select the branch to build and deploy"
-      required: true
-      default: "main"
-      type: choice
-      options:
-        - jaeanhan
-        - dlwltn0430
-        - mingkyeongg
+    inputs:
+      branch:
+        description: "Select the branch to build and deploy"
+        required: true
+        default: "main"
+        type: choice
+        options:
+          - jaeanhan
+          - dlwltn0430
+          - mingkyeongg
 jobs:
   deploy:
     runs-on: ubuntu-latest
