@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 
-export const Title: React.FC<{ src: string, title: string }> = ({ src, title }) => (
+export const Title: React.FC<{ src: string; title: string }> = ({
+  src,
+  title,
+}) => (
   <TitleStyle>
     <Icon src={src} />
     <span>{title}</span>

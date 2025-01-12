@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
@@ -6,12 +8,13 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import magnifier from '@/assets/TeamJoin/magnifier.png';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ITeamInfo, joinTeam } from '@/api/team';
+import magnifier from '@/assets/TeamJoin/magnifier.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -34,6 +37,9 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
     onSearch(searchKeyword);
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <>
       <PageSectionHeader h={40}>
@@ -45,7 +51,7 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
         positions={[{ top: '90px' }]}
         height="470px"
       />
-      <Spacer h={34} />
+      {!isMobile && <Spacer h={34} />}
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
       <Flex justify="flex-end" align="center" gap="10px">
         <SearchBar
@@ -125,18 +131,33 @@ const FlipCardContent = ({
       .catch((err) => console.error(err));
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <Box width="100%" height="100%">
       <Flex direction="column" justify="center" align="center" width={100}>
-        <SText color="#333" fontSize="12px" fontWeight={600}>
+        <SText
+          color="#333"
+          fontSize={isMobile ? '10px' : '12px'}
+          fontWeight={600}
+        >
           TEAM
         </SText>
         <Spacer h={4} />
-        <SText fontSize="24px" color="#333" fontWeight={700}>
+        <SText
+          fontSize={isMobile ? '16px' : '24px'}
+          color="#333"
+          fontWeight={700}
+        >
           {team.teamName}
         </SText>
-        <Spacer h={8} />
-        <SText fontSize="16px" color="#777" fontWeight={400}>
+        <Spacer h={isMobile ? 4 : 8} />
+        <SText
+          fontSize={isMobile ? '10px' : '16px'}
+          color="#777"
+          fontWeight={400}
+        >
           since {team.createdAt}
         </SText>
         <Spacer h={8} />
@@ -145,7 +166,7 @@ const FlipCardContent = ({
             {team.topic}
           </SText>
         </Label>
-        <Spacer h={20} />
+        <Spacer h={isMobile ? 16 : 20} />
         {isBack ? (
           <>
             <PasswordInput
@@ -165,8 +186,8 @@ const FlipCardContent = ({
           </>
         ) : (
           <>
-            <ProfileList profiles={profiles || []} />
-            <Spacer h={14} />
+            <ProfileList profiles={profiles || []} size={isMobile ? 20 : 24} />
+            <Spacer h={isMobile ? 12 : 14} />
             <ButtonWrapper>
               <Button backgroundColor={colors.buttonPurple}>
                 {team.memberCount} members
@@ -186,6 +207,11 @@ const List = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 4px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -213,6 +239,15 @@ const PasswordInput = styled.input`
   &:focus {
     border-color: ${colors.buttonPurple};
   }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100px;
+    height: 20px;
+
+    &::placeholder {
+      font-size: 10px;
+    }
+  }
 `;
 
 const FlipCard = styled.div`
@@ -220,6 +255,12 @@ const FlipCard = styled.div`
   width: 330px;
   height: 210px;
   perspective: 1000px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    // width: 160px;
+    width: 100%;
+    height: 170px;
+  }
 `;
 
 const FlipCardInner = styled.div<{ isFlipped: boolean }>`

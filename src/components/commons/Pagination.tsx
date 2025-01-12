@@ -1,4 +1,5 @@
 import ArrowButton from '@/assets/TeamJoin/pagination_arrow.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -69,6 +70,11 @@ const PaginationContainer = styled.div<{ hideShadow?: boolean }>`
     props.hideShadow ? '' : '5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)'};
   max-width: 270px;
   z-index: 999;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    max-width: 220px;
+    height: 20px;
+  }
 `;
 
 const LeftArrow = styled.img`
@@ -76,12 +82,22 @@ const LeftArrow = styled.img`
   height: 20px;
   transform: rotate(180deg);
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const RightArrow = styled.img`
   width: 20px;
   height: 20px;
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const PageList = styled.div`

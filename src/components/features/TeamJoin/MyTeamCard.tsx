@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Box } from '@/components/commons/Box';
 import { Button } from '@/components/commons/Button';
@@ -16,6 +18,7 @@ import { ITeamInfo } from '@/api/team';
 import Arrow from '@/assets/TeamJoin/carousel_arrow.png';
 import click from '@/assets/TeamJoin/click.png';
 import crown from '@/assets/TeamJoin/crown.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -42,6 +45,9 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
     nextArrow: <CustomArrow direction="right" />,
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <>
       <PageSectionHeader h={40}>
@@ -53,77 +59,104 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
         height="300px"
       />
 
-      <Spacer h={30} />
+      <Spacer h={isMobile ? 20 : 30} />
 
       <SliderWrapper>
         <Slider {...settings}>
           {teams.map((team) => (
             <div key={team.teamId}>
-              <Box width="100%">
+              <Box width={isMobile ? '90%' : '100%'} borderRadius="12px">
                 <Flex justify="space-between">
-                  <Box width="260px" height="260px">
-                    <ImageContainer
-                      src={team.imageUrl}
-                      altText={team.teamName}
-                      w="inherit"
-                      h="inherit"
-                      maxW={260}
-                    />
-                  </Box>
+                  {!isMobile && (
+                    <Box width="260px" height="260px">
+                      <ImageContainer
+                        src={team.imageUrl}
+                        altText={team.teamName}
+                        w="inherit"
+                        h="inherit"
+                        maxW={260}
+                      />
+                    </Box>
+                  )}
                   <Flex
                     direction="column"
                     justify="center"
                     align="center"
-                    width={30}
+                    width={isMobile ? 40 : 30}
                   >
-                    <SText color="#333" fontSize="16px" fontWeight={600}>
+                    <SText
+                      color="#333"
+                      fontSize={isMobile ? '10px' : '16px'}
+                      fontWeight={600}
+                      fontFamily={'Pretendard'}
+                    >
                       TEAM
                     </SText>
-                    <Spacer h={8} />
+                    <Spacer h={isMobile ? 4 : 8} />
                     <SText
-                      fontSize="40px"
+                      fontSize={isMobile ? '14px' : '40px'}
                       color="#333"
                       fontWeight={700}
                       whiteSpace="nowrap"
+                      fontFamily={'Pretendard'}
                     >
                       {team.teamName}
                     </SText>
-                    <Spacer h={8} />
-                    <SText fontSize="16px" color="#777" fontWeight={400}>
+                    <Spacer h={isMobile ? 4 : 8} />
+                    <SText
+                      fontSize={isMobile ? '10px' : '16px'}
+                      color="#777"
+                      fontWeight={400}
+                      fontFamily={'Pretendard'}
+                    >
                       since {team.createdAt}
                     </SText>
                     <Spacer h={8} />
                     <Label>
-                      <SText fontSize="10px" fontWeight={600}>
+                      <SText
+                        fontSize={isMobile ? '8px' : '10px'}
+                        fontWeight={600}
+                        fontFamily={'Pretendard'}
+                      >
                         {team.topic}
                       </SText>
                     </Label>
-                    <Spacer h={24} />
-                    <Flex direction="column" align="center" gap="10px">
-                      <Button backgroundColor={colors.buttonPurple}>
-                        {team.memberCount} members
-                      </Button>
-                    </Flex>
+                    {!isMobile && (
+                      <>
+                        <Spacer h={24} />
+                        <Flex direction="column" align="center" gap="10px">
+                          <Button backgroundColor={colors.buttonPurple}>
+                            {team.memberCount} members
+                          </Button>
+                        </Flex>
+                      </>
+                    )}
                   </Flex>
                   <Flex
                     direction="column"
                     justify="space-evenly"
                     align="center"
-                    width={35}
+                    width={isMobile ? 50 : 35}
                   >
                     <Link
                       to={`${PATH.TEAM_DASHBOARD}/${team.teamId}`}
                       style={{ textDecoration: 'none' }}
                     >
                       <Box
-                        width="272px"
-                        height="80px"
-                        padding="0"
-                        borderWidth="3px"
+                        width={isMobile ? '120px' : '272px'}
+                        height={isMobile ? '40px' : '80px'}
+                        padding={isMobile ? '20px 0px' : '0'}
+                        borderWidth={isMobile ? '1px' : '3px'}
+                        borderRadius={isMobile ? '6px' : '20px'}
                       >
                         <ClickImage src={click} />
                         <ActionText>
-                          <SText fontSize="20px" fontWeight={700} color="#333">
+                          <SText
+                            fontSize={isMobile ? '10px' : '20px'}
+                            fontWeight={isMobile ? 600 : 700}
+                            color="#333"
+                            fontFamily={'Pretendard'}
+                          >
                             팀 페이지로 이동하기
                           </SText>
                         </ActionText>
@@ -162,6 +195,30 @@ const SliderWrapper = styled.div`
       }
     }
   }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    max-width: 300px;
+    border-radius: 20px;
+
+    .slick-slide > * {
+      position: relative;
+      left: 5%;
+    }
+
+    .slick-dots {
+      bottom: -28px;
+      .slick-active {
+        button:before {
+          font-size: 10px;
+        }
+      }
+      li {
+        button:before {
+          font-size: 10px;
+        }
+      }
+    }
+  }
 `;
 
 const CustomArrow: React.FC<CustomArrowProps> = ({ onClick, direction }) => (
@@ -187,6 +244,15 @@ const ArrowButton = styled.div<{ direction: string }>`
   transform: translateY(-50%);
   ${({ direction }) =>
     direction === 'right' ? 'right: -90px;' : 'left: -90px;'}
+
+  @media(max-width: ${breakpoints.mobile}px) {
+    width: 30px;
+    height: 60px;
+    border-radius: 10px;
+
+    ${({ direction }) =>
+      direction === 'right' ? 'right: -24px;' : 'left: -24px;'}
+  }
 `;
 
 const ArrowImage = styled.img<{ direction: string }>`
@@ -194,6 +260,10 @@ const ArrowImage = styled.img<{ direction: string }>`
   height: 52px;
   transform: ${({ direction }) =>
     direction === 'right' ? 'rotate(180deg)' : 'none'};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 10px;
+  }
 `;
 
 const ImageContainer = styled(LazyImage)`
@@ -205,9 +275,18 @@ const ImageContainer = styled(LazyImage)`
 const ClickImage = styled.img`
   width: 24px;
   height: 24px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const ActionText = styled.div`
   margin-left: 8px;
   color: #333;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-left: 4px;
+  }
 `;

@@ -16,7 +16,7 @@ interface ContainerProps {
 export const ContainerStyle = styled.div<ContainerProps>`
   width: 100%;
   max-width: ${(props) => props.maxW || 1300}px;
-  padding: ${(props) => props.padding || '0 70px'};
+  padding: ${(props) => props.padding || '0'};
   margin: ${(props) => props.margin || '0 auto'};
   ${(props) =>
     props.scrollSnapType === 'y mandatory'
@@ -25,10 +25,15 @@ export const ContainerStyle = styled.div<ContainerProps>`
   scroll-snap-align: ${(props) => props.scrollSnapAlign};
   transform: ${(props) => props.transform};
   min-width: 390px;
+  box-sizing: border-box;
+
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 0 20px;
-    width: 100%;
-    box-sizing: border-box;
+    padding: ${(props) => props.padding || '0 20px'};
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
   }
 `;
 

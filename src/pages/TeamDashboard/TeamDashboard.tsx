@@ -62,14 +62,13 @@ export const TeamDashboardPage = () => {
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
-
   useEffect(() => {
     if (isSuccess && teamInfoData) {
       addTags(teamInfoData.subjectArticleDateAndTagResponses);
     }
   }, [isSuccess]);
 
-  const { data: articlesData, dataUpdatedAt } = useQuery({
+  const { data: articlesData, refetch } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
@@ -102,7 +101,6 @@ export const TeamDashboardPage = () => {
 
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
-  // const tags = teamInfoData?.subjectArticleDateAndTagResponses || [];
 
   return (
     <Fragment>
@@ -127,7 +125,7 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}+${dataUpdatedAt}`}
+            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
@@ -145,6 +143,7 @@ export const TeamDashboardPage = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              refetchArticles={refetch}
               teamId={Number(teamId)}
             />
           )}

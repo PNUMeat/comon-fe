@@ -101,7 +101,7 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
-  const { data } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
@@ -123,11 +123,11 @@ const SubjectControlButton: React.FC<{
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
         fontSize="18px"
-        color="#fff"
+        color={isSuccess ? '#fff' : 'transparent'}
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        {data?.articleId ? '주제 수정' : '주제 작성'}
+        {!isSuccess ? '요청 대기' : data?.articleId ? '주제 수정' : '주제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -238,7 +238,7 @@ export const TeamAdmin = () => {
     }
   }, [isSuccess]);
 
-  const { data: articlesData, dataUpdatedAt } = useQuery({
+  const { data: articlesData, refetch } = useQuery({
     queryKey: ['articles-by-date', id, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(id), selectedDate, page),
     enabled: !!id && !!selectedDate,
@@ -378,7 +378,6 @@ export const TeamAdmin = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', id, selectedDate, page]}+${dataUpdatedAt}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
@@ -400,6 +399,7 @@ export const TeamAdmin = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              refetchArticles={refetch}
               teamId={Number(id)}
             />
           )}

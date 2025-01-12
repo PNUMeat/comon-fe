@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Box } from '@/components/commons/Box';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
@@ -11,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
 import click from '@/assets/TeamJoin/click.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
@@ -98,18 +101,30 @@ const TeamData = () => {
 };
 
 export const TeamJoinPage = () => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <>
       <TeamData />
-      <SText color="#333" fontSize="14px" textAlign="center">
+      <SText color="#777" fontSize="14px" textAlign="center">
         혹은, 새로운 팀을 생성하시겠나요?
       </SText>
       <Spacer h={48} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
-        <Box width="100%" height="80px" padding="0" borderWidth="3px">
+        <Box
+          width="100%"
+          height={isMobile ? '48px' : '80px'}
+          padding="0"
+          borderWidth={isMobile ? '1.5px' : '3px'}
+        >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText
+              color="#333"
+              fontSize={isMobile ? '16px' : '20px'}
+              fontWeight={700}
+            >
               팀 생성하기
             </SText>
           </ActionText>

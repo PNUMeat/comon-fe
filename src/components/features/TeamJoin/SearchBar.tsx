@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, KeyboardEvent } from 'react';
 
 import MagnifierIcon from '@/assets/TeamJoin/search.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -45,6 +46,12 @@ const SearchBarWrapper = styled.div`
   border: 1px solid ${colors.borderPurple};
   border-radius: 52px;
   background-color: #fff;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 150px;
+    height: 24px;
+    padding: 0px 12px;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -57,6 +64,10 @@ const SearchInput = styled.input`
 
   &::placeholder {
     color: #ccc;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
   }
 `;
 

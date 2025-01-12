@@ -69,8 +69,8 @@ export const TeamDailySubject = () => {
     }
 
     const replacedArticleBody = subjectImages
-      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
-      : content;
+      ? content.trim().replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
+      : content.trim();
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);

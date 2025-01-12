@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -39,5 +40,9 @@ const StyledButton = styled.button<ButtonProps>`
 
   &:hover {
     opacity: 0.9;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
   }
 `;

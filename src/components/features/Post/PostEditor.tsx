@@ -211,7 +211,7 @@ const EditorPlaceholder = styled.div`
   left: 50px;
 `;
 
-const useDetectImageDeletion = () => {
+const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
 
@@ -220,10 +220,16 @@ const useDetectImageDeletion = () => {
       ImageNode,
       (mutations) => {
         // mutations.forEach((mutation, nodeKey) => {
+        // TODO: 여러개되면 이미지 순서가 바뀔 수도 있으니까 개별적으로 없애야함
         mutations.forEach((mutation) => {
           if (mutation === 'destroyed') {
             setImages([]);
+            return;
           }
+          // if (mutation === 'created') {
+          //   console.log('Node created:', nodeKey);
+          //   editor.getElementByKey(nodeKey);
+          // }
         });
       }
     );
@@ -242,14 +248,14 @@ const PostWriteSection = forwardRef<
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
   const [images, setImages] = useAtom(postImagesAtom);
-  useDetectImageDeletion();
+  useDetectImageMutation();
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     const items = event.clipboardData.items;
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         const file = items[i].getAsFile();
-        // TODO: 이미지 여러개 들어갈때 수정
+        // TODO: 이미지 여러개 들어갈때 수정 + 이미지 순서 바꿨을 때
         if (file && images.length === 0) {
           const imageURL = URL.createObjectURL(file);
           const imgPayload: InsertImagePayload = {
