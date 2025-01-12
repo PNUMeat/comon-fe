@@ -1,0 +1,68 @@
+name: DEVELOP CI / CD
+
+on:
+  push:
+    branches:
+      - jaeanhan
+      - dlwltn0430
+      - mingkyeongg
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Select the branch to build and deploy"
+        required: true
+        default: "main"
+        type: choice
+        options:
+          - jaeanhan
+          - dlwltn0430
+          - mingkyeongg
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Create environment file
+        run: |
+          echo "VITE_TEST_URL=${{ secrets.VITE_TEST_URL }}" >> .env
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build project
+        run: |
+          echo "Building for branch: ${{ github.event.inputs.branch || github.ref_name }}"
+          npm run build
+
+      - name: Deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.TEST_SSH_SECRETE }}
+          EC2_HOST: ${{ secrets.TEST_EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.TEST_EC2_USERNAME }}
+        run: |
+          echo -e "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          scp -o StrictHostKeyChecking=no -i key.pem -r dist/* $EC2_USERNAME@$EC2_HOST:/var/www/html/
+          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USERNAME@$EC2_HOST "sudo systemctl restart nginx"
