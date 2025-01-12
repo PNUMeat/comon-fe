@@ -6,7 +6,7 @@ import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabel';
 import { HeightInNumber } from '@/components/types';
 import { breakpoints } from '@/constants/breakpoints';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { EnrollSubmitButton } from '@/templates/User/EnrollSubmitButton';
 import { EnrollAgreementCheckbox } from '@/templates/User/segments/EnrollAgreementCheckbox';
@@ -32,7 +32,7 @@ const EnrollFormContainer = styled.div<HeightInNumber>`
 `;
 
 export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
-  const { width } = useWindowSize();
+  const width = useWindowWidth();
 
   const MobileComponent = () => (
     <>
