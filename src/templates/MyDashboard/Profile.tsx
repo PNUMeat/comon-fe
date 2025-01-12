@@ -13,6 +13,7 @@ import {
 } from '@/api/user';
 import comon from '@/assets/Home/comon500x500.png';
 import Alarm from '@/assets/Withdraw/alarm.svg';
+import { breakpoints } from '@/constants/breakpoints';
 import { imageAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -38,9 +39,15 @@ const ProfileWrap = styled.div<{ doBlur: boolean }>`
   flex-shrink: 0;
   border-radius: 20px;
   border: 1px solid #8488ec;
-
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   backdrop-filter: blur(20px);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    border: 1px solid #f0f1ff;
+    width: 100%;
+    margin-bottom: 100px;
+    padding: 28px;
+  }
 `;
 
 const SubHeader = styled.div`
@@ -54,6 +61,12 @@ const SubHeader = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+  }
 `;
 
 const Heading = styled.div`
@@ -64,7 +77,11 @@ const Heading = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  margin-bottom: 33px;
+  margin-bottom: 30px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
 const ProfileInfoGrid = styled.div`
@@ -73,6 +90,10 @@ const ProfileInfoGrid = styled.div`
   grid-template-columns: 128px 1fr;
   gap: 31px;
   margin-bottom: 60px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-columns: 50px 1fr;
+  }
 `;
 
 const PInfoLabel = styled.div`
@@ -82,15 +103,26 @@ const PInfoLabel = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
-const ProfileTextValue = styled.div<{ fontWeight: number }>`
-  color: #333;
+const ProfileTextValue = styled.div<{
+  fontWeight: number;
+  hasExplain?: boolean;
+}>`
+  color: ${({ hasExplain }) => (hasExplain ? '#333' : '#ccc')};
   font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;
   font-weight: ${(props) => props.fontWeight};
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
 const ModifyButton = styled.button`
@@ -105,7 +137,6 @@ const ModifyButton = styled.button`
   border-radius: 40px;
   background-color: #6e74fa;
   color: #fff;
-
   text-align: center;
   font-family: 'Pretendard';
   font-size: 14px;
@@ -114,14 +145,19 @@ const ModifyButton = styled.button`
   line-height: 19px;
   letter-spacing: -0.28px;
   white-space: nowrap;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    letter-spacing: -0.24px;
+  }
 `;
+
 const FallbackImg = styled.div`
   width: 80px;
   height: 80px;
-  background-color: #d9d9d9;
+  background: linear-gradient(146deg, #fda2d0 6.57%, #8488ec 93.43%);
   border-radius: 10px;
 `;
-
 const TextInput = styled.input<{ fontWeight: number }>`
   color: #333;
   font-family: 'Pretendard';
@@ -279,12 +315,13 @@ const ProfileViewer = () => {
       </ProfileTextValue>
 
       <PInfoLabel>자기소개</PInfoLabel>
-      <ProfileTextValue fontWeight={500}>
-        {memberExplain ?? '간단한 소개를 해주세요'}
+      <ProfileTextValue fontWeight={500} hasExplain={!!memberExplain}>
+        {memberExplain ?? '나의 관심분야, 목표 등으로 소개글을 채워보세요!'}
       </ProfileTextValue>
     </ProfileInfoGrid>
   );
 };
+
 const ProfileModifier = () => {
   const queryClient = useQueryClient();
   const data = queryClient.getQueryData([
