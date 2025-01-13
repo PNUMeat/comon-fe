@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { $patchStyleText } from '@lexical/selection';
 import { $getSelection, LexicalEditor, TextFormatType } from 'lexical';
+import { breakpoints } from '@/constants/breakpoints';
 
 const FONT_COLOR_OPTIONS: string[] = [
   '#000',
@@ -38,6 +39,11 @@ const ColorBox = styled.div<{ color: string }>`
   border: 1px solid #cbd5e0;
   border-radius: 3px;
   box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const LabelBox = styled.div`
@@ -52,6 +58,10 @@ const LabelBox = styled.div`
   // white-space: nowrap;
   // overflow: hidden;
   // text-overflow: ellipsis;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+  }
 `;
 
 export const FontDropdown: React.FC<{
@@ -136,4 +146,8 @@ const FontFlex = styled.div`
   align-items: center;
   gap: 47px;
   width: 360px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 16px;
+  }
 `;

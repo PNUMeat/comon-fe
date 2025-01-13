@@ -53,6 +53,7 @@ import {
 } from 'lexical';
 
 import './editor.css';
+import { breakpoints } from '@/constants/breakpoints';
 
 const onError = (error: Error) => console.error(error);
 
@@ -200,6 +201,12 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
     }
   `
       : ''}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 10px;
+    width: calc(100% - 12px);
+    min-height: 500px;
+  }
 `;
 
 const EditorPlaceholder = styled.div`
@@ -209,6 +216,11 @@ const EditorPlaceholder = styled.div`
   color: #ccc;
   top: 24px;
   left: 50px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    size: 14px;
+    left: 20px;
+  }
 `;
 
 const useDetectImageMutation = () => {
@@ -301,6 +313,11 @@ const TitleInput = styled.input`
   ::placeholder {
     color: #ccc;
   }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 18px;
+    margin: 30px 0;
+  }
 `;
 
 const PostSectionWrap: React.FC<{
@@ -389,7 +406,7 @@ const PostEditor: React.FC<{
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
             placeholder={
-              <EditorPlaceholder>내용을 작성해주세요</EditorPlaceholder>
+              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요.</EditorPlaceholder>
             }
           />
           {floatingAnchorElem && (

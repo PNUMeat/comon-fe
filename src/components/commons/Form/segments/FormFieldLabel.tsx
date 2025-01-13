@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 export const FormFieldLabel = styled.label`
@@ -7,4 +8,8 @@ export const FormFieldLabel = styled.label`
   line-height: normal;
   display: block;
   color: #333;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 16px;
+  }
 `;
