@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
@@ -16,6 +18,7 @@ import {
 } from '@/api/mypage';
 import { withdrawTeam } from '@/api/team';
 import announcement from '@/assets/TeamDashboard/announcement.png';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -26,13 +29,6 @@ const ModeButtonsWrapper = styled.div`
   align-items: center;
   margin-left: 15px;
   position: relative;
-
-  &::before {
-    position: absolute;
-    content: '📋';
-    font-size: 24px;
-    transform: translateX(-30px);
-  }
 
   &::after {
     position: absolute;
@@ -45,6 +41,16 @@ const ModeButtonsWrapper = styled.div`
     width: 184px;
     background-color: #c8c8c8;
     transform: translateX(5px);
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-top: 50px;
+    margin-bottom: 24px;
+    margin-left: 0px;
+
+    &::after {
+      width: 180px;
+    }
   }
 `;
 
@@ -76,13 +82,16 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
       : ''}
 
   color: ${(props) => (props.isSelected ? '#333' : '#777')};
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    padding: 2px 20px;
+  }
 `;
 
 const ArticleWrapper = styled.div<{
@@ -97,12 +106,17 @@ const ArticleWrapper = styled.div<{
   gap: 8px;
   flex-shrink: 0;
   box-sizing: border-box;
-
   border-radius: 20px;
   border: 1px solid #cdcfff;
   background: #fff;
-  /* drop shadow ver 1 */
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
+    height: ${(props) => (props.height ? props.height : '430px')};
+    padding: 30px 28px;
+    position: relative;
+  }
 `;
 
 const ArticleHeader = styled.div`
@@ -111,14 +125,18 @@ const ArticleHeader = styled.div`
   height: 29px;
   display: flex;
   gap: 8px;
-
   color: #333;
-
   font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 16px;
+    height: fit-content;
+    margin-bottom: 20px;
+  }
 `;
 
 const ArticleGrid = styled.div`
@@ -128,6 +146,11 @@ const ArticleGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: fit-content;
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const ArticlePreview = styled.div<{
@@ -144,13 +167,19 @@ const ArticlePreview = styled.div<{
   ${(props) =>
     props.isSelected
       ? `
-  background: #D9D9D9;
-box-shadow: 3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset`
-      : ` background: #fff;
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)`};
-
+    box-shadow: 3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset`
+      : `
+    box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)`};
   padding-bottom: 10px;
   cursor: pointer;
+  background-color: #fff;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 140px;
+    height: 86px;
+    padding: 12px 14px;
+    gap: 16px;
+  }
 `;
 
 const ArticlePreviewTitle = styled.div`
@@ -159,6 +188,11 @@ const ArticlePreviewTitle = styled.div`
   display: flex;
   flex-direction: column;
   gap: 7px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 0px;
+    gap: 6px;
+  }
 `;
 
 const ArticleWriter = styled.div`
@@ -167,6 +201,37 @@ const ArticleWriter = styled.div`
   display: flex;
   gap: 7px;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 8px;
+    height: 14px;
+  }
+`;
+
+const WriterProfile = styled.img`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: contain;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+const PaginationWrapper = styled.div`
+  transform: translate(0, -18px);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const MyArticles: React.FC<{
@@ -174,6 +239,9 @@ const MyArticles: React.FC<{
   selectedId: number | null;
   setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
 }> = ({ selectedId, setSelectedId, content }) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <ArticleGrid>
       {content.map((c) => (
@@ -188,7 +256,7 @@ const MyArticles: React.FC<{
             <SText
               color={'#333'}
               fontFamily={'Pretendard'}
-              fontSize={'16px'}
+              fontSize={isMobile ? '14px' : '16px'}
               fontWeight={600}
             >
               {c.articleTitle}
@@ -203,12 +271,8 @@ const MyArticles: React.FC<{
             </SText>
           </ArticlePreviewTitle>
           <ArticleWriter>
-            <img
-              src={c.memberImage}
-              alt={'profile picture'}
-              style={{ width: '16px', height: '16px', objectFit: 'contain' }}
-            />
-            <SText fontSize={'12px'} fontWeight={600}>
+            <WriterProfile src={c.memberImage} alt={'profile picture'} />
+            <SText fontSize={isMobile ? '10px' : '12px'} fontWeight={600}>
               {c.memberName}
             </SText>
           </ArticleWriter>
@@ -224,7 +288,8 @@ const ArticlesViewer: React.FC<{
   setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-}> = ({ selectedId, setSelectedId, teamId, page, setPage }) => {
+  isMobile: boolean;
+}> = ({ selectedId, setSelectedId, teamId, page, setPage, isMobile }) => {
   const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: [`my-articles`, teamId, page],
@@ -252,7 +317,7 @@ const ArticlesViewer: React.FC<{
         {pagination && (
           <SText
             color={'#6e74fa'}
-            fontSize={'20px'}
+            fontSize={isMobile ? '16px' : '20px'}
             fontWeight={200}
             fontFamily={'Pretendard'}
           >
@@ -266,14 +331,14 @@ const ArticlesViewer: React.FC<{
         content={myArticles}
       />
       {pagination && (
-        <div style={{ transform: 'translate(0, -18px)' }}>
+        <PaginationWrapper>
           <Pagination
             totalPages={pagination.totalPages}
             onPageChange={onPageChange}
             currentPageProp={page}
             hideShadow
           />
-        </div>
+        </PaginationWrapper>
       )}
     </ArticleWrapper>
   );
@@ -298,7 +363,6 @@ const InformationLabel = styled.div`
 
 const InformationValue = styled.div`
   color: #727272;
-
   font-family: 'Pretendard';
   font-size: 18px;
   font-style: normal;
@@ -309,7 +373,6 @@ const InformationValue = styled.div`
 
 const TeamWithdrawButton = styled.button`
   color: #aa3232;
-
   text-align: right;
   font-family: 'Pretendard';
   font-size: 14px;
@@ -534,6 +597,14 @@ const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
   border-radius: 16px 16px 0px 0px;
   background: ${(props) => (props.isSelected ? '#6e74fa' : '#3D3F6A')};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 60px;
+    height: 30px;
+    border-radius: 12px 12px 0 0;
+    padding: 8px 8px 4px 8px;
+    gap: 2px;
+  }
 `;
 
 const TeamButtonLabel = styled.div`
@@ -541,7 +612,6 @@ const TeamButtonLabel = styled.div`
   display: flex;
   justify-content: center;
   color: #fff;
-
   text-align: center;
   font-family: 'Pretendard';
   font-size: 14px;
@@ -550,6 +620,13 @@ const TeamButtonLabel = styled.div`
   line-height: 17px;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+    overflow: hidden;
+    display: block;
+    line-height: 10px;
+  }
 `;
 
 const TeamButton: React.FC<{
@@ -557,16 +634,19 @@ const TeamButton: React.FC<{
   onClick: () => void;
   teamName: string;
 }> = ({ isSelected, onClick, teamName }) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <TeamButtonWrap onClick={onClick} isSelected={isSelected}>
       <SText
         color={'#fff'}
         fontFamily={'Pretendard'}
-        fontSize={'10px'}
+        fontSize={isMobile ? '8px' : '10px'}
         fontWeight={500}
-        lineHeight={'12px'}
+        lineHeight={isMobile ? '6px' : '12px'}
       >
-        team
+        Team
       </SText>
       <TeamButtonLabel>{teamName}</TeamButtonLabel>
     </TeamButtonWrap>
@@ -594,6 +674,9 @@ export const MyTeams = () => {
     }
   }, [data]);
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
@@ -618,6 +701,7 @@ export const MyTeams = () => {
           teamId={teamId}
           page={page}
           setPage={setPage}
+          isMobile={isMobile}
         />
       )}
       {mode === 'information' && teamId && (
