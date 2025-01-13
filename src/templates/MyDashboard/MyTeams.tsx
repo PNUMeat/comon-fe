@@ -550,6 +550,10 @@ const TeamButtonLabel = styled.div`
   line-height: 17px;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const TeamButton: React.FC<{
