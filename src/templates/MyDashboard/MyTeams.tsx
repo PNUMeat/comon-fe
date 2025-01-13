@@ -161,6 +161,15 @@ const ArticlePreviewTitle = styled.div`
   gap: 7px;
 `;
 
+const ArticleTitleWrap = styled.div`
+  width: 100%;
+  max-width: 180px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
 const ArticleWriter = styled.div`
   width: 100%;
   height: 16px;
@@ -185,14 +194,16 @@ const MyArticles: React.FC<{
           }
         >
           <ArticlePreviewTitle>
-            <SText
-              color={'#333'}
-              fontFamily={'Pretendard'}
-              fontSize={'16px'}
-              fontWeight={600}
-            >
-              {c.articleTitle}
-            </SText>
+            <ArticleTitleWrap>
+              <SText
+                color={'#333'}
+                fontFamily={'Pretendard'}
+                fontSize={'16px'}
+                fontWeight={600}
+              >
+                {c.articleTitle}
+              </SText>
+            </ArticleTitleWrap>
             <SText
               color={'#777'}
               fontFamily={'Pretendard'}
@@ -538,6 +549,7 @@ const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
 
 const TeamButtonLabel = styled.div`
   width: 100%;
+  max-width: 100%;
   display: flex;
   justify-content: center;
   color: #fff;
