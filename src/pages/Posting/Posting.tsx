@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
@@ -20,6 +22,7 @@ import { getTeamTopic } from '@/api/dashboard';
 import { createPost, mutatePost } from '@/api/postings';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import {
@@ -133,6 +136,16 @@ const PostSubjectViewer: React.FC<{
       show={show}
     >
       <GapFlex gap={20}>
+        {data?.articleTitle ? (
+          <SText
+            color={'#ccc'}
+            fontSize={'20px'}
+            fontWeight={700}
+            fontFamily={'Pretendard'}
+          >
+            주제
+          </SText>
+        ) : null}
         <SText
           color={data?.articleTitle ? '#333' : '#ccc'}
           fontSize={'20px'}
@@ -205,6 +218,9 @@ export const Posting = () => {
   const page = useAtomValue(pageAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+  const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -286,9 +302,12 @@ export const Posting = () => {
       });
   };
 
+  const padding = isMobile ? '0 10px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
+
   return (
     <CommonLayout>
-      <Flex direction={'column'} align={'center'} padding={'0 105px'}>
+      <Flex direction={'column'} align={'center'} padding={padding}>
         <Spacer h={22} />
         <PageSectionHeader h={40}>
           <Title src={write} title="오늘의 글 등록하기" />
@@ -300,7 +319,7 @@ export const Posting = () => {
           content={article}
           title={articleTitle}
         />
-        <Spacer h={38} />
+        <Spacer h={spacing} />
         <ConfirmButtonWrap
           disabled={isPending}
           isPending={isPending}
@@ -308,7 +327,7 @@ export const Posting = () => {
         >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText fontSize={buttonFontSize} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -333,6 +352,13 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   padding: 0;
   border: 3px solid ${colors.borderPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 312px;
+    border-radius: 40px;
+    height: 50px;
+    border: 2px solid ${colors.borderPurple};
+  }
 `;
 
 // TODO: TeamJoin에서 가져옴

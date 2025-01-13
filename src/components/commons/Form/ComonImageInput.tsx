@@ -5,6 +5,7 @@ import { HeightInNumber } from '@/components/types';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
@@ -21,6 +22,11 @@ const ImageContainer = styled.div<HeightInNumber>`
   background: #fff;
   box-sizing: border-box;
   justify-content: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 const PreviewImage = styled.img`
@@ -39,6 +45,10 @@ const PlaceholderText = styled.span`
   color: #cccccc;
   display: grid;
   place-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+  }
 `;
 
 const SideContainer = styled.div<HeightInNumber>`
@@ -46,6 +56,10 @@ const SideContainer = styled.div<HeightInNumber>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: auto;
+  }
 `;
 
 const InfoText = styled.p<{ fontSize: string }>`
@@ -57,6 +71,11 @@ const InfoText = styled.p<{ fontSize: string }>`
   letter-spacing: -0.28px;
   color: #cccccc;
   white-space: pre-line;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+    line-height: 14px;
+  }
 `;
 
 const AttachImageButton = styled.label`
@@ -78,6 +97,12 @@ const AttachImageButton = styled.label`
 
   input {
     display: none;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 90px;
+    height: 24px;
+    padding: 0;
   }
 `;
 

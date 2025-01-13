@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
@@ -17,6 +19,7 @@ import {
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
@@ -54,6 +57,11 @@ export const TeamDailySubject = () => {
   const setDashboardView = useSetAtom(currentViewAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+  const buttonFontSize = isMobile ? '16px' : '20px';
+  const padding = isMobile ? '0 12px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
@@ -158,11 +166,11 @@ export const TeamDailySubject = () => {
 
   return (
     <CommonLayout>
-      <Flex direction={'column'} align={'center'} padding={'0 105px'}>
+      <Flex direction={'column'} align={'center'} padding={padding}>
         <PageSectionHeader h={40}>
           <Title src={write} title="주제 작성하기" />
         </PageSectionHeader>
-        <Spacer h={39} />
+        <Spacer h={spacing} />
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
@@ -179,7 +187,7 @@ export const TeamDailySubject = () => {
         >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText fontSize={buttonFontSize} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -204,6 +212,13 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   padding: 0;
   border: 3px solid ${colors.borderPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 312px;
+    border-radius: 40px;
+    height: 50px;
+    border: 2px solid ${colors.borderPurple};
+  }
 `;
 
 // TODO: TeamJoin에서 가져옴

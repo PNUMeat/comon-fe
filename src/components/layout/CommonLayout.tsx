@@ -7,7 +7,6 @@ import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
-import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
@@ -54,8 +53,4 @@ export const CommonLayout: React.FC<{
 
 const ScrollStart = styled.div`
   scroll-snap-align: start;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    margin-top: 50px;
-  }
 `;

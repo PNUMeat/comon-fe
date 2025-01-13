@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 export const ComonFormSubmitButton = styled.button<{ disabled: boolean }>`
@@ -38,5 +39,9 @@ export const ComonFormSubmitButton = styled.button<{ disabled: boolean }>`
   
   span {
     font-size: 16px;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
   }
 `;

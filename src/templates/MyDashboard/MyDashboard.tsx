@@ -2,6 +2,7 @@ import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 const DashboardGird = styled.div`
@@ -12,6 +13,11 @@ const DashboardGird = styled.div`
   grid-template-areas: 'sidebar main';
   gap: 121px;
   margin-top: 54px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: block;
+    margin-top: 0px;
+  }
 `;
 
 const DSidebar = styled.aside`
@@ -22,6 +28,15 @@ const DSidebar = styled.aside`
   display: flex;
   flex-direction: column;
   gap: 13px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-height: fit-content;
+    gap: 4px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    padding: 8px 12px;
+    width: auto;
+  }
 `;
 
 const DContent = styled.div`
@@ -57,13 +72,27 @@ const Category = styled.div<{ isSelected?: boolean }>`
   }`
       : ''}
   color: #333;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Pretendard';
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
   line-height: 100%;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
+    height: 26px;
+
+    font-size: 12px;
+
+    ${(props) =>
+      props.isSelected
+        ? `&::after {
+    width: 2px;
+    height: 16px;
+    left: 7px;
+  }`
+        : ''}
+  }
 `;
 
 type DashboardCategories = {
@@ -74,7 +103,6 @@ type DashboardCategories = {
 const categories: DashboardCategories[] = [
   { label: '계정 정보', path: 'profile' },
   { label: '내 팀 관리', path: 'teams' },
-  // { label: '계정 정보', path: 'account' },
 ];
 
 export const MyDashboard = () => {
