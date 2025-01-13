@@ -82,7 +82,7 @@ export const TeamDailySubject = () => {
       })
         .then(() => {
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['team-info', parseInt(id), year, month],
             })
             .then(() => {
@@ -127,7 +127,7 @@ export const TeamDailySubject = () => {
     })
       .then((data) => {
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['team-info', parseInt(id), year, month],
           })
           .then(() => {

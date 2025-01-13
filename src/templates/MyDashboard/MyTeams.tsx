@@ -349,7 +349,7 @@ const InformationViewer: React.FC<{
     if (isConfirmed) {
       withdrawTeam(teamId)
         .then((res) => {
-          queryClient.invalidateQueries({ queryKey: ['my-page-status'] });
+          queryClient.refetchQueries({ queryKey: ['my-page-status'] });
           alert(res.message);
         })
         .catch((res) => alert(res.message));

@@ -231,7 +231,7 @@ export const Posting = () => {
       })
         .then(() => {
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['articles-by-date', id, selectedDate, page],
             })
             .then(() => {
@@ -263,7 +263,7 @@ export const Posting = () => {
       .then((data) => {
         const articleId = data.articleId;
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['articles-by-date', id, selectedDate, page],
           })
           .then(() => {

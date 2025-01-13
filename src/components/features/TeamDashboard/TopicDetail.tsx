@@ -41,7 +41,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         .then(() => {
           alert('주제 삭제 성공');
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['team-topic', teamId, selectedDate],
             })
             .then(() => {
