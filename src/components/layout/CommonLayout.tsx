@@ -1,6 +1,7 @@
 import { Container } from '@/components/commons/Container';
 import { Header } from '@/components/commons/Header';
 import { Alert } from '@/components/commons/Modal/Alert';
+import { Spacer } from '@/components/commons/Spacer';
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -46,6 +47,7 @@ export const CommonLayout: React.FC<{
       <ScrollStart />
       <Header h={headerHeight} />
       {children}
+      <Spacer h={200} />
     </Container>
   );
 };
