@@ -134,14 +134,6 @@ const PostSubjectViewer: React.FC<{
     >
       <GapFlex gap={20}>
         <SText
-          color={'#ccc'}
-          fontSize={'22px'}
-          fontWeight={700}
-          fontFamily={'Pretendard'}
-        >
-          주제
-        </SText>
-        <SText
           color={data?.articleTitle ? '#333' : '#ccc'}
           fontSize={'20px'}
           fontWeight={700}
