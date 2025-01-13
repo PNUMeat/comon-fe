@@ -1,8 +1,11 @@
+import { useJumpOnClick } from '@/hooks/useJumpOnClick';
+
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
+import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
@@ -57,6 +60,19 @@ export const TeamDashboardPage = () => {
     });
   };
 
+  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
+  useEffect(() => {
+    // 스타일 분리~
+    if (boundRef?.current && buttonRef?.current) {
+      const bound = boundRef.current;
+      const button = buttonRef.current;
+      const { right } = bound.getBoundingClientRect();
+      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
+      button.style.opacity = '0';
+      button.disabled = true;
+    }
+  }, [boundRef, buttonRef]);
+
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
@@ -107,7 +123,7 @@ export const TeamDashboardPage = () => {
             onDateSelect={setSelectedDate}
             selectedDate={selectedDate}
           />
-          <Spacer h={24} />
+          <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
             tags={tags}
@@ -137,6 +153,7 @@ export const TeamDashboardPage = () => {
             />
           )}
         </CalendarSection>
+        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
     </Fragment>
   );
@@ -159,4 +176,5 @@ const CalendarSection = styled.section`
   border-radius: 20px;
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
+  position: relative;
 `;
