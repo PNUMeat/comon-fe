@@ -1,3 +1,5 @@
+import { useJumpOnClick } from '@/hooks/useJumpOnClick';
+
 import { Box } from '@/components/commons/Box';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Flex } from '@/components/commons/Flex';
@@ -10,17 +12,11 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Wrap } from '@/components/commons/Wrap';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
+import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { HeightInNumber } from '@/components/types';
 
-import {
-  Fragment,
-  forwardRef,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
@@ -189,6 +185,7 @@ const CalendarSection = styled.section`
   margin-bottom: 100px;
 `;
 
+// TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 export const TeamAdmin = () => {
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -206,6 +203,8 @@ export const TeamAdmin = () => {
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
   //TODO: useCalendarTag
   const [tags, setTags] = useState<ICalendarTag[]>([]);
+
+  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
 
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
@@ -255,6 +254,18 @@ export const TeamAdmin = () => {
   };
 
   useEffect(() => {
+    // 스타일 분리~
+    if (boundRef?.current && buttonRef?.current) {
+      const bound = boundRef.current;
+      const button = buttonRef.current;
+      const { right } = bound.getBoundingClientRect();
+      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
+      button.style.opacity = '0';
+      button.disabled = true;
+    }
+  }, [boundRef, buttonRef]);
+
+  useEffect(() => {
     if (
       announcementRef &&
       'current' in announcementRef &&
@@ -298,17 +309,6 @@ export const TeamAdmin = () => {
 
   const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
   const isTeamManager = teamInfoData?.teamManager ?? false;
-
-  useLayoutEffect(() => {
-    if (currentView === 'article') {
-      setTimeout(() => {
-        scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'instant',
-        });
-      });
-    }
-  }, [currentView]);
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -371,7 +371,7 @@ export const TeamAdmin = () => {
             onDateSelect={setSelectedDate}
             selectedDate={selectedDate}
           />
-          <Spacer h={24} />
+          <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
             tags={tags}
@@ -404,6 +404,7 @@ export const TeamAdmin = () => {
             />
           )}
         </CalendarSection>
+        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
       <Spacer h={200} />
       {createPortal(
@@ -420,8 +421,6 @@ export const TeamAdmin = () => {
     </Fragment>
   );
 };
-
-// const SubjectViewer = () => {};
 
 const ModalWrap = styled.div<HeightInNumber>`
   height: ${(props) => (props.h ? `${props.h}px` : '0')};

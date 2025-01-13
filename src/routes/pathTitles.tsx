@@ -16,7 +16,7 @@ export const getTitle = (path: string): ReactNode => {
   }
 
   if (path.startsWith('/my-dashboard')) {
-    return <Title src={calendar} title="마이 페이지" />;
+    return <Title src={calendar} title="마이페이지" />;
   }
 
   const staticTitles: Record<string, ReactNode> = {

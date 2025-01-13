@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { alertAtom } from '@/store/modal';
+import click from '@/assets/TeamJoin/click.png';
 
 export const TeamRegistrationButton = () => {
   const isRegistrationFormValid = useAtomValue(isTeamRegistrationValidAtom);
@@ -41,10 +42,12 @@ export const TeamRegistrationButton = () => {
       })
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
-          setAlert({ message : '팀 생성을 완료했어요', isVisible: true });
-          queryClient.invalidateQueries({ queryKey: ['team-list', 0] });
+          setAlert({ message: '팀 생성을 완료했어요', isVisible: true });
+          queryClient.refetchQueries({ queryKey: ['team-list', 0] });
         })
-        .catch(() => setAlert({ message: '팀 생성에 실패했습니다.', isVisible: true }));
+        .catch(() =>
+          setAlert({ message: '팀 생성에 실패했습니다.', isVisible: true })
+        );
     }
   };
 
@@ -53,7 +56,8 @@ export const TeamRegistrationButton = () => {
       disabled={!isRegistrationFormValid}
       onClick={onClick}
     >
-      <span>🚀 팀 생성하기</span>
+      <img src={click} alt="click" width={24} />
+      <span>팀 생성하기</span>
     </ComonFormSubmitButton>
   );
 };

@@ -5,6 +5,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
@@ -34,13 +35,15 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
     <>
       <Sidebar>
         <Box width="100%" height="260px" borderWidth="3px">
-          <ImageContainer
-            src={teamInfo.imageUrl}
-            altText={teamInfo.teamName}
-            w={200}
-            h={200}
-            maxW={200}
-          />
+          <Suspense fallback={<div style={{ height: '200px' }} />}>
+            <ImageContainer
+              src={teamInfo.imageUrl}
+              altText={teamInfo.teamName}
+              w={200}
+              h={200}
+              maxW={200}
+            />
+          </Suspense>
         </Box>
         <Spacer h={20} />
         <Box width="100%" padding="24px 40px">

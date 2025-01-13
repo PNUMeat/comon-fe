@@ -1,5 +1,8 @@
+import { viewStyle } from '@/utils/viewStyle';
+
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
-import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
@@ -7,7 +10,7 @@ import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { Suspense, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -15,10 +18,11 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { getTeamTopic } from '@/api/dashboard';
 import { createPost, mutatePost } from '@/api/postings';
-import commonToday from '@/assets/Posting/comonToday.png';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import {
@@ -30,8 +34,171 @@ import {
 import { alertAtom } from '@/store/modal';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+
+const GapFlex = styled.div<{
+  gap?: number;
+  padding?: string;
+  cursor?: string;
+  justifyContent?: string;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: ${(props) => props.justifyContent ?? 'start'};
+  gap: ${(props) => props.gap ?? 0}px;
+  ${(props) => (props.padding ? `padding: ${props.padding};` : '')}
+  ${(props) => (props.cursor ? `cursor: ${props.cursor};` : '')}
+  height: 57px;
+  width: 100%;
+`;
+
+const PostSubjectViewWrap = styled.div<{
+  height: number;
+  show: boolean;
+}>`
+  display: grid;
+  grid-template-columns: ${({ show }) => (show ? '1fr' : 'auto auto')};
+  grid-template-rows: ${({ show }) => (show ? '1fr auto' : '1fr')};
+
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 57px;
+  height: ${(props) => props.height}px;
+  border: 1px solid #f15ca7;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 0 40px;
+  box-sizing: border-box;
+  transition: height 0.2s ease-in-out;
+`;
+
+const minShowHeight = 114;
+
+const PostSubjectViewer: React.FC<{
+  teamId: string;
+}> = ({ teamId }) => {
+  const [height, setHeight] = useState<number>(0);
+  const [show, setShow] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const selectedDate = useAtomValue(selectedDateAtom);
+  //TODO: 지금 team-topic은 돔노드 최하단에서, 조건부 렌더링 되는 곳에서 가져오는 중이라 이렇게 해야함, url로 치고 들어오면 해당 날짜꺼 가져옴
+  const { data } = useQuery({
+    queryKey: ['team-topic', teamId, selectedDate],
+    queryFn: () => getTeamTopic(parseInt(teamId as string), selectedDate),
+    enabled: !!selectedDate,
+  });
+
+  useEffect(() => {
+    if (show && contentRef.current) {
+      const content = contentRef.current;
+      const images = content.querySelectorAll('img');
+      if (images.length === 0) {
+        setHeight(minShowHeight + content.clientHeight);
+        return;
+      }
+
+      let loadedCnt = 0;
+      const onLoad = () => {
+        loadedCnt++;
+        if (loadedCnt === images.length) {
+          setHeight(minShowHeight + content.clientHeight);
+        }
+      };
+
+      images.forEach((img) => {
+        if (img.complete) {
+          loadedCnt++;
+          return;
+        }
+        img.addEventListener('load', onLoad);
+        img.addEventListener('error', onLoad);
+      });
+
+      if (loadedCnt === images.length) {
+        setHeight(minShowHeight + content.clientHeight);
+      }
+
+      return () => {
+        images.forEach((img) => {
+          img.removeEventListener('load', onLoad);
+          img.removeEventListener('error', onLoad);
+        });
+      };
+    }
+  }, [show]);
+
+  return (
+    <PostSubjectViewWrap
+      height={show ? Math.max(height, minShowHeight) : 57}
+      show={show}
+    >
+      <GapFlex gap={20}>
+        {data?.articleTitle ? (
+          <SText
+            color={'#ccc'}
+            fontSize={'20px'}
+            fontWeight={700}
+            fontFamily={'Pretendard'}
+          >
+            주제
+          </SText>
+        ) : null}
+        <SText
+          color={data?.articleTitle ? '#333' : '#ccc'}
+          fontSize={'20px'}
+          fontWeight={700}
+          fontFamily={'Pretendard'}
+          whiteSpace={'normal'}
+          wordBreak={'break-word'}
+        >
+          {data?.articleTitle ?? '주제가 등록되지 않았어요'}
+        </SText>
+      </GapFlex>
+      {show && data ? (
+        <TopicViewer
+          ref={contentRef}
+          dangerouslySetInnerHTML={{
+            __html: data?.imageUrl
+              ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
+              : data?.articleBody,
+          }}
+        />
+      ) : null}
+      <GapFlex
+        gap={12}
+        padding={'0 10px'}
+        cursor={'pointer'}
+        onClick={() => setShow((prev) => !prev)}
+        justifyContent={'end'}
+      >
+        <SText
+          color={'#777'}
+          fontSize={'16px'}
+          fontWeight={400}
+          fontFamily={'Pretendard'}
+        >
+          {show ? '주제 접기' : '펼쳐서 확인하기'}
+        </SText>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="17"
+          height="10"
+          viewBox="0 0 17 10"
+          fill="none"
+          style={{
+            transform: show ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease',
+          }}
+        >
+          <path d="M0 0 L8.5 10 L17 0" stroke="#CCCCCC" strokeWidth="1.5" />
+        </svg>
+      </GapFlex>
+    </PostSubjectViewWrap>
+  );
+};
 
 export const Posting = () => {
   const location = useLocation();
@@ -51,6 +218,9 @@ export const Posting = () => {
   const page = useAtomValue(pageAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+  const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -77,7 +247,7 @@ export const Posting = () => {
       })
         .then(() => {
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['articles-by-date', id, selectedDate, page],
             })
             .then(() => {
@@ -109,7 +279,7 @@ export const Posting = () => {
       .then((data) => {
         const articleId = data.articleId;
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['articles-by-date', id, selectedDate, page],
           })
           .then(() => {
@@ -132,30 +302,24 @@ export const Posting = () => {
       });
   };
 
+  const padding = isMobile ? '0 10px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
+
   return (
     <CommonLayout>
-      <Flex direction={'column'} align={'center'} padding={'0 105px'}>
-        <Suspense fallback={null}>
-          <LazyImage
-            altText={'comon today'}
-            w={634}
-            maxW={635}
-            h={188}
-            src={commonToday}
-          />
-        </Suspense>
+      <Flex direction={'column'} align={'center'} padding={padding}>
         <Spacer h={22} />
         <PageSectionHeader h={40}>
           <Title src={write} title="오늘의 글 등록하기" />
         </PageSectionHeader>
-        <Spacer h={39} />
+        <PostSubjectViewer teamId={id} />
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setPostTitle}
           content={article}
           title={articleTitle}
         />
-        <Spacer h={38} />
+        <Spacer h={spacing} />
         <ConfirmButtonWrap
           disabled={isPending}
           isPending={isPending}
@@ -163,7 +327,7 @@ export const Posting = () => {
         >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText fontSize={buttonFontSize} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -188,6 +352,13 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   padding: 0;
   border: 3px solid ${colors.borderPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 312px;
+    border-radius: 40px;
+    height: 50px;
+    border: 2px solid ${colors.borderPurple};
+  }
 `;
 
 // TODO: TeamJoin에서 가져옴
@@ -198,4 +369,15 @@ const ClickImage = styled.img`
 // TODO: TeamJoin에서 가져옴
 const ActionText = styled.div`
   margin-left: 8px;
+`;
+
+//TODO: TopicDetail에서 가져옴
+const TopicViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
+  ${viewStyle}
 `;

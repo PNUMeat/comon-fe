@@ -10,6 +10,8 @@ import { PATH } from '@/routes/path';
 import { TeamModificationButton } from '@/templates/Team/TeamModificationButton';
 import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 const TeamContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -18,6 +20,11 @@ const TeamContainer = styled.div<HeightInNumber>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  width: 100%;
+  
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 12px;
+  }
 `;
 
 // 원래 path.tsx 폴더 안에 같이 관리했으나, react-refresh/only-export-components 자꾸 뜸
@@ -48,6 +55,8 @@ export const TeamFormLayout: React.FC<
   const { title, subtitle } = FORM_TITLES[currentPath];
   const isOnTeamReg = currentPath === PATH.TEAM_REGISTRATION;
   const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     //   <form>의 onSubmit을 통해서 입력 값을 전달 받을 것이였으면 사용자 값들을 전역 상태로 만들면 안됐다.
@@ -55,7 +64,7 @@ export const TeamFormLayout: React.FC<
       <ComonFormTitle title={title} subtitle={subtitle} />
       <Spacer h={78} />
       <ComonFormGrid h={683}>{children}</ComonFormGrid>
-      <Spacer h={120} />
+      {isMobile ? <Spacer h={56} /> : <Spacer h={120} />}
       {isOnTeamReg && <TeamRegistrationButton />}
       {isOnTeamMod && <TeamModificationButton />}
     </TeamContainer>

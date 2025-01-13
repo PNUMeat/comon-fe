@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
 import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -13,6 +15,7 @@ import {
 } from '@/api/user';
 import comon from '@/assets/Home/comon500x500.png';
 import Alarm from '@/assets/Withdraw/alarm.svg';
+import { breakpoints } from '@/constants/breakpoints';
 import { imageAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -38,9 +41,15 @@ const ProfileWrap = styled.div<{ doBlur: boolean }>`
   flex-shrink: 0;
   border-radius: 20px;
   border: 1px solid #8488ec;
-
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   backdrop-filter: blur(20px);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    border: 1px solid #f0f1ff;
+    width: 100%;
+    margin-bottom: 100px;
+    padding: 28px;
+  }
 `;
 
 const SubHeader = styled.div`
@@ -54,6 +63,13 @@ const SubHeader = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    padding-left: 12px;
+  }
 `;
 
 const Heading = styled.div`
@@ -64,7 +80,11 @@ const Heading = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  margin-bottom: 33px;
+  margin-bottom: 30px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
 const ProfileInfoGrid = styled.div`
@@ -73,6 +93,10 @@ const ProfileInfoGrid = styled.div`
   grid-template-columns: 128px 1fr;
   gap: 31px;
   margin-bottom: 60px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-columns: 50px 1fr;
+  }
 `;
 
 const PInfoLabel = styled.div`
@@ -82,15 +106,26 @@ const PInfoLabel = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
-const ProfileTextValue = styled.div<{ fontWeight: number }>`
-  color: #333;
+const ProfileTextValue = styled.div<{
+  fontWeight: number;
+  hasExplain?: boolean;
+}>`
+  color: ${({ hasExplain }) => (hasExplain ? '#333' : '#ccc')};
   font-family: 'Pretendard';
   font-size: 16px;
   font-style: normal;
   font-weight: ${(props) => props.fontWeight};
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+  }
 `;
 
 const ModifyButton = styled.button`
@@ -105,7 +140,6 @@ const ModifyButton = styled.button`
   border-radius: 40px;
   background-color: #6e74fa;
   color: #fff;
-
   text-align: center;
   font-family: 'Pretendard';
   font-size: 14px;
@@ -114,11 +148,17 @@ const ModifyButton = styled.button`
   line-height: 19px;
   letter-spacing: -0.28px;
   white-space: nowrap;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    letter-spacing: -0.24px;
+  }
 `;
+
 const FallbackImg = styled.div`
   width: 80px;
   height: 80px;
-  background-color: #d9d9d9;
+  background: linear-gradient(146deg, #fda2d0 6.57%, #8488ec 93.43%);
   border-radius: 10px;
 `;
 
@@ -136,6 +176,15 @@ const TextInput = styled.input<{ fontWeight: number }>`
 
   &:focus {
     box-shadow: 0 1px 0 0 #ccc;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    letter-spacing: -0.24px;
+
+    &::placeholder {
+      color: #ccc;
+    }
   }
 `;
 
@@ -200,7 +249,7 @@ export const Profile = () => {
     })
       .then(() => {
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['my-profile-query'],
           })
           .then(() => {
@@ -279,12 +328,13 @@ const ProfileViewer = () => {
       </ProfileTextValue>
 
       <PInfoLabel>자기소개</PInfoLabel>
-      <ProfileTextValue fontWeight={500}>
-        {memberExplain ?? '간단한 소개를 해주세요'}
+      <ProfileTextValue fontWeight={500} hasExplain={!!memberExplain}>
+        {memberExplain ?? '나의 관심분야, 목표 등으로 소개글을 채워보세요!'}
       </ProfileTextValue>
     </ProfileInfoGrid>
   );
 };
+
 const ProfileModifier = () => {
   const queryClient = useQueryClient();
   const data = queryClient.getQueryData([
@@ -327,6 +377,11 @@ const WithdrawTemplateWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin: 20px auto;
+    width: 100%;
+  }
 `;
 
 const LittleComonLogo = styled.img`
@@ -335,6 +390,12 @@ const LittleComonLogo = styled.img`
   object-fit: contain;
   border-radius: 50%;
   margin-bottom: 11px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+  }
 `;
 
 const WithdrawAlarm = styled.div`
@@ -343,17 +404,31 @@ const WithdrawAlarm = styled.div`
   gap: 10px;
   width: 100%;
   justify-content: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const WithdrawLabel = styled.div`
   width: 181px;
   height: 38px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: fit-content;
+    height: fit-content;
+  }
 `;
 
 const Desc = styled.div`
   margin-top: 26px;
   margin-bottom: 26px;
   text-align: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
 `;
 
 const StrongWrapper = styled.div`
@@ -368,7 +443,7 @@ const StrongWrapper = styled.div`
   justify-content: center;
 
   ul li {
-    color: #9e2a2f;
+    color: #b82222;
     font-size: 14px;
     line-height: 1.5;
     position: relative;
@@ -380,11 +455,26 @@ const StrongWrapper = styled.div`
 
   ul li::before {
     content: '•';
-    color: #9e2a2f;
+    color: #b82222;
     font-size: 20px;
     position: absolute;
     left: -2px;
     top: -2px;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 40px;
+    padding: 18px 10px;
+
+    ul li {
+      font-size: 12px;
+    }
+
+    ul li::before {
+      font-size: 12px;
+      left: 0;
+      top: 0;
+    }
   }
 `;
 
@@ -394,6 +484,10 @@ const AgreementWrap = styled.div`
   gap: 10px;
   height: 22px;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 18px;
+  }
 `;
 
 const SubmitWithdrawButton = styled.button<{ isEnabled: boolean }>`
@@ -407,8 +501,13 @@ const SubmitWithdrawButton = styled.button<{ isEnabled: boolean }>`
   gap: 8px;
   border-radius: 24px;
   border: 1px solid #919191;
-
   background: ${(props) => (props.isEnabled ? '#EF2528' : '#e4e4e4')};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 30px;
+    width: 110px;
+    height: 32px;
+  }
 `;
 
 const WithdrawTemplate: React.FC<{
@@ -435,14 +534,22 @@ const WithdrawTemplate: React.FC<{
     setIsChecked(event.target.checked);
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <WithdrawTemplateWrapper>
       <LittleComonLogo src={comon} />
       <WithdrawAlarm>
-        <img src={Alarm} width={'36px'} height={'30px'} alt={'warning image'} />
+        <img
+          src={Alarm}
+          width={isMobile ? '20px' : '36px'}
+          height={isMobile ? '18px' : '30px'}
+          alt={'warning image'}
+        />
         <WithdrawLabel>
           <SText
-            fontSize={'32px'}
+            fontSize={isMobile ? '18px' : '32px'}
             fontWeight={700}
             fontFamily={'Pretendard'}
             whiteSpace={'nowrap'}
@@ -452,7 +559,7 @@ const WithdrawTemplate: React.FC<{
         </WithdrawLabel>
       </WithdrawAlarm>
       <SText
-        fontSize={'24px'}
+        fontSize={isMobile ? '14px' : '24px'}
         fontWeight={500}
         fontFamily={'Pretendard'}
         whiteSpace={'nowrap'}
@@ -466,7 +573,7 @@ const WithdrawTemplate: React.FC<{
       <Desc>
         <SText
           fontFamily={'Pretendard'}
-          fontSize={'15px'}
+          fontSize={isMobile ? '12px' : '15px'}
           fontWeight={500}
           lineHeight={'20px'}
         >
@@ -488,7 +595,7 @@ const WithdrawTemplate: React.FC<{
         />
         <SText
           color={'#777'}
-          fontSize={'16px'}
+          fontSize={isMobile ? '12px' : '16px'}
           fontWeight={500}
           fontFamily={'Pretendard'}
           whiteSpace={'nowrap'}
@@ -504,7 +611,7 @@ const WithdrawTemplate: React.FC<{
         <SText
           whiteSpace={'nowrap'}
           color={isChecked ? '#fff' : '#919191'}
-          fontSize={'16px'}
+          fontSize={isMobile ? '14px' : '16px'}
           fontWeight={500}
           fontFamily={'Pretendard'}
         >

@@ -5,7 +5,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { IArticlesByDateResponse } from '@/api/dashboard';
 import RocketImg from '@/assets/TeamDashboard/rocket.png';
@@ -61,88 +61,113 @@ export const Posts: React.FC<PostsProps> = ({
 
   return (
     <div style={{ position: 'relative' }}>
-      <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
-        <Flex justify="space-between" align="center">
-          <Flex width={35} justify="space-between" align="center">
-            <SText color="#333" fontSize="24px" fontWeight={700}>
-              {selectedDate}
-            </SText>
-            {category && (
-              <Tag
-                bgColor={categoryColors[category.articleCategory]}
-                label={category.articleCategory}
-                padding="4px 10px"
-                fontSize="10px"
-              />
-            )}
-          </Flex>
-          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
-            <RocketIcon src={RocketImg} />
-            주제 확인하기
-          </StyledButton>
-        </Flex>
-      </Box>
-      {data?.content?.length === 0 ? (
-        <NoArticleDiv>
-          <Flex justify="center" align="center" style={{ minHeight: '216px' }}>
-            <SText color="#ccc" fontSize="24px" fontWeight={400}>
-              게시글이 존재하지 않아요
-            </SText>
-          </Flex>
-        </NoArticleDiv>
-      ) : (
-        <List>
-          {data?.content?.map((article) => (
-            <Box
-              width="100%"
-              height="104px"
-              padding="20px"
-              key={article.articleId}
-              style={{
-                cursor: 'pointer',
-                boxShadow:
-                  selectedId === article.articleId
-                    ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
-                    : undefined,
-                backgroundColor:
-                  selectedId === article.articleId ? '#F5F5F5' : '#fff',
-              }}
-              onClick={() => handleArticleClick(article.articleId)}
+      <Suspense
+        fallback={
+          <NoArticleDiv>
+            <Flex
+              justify="center"
+              align="center"
+              style={{ minHeight: '216px' }}
             >
-              <Flex direction="column">
-                <SText
-                  color="#333"
-                  fontSize="16px"
-                  lineHeight={'20px'}
-                  fontWeight={600}
-                  shouldCut
-                >
-                  {article.articleTitle}
-                </SText>
-                <Spacer h={8} />
-                <SText color="#777" fontSize="12px" fontWeight={400}>
-                  {article.createdDate.slice(0, -3)}
-                </SText>
-                <Spacer h={12} />
-                <Flex align="center" gap="6px">
-                  <LazyImage
-                    src={article.memberImage}
-                    altText={article.memberName}
-                    w={16}
-                    h={16}
-                    maxW={16}
-                    style={{ borderRadius: '50%' }}
-                  />
-                  <SText color="#333" fontSize="12px" fontWeight={600}>
-                    {article.memberName}
+              <SText color="#ccc" fontSize="24px" fontWeight={400}>
+                게시글이 존재하지 않아요
+              </SText>
+            </Flex>
+          </NoArticleDiv>
+        }
+      >
+        <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
+          <Flex justify="space-between" align="center">
+            <Flex width={35} justify="space-between" align="center">
+              <SText color="#333" fontSize="24px" fontWeight={700}>
+                {selectedDate}
+              </SText>
+              {category && (
+                <Tag
+                  bgColor={categoryColors[category.articleCategory]}
+                  label={category.articleCategory}
+                  padding="4px 10px"
+                  fontSize="10px"
+                />
+              )}
+            </Flex>
+            <StyledButton
+              isClicked={isButtonClicked}
+              onClick={handleButtonClick}
+            >
+              <RocketIcon src={RocketImg} />
+              주제 확인하기
+            </StyledButton>
+          </Flex>
+        </Box>
+        {data?.content?.length === 0 ? (
+          <NoArticleDiv>
+            <Flex
+              justify="center"
+              align="center"
+              style={{ minHeight: '216px' }}
+            >
+              <SText color="#ccc" fontSize="24px" fontWeight={400}>
+                게시글이 존재하지 않아요
+              </SText>
+            </Flex>
+          </NoArticleDiv>
+        ) : (
+          <List>
+            {data?.content?.map((article) => (
+              <Box
+                width="100%"
+                height="104px"
+                padding="20px"
+                key={article.articleId}
+                style={{
+                  cursor: 'pointer',
+                  boxShadow:
+                    selectedId === article.articleId
+                      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+                      : undefined,
+                  backgroundColor:
+                    selectedId === article.articleId ? '#F5F5F5' : '#fff',
+                }}
+                onClick={() => handleArticleClick(article.articleId)}
+              >
+                <Flex direction="column">
+                  <PostTitleWrap>
+                    <SText
+                      color="#333"
+                      fontSize="16px"
+                      lineHeight={'20px'}
+                      fontWeight={600}
+                      shouldCut
+                    >
+                      {article.articleTitle}
+                    </SText>
+                  </PostTitleWrap>
+                  <Spacer h={8} />
+                  <SText color="#777" fontSize="12px" fontWeight={400}>
+                    {article.createdDate.slice(0, -3)}
                   </SText>
+                  <Spacer h={12} />
+                  <Flex align="center" gap="6px">
+                    <LazyImage
+                      src={article.memberImage}
+                      altText={article.memberName}
+                      w={16}
+                      h={16}
+                      maxW={16}
+                      style={{ borderRadius: '50%' }}
+                    />
+                    <SText color="#333" fontSize="12px" fontWeight={600}>
+                      {article.memberName}
+                    </SText>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </Box>
-          ))}
-        </List>
-      )}
-      <Spacer h={260} />
+              </Box>
+            ))}
+          </List>
+        )}
+        <Spacer h={260} />
+      </Suspense>
     </div>
   );
 };
@@ -210,4 +235,12 @@ const List = styled.div`
   z-index: 1;
   border-radius: 20px;
   background: #fff;
+`;
+
+const PostTitleWrap = styled.div`
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  width: 164px;
+  text-overflow: ellipsis;
 `;
