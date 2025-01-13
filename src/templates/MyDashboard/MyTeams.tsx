@@ -17,8 +17,8 @@ import {
   queryMyTeamInfo,
 } from '@/api/mypage';
 import { withdrawTeam } from '@/api/team';
-import announcement from '@/assets/TeamDashboard/announcement.png';
 import { breakpoints } from '@/constants/breakpoints';
+import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -462,7 +462,7 @@ const GradationArticleDetail = styled.div`
   margin-bottom: 100px;
   display: flex;
   flex-direction: column;
-  width: 699px;
+  width: 700px;
   padding: 31px 21px 20px 21px;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -472,7 +472,7 @@ const GradationArticleDetail = styled.div`
   background: #fff;
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     top: -1px;
@@ -483,9 +483,25 @@ const GradationArticleDetail = styled.div`
     background: linear-gradient(90deg, #ffd482, #ff377f);
     z-index: -1;
   }
+
   & img {
     max-width: 600px;
     object-fit: contain;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
+    border: 1px solid ${colors.borderPurple};
+    padding: 30px 24px;
+    margin-bottom: 30px;
+
+    &::before {
+      background: none;
+    }
+
+    & img {
+      max-width: 300px;
+    }
   }
 `;
 
@@ -494,6 +510,31 @@ const ArticleDetailHeader = styled.div`
   display: flex;
   width: 639px;
   flex-direction: column;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100%;
+    margin-bottom: 36px;
+    background-color: pink;
+  }
+`;
+
+const TeamArticleViewer = styled.div`
+  line-height: 1.5;
+
+  & img {
+    max-width: 600px;
+    object-fit: contain;
+  }
+
+  ${viewStyle}
+
+  @media(max-width: ${breakpoints.mobile}px) {
+    line-height: 18px;
+
+    & img {
+      max-width: 300px;
+    }
+  }
 `;
 
 const ArticleDetailViewer: React.FC<{
@@ -520,23 +561,24 @@ const ArticleDetailViewer: React.FC<{
       )
     : selectedArticle?.articleBody;
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <GradationArticleDetail>
       <ArticleDetailHeader>
-        <Flex gap={'8px'} align={'center'} padding={'0 0 4px 0'}>
+        <Flex
+          gap={'8px'}
+          align={'center'}
+          padding={isMobile ? '0 0 8px 0' : '0 0 4px 0'}
+        >
           {selectedArticle?.articleTitle && (
             <Fragment>
-              <img
-                src={announcement}
-                alt={'announcement icon'}
-                width={24}
-                height={24}
-                style={{ objectFit: 'contain' }}
-              />
               <SText
-                fontSize={'24px'}
+                fontSize={isMobile ? '18px' : '24px'}
                 fontWeight={700}
                 fontFamily={'Pretendard'}
+                color="#333"
               >
                 {selectedArticle.articleTitle}
               </SText>
@@ -545,22 +587,20 @@ const ArticleDetailViewer: React.FC<{
         </Flex>
         <SText
           color={'#777'}
-          fontSize={'14px'}
+          fontSize={isMobile ? '10px' : '14px'}
           fontWeight={400}
-          lineHeight={'19px'}
         >
           {selectedArticle?.createdDate ?? ''}
         </SText>
-        <Spacer h={46} />
+        <Spacer h={isMobile ? 18 : 46} />
         <ArticleWriter>
           {selectedArticle?.memberImage && (
-            <img
+            <WriterProfile
               src={selectedArticle?.memberImage ?? ''}
               alt={'profile picture'}
-              style={{ width: '16px', height: '16px', objectFit: 'contain' }}
             />
           )}
-          <SText fontSize={'12px'} fontWeight={600}>
+          <SText fontSize={isMobile ? '10px' : '12px'} fontWeight={600}>
             {selectedArticle?.memberName ?? ''}
           </SText>
         </ArticleWriter>
@@ -571,16 +611,6 @@ const ArticleDetailViewer: React.FC<{
     </GradationArticleDetail>
   );
 };
-
-const TeamArticleViewer = styled.div`
-  line-height: 1.5;
-
-  & img {
-    max-width: 600px;
-    object-fit: contain;
-  }
-  ${viewStyle}
-`;
 
 const modes = [
   { label: '내가 쓴 글', value: 'history' },
@@ -694,6 +724,18 @@ export const MyTeams = () => {
             />
           ))}
       </Flex>
+
+      {/*TODO: 삭제 */}
+      <ArticlesViewer
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+        teamId={1}
+        page={page}
+        setPage={setPage}
+        isMobile={isMobile}
+      />
+      <ArticleDetailViewer selectedId={1} teamId={1} page={page} />
+
       {mode === 'history' && teamId != null && (
         <ArticlesViewer
           selectedId={selectedId}
@@ -716,7 +758,7 @@ export const MyTeams = () => {
       ) : (
         <div
           style={{
-            minHeight: '672px',
+            minHeight: isMobile ? '200px' : '672px',
           }}
         />
       )}
