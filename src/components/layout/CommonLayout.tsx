@@ -22,12 +22,14 @@ export const CommonLayout: React.FC<{
   useLayoutEffect(() => {
     const currPath = location.pathname.split('/')[1];
     if (prevPathRef.current !== currPath) {
+      if (prevPathRef.current !== null) {
+        document.documentElement.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'instant',
+        });
+      }
       prevPathRef.current = currPath;
-      document.documentElement.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant',
-      });
     }
   }, [location.pathname]);
 
