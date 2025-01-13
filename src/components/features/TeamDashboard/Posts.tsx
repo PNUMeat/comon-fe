@@ -110,15 +110,17 @@ export const Posts: React.FC<PostsProps> = ({
               onClick={() => handleArticleClick(article.articleId)}
             >
               <Flex direction="column">
-                <SText
-                  color="#333"
-                  fontSize="16px"
-                  lineHeight={'20px'}
-                  fontWeight={600}
-                  shouldCut
-                >
-                  {article.articleTitle}
-                </SText>
+                <PostTitleWrap>
+                  <SText
+                    color="#333"
+                    fontSize="16px"
+                    lineHeight={'20px'}
+                    fontWeight={600}
+                    shouldCut
+                  >
+                    {article.articleTitle}
+                  </SText>
+                </PostTitleWrap>
                 <Spacer h={8} />
                 <SText color="#777" fontSize="12px" fontWeight={400}>
                   {article.createdDate.slice(0, -3)}
@@ -210,4 +212,12 @@ const List = styled.div`
   z-index: 1;
   border-radius: 20px;
   background: #fff;
+`;
+
+const PostTitleWrap = styled.div`
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  width: 164px;
+  text-overflow: ellipsis;
 `;

@@ -64,7 +64,13 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         <Flex justify="space-between">
           <Flex align="center" gap="8px">
             <Icon src={AnnouncementIcon} />
-            <SText color="#333" fontSize="24px" fontWeight={700}>
+            <SText
+              color="#333"
+              fontSize="24px"
+              fontWeight={700}
+              whiteSpace={'normal'}
+              wordBreak={'break-word'}
+            >
               {data?.articleTitle}
             </SText>
           </Flex>

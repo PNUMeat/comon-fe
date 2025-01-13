@@ -485,6 +485,8 @@ const ArticleDetailViewer: React.FC<{
                 fontSize={'24px'}
                 fontWeight={700}
                 fontFamily={'Pretendard'}
+                whiteSpace={'normal'}
+                wordBreak={'break-word'}
               >
                 {selectedArticle.articleTitle}
               </SText>

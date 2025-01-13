@@ -138,6 +138,8 @@ const PostSubjectViewer: React.FC<{
           fontSize={'20px'}
           fontWeight={700}
           fontFamily={'Pretendard'}
+          whiteSpace={'normal'}
+          wordBreak={'break-word'}
         >
           {data?.articleTitle ?? '주제가 등록되지 않았어요'}
         </SText>

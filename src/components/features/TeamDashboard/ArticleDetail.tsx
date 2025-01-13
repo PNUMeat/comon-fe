@@ -87,7 +87,13 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex justify="space-between">
-          <SText color="#333" fontSize="24px" fontWeight={700}>
+          <SText
+            color="#333"
+            fontSize="24px"
+            fontWeight={700}
+            whiteSpace={'normal'}
+            wordBreak={'break-word'}
+          >
             {data?.articleTitle}
           </SText>
           {data?.isAuthor && (
