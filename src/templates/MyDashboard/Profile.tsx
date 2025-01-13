@@ -249,7 +249,7 @@ export const Profile = () => {
     })
       .then(() => {
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['my-profile-query'],
           })
           .then(() => {

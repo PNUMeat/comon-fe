@@ -8,6 +8,7 @@ interface TextProps {
   lineHeight?: string;
   letterSpacing?: string;
   whiteSpace?: string;
+  wordBreak?: string;
   textAlign?: React.CSSProperties['textAlign'];
   opacity?: string;
   shouldCut?: boolean;
@@ -31,6 +32,7 @@ export const SText = styled.div<TextProps>`
   letter-spacing: ${(props) => props.letterSpacing || 'inherit'};
   text-align: ${(props) => props.textAlign || 'inherit'};
   white-space: ${(props) => props.whiteSpace || 'inherit'};
+  word-break: ${(props) => props.wordBreak || 'inherit'};
   opacity: ${(props) => props.opacity || 'inherit'};
 
   ${(props) =>
@@ -38,7 +40,7 @@ export const SText = styled.div<TextProps>`
       ? `
   width: 100%;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;`

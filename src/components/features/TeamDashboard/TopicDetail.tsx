@@ -6,6 +6,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getTeamTopic } from '@/api/dashboard';
@@ -40,7 +41,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         .then(() => {
           alert('주제 삭제 성공');
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['team-topic', teamId, selectedDate],
             })
             .then(() => {
@@ -64,40 +65,48 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         <Flex justify="space-between">
           <Flex align="center" gap="8px">
             <Icon src={AnnouncementIcon} />
-            <SText color="#333" fontSize="24px" fontWeight={700}>
+            <SText
+              color="#333"
+              fontSize="24px"
+              fontWeight={700}
+              whiteSpace={'normal'}
+              wordBreak={'break-word'}
+            >
               {data?.articleTitle}
             </SText>
           </Flex>
           {isTeamManager && (
-            <Flex width={7} gap="16px">
-              <Link
-                to={`/team-subject/${teamId}/${selectedDate}`}
-                state={{
-                  articleBody: data?.articleBody,
-                  articleId: data?.articleId,
-                  articleTitle: data?.articleTitle,
-                  articleCategory: data?.articleCategory,
-                  articleImageUrl: data?.imageUrl,
-                }}
-              >
-                <LazyImage
-                  src={ModifyIcon}
-                  altText="수정"
-                  w={20}
-                  h={20}
-                  maxW={20}
-                />
-              </Link>
-              <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
-                <LazyImage
-                  src={DeleteIcon}
-                  altText="삭제"
-                  w={20}
-                  h={20}
-                  maxW={16}
-                />
-              </div>
-            </Flex>
+            <Suspense fallback={<div style={{ height: '20px' }} />}>
+              <Flex width={7} gap="16px">
+                <Link
+                  to={`/team-subject/${teamId}/${selectedDate}`}
+                  state={{
+                    articleBody: data?.articleBody,
+                    articleId: data?.articleId,
+                    articleTitle: data?.articleTitle,
+                    articleCategory: data?.articleCategory,
+                    articleImageUrl: data?.imageUrl,
+                  }}
+                >
+                  <LazyImage
+                    src={ModifyIcon}
+                    altText="수정"
+                    w={20}
+                    h={20}
+                    maxW={20}
+                  />
+                </Link>
+                <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
+                  <LazyImage
+                    src={DeleteIcon}
+                    altText="삭제"
+                    w={20}
+                    h={20}
+                    maxW={16}
+                  />
+                </div>
+              </Flex>
+            </Suspense>
           )}
         </Flex>
 
@@ -107,14 +116,16 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         </SText>
         <Spacer h={28} />
         <Flex align="center" gap="8px">
-          <LazyImage
-            src={data?.authorImageUrl || ''}
-            altText={data?.authorName || ''}
-            w={16}
-            h={16}
-            maxW={16}
-            style={{ borderRadius: '50%' }}
-          />
+          <Suspense fallback={<div style={{ height: '16px' }} />}>
+            <LazyImage
+              src={data?.authorImageUrl || ''}
+              altText={data?.authorName || ''}
+              w={16}
+              h={16}
+              maxW={16}
+              style={{ borderRadius: '50%' }}
+            />
+          </Suspense>
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {data?.authorName}
           </SText>

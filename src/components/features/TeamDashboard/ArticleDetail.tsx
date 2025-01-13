@@ -6,7 +6,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IArticle } from '@/api/dashboard';
@@ -38,35 +38,14 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         : (data?.articleBody ?? ''),
     [data]
   );
-  // const queryClient = useQueryClient();
-  // const selectedDate = useAtomValue(selectedDateAtom);
-  // const page = useAtomValue(pageAtom);
-  // const setSelectedArticleId = useSetAtom(selectedPostIdAtom);
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);
-  // const navigate = useNavigate();
 
   const deleteArticle = () => {
     if (data?.articleId) {
       deletePost(data.articleId)
         .then(() => {
           refetchArticles();
-          // queryClient
-          //   .invalidateQueries({
-          //     // queryKey: ['articles-by-date', teamId, selectedDate, page],
-          //     queryKey: ['articles-by-date', teamId, selectedDate, page],
-          //   })
-          //   .then(() => {
-          //     setAlert({ message: '게시글을 삭제했어요', isVisible: true });
-          //     setSelectedArticleId(null);
-          //     navigate(`/team-dashboard/${teamId}`);
-          //   })
-          //   .catch(() =>
-          //     setAlert({
-          //       message: '최신 게시글 조회가 실패했습니다.',
-          //       isVisible: true,
-          //     })
-          //   );
         })
         .catch(() =>
           setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true })
@@ -87,37 +66,45 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
         <Flex justify="space-between">
-          <SText color="#333" fontSize="24px" fontWeight={700}>
+          <SText
+            color="#333"
+            fontSize="24px"
+            fontWeight={700}
+            whiteSpace={'normal'}
+            wordBreak={'break-word'}
+          >
             {data?.articleTitle}
           </SText>
           {data?.isAuthor && (
-            <Flex width={7} gap="16px">
-              <Link
-                to={`/posting/${teamId}`}
-                state={{
-                  article: article,
-                  articleId: data?.articleId,
-                  articleTitle: data?.articleTitle,
-                }}
-              >
-                <LazyImage
-                  src={ModifyIcon}
-                  altText="수정"
-                  w={20}
-                  h={20}
-                  maxW={20}
-                />
-              </Link>
-              <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
-                <LazyImage
-                  src={DeleteIcon}
-                  altText="삭제"
-                  w={20}
-                  h={20}
-                  maxW={16}
-                />
-              </div>
-            </Flex>
+            <Suspense fallback={null}>
+              <Flex width={7} gap="16px">
+                <Link
+                  to={`/posting/${teamId}`}
+                  state={{
+                    article: article,
+                    articleId: data?.articleId,
+                    articleTitle: data?.articleTitle,
+                  }}
+                >
+                  <LazyImage
+                    src={ModifyIcon}
+                    altText="수정"
+                    w={20}
+                    h={20}
+                    maxW={20}
+                  />
+                </Link>
+                <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
+                  <LazyImage
+                    src={DeleteIcon}
+                    altText="삭제"
+                    w={20}
+                    h={20}
+                    maxW={16}
+                  />
+                </div>
+              </Flex>
+            </Suspense>
           )}
         </Flex>
         <Spacer h={8} />
@@ -127,14 +114,16 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         <Spacer h={28} />
         <Flex align="center" gap="8px">
           {data?.memberImage && (
-            <LazyImage
-              src={data.memberImage}
-              altText={data?.memberName || ''}
-              w={16}
-              h={16}
-              maxW={16}
-              style={{ borderRadius: '50%' }}
-            />
+            <Suspense fallback={<div style={{ height: '16px' }} />}>
+              <LazyImage
+                src={data.memberImage}
+                altText={data?.memberName || ''}
+                w={16}
+                h={16}
+                maxW={16}
+                style={{ borderRadius: '50%' }}
+              />
+            </Suspense>
           )}
           <SText color="#333" fontSize="12px" fontWeight={600}>
             {data?.memberName}

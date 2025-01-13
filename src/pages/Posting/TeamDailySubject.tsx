@@ -1,5 +1,6 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
-import { LazyImage } from '@/components/commons/LazyImage';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
@@ -7,7 +8,7 @@ import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -16,9 +17,9 @@ import {
 } from 'react-router-dom';
 
 import { createSubject, mutateSubject } from '@/api/subject';
-import commonToday from '@/assets/Posting/comonToday.png';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
@@ -26,8 +27,6 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
-import { breakpoints } from '@/constants/breakpoints';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
@@ -63,7 +62,6 @@ export const TeamDailySubject = () => {
   const buttonFontSize = isMobile ? '16px' : '20px';
   const padding = isMobile ? '0 12px' : '0 105px';
   const spacing = isMobile ? 8 : 39;
-  const spacingImg = isMobile ? 0 : 22;
   const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
@@ -92,7 +90,7 @@ export const TeamDailySubject = () => {
       })
         .then(() => {
           queryClient
-            .invalidateQueries({
+            .refetchQueries({
               queryKey: ['team-info', parseInt(id), year, month],
             })
             .then(() => {
@@ -137,7 +135,7 @@ export const TeamDailySubject = () => {
     })
       .then((data) => {
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ['team-info', parseInt(id), year, month],
           })
           .then(() => {
@@ -169,25 +167,6 @@ export const TeamDailySubject = () => {
   return (
     <CommonLayout>
       <Flex direction={'column'} align={'center'} padding={padding}>
-        <Suspense fallback={null}>
-        {isMobile ? 
-          <LazyImage
-          altText={'comon today'}
-          w={378}
-          maxW={378}
-          h={120}
-          src={commonToday}
-          /> :
-          <LazyImage
-            altText={'comon today'}
-            w={634}
-            maxW={635}
-            h={188}
-            src={commonToday}
-          />
-        }
-        </Suspense>
-        <Spacer h={spacingImg} />
         <PageSectionHeader h={40}>
           <Title src={write} title="주제 작성하기" />
         </PageSectionHeader>
