@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { alertAtom } from '@/store/modal';
+import click from '@/assets/TeamJoin/click.png';
 
 export const TeamRegistrationButton = () => {
   const isRegistrationFormValid = useAtomValue(isTeamRegistrationValidAtom);
@@ -53,7 +54,8 @@ export const TeamRegistrationButton = () => {
       disabled={!isRegistrationFormValid}
       onClick={onClick}
     >
-      <span>🚀 팀 생성하기</span>
+      <img src={click} alt="click" width={24} />
+      <span>팀 생성하기</span>
     </ComonFormSubmitButton>
   );
 };

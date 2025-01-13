@@ -32,6 +32,8 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 export const Posting = () => {
   const location = useLocation();
@@ -51,6 +53,9 @@ export const Posting = () => {
   const page = useAtomValue(pageAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+  const buttonFontSize = isMobile ? "16px" : "20px";
   const { id } = useParams();
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -132,17 +137,29 @@ export const Posting = () => {
       });
   };
 
+  const padding = isMobile ? '0 10px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
+
   return (
     <CommonLayout>
-      <Flex direction={'column'} align={'center'} padding={'0 105px'}>
+      <Flex direction={'column'} align={'center'} padding={padding}>
         <Suspense fallback={null}>
-          <LazyImage
-            altText={'comon today'}
-            w={634}
-            maxW={635}
-            h={188}
-            src={commonToday}
-          />
+          {isMobile ? 
+            <LazyImage
+              altText={'comon today'}
+              w={378}
+              maxW={378}
+              h={120}
+              src={commonToday}
+            /> :
+            <LazyImage
+              altText={'comon today'}
+              w={634}
+              maxW={635}
+              h={188}
+              src={commonToday}
+            />
+        }
         </Suspense>
         <Spacer h={22} />
         <PageSectionHeader h={40}>
@@ -155,7 +172,7 @@ export const Posting = () => {
           content={article}
           title={articleTitle}
         />
-        <Spacer h={38} />
+        <Spacer h={spacing} />
         <ConfirmButtonWrap
           disabled={isPending}
           isPending={isPending}
@@ -163,7 +180,7 @@ export const Posting = () => {
         >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText fontSize={buttonFontSize} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -188,6 +205,13 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   padding: 0;
   border: 3px solid ${colors.borderPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 312px;
+    border-radius: 40px;
+    height: 50px;
+    border: 2px solid ${colors.borderPurple};
+  }
 `;
 
 // TODO: TeamJoin에서 가져옴

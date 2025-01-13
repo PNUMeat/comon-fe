@@ -26,6 +26,8 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
@@ -56,6 +58,12 @@ export const TeamDailySubject = () => {
   const setDashboardView = useSetAtom(currentViewAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+  const buttonFontSize = isMobile ? '16px' : '20px';
+  const padding = isMobile ? '0 12px' : '0 105px';
+  const spacing = isMobile ? 8 : 39;
+  const spacingImg = isMobile ? 0 : 22;
   const { id, selectedDate } = useParams();
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
@@ -160,8 +168,16 @@ export const TeamDailySubject = () => {
 
   return (
     <CommonLayout>
-      <Flex direction={'column'} align={'center'} padding={'0 105px'}>
+      <Flex direction={'column'} align={'center'} padding={padding}>
         <Suspense fallback={null}>
+        {isMobile ? 
+          <LazyImage
+          altText={'comon today'}
+          w={378}
+          maxW={378}
+          h={120}
+          src={commonToday}
+          /> :
           <LazyImage
             altText={'comon today'}
             w={634}
@@ -169,12 +185,13 @@ export const TeamDailySubject = () => {
             h={188}
             src={commonToday}
           />
+        }
         </Suspense>
-        <Spacer h={22} />
+        <Spacer h={spacingImg} />
         <PageSectionHeader h={40}>
           <Title src={write} title="주제 작성하기" />
         </PageSectionHeader>
-        <Spacer h={39} />
+        <Spacer h={spacing} />
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setSubjectTitle}
@@ -191,7 +208,7 @@ export const TeamDailySubject = () => {
         >
           <ClickImage src={click} />
           <ActionText>
-            <SText fontSize="20px" fontWeight={700}>
+            <SText fontSize={buttonFontSize} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -216,6 +233,13 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   padding: 0;
   border: 3px solid ${colors.borderPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 312px;
+    border-radius: 40px;
+    height: 50px;
+    border: 2px solid ${colors.borderPurple};
+  }
 `;
 
 // TODO: TeamJoin에서 가져옴

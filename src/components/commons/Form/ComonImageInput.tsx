@@ -22,6 +22,11 @@ const ImageContainer = styled.div<HeightInNumber>`
   background: #fff;
   box-sizing: border-box;
   justify-content: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 const PreviewImage = styled.img`
@@ -51,6 +56,10 @@ const SideContainer = styled.div<HeightInNumber>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: auto;
+  }
 `;
 
 const InfoText = styled.p<{ fontSize: string }>`
