@@ -6,7 +6,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -108,34 +108,40 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
           />
           <Spacer h={24} />
-          <Posts
-            data={articlesData}
-            tags={tags}
-            selectedDate={selectedDate}
-            onShowTopicDetail={handleShowTopicDetail}
-            onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
-          />
-          <Pagination
-            totalPages={articlesData?.page?.totalPages ?? 0}
-            currentPageProp={page}
-            onPageChange={handlePageChange}
-          />
-          <Spacer h={40} />
-          {currentView === 'topic' && (
-            <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
-          )}
-          {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail
-              data={
-                articlesData.content.find(
-                  (article) => article.articleId === selectedArticleId
-                ) as IArticle
-              }
-              refetchArticles={refetch}
-              teamId={Number(teamId)}
+          {/* TODO: LazyImage는 Suspense로 감싸야함 */}
+          <Suspense fallback={null}>
+            <Posts
+              data={articlesData}
+              tags={tags}
+              selectedDate={selectedDate}
+              onShowTopicDetail={handleShowTopicDetail}
+              onShowArticleDetail={handleShowArticleDetail}
+              key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
             />
-          )}
+            <Pagination
+              totalPages={articlesData?.page?.totalPages ?? 0}
+              currentPageProp={page}
+              onPageChange={handlePageChange}
+            />
+            <Spacer h={40} />
+            {currentView === 'topic' && (
+              <TopicDetail
+                teamId={Number(teamId)}
+                selectedDate={selectedDate}
+              />
+            )}
+            {currentView === 'article' && articlesData && selectedArticleId && (
+              <ArticleDetail
+                data={
+                  articlesData.content.find(
+                    (article) => article.articleId === selectedArticleId
+                  ) as IArticle
+                }
+                refetchArticles={refetch}
+                teamId={Number(teamId)}
+              />
+            )}
+          </Suspense>
         </CalendarSection>
       </Grid>
       <Spacer h={200} />
