@@ -9,7 +9,6 @@ import { breakpoints } from '@/constants/breakpoints';
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
-import { breakpoints } from '@/constants/breakpoints';
 
 const ImageContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
