@@ -8,7 +8,7 @@ import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -88,10 +88,42 @@ const PostSubjectViewer: React.FC<{
     enabled: !!selectedDate,
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (show && contentRef.current) {
       const content = contentRef.current;
-      setHeight(minShowHeight + content.clientHeight);
+      const images = content.querySelectorAll('img');
+      if (images.length === 0) {
+        setHeight(minShowHeight + content.clientHeight);
+        return;
+      }
+
+      let loadedCnt = 0;
+      const onLoad = () => {
+        loadedCnt++;
+        if (loadedCnt === images.length) {
+          setHeight(minShowHeight + content.clientHeight);
+        }
+      };
+
+      images.forEach((img) => {
+        if (img.complete) {
+          loadedCnt++;
+          return;
+        }
+        img.addEventListener('load', onLoad);
+        img.addEventListener('error', onLoad);
+      });
+
+      if (loadedCnt === images.length) {
+        setHeight(minShowHeight + content.clientHeight);
+      }
+
+      return () => {
+        images.forEach((img) => {
+          img.removeEventListener('load', onLoad);
+          img.removeEventListener('error', onLoad);
+        });
+      };
     }
   }, [show]);
 
