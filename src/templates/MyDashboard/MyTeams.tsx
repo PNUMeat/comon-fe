@@ -349,6 +349,11 @@ const InformationContent = styled.div`
   display: grid;
   grid-template-columns: 68px 1fr;
   gap: 16px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 10px;
+    grid-template-columns: 50px 1fr;
+  }
 `;
 
 const InformationLabel = styled.div`
@@ -359,6 +364,11 @@ const InformationLabel = styled.div`
   font-weight: 600;
   line-height: 19px;
   letter-spacing: -0.36px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    letter-spacing: -0.28px;
+  }
 `;
 
 const InformationValue = styled.div`
@@ -367,8 +377,13 @@ const InformationValue = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  line-height: 19px; /* 105.556% */
+  line-height: 19px;
   letter-spacing: -0.36px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    letter-spacing: -0.28px;
+  }
 `;
 
 const TeamWithdrawButton = styled.button`
@@ -385,7 +400,10 @@ const TeamWithdrawButton = styled.button`
   text-decoration-skip-ink: auto;
   text-decoration-thickness: auto;
   text-underline-offset: auto;
-  text-underline-position: from-font;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+  }
 `;
 
 const InformationViewer: React.FC<{
@@ -514,7 +532,6 @@ const ArticleDetailHeader = styled.div`
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
     margin-bottom: 36px;
-    background-color: pink;
   }
 `;
 
@@ -724,17 +741,6 @@ export const MyTeams = () => {
             />
           ))}
       </Flex>
-
-      {/*TODO: 삭제 */}
-      <ArticlesViewer
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-        teamId={1}
-        page={page}
-        setPage={setPage}
-        isMobile={isMobile}
-      />
-      <ArticleDetailViewer selectedId={1} teamId={1} page={page} />
 
       {mode === 'history' && teamId != null && (
         <ArticlesViewer
