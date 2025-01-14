@@ -58,7 +58,7 @@ const Category = styled.div<{ isSelected?: boolean }>`
   border-radius: 5px;
   position: relative;
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? '#e5e5e5' : '#fff')};
+  background-color: #e5e5e5;
   ${(props) =>
     props.isSelected
       ? `&::after {
