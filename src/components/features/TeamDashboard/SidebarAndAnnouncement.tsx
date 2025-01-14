@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
@@ -13,6 +15,7 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
@@ -31,82 +34,157 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <>
       <Sidebar>
-        <Box width="100%" height="260px" borderWidth="3px">
-          <Suspense fallback={<div style={{ height: '200px' }} />}>
+        <Box
+          width={isMobile ? '84px' : '100%'}
+          height={isMobile ? '84px' : '260px'}
+          borderWidth={isMobile ? '1px' : '3px'}
+          padding={isMobile ? '8px' : '16px'}
+          borderRadius={isMobile ? '10px' : '20px'}
+        >
+          <Suspense
+            fallback={<div style={{ height: isMobile ? '84px' : '200px' }} />}
+          >
             <ImageContainer
               src={teamInfo.imageUrl}
               altText={teamInfo.teamName}
-              w={200}
-              h={200}
-              maxW={200}
+              w={isMobile ? 84 : 200}
+              h={isMobile ? 84 : 200}
+              maxW={isMobile ? 84 : 200}
             />
           </Suspense>
         </Box>
         <Spacer h={20} />
-        <Box width="100%" padding="24px 40px">
-          <Flex direction="column" justify="center" align="center" width={100}>
-            <SText color="#333" fontSize="12px" fontWeight={600}>
-              TEAM
-            </SText>
-            <Spacer h={2} />
-            <SText fontSize="24px" color="#333" fontWeight={700}>
-              {teamInfo.teamName}
-            </SText>
-            <Spacer h={4} />
-            <SText fontSize="16px" color="#777" fontWeight={400}>
-              since {teamInfo.createdAt}
-            </SText>
-            <Spacer h={16} />
-            <Label background="#6E74FA" color="#fff" padding="2px 10px">
-              <SText fontSize="10px" fontWeight={600}>
-                {teamInfo.topic}
+        <Box
+          width="100%"
+          padding={isMobile ? '8px 12px' : '24px 40px'}
+          height={isMobile ? '84px' : 'auto'}
+          borderRadius={isMobile ? '10px' : '20px'}
+        >
+          <Flex
+            direction={isMobile ? 'row' : 'column'}
+            justify={isMobile ? 'space-around' : 'center'}
+            align="center"
+            width={100}
+          >
+            <Flex direction="column" align="center" style={{ width: 'auto' }}>
+              <SText
+                color="#333"
+                fontSize={isMobile ? '10px' : '12px'}
+                fontWeight={600}
+              >
+                TEAM
               </SText>
-            </Label>
-            <Spacer h={16} />
-            <SText
-              color="#777"
-              fontSize="14px"
-              fontWeight={400}
-              lineHeight="20px"
-            >
-              {teamInfo.teamExplain}
-            </SText>
-            <Spacer h={32} />
-            <SText color={colors.buttonPurple} fontSize="16px" fontWeight={400}>
-              {teamInfo.memberCount} members
-            </SText>
-            <Spacer h={32} />
-            {isTeamManager && (
+              <Spacer h={2} />
+              <SText
+                fontSize={isMobile ? '16px' : '24px'}
+                color="#333"
+                fontWeight={700}
+              >
+                {teamInfo.teamName}
+              </SText>
+              <Spacer h={4} />
+              <SText
+                fontSize={isMobile ? '10px' : '16px'}
+                color="#777"
+                fontWeight={400}
+              >
+                since {teamInfo.createdAt}
+              </SText>
+              <Spacer h={isMobile ? 6 : 16} />
+              <Label
+                background={isMobile ? '#F4F4F4' : '#6E74FA'}
+                color={isMobile ? '#8488ec' : '#fff'}
+                padding={isMobile ? '2px 6px' : '2px 10px'}
+              >
+                <SText fontSize={isMobile ? '8px' : '10px'} fontWeight={600}>
+                  {teamInfo.topic}
+                </SText>
+              </Label>
+            </Flex>
+
+            {!isMobile && (
               <>
-                <Link
-                  to={`${PATH.TEAM_ADMIN}/${teamId}`}
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setSelectedId(null)}
+                <Spacer h={16} />
+                <SText
+                  color="#777"
+                  fontSize="14px"
+                  fontWeight={400}
+                  lineHeight="20px"
                 >
-                  <Flex justify="center" align="center">
-                    <SettingImage src={SettingsGreenIcon} />
-                    <SText color="#ccc" fontWeight={600} fontSize="14px">
-                      게시글 관리
-                    </SText>
-                  </Flex>
-                </Link>
-                <Spacer h={4} />
-                <Link
-                  to={`${PATH.TEAM_MODIFICATION}`}
-                  style={{ textDecoration: 'none' }}
+                  {teamInfo.teamExplain}
+                </SText>
+                <Spacer h={32} />
+                <SText
+                  color={colors.buttonPurple}
+                  fontSize="16px"
+                  fontWeight={400}
                 >
-                  <Flex justify="center" align="center">
-                    <SettingImage src={SettingsRedIcon} />
-                    <SText color="#ccc" fontWeight={600} fontSize="14px">
-                      팀 설정
-                    </SText>
-                  </Flex>
-                </Link>
+                  {teamInfo.memberCount} members
+                </SText>
+                <Spacer h={32} />
               </>
             )}
+
+            <div>
+              {isMobile && (
+                <>
+                  <SText
+                    color={colors.buttonPurple}
+                    fontSize="10px"
+                    fontWeight={400}
+                    textAlign="center"
+                  >
+                    {teamInfo.memberCount} members
+                  </SText>
+                  <Spacer h={4} />
+                </>
+              )}
+              {isTeamManager && (
+                <>
+                  <Link
+                    to={`${PATH.TEAM_ADMIN}/${teamId}`}
+                    style={{ textDecoration: 'none' }}
+                    onClick={() => setSelectedId(null)}
+                  >
+                    <Flex justify="center" align="center">
+                      <SettingImage src={SettingsGreenIcon} />
+                      <SText
+                        color="#ccc"
+                        fontWeight={600}
+                        fontSize={isMobile ? '10px' : '14px'}
+                      >
+                        게시글 관리
+                      </SText>
+                    </Flex>
+                  </Link>
+                  <Spacer h={4} />
+                  <Link
+                    to={`${PATH.TEAM_MODIFICATION}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Flex
+                      justify={isMobile ? 'flex-start' : 'center'}
+                      align="center"
+                    >
+                      <SettingImage src={SettingsRedIcon} />
+                      <SText
+                        color="#ccc"
+                        fontWeight={600}
+                        fontSize={isMobile ? '10px' : '14px'}
+                      >
+                        팀 설정
+                      </SText>
+                    </Flex>
+                  </Link>
+                </>
+              )}
+            </div>
           </Flex>
         </Box>
       </Sidebar>
@@ -139,18 +217,33 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
 
 const Sidebar = styled.aside`
   grid-area: sidebar;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    gap: 4px;
+  }
 `;
 
 const ImageContainer = styled(LazyImage)`
   object-position: center;
   overflow: hidden;
   max-height: 260px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    max-height: 84px;
+  }
 `;
 
 const SettingImage = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 2px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
 `;
 
 const Announcement = styled.header`
