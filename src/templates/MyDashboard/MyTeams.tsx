@@ -718,11 +718,44 @@ const TeamButton: React.FC<{
   );
 };
 
+const MoveButton: React.FC<{
+  onClick: () => void;
+  text : string;
+  disabled: boolean;
+}> = ({ onClick, text, disabled}) => {
+  return (
+    <TeamButtonWrap
+      onClick={onClick}
+      isSelected={false}
+      style={{
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        background: disabled ? 'transparent' : '#3D3F6A',
+        width: '30px',
+      }}
+    >
+      { !disabled && (
+      <SText
+        color={'#fff'}
+        fontFamily={'Pretendard'}
+        fontSize={'10px'}
+        fontWeight={500}
+        lineHeight={'12px'}
+      >
+        {text}
+      </SText>
+      )}
+    </TeamButtonWrap>
+  );
+}
+
+const TEAMS_PER_VIEW = 5;
+
 export const MyTeams = () => {
   const [mode, setMode] = useState('history');
   const [teamId, setTeamId] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [page, setPage] = useState(() => 0);
+  const [startIndex, setStartIndex] = useState(0);
 
   const { data } = useQuery({
     queryKey: ['my-page-status'],
@@ -742,12 +775,36 @@ export const MyTeams = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
+  const teamsLength = data?.length || 0;
+  const visibleTeams = data?.slice(startIndex, startIndex + TEAMS_PER_VIEW) || [];
+
+  const canGoPrev = startIndex > 0;
+  const canGoNext = startIndex + TEAMS_PER_VIEW < teamsLength;
+
+  
+
+  const goPrev = () => {
+    if (!canGoPrev) return;
+    setStartIndex((prev) => Math.max(0, prev - 1));
+  }
+
+  const goNext = () => {
+    if (!canGoNext) return;
+    setStartIndex((prev) => Math.min(teamsLength - TEAMS_PER_VIEW, prev + 1));
+  }
+
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
       <Flex padding={'0 0 0 25px'}>
-        {data &&
-          data.map((team: TeamAbstraction) => (
+        <MoveButton
+          onClick={goPrev}
+          text='<'
+          disabled={!canGoPrev}
+        >
+        </MoveButton>
+        { data &&
+          visibleTeams.map((team: TeamAbstraction) => (
             <TeamButton
               key={team.teamId}
               isSelected={teamId === team.teamId}
@@ -758,6 +815,12 @@ export const MyTeams = () => {
               teamName={team.teamName}
             />
           ))}
+        <MoveButton
+          onClick={goNext}
+          text='>'
+          disabled={!canGoNext}
+          >
+        </MoveButton>
       </Flex>
 
       {mode === 'history' && teamId != null && (
