@@ -22,11 +22,17 @@ import {
   TOGGLE_LINK_COMMAND,
 } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $findMatchingParent, mergeRegister } from '@lexical/utils';
 import {
+  $findMatchingParent,
+  mergeRegister,
+  objectKlassEquals,
+} from '@lexical/utils';
+import {
+  $createTextNode,
   $getSelection,
   $isLineBreakNode,
   $isRangeSelection,
+  $isTextNode,
   BaseSelection,
   CLICK_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
@@ -34,8 +40,14 @@ import {
   COMMAND_PRIORITY_LOW,
   KEY_ESCAPE_COMMAND,
   LexicalEditor,
+  PASTE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+
+const validateUrl = (url: string) => {
+  const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  return urlRegex.test(url);
+};
 
 const FloatingLinkEditor: React.FC<{
   editor: LexicalEditor;
@@ -160,6 +172,42 @@ const FloatingLinkEditor: React.FC<{
           return false;
         },
         COMMAND_PRIORITY_HIGH
+      ),
+      editor.registerCommand(
+        PASTE_COMMAND,
+        (event) => {
+          const selection = $getSelection();
+          if (
+            !$isRangeSelection(selection) ||
+            !objectKlassEquals(event, ClipboardEvent)
+          ) {
+            return false;
+          }
+          const clipboardEvent = event as ClipboardEvent;
+          if (clipboardEvent.clipboardData === null) {
+            return false;
+          }
+          const clipboardText = clipboardEvent.clipboardData.getData('text');
+          if (!validateUrl(clipboardText)) {
+            return false;
+          }
+
+          const linkNode = $createLinkNode(clipboardText, {
+            title: clipboardText,
+          });
+          const linkTextNode = $createTextNode(clipboardText);
+
+          linkNode.append(linkTextNode);
+          setEditedLinkUrl(clipboardText);
+
+          editor.update(() => {
+            selection.insertNodes([linkNode]);
+          });
+
+          event.preventDefault();
+          return true;
+        },
+        COMMAND_PRIORITY_LOW
       )
     );
   }, [editor, updateLinkEditor, setIsLink, isLink]);
@@ -210,6 +258,14 @@ const FloatingLinkEditor: React.FC<{
           const parent = getSelectedNode(selection).getParent();
           if ($isLinkNode(parent)) {
             parent.setTarget('_blank');
+
+            const firstChild = parent.getFirstChild();
+            if ($isTextNode(firstChild)) {
+              if (validateUrl(firstChild.getTextContent())) {
+                firstChild.setTextContent(editedLinkUrl);
+                parent.setTitle(editedLinkUrl);
+              }
+            }
           } else if ($isAutoLinkNode(parent)) {
             const linkNode = $createLinkNode(parent.getURL(), {
               rel: parent.__rel,
