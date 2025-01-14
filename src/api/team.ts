@@ -1,4 +1,6 @@
+// import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
+// import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -20,12 +22,12 @@ interface ICreateTeamResponse {
 }
 
 // 조회
-// interface ITeamMember {
-//   memberName: string;
-//   imageUrl: string;
-//   memberExplain: string;
-//   uuid: string;
-// }
+interface ITeamMember {
+  memberName: string;
+  imageUrl: string;
+  memberExplain: string;
+  uuid: string;
+}
 
 export interface ITeamInfo extends ITeamCommon {
   teamId: number;
@@ -36,8 +38,7 @@ export interface ITeamInfo extends ITeamCommon {
   teamAnnouncement: string;
   createdAt: string;
 
-  // TODO: 서버에서 주는 실제 데이터에는 해당 속성이 없는데 사용하는 속성이 맞는지?
-  // members: ITeamMember[];
+  members: ITeamMember[];
   // TODO: 서버에서 실제로 주는 데이터 속성
   memberLimit: number;
 }
@@ -104,6 +105,10 @@ export const getTeamList = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
+  // if (isDevMode()) {
+  //   return teamCombinedMock.data;
+  // }
+
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
     {
