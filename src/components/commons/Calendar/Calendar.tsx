@@ -1,8 +1,11 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import { ICalendarTag } from '@/api/dashboard';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
@@ -57,6 +60,9 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
     setActiveStartDate(today);
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <CalendarWrapper>
       {/* 오늘 버튼 */}
@@ -70,7 +76,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
         tileContent={({ date }) => {
           const category = getCategoryForDate(date);
           return category ? (
-            <Tag bgColor={categoryColors[category]} label={category} />
+            isMobile ? (
+              <Dot bgColor={categoryColors[category]} />
+            ) : (
+              <Tag bgColor={categoryColors[category]} label={category} />
+            )
           ) : null;
         }}
         onClickDay={(value: Date) => {
@@ -99,6 +109,11 @@ const StyledDate = styled.div`
   font-weight: 600;
   color: ${colors.buttonPurple};
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+    right: 8px;
+  }
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -126,6 +141,10 @@ const StyledCalendar = styled(Calendar)`
     &:focus {
       background-color: transparent;
     }
+
+    @media (max-width: ${breakpoints.mobile}px) {
+      font-size: 10px;
+    }
   }
 
   /* 년/월 상단 네비게이션 칸 크기 줄이기 */
@@ -152,6 +171,10 @@ const StyledCalendar = styled(Calendar)`
     abbr {
       text-decoration: none;
     }
+
+    @media (max-width: ${breakpoints.mobile}px) {
+      font-size: 8px;
+    }
   }
 
   .react-calendar__month-view__days {
@@ -176,6 +199,12 @@ const StyledCalendar = styled(Calendar)`
     &:hover {
       background-color: #f0f1ff;
     }
+
+    @media (max-width: ${breakpoints.mobile}px) {
+      height: 42px;
+      font-size: 10px;
+      padding: 2px 6px;
+    }
   }
 
   /* 현재 날짜 스타일 */
@@ -190,4 +219,12 @@ const StyledCalendar = styled(Calendar)`
     box-sizing: border-box;
     color: #fff;
   }
+`;
+
+const Dot = styled.div<{ bgColor: string }>`
+  width: 6px;
+  height: 6px;
+  background-color: ${(props) => props.bgColor};
+  margin-top: 5px;
+  border-radius: 50%;
 `;

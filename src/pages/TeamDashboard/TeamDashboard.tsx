@@ -1,4 +1,5 @@
 import { useJumpOnClick } from '@/hooks/useJumpOnClick';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
@@ -19,6 +20,7 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
+import { breakpoints } from '@/constants/breakpoints';
 import {
   currentViewAtom,
   pageAtom,
@@ -62,7 +64,6 @@ export const TeamDashboardPage = () => {
 
   const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
   useEffect(() => {
-    // 스타일 분리~
     if (boundRef?.current && buttonRef?.current) {
       const bound = boundRef.current;
       const button = buttonRef.current;
@@ -107,9 +108,12 @@ export const TeamDashboardPage = () => {
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <Fragment>
-      <Spacer h={28} />
+      <Spacer h={isMobile ? 16 : 28} />
       <Grid>
         {teamInfoData && (
           <SidebarAndAnnouncement
@@ -168,6 +172,10 @@ const Grid = styled.div`
   grid-template-rows: auto 1fr auto;
   gap: 24px 40px;
   height: 100vh;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: block;
+  }
 `;
 
 const CalendarSection = styled.section`
@@ -177,4 +185,9 @@ const CalendarSection = styled.section`
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 8px 24px 16px 24px;
+    border-radius: 10px;
+  }
 `;
