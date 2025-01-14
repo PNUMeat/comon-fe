@@ -17,6 +17,12 @@ interface ICreateTeamRequest extends ITeamCommon {
   image?: File | null;
 }
 
+interface IMPutTeamRequest extends ITeamCommon {
+  teamId: number;
+  image?: File | null;
+  password: string | null;
+}
+
 interface ICreateTeamResponse {
   teamId: number;
 }
@@ -89,6 +95,41 @@ export const createTeam = async ({
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
     'v1/teams',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return res.data.data;
+};
+
+export const modifyTeam = async ({
+  teamName,
+  teamExplain,
+  topic,
+  memberLimit,
+  password,
+  image,
+  teamId,
+}: IMPutTeamRequest) => {
+  const formData = new FormData();
+
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('memberLimit', memberLimit.toString());
+  if (image) {
+    formData.append('image', image);
+  }
+  if (password) {
+    formData.append('password', password);
+  }
+
+  const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
+    `v1/teams/${teamId}`,
     formData,
     {
       headers: {
