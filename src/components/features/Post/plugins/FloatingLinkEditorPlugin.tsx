@@ -45,8 +45,15 @@ import {
 } from 'lexical';
 
 const validateUrl = (url: string) => {
-  const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-  return urlRegex.test(url);
+  // 이거 정규식 쓰면 페이지가 얼어요
+  // const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  // return urlRegex.test(url);
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 const FloatingLinkEditor: React.FC<{
@@ -183,11 +190,14 @@ const FloatingLinkEditor: React.FC<{
           ) {
             return false;
           }
+
           const clipboardEvent = event as ClipboardEvent;
           if (clipboardEvent.clipboardData === null) {
             return false;
           }
+
           const clipboardText = clipboardEvent.clipboardData.getData('text');
+
           if (!validateUrl(clipboardText)) {
             return false;
           }
@@ -195,10 +205,14 @@ const FloatingLinkEditor: React.FC<{
           const linkNode = $createLinkNode(clipboardText, {
             title: clipboardText,
           });
-          const linkTextNode = $createTextNode(clipboardText);
 
+          const linkTextNode = $createTextNode(clipboardText);
           linkNode.append(linkTextNode);
-          setEditedLinkUrl(clipboardText);
+
+          editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+            url: clipboardText,
+            target: '_blank',
+          });
 
           editor.update(() => {
             selection.insertNodes([linkNode]);
