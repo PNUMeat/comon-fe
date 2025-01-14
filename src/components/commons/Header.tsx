@@ -124,7 +124,9 @@ type ModalControl = {
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const [isLoggedIn] = useState<boolean>(checkRemainingCookies());
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
@@ -194,7 +196,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           </NavMenu>
         </Flex>
         <UserMenu>
-          {isLoggedIn || isDevMode() ? (
+          {isLoggedIn ? (
             <Fragment>
               <button
                 onClick={() => {
