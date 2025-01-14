@@ -16,7 +16,7 @@ import { TeamSubjectRadio } from '@/templates/Team/segments/TeamSubjectRadio';
 
 export const TeamForm: React.FC<
   HeightInNumber & {
-    team: ITeamInfo;
+    team?: ITeamInfo;
   }
 > = ({ h, team }) => {
   const width = useWindowWidth();
