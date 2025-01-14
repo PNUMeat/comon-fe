@@ -83,12 +83,13 @@ const PostSubjectViewer: React.FC<{
   const [show, setShow] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const selectedDate = useAtomValue(selectedDateAtom);
+  const selectedDate = new Date().toLocaleDateString('en-CA', {
+    timeZone: 'Asia/Seoul',
+  });
   //TODO: 지금 team-topic은 돔노드 최하단에서, 조건부 렌더링 되는 곳에서 가져오는 중이라 이렇게 해야함, url로 치고 들어오면 해당 날짜꺼 가져옴
   const { data } = useQuery({
     queryKey: ['team-topic', teamId, selectedDate],
     queryFn: () => getTeamTopic(parseInt(teamId as string), selectedDate),
-    enabled: !!selectedDate,
   });
 
   useEffect(() => {
