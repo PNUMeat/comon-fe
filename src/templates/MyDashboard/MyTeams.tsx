@@ -731,6 +731,7 @@ const MoveButton: React.FC<{
         cursor: disabled ? 'not-allowed' : 'pointer',
         background: disabled ? 'transparent' : '#3D3F6A',
         width: '30px',
+        borderRadius: '12px 12px 0px 0px;',
       }}
     >
       { !disabled && (
@@ -796,7 +797,7 @@ export const MyTeams = () => {
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      <Flex padding={'0 0 0 25px'}>
+      <Flex padding={'0 0 0 25px'} width={90} justify='center'>
         <MoveButton
           onClick={goPrev}
           text='<'
