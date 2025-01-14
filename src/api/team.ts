@@ -6,7 +6,8 @@ interface ITeamCommon {
   teamName: string;
   teamExplain: string;
   topic: string;
-  memberLimit: string;
+  // TODO: 정수로 넘어옴
+  memberLimit: number;
 }
 
 interface ICreateTeamRequest extends ITeamCommon {
@@ -19,12 +20,12 @@ interface ICreateTeamResponse {
 }
 
 // 조회
-interface ITeamMember {
-  memberName: string;
-  imageUrl: string;
-  memberExplain: string;
-  uuid: string;
-}
+// interface ITeamMember {
+//   memberName: string;
+//   imageUrl: string;
+//   memberExplain: string;
+//   uuid: string;
+// }
 
 export interface ITeamInfo extends ITeamCommon {
   teamId: number;
@@ -34,7 +35,11 @@ export interface ITeamInfo extends ITeamCommon {
   // successMemberCount: number;
   teamAnnouncement: string;
   createdAt: string;
-  members: ITeamMember[];
+
+  // TODO: 서버에서 주는 실제 데이터에는 해당 속성이 없는데 사용하는 속성이 맞는지?
+  // members: ITeamMember[];
+  // TODO: 서버에서 실제로 주는 데이터 속성
+  memberLimit: number;
 }
 
 interface ITeamListResponse {
@@ -75,7 +80,7 @@ export const createTeam = async ({
   formData.append('teamExplain', teamExplain);
   formData.append('topic', topic);
   formData.append('password', password);
-  formData.append('memberLimit', memberLimit);
+  formData.append('memberLimit', memberLimit.toString());
 
   if (image) {
     formData.append('image', image);

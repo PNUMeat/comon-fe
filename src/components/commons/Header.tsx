@@ -1,4 +1,4 @@
-import { checkRemainingCookies } from '@/utils/cookie';
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
@@ -194,7 +194,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           </NavMenu>
         </Flex>
         <UserMenu>
-          {isLoggedIn ? (
+          {isLoggedIn || isDevMode() ? (
             <Fragment>
               <button
                 onClick={() => {

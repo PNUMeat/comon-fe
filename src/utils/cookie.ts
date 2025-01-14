@@ -36,3 +36,7 @@ export const checkRemainingCookies = () => {
   }
   return sessionStorage.getItem('Authorization') !== null;
 };
+
+export const isDevMode = () => {
+  return import.meta.env.MODE === 'development';
+};
