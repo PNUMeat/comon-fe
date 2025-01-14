@@ -7,7 +7,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
@@ -36,6 +36,9 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   return (
     <>
@@ -190,14 +193,51 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
       </Sidebar>
 
       <Announcement>
-        <Box width="60%" height="70px" padding="12px 28px">
-          <AnnouncementImage src={AnnouncementIcon} />
-          <Flex direction="column" gap="4px">
-            <SText color="#333" fontSize="18px" fontWeight={700}>
+        <Box
+          width={isMobile ? '204px' : '470px'}
+          height={isExpanded ? 'auto' : isMobile ? 'auto' : '70px'}
+          padding={isMobile ? '6px 14px' : '12px 28px'}
+          borderRadius={isMobile ? '4px' : '20px'}
+          borderWidth={isMobile ? '0px' : '1px'}
+          onClick={toggleExpand}
+          style={{
+            overflow: 'hidden',
+            cursor: 'pointer',
+            textOverflow: isExpanded ? 'unset' : 'ellipsis',
+            whiteSpace: isExpanded ? 'normal' : 'nowrap',
+            position: 'relative',
+          }}
+        >
+          <AnnouncementImageWrapper>
+            <AnnouncementImage src={AnnouncementIcon} />
+          </AnnouncementImageWrapper>
+          <Flex
+            direction="column"
+            gap={isMobile ? '2px' : '4px'}
+            style={{
+              marginLeft: '16px',
+            }}
+          >
+            <SText
+              color="#333"
+              fontSize={isMobile ? '10px' : '18px'}
+              fontWeight={700}
+            >
               Team announcement
             </SText>
-            <SText color="#333" fontSize="14px" fontWeight={500}>
-              {teamInfo.teamAnnouncement}
+            <SText
+              color="#333"
+              fontSize={isMobile ? '10px' : '14px'}
+              fontWeight={isMobile ? 400 : 500}
+              style={{
+                whiteSpace: isExpanded ? 'normal' : 'nowrap',
+                overflow: 'hidden',
+                textOverflow: isExpanded ? 'unset' : 'ellipsis',
+              }}
+            >
+              {teamInfo.teamAnnouncement
+                ? teamInfo.teamAnnouncement
+                : '공지가 등록되지 않았습니다.'}
             </SText>
           </Flex>
         </Box>
@@ -205,7 +245,11 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         <Link to={`/posting/${teamId}`} style={{ textDecoration: 'none' }}>
           <NewPostButton>
             <AnnouncementImage src={PencilIcon} />
-            <SText fontSize="18px" color="#fff" fontWeight={700}>
+            <SText
+              fontSize={isMobile ? '10px' : '18px'}
+              color="#fff"
+              fontWeight={700}
+            >
               오늘의 글쓰기
             </SText>
           </NewPostButton>
@@ -250,12 +294,37 @@ const Announcement = styled.header`
   grid-area: announcement;
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin: 12px 0;
+    border-radius: 10px;
+    background: #f8f8ff;
+    padding: 8px 10px;
+  }
+`;
+
+const AnnouncementImageWrapper = styled.div`
+  position: absolute;
+  top: 28px;
+  left: 16px;
+  transform: translateY(-50%);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: 14px;
+    left: 12px;
+  }
 `;
 
 const AnnouncementImage = styled.img`
   width: 18px;
   height: 18px;
   margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+  }
 `;
 
 const NewPostButton = styled.button`
@@ -267,4 +336,11 @@ const NewPostButton = styled.button`
   background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   border: none;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100px;
+    height: 32px;
+    padding: 12px;
+    border-radius: 28px;
+  }
 `;
