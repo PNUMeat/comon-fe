@@ -3,9 +3,7 @@ name: DEVELOP CI / CD
 on:
   push:
     branches:
-      - jaeanhan
-      - dlwltn0430
-      - mingkyeongg
+      - test
   workflow_dispatch:
     inputs:
       branch:

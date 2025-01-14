@@ -1,12 +1,10 @@
+/* css 파일이라 scss 형식 지원x*/
+
 .content-editable {
     outline: none;
     font-family: Pretendard, serif;
     line-height: 1.5;
     padding: 20px 50px;
-
-    @media screen and (max-width: 768px) {
-        padding: 20px 20px;
-    }
 }
 
 .content-editable:focus {
@@ -39,8 +37,13 @@ button {
     position: fixed;
     padding: 8px;
     z-index: 1000;
+}
 
-    @media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
+    .content-editable {
+        padding: 20px 20px;
+    }
+    .editor-dropdown-items {
         font-size: 12px;
     }
 }
