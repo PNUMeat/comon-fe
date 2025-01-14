@@ -1,7 +1,7 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 // import { teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
-import { teamArticlesMock } from '@/api/mocks.ts';
+import { subjectMock, teamArticlesMock } from '@/api/mocks.ts';
 
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
@@ -90,6 +90,10 @@ export const getTeamTopic = async (
   teamId: number,
   date: string
 ): Promise<ITopicResponse> => {
+  if (isDevMode()) {
+    return subjectMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
     `/v1/articles/teams/${teamId}/subjects`,
     { params: { date } }
