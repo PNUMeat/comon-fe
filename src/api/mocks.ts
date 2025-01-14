@@ -167,3 +167,141 @@ export const teamArticlesMock = {
     },
   },
 };
+
+export const myPageTeamMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: [
+    {
+      teamId: 16,
+      teamName: 'aa',
+      teamManager: true,
+      registerDate: null,
+    },
+    {
+      teamId: 15,
+      teamName: 'scroll',
+      teamManager: true,
+      registerDate: null,
+    },
+    {
+      teamId: 14,
+      teamName: 'asd',
+      teamManager: true,
+      registerDate: null,
+    },
+    {
+      teamId: 13,
+      teamName: 'asd',
+      teamManager: true,
+      registerDate: null,
+    },
+    {
+      teamId: 10,
+      teamName: 'Team QA',
+      teamManager: true,
+      registerDate: null,
+    },
+    {
+      teamId: 3,
+      teamName: '파댕이 밥주기',
+      teamManager: false,
+      registerDate: null,
+    },
+    {
+      teamId: 2,
+      teamName: '장진영팀',
+      teamManager: false,
+      registerDate: null,
+    },
+    {
+      teamId: 1,
+      teamName: '코딩테스트트트',
+      teamManager: false,
+      registerDate: null,
+    },
+  ],
+};
+
+export const myArticlesMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    content: [
+      {
+        articleId: 242,
+        articleTitle: '14일에씀',
+        articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
+        createdDate: '2025-01-13 20:33:36',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+      {
+        articleId: 241,
+        articleTitle: '아니',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
+        createdDate: '2025-01-13 20:29:10',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+      {
+        articleId: 240,
+        articleTitle:
+          '두줄이 넘어가는 제목입니다~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
+        createdDate: '2025-01-13 19:44:29',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+      {
+        articleId: 239,
+        articleTitle: '확인했습니다~!',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
+        createdDate: '2025-01-13 19:37:18',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+      {
+        articleId: 238,
+        articleTitle: '네 알겠습니다~~',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊㅋㅌㅊ</span></p>',
+        createdDate: '2025-01-13 19:36:57',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+      {
+        articleId: 228,
+        articleTitle: 'asdasd',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">asdasd</span></p>',
+        createdDate: '2025-01-02 02:08:25',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+      },
+    ],
+    page: {
+      size: 6,
+      number: 0,
+      totalElements: 21,
+      totalPages: 4,
+    },
+  },
+};

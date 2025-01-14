@@ -1,4 +1,7 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
+import { myArticlesMock, myPageTeamMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 export type TeamAbstraction = {
@@ -9,6 +12,10 @@ export type TeamAbstraction = {
 };
 
 export const queryMyTeamInfo = async () => {
+  if (isDevMode()) {
+    return myPageTeamMock.data;
+  }
+
   const res =
     await apiInstance.get<ServerResponse<TeamAbstraction[]>>(
       `v1/teams/my-page`
@@ -40,6 +47,10 @@ export type MyArticleResponse = {
 };
 
 export const queryMyArticles = async (teamId: number, page: number) => {
+  if (isDevMode()) {
+    return myArticlesMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<MyArticleResponse>>(
     `v1/articles/${teamId}/my-page`,
     { params: { page } }
