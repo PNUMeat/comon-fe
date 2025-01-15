@@ -26,7 +26,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -91,25 +90,43 @@ const Announcement = styled.header`
 
 const leftPadding = '32px';
 
-const Image = styled.img`
+const PostImage = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 8px;
-`;
-
-const AnnouncementImage = styled(Image)`
-  position: absolute;
-  transform: translate(-28px, 0px);
-  width: 18px;
-  height: 18px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
+    margin-right: 0px;
   }
 `;
 
-const SubjectImage = styled(Image)`
+const AnnouncementImageWrapper = styled.div`
+  position: absolute;
+  top: 28px;
+  left: 16px;
+  transform: translateY(-50%);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: 14px;
+    left: 12px;
+  }
+`;
+
+const AnnouncementImage = styled.img`
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+  }
+`;
+
+const SubjectImage = styled(PostImage)`
   width: 24px;
   height: 24px;
   margin-right: 8px;
@@ -117,6 +134,7 @@ const SubjectImage = styled(Image)`
   @media (max-width: ${breakpoints.mobile}px) {
     width: 12px;
     height: 12px;
+    margin-right: 8px;
   }
 `;
 
@@ -134,7 +152,7 @@ const SubjectControlButtonWrap = styled.button`
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100px;
     height: 32px;
-    padding: 12px;
+    padding: 12px 20px;
     border-radius: 28px;
   }
 `;
@@ -148,6 +166,9 @@ const SubjectControlButton: React.FC<{
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     <SubjectControlButtonWrap
@@ -165,7 +186,7 @@ const SubjectControlButton: React.FC<{
     >
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
-        fontSize="18px"
+        fontSize={isMobile ? '10px' : '18px'}
         color={isSuccess ? '#fff' : 'transparent'}
         fontWeight={700}
         whiteSpace={'nowrap'}
@@ -185,35 +206,71 @@ const AnnouncementAndSubject = forwardRef<
     selectedDate: string;
   }
 >(({ announcementToday, onClick, id, selectedDate }, ref) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
+  const handleClick = () => {
+    onClick();
+    toggleExpand();
+  };
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleExpand = () => setIsExpanded((prev) => !prev);
+
   return (
     <Announcement>
-      <Box width="60%" height="70px" padding="12px 28px" ref={ref}>
+      <Box
+        width={isMobile ? '204px' : '470px'}
+        height={isExpanded ? 'auto' : isMobile ? 'auto' : '70px'}
+        padding={isMobile ? '6px 14px' : '12px 28px'}
+        borderRadius={isMobile ? '4px' : '20px'}
+        borderWidth={isMobile ? '0px' : '1px'}
+        style={{
+          overflow: 'hidden',
+          cursor: 'pointer',
+          textOverflow: isExpanded ? 'unset' : 'ellipsis',
+          whiteSpace: isExpanded ? 'normal' : 'nowrap',
+          position: 'relative',
+        }}
+        ref={ref}
+      >
+        <AnnouncementImageWrapper>
+          <AnnouncementImage src={AnnouncementIcon} />
+        </AnnouncementImageWrapper>
         <Flex
           direction="column"
-          gap="4px"
-          justify="flex-start"
-          padding="0 24px"
+          gap={isMobile ? '2px' : '4px'}
+          style={{
+            marginLeft: '16px',
+          }}
         >
-          <AnnouncementImage src={AnnouncementIcon} />
-          <SText color="#333" fontSize="18px" fontWeight={700}>
+          <SText
+            color="#333"
+            fontSize={isMobile ? '10px' : '18px'}
+            fontWeight={700}
+          >
             Team announcement
           </SText>
 
-          {announcementToday ? (
-            <SText color="#333" fontSize="14px" fontWeight={500}>
-              {announcementToday}
-            </SText>
-          ) : (
-            <SText color="gray" fontSize="14px" fontWeight={500}>
-              공지가 등록되지 않았어요.
-            </SText>
-          )}
+          <SText
+            color="#333"
+            fontSize={isMobile ? '10px' : '14px'}
+            fontWeight={isMobile ? 400 : 500}
+            style={{
+              whiteSpace: isExpanded ? 'normal' : 'nowrap',
+              overflow: 'hidden',
+              textOverflow: isExpanded ? 'unset' : 'ellipsis',
+            }}
+          >
+            {announcementToday
+              ? announcementToday
+              : '공지가 등록되지 않았습니다.'}
+          </SText>
         </Flex>
-
-        <Image
+        <PostImage
           src={announcementTodayIcon}
           alt="announcement modify button"
-          onClick={onClick}
+          onClick={handleClick} // TODO:
           style={{ cursor: 'pointer' }}
         />
       </Box>
@@ -528,7 +585,7 @@ export const TeamAdmin = () => {
         <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
       <Spacer h={200} />
-      {createPortal(
+      {/* {createPortal(
         <PromptModal
           ref={modalRef}
           teamId={Number(id)}
@@ -538,7 +595,7 @@ export const TeamAdmin = () => {
           }
         />,
         document.body
-      )}
+      )} */}
     </Fragment>
   );
 };
