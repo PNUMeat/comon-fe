@@ -16,6 +16,7 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { ITopicResponse } from '@/api/dashboard.ts';
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
@@ -25,7 +26,11 @@ import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useQueryClient } from '@tanstack/react-query';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamDailySubject = () => {
@@ -36,12 +41,14 @@ export const TeamDailySubject = () => {
     articleBody,
     articleTitle,
     articleImageUrl,
+    refetch,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
     articleImageUrl: null,
+    refetch: null,
   };
 
   const regroupedArticleContent =
@@ -89,19 +96,34 @@ export const TeamDailySubject = () => {
         articleCategory: tag,
       })
         .then(() => {
-          queryClient
-            .refetchQueries({
-              queryKey: ['team-info', parseInt(id), year, month],
-            })
-            .then(() => {
-              alert('주제 수정이 완료되었습니다.');
-              navigate(`/team-admin/${id}`);
-            })
-            .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
-            .finally(() => {
-              setDashboardView('topic');
-              setSelectedPostId(parseInt(articleId));
-            });
+          if (refetch) {
+            const refetchTopic: (
+              options?: RefetchOptions
+            ) => Promise<QueryObserverResult<ITopicResponse, Error>> = refetch;
+            refetchTopic()
+              .then(() => {
+                alert('주제 수정이 완료되었습니다.');
+                navigate(`/team-admin/${id}`);
+              })
+              .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
+              .finally(() => {
+                setDashboardView('topic');
+                setSelectedPostId(parseInt(articleId));
+              });
+          }
+          // queryClient
+          //   .refetchQueries({
+          //     queryKey: ['team-info', parseInt(id), year, month],
+          //   })
+          //   .then(() => {
+          //     alert('주제 수정이 완료되었습니다.');
+          //     navigate(`/team-admin/${id}`);
+          //   })
+          //   .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
+          //   .finally(() => {
+          //     setDashboardView('topic');
+          //     setSelectedPostId(parseInt(articleId));
+          //   });
         })
         .catch((err) => {
           alert('주제 수정에 실패했습니다.');

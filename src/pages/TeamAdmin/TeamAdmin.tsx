@@ -97,7 +97,7 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
-  const { data, isSuccess } = useQuery({
+  const { data, isSuccess, refetch } = useQuery({
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
@@ -112,6 +112,7 @@ const SubjectControlButton: React.FC<{
             articleTitle: data?.articleTitle,
             articleCategory: data?.articleCategory,
             articleImageUrl: data?.imageUrl,
+            refetch: refetch,
           },
         })
       }
@@ -225,7 +226,11 @@ export const TeamAdmin = () => {
     });
   };
 
-  const { data: teamInfoData, isSuccess } = useQuery({
+  const {
+    data: teamInfoData,
+    isSuccess,
+    // refetch
+  } = useQuery({
     queryKey: ['team-info', id, year, month],
     queryFn: () => getTeamInfoAndTags(Number(id), year, month),
     enabled: !!id,
