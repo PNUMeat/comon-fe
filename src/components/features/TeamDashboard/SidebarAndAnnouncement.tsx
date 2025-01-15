@@ -56,9 +56,9 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             <ImageContainer
               src={teamInfo.imageUrl}
               altText={teamInfo.teamName}
-              w={isMobile ? 84 : 200}
-              h={isMobile ? 84 : 200}
-              maxW={isMobile ? 84 : 200}
+              w={isMobile ? 70 : 200}
+              h={isMobile ? 70 : 200}
+              maxW={isMobile ? 70 : 200}
             />
           </Suspense>
         </Box>
