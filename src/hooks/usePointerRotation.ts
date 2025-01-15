@@ -1,6 +1,14 @@
 import { useCallback, useRef } from 'react';
 
-export const usePointerRotation = (deadZone: number, maxRotate: number) => {
+type PointerRotationArgs = {
+  mouseIgnorePadding: number;
+  maxRotateDeg: number;
+};
+
+export const usePointerRotation = ({
+  mouseIgnorePadding,
+  maxRotateDeg,
+}: PointerRotationArgs) => {
   const boxRef = useRef<HTMLDivElement | null>(null);
 
   const onPointerMove = useCallback(
@@ -17,10 +25,19 @@ export const usePointerRotation = (deadZone: number, maxRotate: number) => {
       const rotateX = -(offsetY / centerY) * 10;
       const rotateY = (offsetX / centerX) * 10;
 
-      const clampedRotateX = Math.max(-maxRotate, Math.min(rotateX, maxRotate));
-      const clampedRotateY = Math.max(-maxRotate, Math.min(rotateY, maxRotate));
+      const clampedRotateX = Math.max(
+        -maxRotateDeg,
+        Math.min(rotateX, maxRotateDeg)
+      );
+      const clampedRotateY = Math.max(
+        -maxRotateDeg,
+        Math.min(rotateY, maxRotateDeg)
+      );
 
-      if (Math.abs(offsetX) > deadZone || Math.abs(offsetY) > deadZone) {
+      if (
+        Math.abs(offsetX) > mouseIgnorePadding ||
+        Math.abs(offsetY) > mouseIgnorePadding
+      ) {
         window.requestAnimationFrame(() => {
           if (boxRef.current) {
             boxRef.current.style.transform = `perspective(1000px) rotateX(${clampedRotateX}deg) rotateY(${clampedRotateY}deg)`;

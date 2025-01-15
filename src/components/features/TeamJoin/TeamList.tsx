@@ -92,7 +92,10 @@ const FlipCardItem = ({
   profiles: string[];
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const { boxRef, onPointerMove, onPointerLeave } = usePointerRotation();
+  const { boxRef, onPointerMove, onPointerLeave } = usePointerRotation({
+    mouseIgnorePadding: 20,
+    maxRotateDeg: 5,
+  });
 
   return (
     <FlipCard onMouseLeave={() => setIsFlipped(false)}>
