@@ -199,6 +199,11 @@ export const TeamAdmin = () => {
 
   const [page, setPage] = useState<number>(0);
 
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
+
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
   //TODO: useCalendarTag
@@ -372,7 +377,7 @@ export const TeamAdmin = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            onDateSelect={setSelectedDate}
+            onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />

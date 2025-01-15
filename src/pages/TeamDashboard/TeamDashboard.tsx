@@ -41,6 +41,11 @@ export const TeamDashboardPage = () => {
 
   const [tags, setTags] = useState<ICalendarTag[]>([]);
 
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
+
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
       const updatedTags = [...prevTags];
@@ -120,7 +125,7 @@ export const TeamDashboardPage = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            onDateSelect={setSelectedDate}
+            onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
@@ -130,7 +135,6 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
