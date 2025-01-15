@@ -220,6 +220,13 @@ export const Posting = () => {
   const isMobile = width <= breakpoints.mobile;
   const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
+  useEffect(() => {
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }

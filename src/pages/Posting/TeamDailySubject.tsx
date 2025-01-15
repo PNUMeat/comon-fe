@@ -8,7 +8,7 @@ import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -66,6 +66,13 @@ export const TeamDailySubject = () => {
   const padding = isMobile ? '0 12px' : '0 105px';
   const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
+  useEffect(() => {
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
   }
