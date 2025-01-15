@@ -33,7 +33,7 @@ export const TeamModificationButton = () => {
   );
 
   const onClick = () => {
-    console.log('버튼 확인');
+    console.log('버튼 확인', cache);
     setSaveCache((prev) => prev + 1);
     // if (
     //   serializeForm(teamName, teamExplain, image, topic, memberLimit) !== cache
@@ -59,13 +59,7 @@ export const TeamModificationButton = () => {
   };
 
   return (
-    <ComonFormSubmitButton
-      disabled={
-        serializeForm(teamName, teamExplain, image, topic, memberLimit) !==
-        cache
-      }
-      onClick={onClick}
-    >
+    <ComonFormSubmitButton disabled={false} onClick={onClick}>
       <img src={click} alt="click" width={24} />
       <span>팀 정보 수정하기</span>
     </ComonFormSubmitButton>
