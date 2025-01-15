@@ -3,11 +3,13 @@ import { useCallback, useRef } from 'react';
 type PointerRotationArgs = {
   mouseIgnorePadding: number;
   maxRotateDeg: number;
+  z: number;
 };
 
 export const usePointerRotation = ({
   mouseIgnorePadding,
   maxRotateDeg,
+  z,
 }: PointerRotationArgs) => {
   const boxRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,12 +42,12 @@ export const usePointerRotation = ({
       ) {
         window.requestAnimationFrame(() => {
           if (boxRef.current) {
-            boxRef.current.style.transform = `perspective(1000px) rotateX(${clampedRotateX}deg) rotateY(${clampedRotateY}deg)`;
+            boxRef.current.style.transform = `perspective(1000px) rotateX(${clampedRotateX}deg) rotateY(${clampedRotateY}deg) translateZ(${z}px`;
           }
         });
       }
     },
-    [boxRef]
+    [maxRotateDeg, z]
   );
 
   const onPointerLeave = useCallback(() => {
@@ -55,7 +57,7 @@ export const usePointerRotation = ({
 
       window.requestAnimationFrame(() => {
         box.style.transition = 'transform .2s';
-        box.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+        box.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)`;
       });
 
       function onTransitionEnd(this: HTMLDivElement, e: TransitionEvent) {

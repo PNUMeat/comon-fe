@@ -70,11 +70,16 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
             </Flex>
           </SText>
         ) : (
-          teams.map((team) => {
+          teams.map((team, idx) => {
             const profiles = team.members.map((member) => member.imageUrl);
 
             return (
-              <FlipCardItem key={team.teamId} team={team} profiles={profiles} />
+              <FlipCardItem
+                key={team.teamId}
+                team={team}
+                profiles={profiles}
+                showControl={idx === 0}
+              />
             );
           })
         )}
@@ -84,23 +89,81 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
   );
 };
 
+const ControlPanelWrap = styled.div`
+  width: 300px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  top: -60px;
+  left: 0;
+  background-color: #ccc;
+  border: 1px dashed black;
+  border-radius: 10px;
+  position: absolute;
+`;
+
+const ControlPanel: React.FC<{
+  maxRotateDeg: number;
+  zIndex: number;
+  handleMaxRotateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleZIndexChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}> = ({ maxRotateDeg, zIndex, handleZIndexChange, handleMaxRotateChange }) => {
+  return (
+    <ControlPanelWrap>
+      <label>
+        최대회전각도:
+        <input value={maxRotateDeg} onChange={handleMaxRotateChange} />
+      </label>
+      <label>
+        호버z: <input value={zIndex} onChange={handleZIndexChange} />
+      </label>
+    </ControlPanelWrap>
+  );
+};
+
 const FlipCardItem = ({
   team,
   profiles,
+  showControl,
 }: {
   team: ITeamInfo;
   profiles: string[];
+  showControl?: boolean;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  const [maxRotateDeg, setMaxRotateDeg] = useState<number>(5);
+  const [z, setZ] = useState<number>(0);
+  const handleMaxRotateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setMaxRotateDeg(value);
+  };
+  const handleZIndexChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setZ(value);
+  };
+
   const { boxRef, onPointerMove, onPointerLeave } = usePointerRotation({
     mouseIgnorePadding: 20,
-    maxRotateDeg: 5,
+    maxRotateDeg: maxRotateDeg,
+    z: z,
   });
 
   return (
-    <FlipCard onMouseLeave={() => setIsFlipped(false)}>
-      {/*<FlipCard>*/}
+    <FlipCard
+      onMouseLeave={showControl ? undefined : () => setIsFlipped(false)}
+    >
       <FlipCardInner isFlipped={isFlipped}>
+        {showControl ? (
+          <ControlPanel
+            zIndex={z}
+            handleZIndexChange={handleZIndexChange}
+            maxRotateDeg={maxRotateDeg}
+            handleMaxRotateChange={handleMaxRotateChange}
+          />
+        ) : null}
+
         {/* 앞면 */}
         <FlipCardFront
           ref={boxRef}
