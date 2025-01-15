@@ -1,6 +1,6 @@
 import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { $createCodeNode } from '@lexical/code';
 import { $createLinkNode } from '@lexical/link';
@@ -305,17 +305,22 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   content,
 }) => {
   const [editor] = useLexicalComposerContext();
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    return editor.update(() => {
-      const nodes = parseHtmlStrToLexicalNodes(content);
-      const selection = $getSelection();
-      $getRoot().select();
-      console.log('???', selection, nodes, content);
-      if (selection) {
-        console.log('aaa', nodes);
-        selection.insertNodes(nodes);
-      }
-    });
+    if (!initialized) {
+      return editor.update(() => {
+        const nodes = parseHtmlStrToLexicalNodes(content);
+        $getRoot().select();
+        const selection = $getSelection();
+        console.log('???', selection, nodes, content);
+        if (selection) {
+          console.log('aaa', nodes);
+          selection.insertNodes(nodes);
+          setInitialized(true);
+        }
+      });
+    }
   }, [editor]);
 
   return null;
