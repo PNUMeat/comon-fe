@@ -66,17 +66,6 @@ export const TeamDashboardPage = () => {
   };
 
   const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
-  useEffect(() => {
-    // 스타일 분리~
-    if (boundRef?.current && buttonRef?.current) {
-      const bound = boundRef.current;
-      const button = buttonRef.current;
-      const { right } = bound.getBoundingClientRect();
-      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
-      button.style.opacity = '0';
-      button.disabled = true;
-    }
-  }, [boundRef, buttonRef]);
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
