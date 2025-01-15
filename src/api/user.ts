@@ -1,4 +1,7 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
+import { membersInfoMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
@@ -96,6 +99,10 @@ type MemberInfoResp = {
 };
 
 export const getMemberInfo = async () => {
+  if (isDevMode()) {
+    return membersInfoMock.data;
+  }
+
   const res =
     await apiInstance.get<ServerResponse<MemberInfoResp>>('v1/members/info');
 

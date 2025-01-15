@@ -3,6 +3,7 @@ import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmit
 import { useNavigate } from 'react-router-dom';
 
 import { createTeam } from '@/api/team';
+import click from '@/assets/TeamJoin/click.png';
 import {
   formTextInputAtom,
   formTextareaAtom,
@@ -12,10 +13,9 @@ import {
   teamPasswordAtom,
   teamSubjectAtom,
 } from '@/store/form';
+import { alertAtom } from '@/store/modal';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { alertAtom } from '@/store/modal';
-import click from '@/assets/TeamJoin/click.png';
 
 export const TeamRegistrationButton = () => {
   const isRegistrationFormValid = useAtomValue(isTeamRegistrationValidAtom);
@@ -33,7 +33,8 @@ export const TeamRegistrationButton = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
     if (isRegistrationFormValid) {
       createTeam({
-        memberLimit: memberLimit.toString(),
+        memberLimit:
+          typeof memberLimit === 'number' ? memberLimit : parseInt(memberLimit),
         teamName,
         teamExplain,
         topic,
@@ -43,7 +44,7 @@ export const TeamRegistrationButton = () => {
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
           setAlert({ message: '팀 생성을 완료했어요', isVisible: true });
-          queryClient.refetchQueries({ queryKey: ['team-list', 0] });
+          queryClient.invalidateQueries({ queryKey: ['team-list', 0] });
         })
         .catch(() =>
           setAlert({ message: '팀 생성에 실패했습니다.', isVisible: true })
