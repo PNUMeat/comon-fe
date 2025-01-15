@@ -71,10 +71,27 @@ const PostSubjectViewWrap = styled.div<{
   margin: 20px 0;
   padding: 0 40px;
   box-sizing: border-box;
-  transition: height 0.2s ease-in-out;
+  transition: height 0.5s ease;
+  overflow: hidden;
 `;
 
 const minShowHeight = 114;
+
+const waitForImageLoad = (img: HTMLImageElement) => {
+  return new Promise<void>((resolve) => {
+    if (img.complete) {
+      resolve();
+    } else {
+      const handleDone = () => {
+        img.removeEventListener('load', handleDone);
+        img.removeEventListener('error', handleDone);
+        resolve();
+      };
+      img.addEventListener('load', handleDone);
+      img.addEventListener('error', handleDone);
+    }
+  });
+};
 
 const PostSubjectViewer: React.FC<{
   teamId: string;
@@ -83,12 +100,13 @@ const PostSubjectViewer: React.FC<{
   const [show, setShow] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const selectedDate = useAtomValue(selectedDateAtom);
+  const selectedDate = new Date().toLocaleDateString('en-CA', {
+    timeZone: 'Asia/Seoul',
+  });
   //TODO: 지금 team-topic은 돔노드 최하단에서, 조건부 렌더링 되는 곳에서 가져오는 중이라 이렇게 해야함, url로 치고 들어오면 해당 날짜꺼 가져옴
   const { data } = useQuery({
     queryKey: ['team-topic', teamId, selectedDate],
     queryFn: () => getTeamTopic(parseInt(teamId as string), selectedDate),
-    enabled: !!selectedDate,
   });
 
   useEffect(() => {
@@ -100,33 +118,13 @@ const PostSubjectViewer: React.FC<{
         return;
       }
 
-      let loadedCnt = 0;
-      const onLoad = () => {
-        loadedCnt++;
-        if (loadedCnt === images.length) {
+      Promise.all(Array.from(images).map(waitForImageLoad))
+        .then(() => {
           setHeight(minShowHeight + content.clientHeight);
-        }
-      };
-
-      images.forEach((img) => {
-        if (img.complete) {
-          loadedCnt++;
-          return;
-        }
-        img.addEventListener('load', onLoad);
-        img.addEventListener('error', onLoad);
-      });
-
-      if (loadedCnt === images.length) {
-        setHeight(minShowHeight + content.clientHeight);
-      }
-
-      return () => {
-        images.forEach((img) => {
-          img.removeEventListener('load', onLoad);
-          img.removeEventListener('error', onLoad);
+        })
+        .catch(() => {
+          setHeight(minShowHeight + content.clientHeight);
         });
-      };
     }
   }, [show]);
 

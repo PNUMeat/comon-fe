@@ -1,4 +1,6 @@
+// import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
+// import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -6,12 +8,19 @@ interface ITeamCommon {
   teamName: string;
   teamExplain: string;
   topic: string;
-  memberLimit: string;
+  // TODO: 정수로 넘어옴
+  memberLimit: number;
 }
 
 interface ICreateTeamRequest extends ITeamCommon {
   password: string;
   image?: File | null;
+}
+
+interface IMPutTeamRequest extends ITeamCommon {
+  teamId: number;
+  image?: File | null;
+  password: string | null;
 }
 
 interface ICreateTeamResponse {
@@ -34,7 +43,10 @@ export interface ITeamInfo extends ITeamCommon {
   // successMemberCount: number;
   teamAnnouncement: string;
   createdAt: string;
+
   members: ITeamMember[];
+  // TODO: 서버에서 실제로 주는 데이터 속성
+  memberLimit: number;
 }
 
 interface ITeamListResponse {
@@ -75,7 +87,7 @@ export const createTeam = async ({
   formData.append('teamExplain', teamExplain);
   formData.append('topic', topic);
   formData.append('password', password);
-  formData.append('memberLimit', memberLimit);
+  formData.append('memberLimit', memberLimit.toString());
 
   if (image) {
     formData.append('image', image);
@@ -94,11 +106,50 @@ export const createTeam = async ({
   return res.data.data;
 };
 
+export const modifyTeam = async ({
+  teamName,
+  teamExplain,
+  topic,
+  memberLimit,
+  password,
+  image,
+  teamId,
+}: IMPutTeamRequest) => {
+  const formData = new FormData();
+
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('memberLimit', memberLimit.toString());
+  if (image) {
+    formData.append('image', image);
+  }
+  if (password) {
+    formData.append('password', password);
+  }
+
+  const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
+    `v1/teams/${teamId}`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return res.data.data;
+};
+
 export const getTeamList = async (
   sort: string = 'recent',
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
+  // if (isDevMode()) {
+  //   return teamCombinedMock.data;
+  // }
+
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
     {
