@@ -27,6 +27,7 @@ import {
   useState,
 } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
@@ -53,7 +54,6 @@ import {
 } from 'lexical';
 
 import './editor.css';
-import { breakpoints } from '@/constants/breakpoints';
 
 const onError = (error: Error) => console.error(error);
 
@@ -383,6 +383,8 @@ const PostEditor: React.FC<{
     }
   };
 
+  // console.log('!!', content);
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
@@ -406,7 +408,10 @@ const PostEditor: React.FC<{
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
             placeholder={
-              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요.</EditorPlaceholder>
+              <EditorPlaceholder>
+                기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어
+                보세요.
+              </EditorPlaceholder>
             }
           />
           {floatingAnchorElem && (
