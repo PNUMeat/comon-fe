@@ -255,12 +255,13 @@ export const Posting = () => {
               navigate(`/team-dashboard/${id}`);
               setAlert({ message: '게시글을 수정했어요', isVisible: true });
             })
-            .catch(() =>
+            .catch(() => {
               setAlert({
                 message: '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
-              })
-            );
+              });
+              setIsPending(false);
+            });
         })
         .catch(() => {
           setAlert({ message: '게시글 수정에 실패했어요', isVisible: true });
@@ -294,12 +295,13 @@ export const Posting = () => {
             navigate(`/team-dashboard/${id}`);
             setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
           })
-          .catch(() =>
+          .catch(() => {
             setAlert({
               message: '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
-            })
-          );
+            });
+            setIsPending(false);
+          });
       })
       .catch(() => {
         setAlert({ message: '글쓰기에 실패했어요', isVisible: true });

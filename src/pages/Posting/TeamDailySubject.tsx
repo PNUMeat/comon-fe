@@ -92,21 +92,6 @@ export const TeamDailySubject = () => {
         articleCategory: tag,
       })
         .then(() => {
-          // if (refetch) {
-          //   const refetchTopic: (
-          //     options?: RefetchOptions
-          //   ) => Promise<QueryObserverResult<ITopicResponse, Error>> = refetch;
-          //   refetchTopic()
-          //     .then(() => {
-          //       alert('주제 수정이 완료되었습니다.');
-          //       navigate(`/team-admin/${id}`);
-          //     })
-          //     .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
-          //     .finally(() => {
-          //       setDashboardView('topic');
-          //       setSelectedPostId(parseInt(articleId));
-          //     });
-          // }
           queryClient
             .refetchQueries({
               queryKey: ['team-info', id, year, month],
@@ -154,7 +139,9 @@ export const TeamDailySubject = () => {
             setSelectedPostId(articleId);
             alert(data.message);
           })
-          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'))
+          .catch(() => {
+            alert('최신 팀 상태 조회에 실패했습니다.');
+          })
           .finally(() => {
             setSubjectImages([]);
             setDashboardView('topic');
