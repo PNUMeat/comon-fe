@@ -311,11 +311,10 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
     if (!initialized) {
       return editor.update(() => {
         const nodes = parseHtmlStrToLexicalNodes(content);
-        $getRoot().select();
+        $getRoot().clear().select();
         const selection = $getSelection();
-        console.log('???', selection, nodes, content);
+        console.log('?>', selection);
         if (selection) {
-          console.log('aaa', nodes);
           selection.insertNodes(nodes);
           setInitialized(true);
         }
