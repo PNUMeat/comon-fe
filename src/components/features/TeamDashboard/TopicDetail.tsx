@@ -40,16 +40,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
       deleteSubject(teamId, data.articleId)
         .then(() => {
           alert('주제 삭제 성공');
-          queryClient
-            .refetchQueries({
-              queryKey: ['team-topic', teamId, selectedDate],
-            })
-            .then(() => {
-              scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'instant',
-              });
-            });
+          queryClient.refetchQueries({
+            queryKey: ['team-topic', teamId, selectedDate],
+          });
         })
         .catch(() => alert('주제 삭제 실패'));
     }

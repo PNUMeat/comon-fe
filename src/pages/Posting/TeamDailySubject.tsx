@@ -96,19 +96,11 @@ export const TeamDailySubject = () => {
             .then(() => {
               alert('주제 수정이 완료되었습니다.');
               navigate(`/team-admin/${id}`);
-              scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'instant',
-              });
             })
             .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
             .finally(() => {
               setDashboardView('topic');
               setSelectedPostId(parseInt(articleId));
-              scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'instant',
-              });
             });
         })
         .catch((err) => {
@@ -151,11 +143,6 @@ export const TeamDailySubject = () => {
             setSelectedPostId(parseInt(articleId));
 
             navigate(`/team-admin/${id}`);
-
-            scrollTo({
-              top: document.body.scrollHeight,
-              behavior: 'instant',
-            });
           });
       })
       .catch((err) => {
