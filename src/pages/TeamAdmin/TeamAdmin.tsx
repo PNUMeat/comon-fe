@@ -183,6 +183,7 @@ const CalendarSection = styled.section`
   border-radius: 20px;
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
+  position: relative;
 `;
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
@@ -400,8 +401,8 @@ export const TeamAdmin = () => {
               teamId={Number(id)}
             />
           )}
+          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
-        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
       <Spacer h={200} />
       {createPortal(

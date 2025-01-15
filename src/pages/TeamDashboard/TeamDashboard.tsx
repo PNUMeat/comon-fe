@@ -145,8 +145,8 @@ export const TeamDashboardPage = () => {
               teamId={Number(teamId)}
             />
           )}
+          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
-        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
     </Fragment>
   );

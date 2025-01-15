@@ -142,7 +142,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
 
 const ArticleViewer = styled.div`
   line-height: 1.5;
-
+  // max-width: 100%;
   & img {
     max-width: 600px;
     object-fit: contain;

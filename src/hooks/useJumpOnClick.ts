@@ -1,25 +1,26 @@
 import { useEffect, useRef } from 'react';
 
-/**
- * 스크롤 보내고 싶은 곳에 boundRef
- * 스크롤 트리거 걸고 싶은 곳에 buttonRef, onClickJump
- */
 export const useJumpOnClick = () => {
   const boundRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (boundRef?.current && buttonRef?.current) {
+      const button = buttonRef.current;
+
+      const { x } = button.getBoundingClientRect();
+      button.style.position = 'fixed';
+      button.style.right = '';
+      button.style.left = '0';
+      button.style.transform = `translateX(${x}px)`;
+
       const onScroll = () => {
         if (boundRef?.current && buttonRef?.current) {
           const boundSc = boundRef.current;
           const buttonSc = buttonRef.current;
-          const { top, right } = boundSc.getBoundingClientRect();
+          const { top } = boundSc.getBoundingClientRect();
           if (top <= 0) {
             buttonSc.disabled = false;
-            const x = Math.min(window.innerWidth - 100, right + 30);
-            const y = window.innerHeight * 0.8;
-            buttonSc.style.transform = `translate(${x}px, calc(${y}px))`;
             buttonSc.style.opacity = '1';
           } else {
             buttonSc.disabled = true;
@@ -30,13 +31,18 @@ export const useJumpOnClick = () => {
 
       const onResize = () => {
         if (boundRef?.current && buttonRef?.current) {
-          const bound = boundRef.current;
           const button = buttonRef.current;
-          const { right } = bound.getBoundingClientRect();
+          button.style.position = 'absolute';
+          button.style.left = '';
+          button.style.right = '-40px';
+          button.style.transform = '';
 
-          const x = Math.min(window.innerWidth - 100, right + 30);
-          const y = window.innerHeight * 0.8;
-          button.style.transform = `translate(${x}px, calc(${y}px))`;
+          const { x } = button.getBoundingClientRect();
+          button.style.position = 'fixed';
+          button.style.right = '0';
+          button.style.left = '0';
+          button.style.transform = `translateX(${x}px)`;
+
           button.style.opacity = '1';
           button.disabled = true;
         }

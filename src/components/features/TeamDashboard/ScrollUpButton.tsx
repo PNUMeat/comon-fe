@@ -3,9 +3,10 @@ import { forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 const Outer = styled.button<{ size: number }>`
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  right: -40px;
+  bottom: 20vh;
+  opacity: 0;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   display: grid;
