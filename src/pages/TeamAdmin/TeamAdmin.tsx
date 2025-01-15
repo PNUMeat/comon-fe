@@ -97,7 +97,7 @@ const SubjectControlButton: React.FC<{
   selectedDate: string;
 }> = ({ id, selectedDate }) => {
   const navigate = useNavigate();
-  const { data, isSuccess, refetch } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
@@ -112,7 +112,6 @@ const SubjectControlButton: React.FC<{
             articleTitle: data?.articleTitle,
             articleCategory: data?.articleCategory,
             articleImageUrl: data?.imageUrl,
-            refetch: refetch,
           },
         })
       }

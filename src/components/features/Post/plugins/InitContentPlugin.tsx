@@ -306,12 +306,15 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
 }) => {
   const isInitializedRef = useRef(true);
   const [editor] = useLexicalComposerContext();
+  // console.log('??', content);
   useEffect(() => {
     return editor.update(() => {
       const nodes = parseHtmlStrToLexicalNodes(content);
-      $getRoot().clear().select();
       const selection = $getSelection();
+      $getRoot().clear().select();
+      console.log('???');
       if (selection && isInitializedRef.current) {
+        console.log('aaa', nodes);
         selection.insertNodes(nodes);
         isInitializedRef.current = false;
       }
