@@ -269,10 +269,12 @@ export const Posting = () => {
       return;
     }
 
-    if (!articleTitle || !articleBody) {
+    if (!postTitle || !content) {
       alert('모든 필드를 채워주세요');
+      setIsPending(false);
       return;
     }
+
     createPost({
       teamId: parseInt(id),
       image: (postImages && postImages[0]) ?? null,
