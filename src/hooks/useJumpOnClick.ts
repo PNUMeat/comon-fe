@@ -14,9 +14,12 @@ export const useJumpOnClick = () => {
         if (boundRef?.current && buttonRef?.current) {
           const boundSc = boundRef.current;
           const buttonSc = buttonRef.current;
-          const { top } = boundSc.getBoundingClientRect();
+          const { top, right } = boundSc.getBoundingClientRect();
           if (top <= 0) {
             buttonSc.disabled = false;
+            const x = Math.min(window.innerWidth - 100, right + 30);
+            const y = window.innerHeight * 0.8;
+            buttonSc.style.transform = `translate(${x}px, calc(${y}px))`;
             buttonSc.style.opacity = '1';
           } else {
             buttonSc.disabled = true;
@@ -25,12 +28,26 @@ export const useJumpOnClick = () => {
         }
       };
 
+      const onResize = () => {
+        if (boundRef?.current && buttonRef?.current) {
+          const bound = boundRef.current;
+          const button = buttonRef.current;
+          const { right } = bound.getBoundingClientRect();
+
+          const x = Math.min(window.innerWidth - 100, right + 30);
+          const y = window.innerHeight * 0.8;
+          button.style.transform = `translate(${x}px, calc(${y}px))`;
+          button.style.opacity = '1';
+          button.disabled = true;
+        }
+      };
+
       document.addEventListener('scroll', onScroll);
-      document.addEventListener('resize', onScroll);
+      window.addEventListener('resize', onResize);
 
       return () => {
         document.removeEventListener('scroll', onScroll);
-        document.removeEventListener('resize', onScroll);
+        window.removeEventListener('resize', onResize);
       };
     }
   }, [boundRef, buttonRef]);
