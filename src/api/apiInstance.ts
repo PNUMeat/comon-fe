@@ -23,24 +23,17 @@ let navigator: NavigateFunction | null = null;
 let isReissuing = false;
 let failedQueue: FailedRequest[] = [];
 
-const processQueue = (
-  error: AxiosError | null,
-  token: string | null = null
-): void => {
+const processQueue = (error: AxiosError | null): void => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      if (token && prom.config.headers) {
-        prom.config.headers.Authorization = `Bearer ${token}`;
-      }
       prom.resolve(axios(prom.config));
     }
   });
 
   failedQueue = [];
 };
-
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
 };
@@ -97,7 +90,6 @@ apiInstance.interceptors.response.use(
 
         if (code === 101) {
           if (isReissuing) {
-            // return Promise.reject(error);
             return new Promise<AxiosResponse>((resolve, reject) => {
               failedQueue.push({
                 resolve,
@@ -109,37 +101,25 @@ apiInstance.interceptors.response.use(
 
           isReissuing = true;
 
-          try {
-            await apiInstance.post('v1/reissue');
-            handleCookieOnRedirect();
+          return apiInstance
+            .post('v1/reissue')
+            .then(() => {
+              handleCookieOnRedirect();
 
-            const newToken = sessionStorage.getItem('Authorization');
-            if (newToken && originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            }
+              processQueue(null);
+              return apiInstance(originalRequest);
+            })
+            .catch((reissueError: AxiosError) => {
+              processQueue(reissueError);
+              sessionStorage.removeItem('Authorization');
+              navigate(PATH.LOGIN);
 
-            processQueue(null, newToken);
-            return apiInstance(originalRequest);
-          } catch (reissueError) {
-            processQueue(reissueError as AxiosError, null);
-            sessionStorage.removeItem('Authorization');
-            navigate(PATH.LOGIN);
-            console.error('reissue error', reissueError);
-            return Promise.reject(reissueError);
-          } finally {
-            isReissuing = false;
-          }
-          // return apiInstance.post('v1/reissue').then(() => {
-          //   handleCookieOnRedirect();
-          //   if (originalRequest) {
-          //     originalRequest.headers.set(
-          //       'Authorization',
-          //       `Bearer ${sessionStorage.getItem('Authorization')}`
-          //     );
-          //
-          //     return apiInstance(originalRequest);
-          //   }
-          // });
+              console.error('reissue error', reissueError);
+              return Promise.reject(reissueError);
+            })
+            .finally(() => {
+              isReissuing = false;
+            });
         }
 
         // 리프레시 토큰이 만료됨
