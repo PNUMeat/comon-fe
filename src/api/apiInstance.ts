@@ -34,6 +34,7 @@ const processQueue = (error: AxiosError | null): void => {
 
   failedQueue = [];
 };
+
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
 };
