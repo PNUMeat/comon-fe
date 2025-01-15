@@ -60,7 +60,7 @@ button {
     top: 0;
     left: 0;
     z-index: 10;
-    max-width: 400px;
+    max-width: 600px;
     width: 100%;
     opacity: 0;
     background-color: #fff;
@@ -120,6 +120,7 @@ button {
     word-break: break-word;
     color: #2f2ff2;
     text-decoration: underline;
+    white-space: normal;
 }
 
 .link-editor button {

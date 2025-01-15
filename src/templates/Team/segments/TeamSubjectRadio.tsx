@@ -1,5 +1,7 @@
 import { Flex } from '@/components/commons/Flex';
 
+import { useEffect } from 'react';
+
 import { teamSubjectAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -21,8 +23,16 @@ const TeamSubjectButton = styled.button<{ isSelected: boolean }>`
 
 const options = ['코딩테스트', '스터디'];
 
-export const TeamSubjectRadio = () => {
+export const TeamSubjectRadio: React.FC<{
+  defaultValue?: string;
+}> = ({ defaultValue }) => {
   const [subject, setSubject] = useAtom(teamSubjectAtom);
+
+  useEffect(() => {
+    if (defaultValue) {
+      setSubject(defaultValue);
+    }
+  }, []);
 
   return (
     <Flex gap={'6px'}>
