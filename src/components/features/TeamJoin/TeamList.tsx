@@ -1,3 +1,4 @@
+import { usePointerRotation } from '@/hooks/usePointerRotation.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
@@ -91,20 +92,38 @@ const FlipCardItem = ({
   profiles: string[];
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const { boxRef, onPointerMove, onPointerLeave } = usePointerRotation();
 
   return (
-    <FlipCard
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-    >
+    <FlipCard onMouseLeave={() => setIsFlipped(false)}>
+      {/*<FlipCard>*/}
       <FlipCardInner isFlipped={isFlipped}>
         {/* 앞면 */}
-        <FlipCardFront>
+        <FlipCardFront
+          ref={boxRef}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
+          onClick={() => {
+            const selection = window.getSelection()?.toString();
+            if (selection) {
+              return;
+            }
+            setIsFlipped(true);
+          }}
+        >
           <FlipCardContent team={team} profiles={profiles} />
         </FlipCardFront>
 
         {/* 뒷면 */}
-        <FlipCardBack>
+        <FlipCardBack
+          onClick={() => {
+            const selection = window.getSelection()?.toString();
+            if (selection) {
+              return;
+            }
+            setIsFlipped(false);
+          }}
+        >
           <FlipCardContent team={team} isBack />
         </FlipCardBack>
       </FlipCardInner>
@@ -134,6 +153,11 @@ const FlipCardContent = ({
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
+  const ignoreClick: React.MouseEventHandler = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   return (
     <Box width="100%" height="100%">
       <Flex direction="column" justify="center" align="center" width={100}>
@@ -141,6 +165,8 @@ const FlipCardContent = ({
           color="#333"
           fontSize={isMobile ? '10px' : '12px'}
           fontWeight={600}
+          onClick={ignoreClick}
+          cursor={'text'}
         >
           TEAM
         </SText>
@@ -149,6 +175,8 @@ const FlipCardContent = ({
           fontSize={isMobile ? '16px' : '24px'}
           color="#333"
           fontWeight={700}
+          onClick={ignoreClick}
+          cursor={'text'}
         >
           {team.teamName}
         </SText>
@@ -157,12 +185,19 @@ const FlipCardContent = ({
           fontSize={isMobile ? '10px' : '16px'}
           color="#777"
           fontWeight={400}
+          onClick={ignoreClick}
+          cursor={'text'}
         >
           since {team.createdAt}
         </SText>
         <Spacer h={8} />
         <Label>
-          <SText fontSize="10px" fontWeight={600}>
+          <SText
+            fontSize="10px"
+            fontWeight={600}
+            onClick={ignoreClick}
+            cursor={'text'}
+          >
             {team.topic}
           </SText>
         </Label>
@@ -174,12 +209,16 @@ const FlipCardContent = ({
               placeholder="PASSWORD"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              maxLength={4}
+              onClick={ignoreClick}
             />
             <Spacer h={14} />
             <Button
               backgroundColor={colors.buttonPurple}
-              // onClick={() => joinTeam(team.teamId, password)}
-              onClick={joinOnClick(team.teamId, password)}
+              onClick={(e) => {
+                e.stopPropagation();
+                joinOnClick(team.teamId, password);
+              }}
             >
               팀 참가하기
             </Button>
@@ -189,7 +228,13 @@ const FlipCardContent = ({
             <ProfileList profiles={profiles || []} size={isMobile ? 20 : 24} />
             <Spacer h={isMobile ? 12 : 14} />
             <ButtonWrapper>
-              <Button backgroundColor={colors.buttonPurple}>
+              <Button
+                backgroundColor={colors.buttonPurple}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                cursor={'text'}
+              >
                 {team.memberCount} members
               </Button>
               {/* <Button backgroundColor={colors.buttonPink}>
@@ -231,7 +276,7 @@ const PasswordInput = styled.input`
   color: #ccc;
   background-color: transparent;
 
-  &::placeholder {
+  u &::placeholder {
     color: #ccc;
     font-weight: 400;
   }
@@ -272,6 +317,8 @@ const FlipCardInner = styled.div<{ isFlipped: boolean }>`
   transform-style: preserve-3d;
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'};
+
+  cursor: pointer;
 `;
 
 const FlipCardFront = styled.div`
