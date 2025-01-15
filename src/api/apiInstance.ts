@@ -4,9 +4,42 @@ import { NavigateFunction } from 'react-router-dom';
 
 import { ServerIntendedError } from '@/api/types';
 import { PATH } from '@/routes/path';
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
+
+interface FailedRequest {
+  resolve: (
+    value: Promise<AxiosResponse<unknown>> | PromiseLike<AxiosResponse<unknown>>
+  ) => void;
+  reject: (error: AxiosError<unknown, unknown>) => void;
+  config: AxiosRequestConfig;
+}
 
 let navigator: NavigateFunction | null = null;
+let isReissuing = false;
+let failedQueue: FailedRequest[] = [];
+
+const processQueue = (
+  error: AxiosError | null,
+  token: string | null = null
+): void => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      if (token && prom.config.headers) {
+        prom.config.headers.Authorization = `Bearer ${token}`;
+      }
+      prom.resolve(axios(prom.config));
+    }
+  });
+
+  failedQueue = [];
+};
 
 export const setNavigator = (nav: NavigateFunction) => {
   navigator = nav;
@@ -39,7 +72,7 @@ apiInstance.interceptors.request.use(
 
 apiInstance.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ServerIntendedError>) => {
+  async (error: AxiosError<ServerIntendedError>) => {
     /**
      * 응답이 401이고, 401의 원인이 access token이 만료된 경우,
      * refresh token을 통해 access token을 재발급 받은후,
@@ -47,6 +80,11 @@ apiInstance.interceptors.response.use(
      * access token을 재발급 받을 때, "이전 로그인 정보를 통해 재입장중입니다."라는 느낌의 토스트 메세지를 띄웠으면 좋겠음
      * 대기시간이 길어지는 이유를 설명하고 싶음.
      */
+    const originalRequest = error.config;
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
     if (error.response) {
       const data = error.response.data;
       const { code } = data;
@@ -56,19 +94,52 @@ apiInstance.interceptors.response.use(
 
           return Promise.reject(error);
         }
-        if (code === 101) {
-          return apiInstance.post('v1/reissue').then(() => {
-            handleCookieOnRedirect();
-            const originalRequest = error.config;
-            if (originalRequest) {
-              originalRequest.headers.set(
-                'Authorization',
-                `Bearer ${sessionStorage.getItem('Authorization')}`
-              );
 
-              return apiInstance(originalRequest);
+        if (code === 101) {
+          if (isReissuing) {
+            // return Promise.reject(error);
+            return new Promise<AxiosResponse>((resolve, reject) => {
+              failedQueue.push({
+                resolve,
+                reject,
+                config: originalRequest,
+              });
+            });
+          }
+
+          isReissuing = true;
+
+          try {
+            await apiInstance.post('v1/reissue');
+            handleCookieOnRedirect();
+
+            const newToken = sessionStorage.getItem('Authorization');
+            if (newToken && originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
             }
-          });
+
+            processQueue(null, newToken);
+            return apiInstance(originalRequest);
+          } catch (reissueError) {
+            processQueue(reissueError as AxiosError, null);
+            sessionStorage.removeItem('Authorization');
+            navigate(PATH.LOGIN);
+            console.error('reissue error', reissueError);
+            return Promise.reject(reissueError);
+          } finally {
+            isReissuing = false;
+          }
+          // return apiInstance.post('v1/reissue').then(() => {
+          //   handleCookieOnRedirect();
+          //   if (originalRequest) {
+          //     originalRequest.headers.set(
+          //       'Authorization',
+          //       `Bearer ${sessionStorage.getItem('Authorization')}`
+          //     );
+          //
+          //     return apiInstance(originalRequest);
+          //   }
+          // });
         }
 
         // 리프레시 토큰이 만료됨
