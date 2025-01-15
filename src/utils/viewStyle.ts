@@ -1,4 +1,8 @@
 export const viewStyle = `& {
+    span {
+      // white-space: normal;
+      word-break: break-word;
+    }
     h1 {
       font-size: 32px;
       font-weight: 600;
