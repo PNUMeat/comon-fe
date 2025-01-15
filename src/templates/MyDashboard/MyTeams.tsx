@@ -21,6 +21,8 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import leftArrow from '@/assets/MyDashboard/leftArrow.png';
+import rightArrow from '@/assets/MyDashboard/rightArrow.png';
 
 const ModeButtonsWrapper = styled.div`
   margin-bottom: 54px;
@@ -718,34 +720,45 @@ const TeamButton: React.FC<{
   );
 };
 
+const MoveButtonWrap = styled.div<{disabled : boolean}>`
+  display: flex;
+  width: 30px;
+  height: 45px;
+  padding: 7px 18px;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 12px 12px 0px 0px;
+  background: ${(props) => (props.disabled ? 'transparent' : '#3D3F6A')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 25px;
+    height: 30px;
+    border-radius: 8px 8px 0 0;
+    padding: 8px 8px 4px 8px;
+    gap: 2px;
+  }
+`;
+
+const MoveButtonIcon = styled.img`
+  width: 7px;
+  height: 14px;
+`;
+
 const MoveButton: React.FC<{
   onClick: () => void;
-  text : string;
+  src : string;
   disabled: boolean;
-}> = ({ onClick, text, disabled}) => {
+}> = ({ onClick, src, disabled}) => {
   return (
-    <TeamButtonWrap
+    <MoveButtonWrap
       onClick={onClick}
-      isSelected={false}
-      style={{
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        background: disabled ? 'transparent' : '#3D3F6A',
-        width: '30px',
-        borderRadius: '12px 12px 0px 0px;',
-      }}
+      disabled={disabled}
     >
       { !disabled && (
-      <SText
-        color={'#fff'}
-        fontFamily={'Pretendard'}
-        fontSize={'10px'}
-        fontWeight={500}
-        lineHeight={'12px'}
-      >
-        {text}
-      </SText>
+        <MoveButtonIcon src={src} alt='move button' />
       )}
-    </TeamButtonWrap>
+    </MoveButtonWrap>
   );
 }
 
@@ -797,10 +810,10 @@ export const MyTeams = () => {
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      <Flex padding={'0 0 0 25px'} width={90} justify='center'>
+      <Flex padding={'0 0 0 50px'} width={90}>
         <MoveButton
           onClick={goPrev}
-          text='<'
+          src={leftArrow}
           disabled={!canGoPrev}
         >
         </MoveButton>
@@ -818,7 +831,7 @@ export const MyTeams = () => {
           ))}
         <MoveButton
           onClick={goNext}
-          text='>'
+          src={rightArrow}
           disabled={!canGoNext}
           >
         </MoveButton>
