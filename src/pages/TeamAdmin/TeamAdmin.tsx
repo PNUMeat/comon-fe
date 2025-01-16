@@ -474,7 +474,7 @@ export const TeamAdmin = () => {
                     </SText>
                   </Flex>
                   <Box
-                    width="80px"
+                    width="84px"
                     height="32px"
                     padding="10px 12px"
                     borderRadius="10px"
@@ -485,7 +485,7 @@ export const TeamAdmin = () => {
                       style={{ textDecoration: 'none' }}
                     >
                       <SText fontSize="10px" fontWeight={600} color="#666">
-                        팀 페이지로
+                        &larr; 팀 페이지로
                       </SText>
                     </Link>
                   </Box>
