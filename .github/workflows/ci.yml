@@ -5,6 +5,7 @@ on:
     branches:
       - jaeanhan
       - dlwltn0430
+      - mingkyeongg
 
 jobs:
   ci:

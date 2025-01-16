@@ -1,4 +1,4 @@
-name: DEVELOP CI / CD
+name: TEST CI / CD
 
 on:
   push:
@@ -12,6 +12,7 @@ on:
         default: "main"
         type: choice
         options:
+          - test
           - jaeanhan
           - dlwltn0430
           - mingkyeongg
