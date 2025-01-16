@@ -29,6 +29,8 @@ export const TeamRegistrationButton = () => {
   const queryClient = useQueryClient();
   const setAlert = useSetAtom(alertAtom);
 
+  console.log(teamName, teamExplain, topic, memberLimit, password);
+
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
     if (isRegistrationFormValid) {
