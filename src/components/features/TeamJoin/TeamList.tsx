@@ -10,7 +10,7 @@ import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ITeamInfo, joinTeam } from '@/api/team';
@@ -24,11 +24,15 @@ import { SearchBar } from './SearchBar';
 
 interface TeamListProps {
   teams: ITeamInfo[];
+  myTeam: ITeamInfo[];
   onSearch: (keyword: string) => void;
 }
 
-export const TeamList = ({ teams, onSearch }: TeamListProps) => {
+export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const myTeamIds = useMemo<Set<number>>(() => {
+    return new Set(myTeam.map((team) => team.teamId));
+  }, [myTeam]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(e.target.value);
@@ -74,7 +78,12 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
             const profiles = team.members.map((member) => member.imageUrl);
 
             return (
-              <FlipCardItem key={team.teamId} team={team} profiles={profiles} />
+              <FlipCardItem
+                key={team.teamId}
+                team={team}
+                profiles={profiles}
+                isDisabled={myTeamIds.has(team.teamId)}
+              />
             );
           })
         )}
@@ -87,9 +96,11 @@ export const TeamList = ({ teams, onSearch }: TeamListProps) => {
 const FlipCardItem = ({
   team,
   profiles,
+  isDisabled,
 }: {
   team: ITeamInfo;
   profiles: string[];
+  isDisabled: boolean;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -107,7 +118,11 @@ const FlipCardItem = ({
           ref={boxRef}
           onPointerMove={onPointerMove}
           onPointerLeave={onPointerLeave}
+          isDisabled={isDisabled}
           onClick={() => {
+            if (isDisabled) {
+              return;
+            }
             const selection = window.getSelection()?.toString();
             if (selection) {
               return;
@@ -115,7 +130,11 @@ const FlipCardItem = ({
             setIsFlipped(true);
           }}
         >
-          <FlipCardContent team={team} profiles={profiles} />
+          <FlipCardContent
+            isDisabled={isDisabled}
+            team={team}
+            profiles={profiles}
+          />
         </FlipCardFront>
 
         {/* 뒷면 */}
@@ -138,11 +157,13 @@ const FlipCardItem = ({
 const FlipCardContent = ({
   team,
   profiles,
+  isDisabled = false,
   isBack = false,
 }: {
   team: ITeamInfo;
   profiles?: string[];
   isBack?: boolean;
+  isDisabled?: boolean;
 }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -166,7 +187,14 @@ const FlipCardContent = ({
   };
 
   return (
-    <Box width="100%" height="100%">
+    <Box
+      width="100%"
+      height="100%"
+      style={{
+        background: isDisabled ? '#fdfdfd' : '#fff',
+        opacity: isDisabled ? '0.2' : '1',
+      }}
+    >
       <Flex direction="column" justify="center" align="center" width={100}>
         <SText
           color="#333"
@@ -328,12 +356,13 @@ const FlipCardInner = styled.div<{ isFlipped: boolean }>`
   cursor: pointer;
 `;
 
-const FlipCardFront = styled.div`
+const FlipCardFront = styled.div<{ isDisabled: boolean }>`
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
   background: #fff;
+  background: ${(props) => (props.isDisabled ? '#fdfdfd' : '#fff')};
   border-radius: 20px;
 `;
 
