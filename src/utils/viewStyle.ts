@@ -1,6 +1,7 @@
 export const viewStyle = `& {
     span {
       white-space: pre-wrap !important;
+      dir: ltr !important;
       word-break: break-word;
     }
     
