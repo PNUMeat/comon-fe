@@ -83,15 +83,16 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               >
                 TEAM
               </SText>
-              <Spacer h={2} />
+              <Spacer h={4} />
               <SText
                 fontSize={isMobile ? '16px' : '24px'}
                 color="#333"
                 fontWeight={700}
+                textAlign="center"
               >
                 {teamInfo.teamName}
               </SText>
-              <Spacer h={4} />
+              <Spacer h={6} />
               <SText
                 fontSize={isMobile ? '10px' : '16px'}
                 color="#777"
