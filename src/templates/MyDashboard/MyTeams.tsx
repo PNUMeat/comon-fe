@@ -21,6 +21,8 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import leftArrow from '@/assets/MyDashboard/leftArrow.png';
+import rightArrow from '@/assets/MyDashboard/rightArrow.png';
 
 const ModeButtonsWrapper = styled.div`
   margin-bottom: 54px;
@@ -713,11 +715,56 @@ const TeamButton: React.FC<{
   );
 };
 
+const MoveButtonWrap = styled.div<{disabled : boolean}>`
+  display: flex;
+  width: 30px;
+  height: 45px;
+  padding: 7px 18px;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 12px 12px 0px 0px;
+  background: ${(props) => (props.disabled ? 'transparent' : '#3D3F6A')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 25px;
+    height: 30px;
+    border-radius: 8px 8px 0 0;
+    padding: 8px 8px 4px 8px;
+    gap: 2px;
+  }
+`;
+
+const MoveButtonIcon = styled.img`
+  width: 7px;
+  height: 14px;
+`;
+
+const MoveButton: React.FC<{
+  onClick: () => void;
+  src : string;
+  disabled: boolean;
+}> = ({ onClick, src, disabled}) => {
+  return (
+    <MoveButtonWrap
+      onClick={onClick}
+      disabled={disabled}
+    >
+      { !disabled && (
+        <MoveButtonIcon src={src} alt='move button' />
+      )}
+    </MoveButtonWrap>
+  );
+}
+
+const TEAMS_PER_VIEW = 5;
+
 export const MyTeams = () => {
   const [mode, setMode] = useState('history');
   const [teamId, setTeamId] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [page, setPage] = useState(() => 0);
+  const [startIndex, setStartIndex] = useState(0);
 
   const { data } = useQuery({
     queryKey: ['my-page-status'],
@@ -737,12 +784,36 @@ export const MyTeams = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
+  const teamsLength = data?.length || 0;
+  const visibleTeams = data?.slice(startIndex, startIndex + TEAMS_PER_VIEW) || [];
+
+  const canGoPrev = startIndex > 0;
+  const canGoNext = startIndex + TEAMS_PER_VIEW < teamsLength;
+
+  
+
+  const goPrev = () => {
+    if (!canGoPrev) return;
+    setStartIndex((prev) => Math.max(0, prev - 1));
+  }
+
+  const goNext = () => {
+    if (!canGoNext) return;
+    setStartIndex((prev) => Math.min(teamsLength - TEAMS_PER_VIEW, prev + 1));
+  }
+
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      <Flex padding={'0 0 0 25px'}>
-        {data &&
-          data.map((team: TeamAbstraction) => (
+      <Flex padding={'0 0 0 50px'} width={90}>
+        <MoveButton
+          onClick={goPrev}
+          src={leftArrow}
+          disabled={!canGoPrev}
+        >
+        </MoveButton>
+        { data &&
+          visibleTeams.map((team: TeamAbstraction) => (
             <TeamButton
               key={team.teamId}
               isSelected={teamId === team.teamId}
@@ -753,6 +824,12 @@ export const MyTeams = () => {
               teamName={team.teamName}
             />
           ))}
+        <MoveButton
+          onClick={goNext}
+          src={rightArrow}
+          disabled={!canGoNext}
+          >
+        </MoveButton>
       </Flex>
 
       {mode === 'history' && teamId != null && (
