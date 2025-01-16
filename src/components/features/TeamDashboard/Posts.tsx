@@ -124,10 +124,9 @@ export const Posts: React.FC<PostsProps> = ({
                   cursor: 'pointer',
                   boxShadow:
                     selectedId === article.articleId
-                      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+                      ? '4px 4px 8.2px 0px rgba(104, 104, 104, 0.20) inset'
                       : undefined,
-                  backgroundColor:
-                    selectedId === article.articleId ? '#F5F5F5' : '#fff',
+                  backgroundColor: '#fff',
                 }}
                 onClick={() => handleArticleClick(article.articleId)}
               >

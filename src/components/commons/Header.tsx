@@ -1,4 +1,4 @@
-import { checkRemainingCookies } from '@/utils/cookie';
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
 import { Flex } from '@/components/commons/Flex';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
@@ -124,7 +124,9 @@ type ModalControl = {
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const [isLoggedIn] = useState<boolean>(checkRemainingCookies());
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
