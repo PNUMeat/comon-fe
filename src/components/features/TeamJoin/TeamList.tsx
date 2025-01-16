@@ -146,12 +146,15 @@ const FlipCardContent = ({
 }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const joinOnClick = (teamId: number, password: string) => () => {
+  const joinOnClick = (teamId: number, password: string) => {
     joinTeam(teamId, password)
       .then(() => {
         navigate(`/team-dashboard/${teamId}`);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        alert('팀 가입 요청에 실패했습니다.');
+        console.error(err);
+      });
   };
 
   const width = useWindowWidth();
