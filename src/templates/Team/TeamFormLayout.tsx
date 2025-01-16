@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { ComonFormGrid } from '@/components/commons/Form/ComonFormGrid';
 import { ComonFormTitle } from '@/components/commons/Form/ComonFormTitle';
 import { Spacer } from '@/components/commons/Spacer';
@@ -6,12 +8,11 @@ import { HeightInNumber } from '@/components/types';
 import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import { TeamModificationButton } from '@/templates/Team/TeamModificationButton';
 import { TeamRegistrationButton } from '@/templates/Team/TeamRegistrationButton';
 import styled from '@emotion/styled';
-import { breakpoints } from '@/constants/breakpoints';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 const TeamContainer = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
@@ -21,7 +22,7 @@ const TeamContainer = styled.div<HeightInNumber>`
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  
+
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 0 12px;
   }
@@ -55,6 +56,7 @@ export const TeamFormLayout: React.FC<
   const { title, subtitle } = FORM_TITLES[currentPath];
   const isOnTeamReg = currentPath === PATH.TEAM_REGISTRATION;
   const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
+
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 

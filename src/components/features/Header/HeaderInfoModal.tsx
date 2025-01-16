@@ -1,6 +1,7 @@
+import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import {
-  GrayDivider,
+  Divider,
   LogoutWrap,
   MyTeamNav,
   SimpleProfile,
@@ -11,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { ServerResponse } from '@/api/types';
 import { getMemberInfo } from '@/api/user';
+import MyPage from '@/assets/Header/mypage.png';
+import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
@@ -27,7 +30,6 @@ const InfoModal = styled.div`
   top: 46px;
   right: -26px;
   opacity: 0;
-  // z-index: 99999999;
   z-index: -100;
   box-sizing: border-box;
   padding: 9px 0;
@@ -38,6 +40,11 @@ const InfoModal = styled.div`
 
 const MyPageButton = styled.button`
   height: 48px;
+`;
+
+const MyPageImage = styled.img`
+  width: 11px;
+  height: 13px;
 `;
 
 export const HeaderInfoModal: React.FC<{
@@ -68,17 +75,21 @@ export const HeaderInfoModal: React.FC<{
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
         <MyPageButton onClick={() => navigate(`${PATH.MY_PAGE}/profile`)}>
-          <SText
-            color={'#777'}
-            lineHeight={'48px'}
-            fontSize={'12px'}
-            fontWeight={400}
-          >
-            마이페이지
-          </SText>
+          <Flex align="center" gap="5px">
+            <MyPageImage src={MyPage} />
+            <SText
+              fontFamily="NanumSquareNeo"
+              color={'#333'}
+              lineHeight={'48px'}
+              fontSize={'12px'}
+              fontWeight={500}
+            >
+              마이페이지 &nbsp;&nbsp;&gt;
+            </SText>
+          </Flex>
         </MyPageButton>
       </SimpleProfileWrap>
-      <GrayDivider margin={'9px 0 0 0'} />
+      <Divider margin={'9px 0 0 0'} />
 
       {teams &&
         teams.map((team) => (
@@ -90,14 +101,14 @@ export const HeaderInfoModal: React.FC<{
           />
         ))}
 
-      <GrayDivider margin={'0 0 9px 0'} />
+      <Divider margin={'0 0 9px 0'} color={colors.borderPurple} />
       <LogoutWrap>
         <button onClick={onClickLogout}>
           <SText
-            color={'#505050'}
+            color={'#CA2D2D'}
             fontSize={'12px'}
             fontWeight={500}
-            fontFamily={'Pretendard'}
+            fontFamily={'NanumSquareNeo'}
           >
             로그아웃
           </SText>

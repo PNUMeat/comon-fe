@@ -2,13 +2,23 @@ import { ComonShortInput } from '@/components/commons/Form/ComonShortInput';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { MAX_PEOPLE_NUM, teamMaxNumAtom } from '@/store/form';
 import { useAtom } from 'jotai';
 
-export const TeamMaxPeopleInput = () => {
+export const TeamMaxPeopleInput: React.FC<{
+  defaultValue?: number;
+}> = ({ defaultValue }) => {
   const [teamMaxNum, setTeamMaxNum] = useAtom(teamMaxNumAtom);
+
+  console.log(defaultValue);
+
+  useEffect(() => {
+    if (defaultValue) {
+      setTeamMaxNum(defaultValue);
+    }
+  }, []);
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

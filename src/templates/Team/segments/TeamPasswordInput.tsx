@@ -7,7 +7,9 @@ import { useCallback } from 'react';
 import { PROPER_PASSWORD_LENGTH, teamPasswordAtom } from '@/store/form';
 import { useAtom } from 'jotai';
 
-export const TeamPasswordInput = () => {
+export const TeamPasswordInput: React.FC<{
+  defaultValue?: number;
+}> = () => {
   const [teamPassword, setTeamPassword] = useAtom(teamPasswordAtom);
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

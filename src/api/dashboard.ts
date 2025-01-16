@@ -1,3 +1,8 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
+// import { teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
+import { subjectMock, teamArticlesMock } from '@/api/mocks.ts';
+
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';
@@ -18,7 +23,7 @@ export interface IArticle {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrl: string;
+  imageUrl: string | null;
   memberName: string;
   memberImage: string;
   isAuthor: boolean;
@@ -50,6 +55,12 @@ export const getTeamInfoAndTags = async (
   year: number,
   month: number
 ): Promise<ITeamInfoAndTagsResponse> => {
+  // if (isDevMode()) {
+  //   await new Promise((r) => setTimeout(r, 1000));
+  //
+  //   return teamInfoMock.data;
+  // }
+
   const res = await apiInstance.get<ServerResponse<ITeamInfoAndTagsResponse>>(
     `/v1/teams/${teamId}/team-page`,
     { params: { year, month } }
@@ -63,6 +74,10 @@ export const getArticlesByDate = async (
   date: string,
   page: number
 ): Promise<IArticlesByDateResponse> => {
+  if (isDevMode()) {
+    return teamArticlesMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
     { params: { date, page } }
@@ -75,6 +90,10 @@ export const getTeamTopic = async (
   teamId: number,
   date: string
 ): Promise<ITopicResponse> => {
+  if (isDevMode()) {
+    return subjectMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
     `/v1/articles/teams/${teamId}/subjects`,
     { params: { date } }
