@@ -48,7 +48,6 @@ import { addClassNamesToElement } from '@lexical/utils';
 import { useAtom, useSetAtom } from 'jotai';
 import {
   $isLineBreakNode,
-  $isTextNode,
   DOMExportOutput,
   EditorThemeClasses,
   LexicalEditor,
