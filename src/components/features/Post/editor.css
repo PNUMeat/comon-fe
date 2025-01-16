@@ -11,7 +11,7 @@
     outline: none;
 }
 
-.editor-text-bold {
+.editor-text-bold, .f {
     font-weight: bold;
 }
 

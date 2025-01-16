@@ -1,8 +1,9 @@
 export const viewStyle = `& {
     span {
-      // white-space: normal;
+      white-space: pre-wrap !important;
       word-break: break-word;
     }
+    
     h1 {
       font-size: 32px;
       font-weight: 600;
@@ -202,28 +203,28 @@ export const viewStyle = `& {
     min-width: 25px;
 }
 
-.tokenComment {
+.tokenComment, .r {
     color: slategray;
 }
-.tokenPunctuation {
+.tokenPunctuation, .v {
     color: #999;
 }
-.tokenProperty {
+.tokenProperty, .p {
     color: #905;
 }
-.tokenSelector {
+.tokenSelector, .q {
     color: #690;
 }
-.tokenOperator {
+.tokenOperator, .t {
     color: #9a6e3a;
 }
-.tokenAttr {
+.tokenAttr, .o {
     color: #07a;
 }
-.tokenVariable {
+.tokenVariable, .u {
     color: #e90;
 }
-.tokenFunction {
+.tokenFunction, .s {
     color: #dd4a68;
 }
 

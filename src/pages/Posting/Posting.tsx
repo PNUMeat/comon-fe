@@ -103,7 +103,6 @@ const PostSubjectViewer: React.FC<{
   const selectedDate = new Date().toLocaleDateString('en-CA', {
     timeZone: 'Asia/Seoul',
   });
-  console.log('???', selectedDate);
 
   //TODO: 지금 team-topic은 돔노드 최하단에서, 조건부 렌더링 되는 곳에서 가져오는 중이라 이렇게 해야함, url로 치고 들어오면 해당 날짜꺼 가져옴
   const { data } = useQuery({
