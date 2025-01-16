@@ -163,7 +163,7 @@ export const teamArticlesMock = {
       size: 6,
       number: 0,
       totalElements: 5,
-      totalPages: 1,
+      totalPages: 4,
     },
   },
 };
@@ -412,12 +412,12 @@ export const teamCombinedMock = {
       },
       {
         teamId: 1,
-        teamName: '코딩테스트트트',
-        teamExplain: '코딩테스트 입니당~~',
+        teamName: '제육돈까스햄버거파티',
+        teamExplain: '',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '코딩테스트',
-        memberLimit: 11,
+        topic: '스터디',
+        memberLimit: 20,
         memberCount: 4,
         streakDays: 0,
         successMemberCount: 0,
@@ -427,132 +427,6 @@ export const teamCombinedMock = {
     ],
     allTeams: {
       content: [
-        {
-          teamId: 28,
-          teamName: '테스트테스트',
-          teamExplain: '.',
-          imageUrl:
-            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-          topic: '코딩테스트',
-          memberLimit: 2,
-          memberCount: 1,
-          streakDays: 0,
-          createdAt: '2025-01-12',
-          members: [
-            {
-              memberName: '민경',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: '하이하이',
-              uuid: '73cce880-e310-4632-b546-9b30cb7e843e',
-            },
-          ],
-        },
-        {
-          teamId: 27,
-          teamName: 'asdfafsdfs',
-          teamExplain: 'sadfsadfsdaf',
-          imageUrl:
-            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-          topic: '스터디',
-          memberLimit: 2,
-          memberCount: 1,
-          streakDays: 0,
-          createdAt: '2025-01-12',
-          members: [
-            {
-              memberName: 'ddy',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: 'hjjuiiiuououououo',
-              uuid: '51021d92-eefe-41a7-962a-d0fc029bb866',
-            },
-          ],
-        },
-        {
-          teamId: 25,
-          teamName: '123',
-          teamExplain: '123',
-          imageUrl:
-            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-          topic: '스터디',
-          memberLimit: 2,
-          memberCount: 1,
-          streakDays: 0,
-          createdAt: '2025-01-02',
-          members: [
-            {
-              memberName: '12312312312',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: 'qkrwjwhd ',
-              uuid: '8834ddd2-cfbf-482b-9260-d69ba49700b8',
-            },
-          ],
-        },
-        {
-          teamId: 26,
-          teamName: '123',
-          teamExplain: '123',
-          imageUrl:
-            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-          topic: '스터디',
-          memberLimit: 2,
-          memberCount: 1,
-          streakDays: 0,
-          createdAt: '2025-01-02',
-          members: [
-            {
-              memberName: '12312312312',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: 'qkrwjwhd ',
-              uuid: '8834ddd2-cfbf-482b-9260-d69ba49700b8',
-            },
-          ],
-        },
-        {
-          teamId: 17,
-          teamName: '한재안',
-          teamExplain: '한재안',
-          imageUrl:
-            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-          topic: '스터디',
-          memberLimit: 3,
-          memberCount: 4,
-          streakDays: 0,
-          createdAt: '2024-12-27',
-          members: [
-            {
-              memberName: 'ddy',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: 'hjjuiiiuououououo',
-              uuid: '51021d92-eefe-41a7-962a-d0fc029bb866',
-            },
-            {
-              memberName: '김민욱',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: '.',
-              uuid: '11114201-2411-48cf-a6aa-e6de4607956d',
-            },
-            {
-              memberName: '12312312312',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: 'qkrwjwhd ',
-              uuid: '8834ddd2-cfbf-482b-9260-d69ba49700b8',
-            },
-            {
-              memberName: '장진영',
-              imageUrl:
-                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/dbda7287-20e9-486a-b17c-6c24f35ac1d8.png',
-              memberExplain: '내 이름은 장진영',
-              uuid: '358e0577-696f-418a-a0fc-80d63dbfe587',
-            },
-          ],
-        },
         {
           teamId: 12,
           teamName: '티리티리팀',
@@ -574,32 +448,199 @@ export const teamCombinedMock = {
             },
           ],
         },
+        {
+          teamId: 11,
+          teamName: '티리티리팀',
+          teamExplain: '티리티리팀이에요',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+          topic: '코딩테스트',
+          memberLimit: 5,
+          memberCount: 1,
+          streakDays: 0,
+          createdAt: '2024-12-27',
+          members: [
+            {
+              memberName: '장진영',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/dbda7287-20e9-486a-b17c-6c24f35ac1d8.png',
+              memberExplain: '내 이름은 장진영',
+              uuid: '358e0577-696f-418a-a0fc-80d63dbfe587',
+            },
+          ],
+        },
+        {
+          teamId: 10,
+          teamName: 'Team QA',
+          teamExplain: 'qa',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+          topic: '스터디',
+          memberLimit: 5,
+          memberCount: 1,
+          streakDays: 0,
+          createdAt: '2024-12-27',
+          members: [
+            {
+              memberName: '하내안',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+              memberExplain: '하내안입니다',
+              uuid: '495892de-1014-4987-b9ea-5137efeefc84',
+            },
+          ],
+        },
+        {
+          teamId: 9,
+          teamName: '현빈 테스트',
+          teamExplain: '기모띵',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+          topic: '코딩테스트',
+          memberLimit: 4,
+          memberCount: 2,
+          streakDays: 0,
+          createdAt: '2024-12-27',
+          members: [
+            {
+              memberName: 'ddy',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+              memberExplain: 'hjjuiiiuououououo',
+              uuid: '51021d92-eefe-41a7-962a-d0fc029bb866',
+            },
+            {
+              memberName: '강수민',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+              memberExplain: null,
+              uuid: 'aec0d712-8382-456e-8331-58d705900d98',
+            },
+          ],
+        },
+        {
+          teamId: 16,
+          teamName: 'aa',
+          teamExplain: '11',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+          topic: '스터디',
+          memberLimit: 12,
+          memberCount: 1,
+          streakDays: 0,
+          createdAt: '2024-12-26',
+          members: [
+            {
+              memberName: '하내안',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+              memberExplain: '하내안입니다',
+              uuid: '495892de-1014-4987-b9ea-5137efeefc84',
+            },
+          ],
+        },
+        {
+          teamId: 15,
+          teamName: 'scroll',
+          teamExplain: 'scsc',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+          topic: '스터디',
+          memberLimit: 12,
+          memberCount: 1,
+          streakDays: 0,
+          createdAt: '2024-12-26',
+          members: [
+            {
+              memberName: '하내안',
+              imageUrl:
+                'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+              memberExplain: '하내안입니다',
+              uuid: '495892de-1014-4987-b9ea-5137efeefc84',
+            },
+          ],
+        },
       ],
       page: {
         size: 6,
-        number: 0,
-        totalElements: 20,
-        totalPages: 4,
+        number: 2,
+        totalElements: 27,
+        totalPages: 5,
       },
     },
   },
 };
 
-export const subjectMock = {
+export const subjectMock =
+  //     {
+  //   status: 'success',
+  //   code: 200,
+  //   message: null,
+  //   data: {
+  //     articleId: 267,
+  //     articleCategory: '스터디 예습',
+  //     articleTitle: '123',
+  //     articleBody:
+  //       '<p><br></p><p><span style="white-space: pre-wrap;">1231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312</span></p><p><span style="white-space: pre-wrap;">12312312312312123123123123121231231231231212312312312312123123123123121231231231231212312312312312123123123</span></p>',
+  //     createdDate: '2025-01-15 20:20:11',
+  //     imageUrl: null,
+  //     authorName: '장진영',
+  //     authorImageUrl:
+  //       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/dbda7287-20e9-486a-b17c-6c24f35ac1d8.png',
+  //   },
+  // };
+  {
+    status: 'success',
+    code: 200,
+    message: null,
+    data: {
+      articleId: 98,
+      articleCategory: '코딩 테스트',
+      articleTitle: '1/15 오늘의 문제',
+      articleBody:
+        '<p dir="ltr"><span style="white-space: pre-wrap;">안녕하세요~ 평일의 가운데 수요일이네요\uD83D\uDE0A</span></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘도 코딩테스트 풀이를 위해 이 곳까지 오셨다니! 아주 잘하고 있습니다\uD83D\uDC4D</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘은 어제보다 쉬운 난이도의 문제 입니다! (힌트: ✨♥️\uD83D\uDC9E♥️✨)</span></p><p dir="ltr"><span style="white-space: pre-wrap;">얼른 빨리 쓱 풀고 쉬러갑시다!! 파이팅\uD83D\uDC23\uD83D\uDC23</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDCE2</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 1/15 오늘의 문제</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">class2 - 백준 1259번 : </span><a href="https://www.acmicpc.net/problem/1259" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">펠린드롬수</span></a></p><p dir="ltr"><span style="white-space: pre-wrap;">class4 - 백준 1043번 : </span><a href="https://www.acmicpc.net/problem/1043" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">거짓말</span></a></p><p><br></p><p><span style="white-space: pre-wrap;">-----------------------------------------------------------------------------------------------------------</span></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDD17</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 문제 풀이 예시 (복사해서 가져가세요!)</strong></b></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">제목 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">1/7 class2 - 백준 1003번 : 피보나치 함수</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 유형 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2중 for문을 활용한 브루트포스</span></p><p dir="ltr"><span style="white-space: pre-wrap;">DFS, BFS를 이용한 완전탐색</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">풀이 방법 도출 과정 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">입력 Size가 1000이기 때문에 완전탐색을 활용하여 1초 내에 문제를 해결할 수 있고 판단, 이를 바탕으로 2중 for문을 활용했다.</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명(예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2차원 배열을 활용하여 Dynamic Programming을 활용했다.</span></p><p><br></p><p dir="ltr"><img src="https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png" alt="이미지"></p>',
+      createdDate: '2025-01-13 00:22:38',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png',
+      authorName: '강수밈밈',
+      authorImageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+    },
+  };
+
+export const teamPageMock = {
   status: 'success',
   code: 200,
   message: null,
   data: {
-    articleId: 98,
-    articleCategory: '코딩 테스트',
-    articleTitle: '1/15 오늘의 문제',
-    articleBody:
-      '<p dir="ltr"><span style="white-space: pre-wrap;">안녕하세요~ 평일의 가운데 수요일이네요\uD83D\uDE0A</span></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘도 코딩테스트 풀이를 위해 이 곳까지 오셨다니! 아주 잘하고 있습니다\uD83D\uDC4D</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘은 어제보다 쉬운 난이도의 문제 입니다! (힌트: ✨♥️\uD83D\uDC9E♥️✨)</span></p><p dir="ltr"><span style="white-space: pre-wrap;">얼른 빨리 쓱 풀고 쉬러갑시다!! 파이팅\uD83D\uDC23\uD83D\uDC23</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDCE2</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 1/15 오늘의 문제</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">class2 - 백준 1259번 : </span><a href="https://www.acmicpc.net/problem/1259" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">펠린드롬수</span></a></p><p dir="ltr"><span style="white-space: pre-wrap;">class4 - 백준 1043번 : </span><a href="https://www.acmicpc.net/problem/1043" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">거짓말</span></a></p><p><br></p><p><span style="white-space: pre-wrap;">-----------------------------------------------------------------------------------------------------------</span></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDD17</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 문제 풀이 예시 (복사해서 가져가세요!)</strong></b></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">제목 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">1/7 class2 - 백준 1003번 : 피보나치 함수</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 유형 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2중 for문을 활용한 브루트포스</span></p><p dir="ltr"><span style="white-space: pre-wrap;">DFS, BFS를 이용한 완전탐색</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">풀이 방법 도출 과정 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">입력 Size가 1000이기 때문에 완전탐색을 활용하여 1초 내에 문제를 해결할 수 있고 판단, 이를 바탕으로 2중 for문을 활용했다.</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명(예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2차원 배열을 활용하여 Dynamic Programming을 활용했다.</span></p><p><br></p><p dir="ltr"><img src="https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png" alt="이미지"></p>',
-    createdDate: '2025-01-13 00:22:38',
-    imageUrl:
-      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png',
-    authorName: '강수밈밈',
-    authorImageUrl:
-      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+    myTeamResponse: {
+      teamId: 16,
+      teamName: 'aa',
+      teamExplain: '11',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      topic: '스터디',
+      memberLimit: 12,
+      memberCount: 1,
+      streakDays: 0,
+      successMemberCount: 0,
+      teamAnnouncement: '',
+      createdAt: '2024-12-26',
+    },
+    teamManager: true,
+    subjectArticleDateAndTagResponses: [
+      {
+        subjectDate: '2025-01-02',
+        articleCategory: '스터디 예습',
+      },
+      {
+        subjectDate: '2025-01-13',
+        articleCategory: '스터디 복습',
+      },
+      {
+        subjectDate: '2025-01-15',
+        articleCategory: '코딩 테스트',
+      },
+    ],
   },
 };
