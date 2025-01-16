@@ -148,9 +148,5 @@ const Icon = styled.img`
 const TopicViewer = styled.div`
   line-height: 1.5;
 
-  & img {
-    max-width: 600px;
-    object-fit: contain;
-  }
   ${viewStyle}
 `;
