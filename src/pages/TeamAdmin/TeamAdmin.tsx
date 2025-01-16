@@ -26,6 +26,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -585,7 +586,7 @@ export const TeamAdmin = () => {
         <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
       <Spacer h={200} />
-      {/* {createPortal(
+      {createPortal(
         <PromptModal
           ref={modalRef}
           teamId={Number(id)}
@@ -595,7 +596,7 @@ export const TeamAdmin = () => {
           }
         />,
         document.body
-      )} */}
+      )}
     </Fragment>
   );
 };
