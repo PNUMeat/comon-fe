@@ -12,8 +12,6 @@ export const TeamMaxPeopleInput: React.FC<{
 }> = ({ defaultValue }) => {
   const [teamMaxNum, setTeamMaxNum] = useAtom(teamMaxNumAtom);
 
-  console.log(defaultValue);
-
   useEffect(() => {
     if (defaultValue) {
       setTeamMaxNum(defaultValue);
