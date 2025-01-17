@@ -11,7 +11,6 @@ export const useScrollUpButtonPosition = () => {
       const button = buttonRef.current;
 
       const { x } = button.getBoundingClientRect();
-      console.log('init', x);
       button.style.position = 'fixed';
       button.style.right = '';
       button.style.left = '0';
