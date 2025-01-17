@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import path from 'path';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { VitePWA } from 'vite-plugin-pwa';
 
 const fontFolderPath = path.resolve(__dirname, 'src/assets/fonts');
 const fontFiles = fs.readdirSync(fontFolderPath);
@@ -24,6 +25,35 @@ export default defineConfig({
     createHtmlPlugin({
       inject: {
         tags: preloadTags,
+      },
+    }),
+    VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src/workers',
+      filename: 'cacheWorker.ts',
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Code Monster',
+        short_name: 'Comon',
+        theme_color: '#ffffff',
+        icons: [
+          {
+            src: 'public/web-app-manifest-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'public/web-app-manifest-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+      },
+      workbox: {
+        globPatterns: ['**/*.{woff,woff2,ttf,otf}'],
       },
     }),
   ],

@@ -103,6 +103,7 @@ const PostSubjectViewer: React.FC<{
   const selectedDate = new Date().toLocaleDateString('en-CA', {
     timeZone: 'Asia/Seoul',
   });
+
   //TODO: 지금 team-topic은 돔노드 최하단에서, 조건부 렌더링 되는 곳에서 가져오는 중이라 이렇게 해야함, url로 치고 들어오면 해당 날짜꺼 가져옴
   const { data } = useQuery({
     queryKey: ['team-topic', teamId, selectedDate],
@@ -220,6 +221,13 @@ export const Posting = () => {
   const isMobile = width <= breakpoints.mobile;
   const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
+  useEffect(() => {
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
@@ -255,12 +263,13 @@ export const Posting = () => {
               navigate(`/team-dashboard/${id}`);
               setAlert({ message: '게시글을 수정했어요', isVisible: true });
             })
-            .catch(() =>
+            .catch(() => {
               setAlert({
                 message: '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
-              })
-            );
+              });
+              setIsPending(false);
+            });
         })
         .catch(() => {
           setAlert({ message: '게시글 수정에 실패했어요', isVisible: true });
@@ -268,6 +277,13 @@ export const Posting = () => {
         });
       return;
     }
+
+    if (!postTitle || !content) {
+      alert('모든 필드를 채워주세요');
+      setIsPending(false);
+      return;
+    }
+
     createPost({
       teamId: parseInt(id),
       image: (postImages && postImages[0]) ?? null,
@@ -287,12 +303,13 @@ export const Posting = () => {
             navigate(`/team-dashboard/${id}`);
             setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
           })
-          .catch(() =>
+          .catch(() => {
             setAlert({
               message: '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
-            })
-          );
+            });
+            setIsPending(false);
+          });
       })
       .catch(() => {
         setAlert({ message: '글쓰기에 실패했어요', isVisible: true });
@@ -373,9 +390,5 @@ const ActionText = styled.div`
 const TopicViewer = styled.div`
   line-height: 1.5;
 
-  & img {
-    max-width: 600px;
-    object-fit: contain;
-  }
   ${viewStyle}
 `;

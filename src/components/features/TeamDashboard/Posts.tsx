@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -9,6 +11,7 @@ import { Suspense, useState } from 'react';
 
 import { IArticlesByDateResponse } from '@/api/dashboard';
 import RocketImg from '@/assets/TeamDashboard/rocket.png';
+import { breakpoints } from '@/constants/breakpoints.ts';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -59,47 +62,34 @@ export const Posts: React.FC<PostsProps> = ({
     setSelectedId(articleId);
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
-    <div style={{ position: 'relative' }}>
-      <Suspense
-        fallback={
-          <NoArticleDiv>
-            <Flex
-              justify="center"
-              align="center"
-              style={{ minHeight: '216px' }}
-            >
-              <SText color="#ccc" fontSize="24px" fontWeight={400}>
-                게시글이 존재하지 않아요
-              </SText>
-            </Flex>
-          </NoArticleDiv>
-        }
-      >
-        <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
-          <Flex justify="space-between" align="center">
-            <Flex width={35} justify="space-between" align="center">
-              <SText color="#333" fontSize="24px" fontWeight={700}>
-                {selectedDate}
-              </SText>
-              {category && (
-                <Tag
-                  bgColor={categoryColors[category.articleCategory]}
-                  label={category.articleCategory}
-                  padding="4px 10px"
-                  fontSize="10px"
-                />
-              )}
-            </Flex>
-            <StyledButton
-              isClicked={isButtonClicked}
-              onClick={handleButtonClick}
-            >
-              <RocketIcon src={RocketImg} />
-              주제 확인하기
-            </StyledButton>
+    <div style={{ position: 'relative', height: isMobile ? '391px' : '' }}>
+      <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
+        <Flex justify="space-between" align="center">
+          <Flex width={35} justify="space-between" align="center">
+            <SText color="#333" fontSize="24px" fontWeight={700}>
+              {selectedDate}
+            </SText>
+            {category && (
+              <Tag
+                bgColor={categoryColors[category.articleCategory]}
+                label={category.articleCategory}
+                padding="4px 10px"
+                fontSize="10px"
+              />
+            )}
           </Flex>
-        </Box>
+          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
+            <RocketIcon src={RocketImg} />
+            주제 확인하기
+          </StyledButton>
+        </Flex>
+      </Box>
+
+      <Suspense fallback={<NoArticleDiv />}>
         {data?.content?.length === 0 ? (
           <NoArticleDiv>
             <Flex
@@ -116,9 +106,11 @@ export const Posts: React.FC<PostsProps> = ({
           <List>
             {data?.content?.map((article) => (
               <Box
-                width="100%"
-                height="104px"
-                padding="20px"
+                // TODO: 100%로 하면 grid로 width가 계산되어 피그마 디자인(145px)과 달라집니다.
+                // width={isMobile ? '145px' : '100%'}
+                width={'100%'}
+                height={isMobile ? '86px' : '104px'}
+                padding={isMobile ? '12px 14px' : '20px'}
                 key={article.articleId}
                 style={{
                   cursor: 'pointer',
@@ -134,8 +126,8 @@ export const Posts: React.FC<PostsProps> = ({
                   <PostTitleWrap>
                     <SText
                       color="#333"
-                      fontSize="16px"
-                      lineHeight={'20px'}
+                      fontSize={isMobile ? '14px' : '16px'}
+                      lineHeight={isMobile ? '17px' : '20px'}
                       fontWeight={600}
                       shouldCut
                     >
@@ -143,7 +135,11 @@ export const Posts: React.FC<PostsProps> = ({
                     </SText>
                   </PostTitleWrap>
                   <Spacer h={8} />
-                  <SText color="#777" fontSize="12px" fontWeight={400}>
+                  <SText
+                    color="#777"
+                    fontSize={isMobile ? '10px' : '12px'}
+                    fontWeight={400}
+                  >
                     {article.createdDate.slice(0, -3)}
                   </SText>
                   <Spacer h={12} />
@@ -151,12 +147,16 @@ export const Posts: React.FC<PostsProps> = ({
                     <LazyImage
                       src={article.memberImage}
                       altText={article.memberName}
-                      w={16}
-                      h={16}
+                      w={isMobile ? 14 : 16}
+                      h={isMobile ? 14 : 16}
                       maxW={16}
                       style={{ borderRadius: '50%' }}
                     />
-                    <SText color="#333" fontSize="12px" fontWeight={600}>
+                    <SText
+                      color="#333"
+                      fontSize={isMobile ? '10px' : '12px'}
+                      fontWeight={600}
+                    >
                       {article.memberName}
                     </SText>
                   </Flex>
@@ -165,8 +165,8 @@ export const Posts: React.FC<PostsProps> = ({
             ))}
           </List>
         )}
-        <Spacer h={260} />
       </Suspense>
+      <Spacer h={260} />
     </div>
   );
 };
@@ -212,7 +212,7 @@ const NoArticleDiv = styled.div`
   top: 0px;
   left: 50%;
   padding: 90px 40px;
-  min-height: 216px;
+  height: 216px;
   transform: translateX(-50%);
   width: calc(100% - 80px);
   z-index: 1;
@@ -228,18 +228,23 @@ const List = styled.div`
   top: 0px;
   left: 50%;
   padding: 90px 40px;
-  min-height: 216px;
+  height: 216px;
   transform: translateX(-50%);
   width: calc(100% - 80px);
   z-index: 1;
   border-radius: 20px;
   background: #fff;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding-bottom: 67px;
+  }
 `;
 
 const PostTitleWrap = styled.div`
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
   width: 164px;
-  text-overflow: ellipsis;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 105px;
+  }
 `;

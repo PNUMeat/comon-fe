@@ -89,7 +89,7 @@ const TeamData = () => {
       {/* 나의 팀 */}
       {myTeam.length > 0 && <MyTeamCard teams={myTeam || []} />}
       {/* 활동 팀 찾기 */}
-      <TeamList teams={otherTeams} onSearch={handleSearch} />
+      <TeamList teams={otherTeams} myTeam={myTeam} onSearch={handleSearch} />
       <Pagination
         totalPages={totalPages}
         onPageChange={handlePageChange}

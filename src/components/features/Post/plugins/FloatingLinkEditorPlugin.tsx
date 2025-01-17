@@ -204,6 +204,7 @@ const FloatingLinkEditor: React.FC<{
 
           const linkNode = $createLinkNode(clipboardText, {
             title: clipboardText,
+            target: '_blank',
           });
 
           const linkTextNode = $createTextNode(clipboardText);
