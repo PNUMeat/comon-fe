@@ -7,11 +7,14 @@ import { FormFieldLabel } from '@/components/commons/Form/segments/FormFieldLabe
 import { Spacer } from '@/components/commons/Spacer';
 import { HeightInNumber } from '@/components/types';
 
+import { Fragment } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import { ITeamInfo } from '@/api/team.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import { TeamFormLayout } from '@/templates/Team/TeamFormLayout';
 import { TeamMaxPeopleInput } from '@/templates/Team/segments/TeamMaxPeopleInput';
-// import { TeamPasswordInput } from '@/templates/Team/segments/TeamPasswordInput';
+import { TeamPasswordInput } from '@/templates/Team/segments/TeamPasswordInput.tsx';
 import { TeamSubjectRadio } from '@/templates/Team/segments/TeamSubjectRadio';
 
 export const TeamForm: React.FC<
@@ -21,6 +24,9 @@ export const TeamForm: React.FC<
 > = ({ h, team }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+  const location = useLocation();
+
+  const currPath = location.pathname.split('/')[1];
 
   const MobileComponent = () => (
     <>
@@ -75,9 +81,13 @@ export const TeamForm: React.FC<
       <FormFieldLabel>인원 제한</FormFieldLabel>
       <TeamMaxPeopleInput defaultValue={team?.memberLimit} />
 
-      {/*{isMobile && <Spacer h={8} />}*/}
-      {/*<FormFieldLabel>입장 비밀번호</FormFieldLabel>*/}
-      {/*<TeamPasswordInput />*/}
+      {currPath === 'team-registration' ? (
+        <Fragment>
+          {isMobile && <Spacer h={8} />}
+          <FormFieldLabel>입장 비밀번호</FormFieldLabel>
+          <TeamPasswordInput />
+        </Fragment>
+      ) : null}
     </TeamFormLayout>
   );
 };

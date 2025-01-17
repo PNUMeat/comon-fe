@@ -27,6 +27,7 @@ import {
   useState,
 } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
@@ -48,16 +49,17 @@ import { useAtom, useSetAtom } from 'jotai';
 import {
   $isLineBreakNode,
   DOMExportOutput,
+  EditorThemeClasses,
   LexicalEditor,
   LexicalNode,
+  TextNode,
 } from 'lexical';
 
 import './editor.css';
-import { breakpoints } from '@/constants/breakpoints';
 
 const onError = (error: Error) => console.error(error);
 
-const editorTheme = {
+const editorTheme: EditorThemeClasses = {
   image: 'editor-image',
   link: 'editor-link',
   list: {
@@ -79,38 +81,45 @@ const editorTheme = {
   },
   code: 'codeblock',
   codeHighlight: {
-    atrule: 'tokenAttr',
-    attr: 'tokenAttr',
-    boolean: 'tokenProperty',
-    builtin: 'tokenSelector',
-    cdata: 'tokenComment',
-    char: 'tokenSelector',
-    class: 'tokenFunction',
-    'class-name': 'tokenFunction',
-    comment: 'tokenComment',
-    constant: 'tokenProperty',
-    deleted: 'tokenProperty',
-    doctype: 'tokenComment',
-    entity: 'tokenOperator',
-    function: 'tokenFunction',
-    important: 'tokenVariable',
-    inserted: 'tokenSelector',
-    keyword: 'tokenAttr',
-    namespace: 'tokenVariable',
-    number: 'tokenProperty',
-    operator: 'tokenOperator',
-    prolog: 'tokenComment',
-    property: 'tokenProperty',
-    punctuation: 'tokenPunctuation',
-    regex: 'tokenVariable',
-    selector: 'tokenSelector',
-    string: 'tokenSelector',
-    symbol: 'tokenProperty',
-    tag: 'tokenProperty',
-    url: 'tokenOperator',
-    variable: 'tokenVariable',
+    atrule: 'o', // 'tokenAttr'
+    attr: 'o', // 'tokenAttr'
+    boolean: 'p', // 'tokenProperty'
+    builtin: 'q', // 'tokenSelector'
+    cdata: 'r', // 'tokenComment'
+    char: 'q', // 'tokenSelector'
+    class: 's', // 'tokenFunction'
+    'class-name': 's', // 'tokenFunction'
+    comment: 'r', // 'tokenComment'
+    constant: 'p', // 'tokenProperty'
+    deleted: 'p', // 'tokenProperty'
+    doctype: 'r', // 'tokenComment'
+    entity: 't', // 'tokenOperator'
+    function: 's', // 'tokenFunction'
+    important: 'u', // 'tokenVariable'
+    inserted: 'q', // 'tokenSelector'
+    keyword: 'o', // 'tokenAttr'
+    namespace: 'u', // 'tokenVariable'
+    number: 'p', // 'tokenProperty'
+    operator: 't', // 'tokenOperator'
+    prolog: 'r', // 'tokenComment'
+    property: 'p', // 'tokenProperty'
+    punctuation: 'v', // 'tokenPunctuation'
+    regex: 'u', // 'tokenVariable'
+    selector: 'q', // 'tokenSelector'
+    string: 'q', // 'tokenSelector'
+    symbol: 'p', // 'tokenProperty'
+    tag: 'p', // 'tokenProperty'
+    url: 't', // 'tokenOperator'
+    variable: 'u', // 'tokenVariable'
   },
 };
+
+type ExportHandler = (
+  _editor: LexicalEditor,
+  node: LexicalNode
+) => DOMExportOutput;
+
+type ConvertNode = typeof CodeNode | typeof TextNode | typeof CodeHighlightNode;
 
 const initialConfig = {
   namespace: 'comon',
@@ -127,7 +136,7 @@ const initialConfig = {
     CodeHighlightNode,
   ],
   html: {
-    export: new Map([
+    export: new Map<ConvertNode, ExportHandler>([
       [
         CodeNode,
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
@@ -153,6 +162,37 @@ const initialConfig = {
           }
 
           element.setAttribute('data-gutter', gutter);
+          return { element };
+        },
+      ],
+      [
+        CodeHighlightNode,
+        (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
+          const highlightNode = node as CodeHighlightNode;
+          const element = document.createElement('span');
+
+          element.textContent = highlightNode.getTextContent();
+          const type = highlightNode.getHighlightType();
+          if (type) {
+            const highlights = editorTheme.codeHighlight as Record<
+              string,
+              string
+            >;
+            const className = highlights[type];
+            if (className) {
+              element.className = className;
+            }
+          }
+
+          return { element };
+        },
+      ],
+      [
+        TextNode,
+        (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
+          const textNode = node as TextNode;
+          const element = document.createElement('span');
+          element.textContent = textNode.getTextContent();
           return { element };
         },
       ],
@@ -383,6 +423,8 @@ const PostEditor: React.FC<{
     }
   };
 
+  // console.log('!!', content);
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
@@ -406,7 +448,10 @@ const PostEditor: React.FC<{
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
             placeholder={
-              <EditorPlaceholder>기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어 보세요.</EditorPlaceholder>
+              <EditorPlaceholder>
+                기본적인 마크다운 단축키와 코드블록을 지원해요. 코드를 붙여넣어
+                보세요.
+              </EditorPlaceholder>
             }
           />
           {floatingAnchorElem && (

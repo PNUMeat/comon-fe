@@ -551,11 +551,6 @@ const ArticleDetailHeader = styled.div`
 const TeamArticleViewer = styled.div`
   line-height: 1.5;
 
-  & img {
-    max-width: 600px;
-    object-fit: contain;
-  }
-
   ${viewStyle}
 
   @media(max-width: ${breakpoints.mobile}px) {

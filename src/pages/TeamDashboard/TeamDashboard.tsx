@@ -43,6 +43,11 @@ export const TeamDashboardPage = () => {
 
   const [tags, setTags] = useState<ICalendarTag[]>([]);
 
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
+
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
       const updatedTags = [...prevTags];
@@ -63,16 +68,6 @@ export const TeamDashboardPage = () => {
   };
 
   const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
-  useEffect(() => {
-    if (boundRef?.current && buttonRef?.current) {
-      const bound = boundRef.current;
-      const button = buttonRef.current;
-      const { right } = bound.getBoundingClientRect();
-      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
-      button.style.opacity = '0';
-      button.disabled = true;
-    }
-  }, [boundRef, buttonRef]);
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
@@ -124,7 +119,7 @@ export const TeamDashboardPage = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            onDateSelect={setSelectedDate}
+            onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
@@ -134,7 +129,6 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
           />
           <Pagination
             totalPages={articlesData?.page?.totalPages ?? 0}
@@ -156,8 +150,8 @@ export const TeamDashboardPage = () => {
               teamId={Number(teamId)}
             />
           )}
+          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
-        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
     </Fragment>
   );

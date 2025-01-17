@@ -5,13 +5,15 @@ import styled from '@emotion/styled';
 interface ButtonProps {
   backgroundColor?: string;
   padding?: string;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  cursor?: string;
   children: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   backgroundColor,
   padding,
+  cursor,
   onClick,
   children,
 }) => {
@@ -19,6 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
     <StyledButton
       backgroundColor={backgroundColor}
       padding={padding}
+      cursor={cursor}
       onClick={onClick}
     >
       {children}
@@ -36,7 +39,7 @@ const StyledButton = styled.button<ButtonProps>`
   background-color: ${(props) => props.backgroundColor || colors.buttonPurple};
   color: #fff;
   font-weight: 400;
-  cursor: pointer;
+  cursor: ${(props) => props.cursor ?? 'pointer'};
 
   &:hover {
     opacity: 0.9;

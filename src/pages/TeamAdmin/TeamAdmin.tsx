@@ -288,6 +288,7 @@ const CalendarSection = styled.section`
   border-radius: 20px;
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
+  position: relative;
 `;
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
@@ -306,6 +307,11 @@ export const TeamAdmin = () => {
   const [year, month] = selectedDate.split('-').map(Number);
 
   const [page, setPage] = useState<number>(0);
+
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
 
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
@@ -333,7 +339,10 @@ export const TeamAdmin = () => {
     });
   };
 
-  const { data: teamInfoData, isSuccess } = useQuery({
+  const {
+    data: teamInfoData,
+    isSuccess,
+  } = useQuery({
     queryKey: ['team-info', id, year, month],
     queryFn: () => getTeamInfoAndTags(Number(id), year, month),
     enabled: !!id,
@@ -360,17 +369,6 @@ export const TeamAdmin = () => {
     setSelectedArticleId(articleId);
     setCurrentView('article');
   };
-
-  useEffect(() => {
-    if (boundRef?.current && buttonRef?.current) {
-      const bound = boundRef.current;
-      const button = buttonRef.current;
-      const { right } = bound.getBoundingClientRect();
-      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
-      button.style.opacity = '0';
-      button.disabled = true;
-    }
-  }, [boundRef, buttonRef]);
 
   useEffect(() => {
     if (
@@ -547,7 +545,7 @@ export const TeamAdmin = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            onDateSelect={setSelectedDate}
+            onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
@@ -582,6 +580,7 @@ export const TeamAdmin = () => {
               teamId={Number(id)}
             />
           )}
+          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
         <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>

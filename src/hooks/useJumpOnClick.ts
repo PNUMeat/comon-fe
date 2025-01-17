@@ -1,15 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-/**
- * 스크롤 보내고 싶은 곳에 boundRef
- * 스크롤 트리거 걸고 싶은 곳에 buttonRef, onClickJump
- */
 export const useJumpOnClick = () => {
   const boundRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (boundRef?.current && buttonRef?.current) {
+      const button = buttonRef.current;
+
+      const { x } = button.getBoundingClientRect();
+      button.style.position = 'fixed';
+      button.style.right = '';
+      button.style.left = '0';
+      button.style.transform = `translateX(${x}px)`;
+
       const onScroll = () => {
         if (boundRef?.current && buttonRef?.current) {
           const boundSc = boundRef.current;
@@ -25,12 +29,31 @@ export const useJumpOnClick = () => {
         }
       };
 
+      const onResize = () => {
+        if (boundRef?.current && buttonRef?.current) {
+          const button = buttonRef.current;
+          button.style.position = 'absolute';
+          button.style.left = '';
+          button.style.right = '-40px';
+          button.style.transform = '';
+
+          const { x } = button.getBoundingClientRect();
+          button.style.position = 'fixed';
+          button.style.right = '0';
+          button.style.left = '0';
+          button.style.transform = `translateX(${x}px)`;
+
+          button.style.opacity = '1';
+          button.disabled = true;
+        }
+      };
+
       document.addEventListener('scroll', onScroll);
-      document.addEventListener('resize', onScroll);
+      window.addEventListener('resize', onResize);
 
       return () => {
         document.removeEventListener('scroll', onScroll);
-        document.removeEventListener('resize', onScroll);
+        window.removeEventListener('resize', onResize);
       };
     }
   }, [boundRef, buttonRef]);

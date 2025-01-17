@@ -8,7 +8,7 @@ import { Title } from '@/components/commons/Title';
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -16,6 +16,7 @@ import {
   useParams,
 } from 'react-router-dom';
 
+// import { ITopicResponse } from '@/api/dashboard.ts';
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
@@ -36,12 +37,14 @@ export const TeamDailySubject = () => {
     articleBody,
     articleTitle,
     articleImageUrl,
+    // refetch,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
     articleImageUrl: null,
+    // refetch: null,
   };
 
   const regroupedArticleContent =
@@ -63,6 +66,13 @@ export const TeamDailySubject = () => {
   const padding = isMobile ? '0 12px' : '0 105px';
   const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
+  useEffect(() => {
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
   if (!id || !selectedDate) {
     return <Navigate to={PATH.TEAMS} />;
   }
@@ -91,24 +101,16 @@ export const TeamDailySubject = () => {
         .then(() => {
           queryClient
             .refetchQueries({
-              queryKey: ['team-info', parseInt(id), year, month],
+              queryKey: ['team-info', id, year, month],
             })
             .then(() => {
               alert('주제 수정이 완료되었습니다.');
               navigate(`/team-admin/${id}`);
-              scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'instant',
-              });
             })
             .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
             .finally(() => {
               setDashboardView('topic');
               setSelectedPostId(parseInt(articleId));
-              scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'instant',
-              });
             });
         })
         .catch((err) => {
@@ -136,7 +138,7 @@ export const TeamDailySubject = () => {
       .then((data) => {
         queryClient
           .refetchQueries({
-            queryKey: ['team-info', parseInt(id), year, month],
+            queryKey: ['team-info', id, year, month],
           })
           .then(() => {
             const articleId = data.articleId;
@@ -144,18 +146,15 @@ export const TeamDailySubject = () => {
             setSelectedPostId(articleId);
             alert(data.message);
           })
-          .catch(() => alert('최신 팀 상태 조회에 실패했습니다.'))
+          .catch(() => {
+            alert('최신 팀 상태 조회에 실패했습니다.');
+          })
           .finally(() => {
             setSubjectImages([]);
             setDashboardView('topic');
             setSelectedPostId(parseInt(articleId));
 
             navigate(`/team-admin/${id}`);
-
-            scrollTo({
-              top: document.body.scrollHeight,
-              behavior: 'instant',
-            });
           });
       })
       .catch((err) => {
