@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-export const useJumpOnClick = () => {
+import { breakpoints } from '@/constants/breakpoints.ts';
+
+export const useScrollUpButtonPosition = () => {
   const boundRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -9,6 +11,7 @@ export const useJumpOnClick = () => {
       const button = buttonRef.current;
 
       const { x } = button.getBoundingClientRect();
+      console.log('init', x);
       button.style.position = 'fixed';
       button.style.right = '';
       button.style.left = '0';
@@ -19,6 +22,7 @@ export const useJumpOnClick = () => {
           const boundSc = boundRef.current;
           const buttonSc = buttonRef.current;
           const { top } = boundSc.getBoundingClientRect();
+
           if (top <= 0) {
             buttonSc.disabled = false;
             buttonSc.style.opacity = '1';
@@ -32,14 +36,16 @@ export const useJumpOnClick = () => {
       const onResize = () => {
         if (boundRef?.current && buttonRef?.current) {
           const button = buttonRef.current;
+          const isMobile = window.innerWidth <= breakpoints.mobile;
+
           button.style.position = 'absolute';
           button.style.left = '';
-          button.style.right = '-40px';
+          button.style.right = isMobile ? '0' : '-40px';
           button.style.transform = '';
 
           const { x } = button.getBoundingClientRect();
           button.style.position = 'fixed';
-          button.style.right = '0';
+          button.style.right = '';
           button.style.left = '0';
           button.style.transform = `translateX(${x}px)`;
 

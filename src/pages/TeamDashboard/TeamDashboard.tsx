@@ -1,4 +1,3 @@
-import { useJumpOnClick } from '@/hooks/useJumpOnClick';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
@@ -9,6 +8,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
 import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -67,7 +67,7 @@ export const TeamDashboardPage = () => {
     });
   };
 
-  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],

@@ -1,4 +1,3 @@
-import { useJumpOnClick } from '@/hooks/useJumpOnClick';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -16,6 +15,7 @@ import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 import { HeightInNumber } from '@/components/types';
 
 import {
@@ -318,7 +318,7 @@ export const TeamAdmin = () => {
   //TODO: useCalendarTag
   const [tags, setTags] = useState<ICalendarTag[]>([]);
 
-  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
