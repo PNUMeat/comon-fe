@@ -94,7 +94,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     </SText>
                     <Spacer h={isMobile ? 4 : 8} />
                     <SText
-                      fontSize={isMobile ? '14px' : '40px'}
+                      fontSize={isMobile ? '14px' : '32px'}
                       color="#333"
                       fontWeight={700}
                       whiteSpace="nowrap"

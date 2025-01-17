@@ -45,8 +45,12 @@ const NavMenu = styled.div`
   a {
     color: white;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
+
+    &:hover {
+      text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.5);
+    }
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
@@ -76,7 +80,7 @@ const UserMenu = styled.div`
     background: none;
     border: none;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
     font-weight: 800;
     text-decoration: none;
@@ -105,8 +109,8 @@ const ComonLogoWrap = styled.div`
 `;
 
 const LogoEngImg = styled.img`
-  height: 16.7px;
-  margin-right: 8px;
+  height: 15px;
+  margin-right: 6px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     display: none;
@@ -115,7 +119,7 @@ const LogoEngImg = styled.img`
 `;
 
 const LogoKoImg = styled.img`
-  height: 20px;
+  height: 18px;
 `;
 
 type ModalControl = {

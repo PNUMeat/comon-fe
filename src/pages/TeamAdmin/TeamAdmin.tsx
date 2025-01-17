@@ -1,4 +1,5 @@
 import { useJumpOnClick } from '@/hooks/useJumpOnClick';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
@@ -6,6 +7,7 @@ import { Flex } from '@/components/commons/Flex';
 import { InputContainer } from '@/components/commons/Form/segments/InputContainer';
 import { InputField } from '@/components/commons/Form/segments/InputField';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
+import { LazyImage } from '@/components/commons/LazyImage';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
@@ -16,7 +18,14 @@ import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButt
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { HeightInNumber } from '@/components/types';
 
-import { Fragment, forwardRef, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  Suspense,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
@@ -31,6 +40,7 @@ import {
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
+import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
@@ -47,37 +57,86 @@ const Grid = styled.div`
   grid-template-rows: auto 1fr auto;
   gap: 24px 40px;
   height: 100vh;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: block;
+  }
 `;
 
 const Sidebar = styled.aside`
   grid-area: sidebar;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    gap: 4px;
+  }
+`;
+
+const ImageContainer = styled(LazyImage)`
+  max-height: 84px;
 `;
 
 const Announcement = styled.header`
   grid-area: announcement;
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin: 12px 0;
+    border-radius: 10px;
+    background: #f8f8ff;
+    padding: 8px 10px;
+  }
 `;
 
 const leftPadding = '32px';
 
-const Image = styled.img`
+const PostImage = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 10px;
+    height: 10px;
+    margin-right: 0px;
+  }
 `;
 
-const AnnouncementImage = styled(Image)`
+const AnnouncementImageWrapper = styled.div`
   position: absolute;
-  transform: translate(-28px, 0px);
+  top: 28px;
+  left: 16px;
+  transform: translateY(-50%);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: 14px;
+    left: 12px;
+  }
+`;
+
+const AnnouncementImage = styled.img`
   width: 18px;
   height: 18px;
+  margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+  }
 `;
 
-const SubjectImage = styled(Image)`
+const SubjectImage = styled(PostImage)`
   width: 24px;
   height: 24px;
   margin-right: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+  }
 `;
 
 const SubjectControlButtonWrap = styled.button`
@@ -90,6 +149,13 @@ const SubjectControlButtonWrap = styled.button`
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
   border: none;
   margin-left: 27px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100px;
+    height: 32px;
+    padding: 12px 20px;
+    border-radius: 28px;
+  }
 `;
 
 const SubjectControlButton: React.FC<{
@@ -101,6 +167,9 @@ const SubjectControlButton: React.FC<{
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id), selectedDate),
   });
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     <SubjectControlButtonWrap
@@ -118,7 +187,7 @@ const SubjectControlButton: React.FC<{
     >
       <SubjectImage src={PencilIcon} alt={'pencil icon'} />
       <SText
-        fontSize="18px"
+        fontSize={isMobile ? '10px' : '18px'}
         color={isSuccess ? '#fff' : 'transparent'}
         fontWeight={700}
         whiteSpace={'nowrap'}
@@ -138,35 +207,71 @@ const AnnouncementAndSubject = forwardRef<
     selectedDate: string;
   }
 >(({ announcementToday, onClick, id, selectedDate }, ref) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
+  const handleClick = () => {
+    onClick();
+    toggleExpand();
+  };
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleExpand = () => setIsExpanded((prev) => !prev);
+
   return (
     <Announcement>
-      <Box width="60%" height="70px" padding="12px 28px" ref={ref}>
+      <Box
+        width={isMobile ? '204px' : '470px'}
+        height={isExpanded ? 'auto' : isMobile ? 'auto' : '70px'}
+        padding={isMobile ? '6px 14px' : '12px 28px'}
+        borderRadius={isMobile ? '4px' : '20px'}
+        borderWidth={isMobile ? '0px' : '1px'}
+        style={{
+          overflow: 'hidden',
+          cursor: 'pointer',
+          textOverflow: isExpanded ? 'unset' : 'ellipsis',
+          whiteSpace: isExpanded ? 'normal' : 'nowrap',
+          position: 'relative',
+        }}
+        ref={ref}
+      >
+        <AnnouncementImageWrapper>
+          <AnnouncementImage src={AnnouncementIcon} />
+        </AnnouncementImageWrapper>
         <Flex
           direction="column"
-          gap="4px"
-          justify="flex-start"
-          padding="0 24px"
+          gap={isMobile ? '2px' : '4px'}
+          style={{
+            marginLeft: '16px',
+          }}
         >
-          <AnnouncementImage src={AnnouncementIcon} />
-          <SText color="#333" fontSize="18px" fontWeight={700}>
+          <SText
+            color="#333"
+            fontSize={isMobile ? '10px' : '18px'}
+            fontWeight={700}
+          >
             Team announcement
           </SText>
 
-          {announcementToday ? (
-            <SText color="#333" fontSize="14px" fontWeight={500}>
-              {announcementToday}
-            </SText>
-          ) : (
-            <SText color="gray" fontSize="14px" fontWeight={500}>
-              공지가 등록되지 않았어요.
-            </SText>
-          )}
+          <SText
+            color="#333"
+            fontSize={isMobile ? '10px' : '14px'}
+            fontWeight={isMobile ? 400 : 500}
+            style={{
+              whiteSpace: isExpanded ? 'normal' : 'nowrap',
+              overflow: 'hidden',
+              textOverflow: isExpanded ? 'unset' : 'ellipsis',
+            }}
+          >
+            {announcementToday
+              ? announcementToday
+              : '공지가 등록되지 않았습니다.'}
+          </SText>
         </Flex>
-
-        <Image
+        <PostImage
           src={announcementTodayIcon}
           alt="announcement modify button"
-          onClick={onClick}
+          onClick={handleClick} // TODO:
           style={{ cursor: 'pointer' }}
         />
       </Box>
@@ -188,6 +293,9 @@ const CalendarSection = styled.section`
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 export const TeamAdmin = () => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   const announcementRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
@@ -234,7 +342,6 @@ export const TeamAdmin = () => {
   const {
     data: teamInfoData,
     isSuccess,
-    // refetch
   } = useQuery({
     queryKey: ['team-info', id, year, month],
     queryFn: () => getTeamInfoAndTags(Number(id), year, month),
@@ -318,42 +425,114 @@ export const TeamAdmin = () => {
 
   return (
     <Fragment>
-      <Spacer h={28} />
+      <Spacer h={isMobile ? 16 : 28} />
       <Grid>
         <Sidebar>
-          <Box width="100%" height="380px" padding="0px 40px">
-            <Flex direction="column" align="center" width={100} height={280}>
-              <SText fontSize="12px" fontWeight={600}>
-                TEAM
-              </SText>
-              <Spacer h={2} />
-              <SText fontSize="24px" color="#333" fontWeight={700}>
-                관리페이지
-              </SText>
-              <Spacer h={52} />
-              <SText
-                color="#777"
-                fontSize="16px"
-                fontWeight={500}
-                lineHeight="24px"
+          {isMobile ? (
+            <>
+              <Box
+                width="84px"
+                height="84px"
+                borderWidth="1px"
+                padding="8px"
+                borderRadius="10px"
               >
-                오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의 게시글
-                및 태그를 수정, 변경할 수 있습니다.
-              </SText>
-              <Spacer h={32} />
-
-              <Box width="90%" height="50px" padding="0">
-                <Link
-                  to={`${PATH.TEAM_DASHBOARD}/${id}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <SText fontSize="14px" fontWeight={700} color="#333">
-                    팀 페이지로 이동하기
-                  </SText>
-                </Link>
+                <Suspense fallback={<div style={{ height: '84px' }} />}>
+                  <ImageContainer
+                    src={teamInfoData?.myTeamResponse.imageUrl || ''}
+                    altText={teamInfoData?.myTeamResponse.teamName || ''}
+                    w={70}
+                    h={70}
+                    maxW={70}
+                  />
+                </Suspense>
               </Box>
-            </Flex>
-          </Box>
+              <Box
+                width="100%"
+                padding="20px"
+                height="84px"
+                borderRadius="10px"
+              >
+                <Flex
+                  justify="space-around"
+                  align="center"
+                  width={100}
+                  height={36}
+                >
+                  <Flex
+                    direction="column"
+                    align="center"
+                    style={{ width: '100px' }}
+                  >
+                    <SText color="#333" fontSize="10px" fontWeight={600}>
+                      TEAM
+                    </SText>
+                    <Spacer h={2} />
+                    <SText fontSize="16px" color="#333" fontWeight={700}>
+                      관리페이지
+                    </SText>
+                  </Flex>
+                  <Box
+                    width="84px"
+                    height="32px"
+                    padding="10px 12px"
+                    borderRadius="10px"
+                    style={{ background: '#F0F1FF' }}
+                  >
+                    <Link
+                      to={`${PATH.TEAM_DASHBOARD}/${id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <SText fontSize="10px" fontWeight={600} color="#666">
+                        &larr; 팀 페이지로
+                      </SText>
+                    </Link>
+                  </Box>
+                </Flex>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box width="100%" height="380px" padding="0px 40px">
+                <Flex
+                  direction="column"
+                  align="center"
+                  width={100}
+                  height={280}
+                >
+                  <SText fontSize="12px" fontWeight={600}>
+                    TEAM
+                  </SText>
+                  <Spacer h={2} />
+                  <SText fontSize="24px" color="#333" fontWeight={700}>
+                    관리페이지
+                  </SText>
+                  <Spacer h={52} />
+                  <SText
+                    color="#777"
+                    fontSize="16px"
+                    fontWeight={500}
+                    lineHeight="24px"
+                  >
+                    오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의
+                    게시글 및 태그를 수정, 변경할 수 있습니다.
+                  </SText>
+                  <Spacer h={32} />
+
+                  <Box width="90%" height="50px" padding="0">
+                    <Link
+                      to={`${PATH.TEAM_DASHBOARD}/${id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <SText fontSize="14px" fontWeight={700} color="#333">
+                        팀 페이지로 이동하기
+                      </SText>
+                    </Link>
+                  </Box>
+                </Flex>
+              </Box>
+            </>
+          )}
         </Sidebar>
 
         <AnnouncementAndSubject
@@ -403,6 +582,7 @@ export const TeamAdmin = () => {
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
+        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
       <Spacer h={200} />
       {createPortal(
