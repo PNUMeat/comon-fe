@@ -31,6 +31,8 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
+let totalPageCache = 0;
+
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
@@ -74,17 +76,26 @@ export const TeamDashboardPage = () => {
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
+
   useEffect(() => {
     if (isSuccess && teamInfoData) {
       addTags(teamInfoData.subjectArticleDateAndTagResponses);
     }
   }, [isSuccess]);
 
-  const { data: articlesData, refetch } = useQuery({
+  const {
+    data: articlesData,
+    refetch,
+    isSuccess: isPaginationReady,
+  } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+  // 가장 비용이 적은 캐싱
+  if (isPaginationReady && articlesData) {
+    totalPageCache = articlesData.page.totalPages;
+  }
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
@@ -131,7 +142,7 @@ export const TeamDashboardPage = () => {
             onShowArticleDetail={handleShowArticleDetail}
           />
           <Pagination
-            totalPages={articlesData?.page?.totalPages ?? 0}
+            totalPages={articlesData?.page?.totalPages ?? totalPageCache}
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}
