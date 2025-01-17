@@ -79,6 +79,31 @@
     url(./assets/fonts/Pretendard-Thin.subset.woff2) format('woff2');
 }
 
-* {
-  font-family: serif;
+@font-face {
+  font-family: 'NanumSquareNeo';
+  font-weight: 900;
+  font-display: swap;
+  src:
+    local('NanumSquareNeo Heavy'),
+    url(./assets/fonts/NanumSquareNeoTTF-eHv.woff2) format('woff2');
 }
+
+@font-face {
+  font-family: 'NanumSquareNeo';
+  font-weight: 700;
+  src:
+    local('NanumSquareNeo Extra Bold'),
+    url(./assets/fonts/NanumSquareNeoTTF-dEb.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'NanumSquareNeo';
+  font-weight: 500;
+  src:
+    local('NanumSquareNeo Regular'),
+    url(./assets/fonts/NanumSquareNeoTTF-bRg.woff2) format('woff2');
+}
+
+/* * {
+  font-family: serif;
+} */

@@ -184,7 +184,7 @@ export const router = createBrowserRouter(
   ],
   {
     future: {
-      scrollRestoration: true,
+      scrollRestoration: false,
     },
   }
 );

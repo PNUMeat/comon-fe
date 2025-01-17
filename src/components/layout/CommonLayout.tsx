@@ -11,7 +11,7 @@ import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
 
-const headerHeight = 72;
+const headerHeight = 66;
 
 export const CommonLayout: React.FC<{
   children: React.ReactNode;

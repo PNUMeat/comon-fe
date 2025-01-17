@@ -1,4 +1,4 @@
-import { useJumpOnClick } from '@/hooks/useJumpOnClick';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
@@ -8,6 +8,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
 import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -19,6 +20,7 @@ import {
   getTeamInfoAndTags,
 } from '@/api/dashboard';
 import { ITeamInfo } from '@/api/team';
+import { breakpoints } from '@/constants/breakpoints';
 import {
   currentViewAtom,
   pageAtom,
@@ -28,6 +30,8 @@ import {
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
+
+let totalPageCache = 0;
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -40,6 +44,11 @@ export const TeamDashboardPage = () => {
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
   const [tags, setTags] = useState<ICalendarTag[]>([]);
+
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
 
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
@@ -60,35 +69,33 @@ export const TeamDashboardPage = () => {
     });
   };
 
-  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
-  useEffect(() => {
-    // 스타일 분리~
-    if (boundRef?.current && buttonRef?.current) {
-      const bound = boundRef.current;
-      const button = buttonRef.current;
-      const { right } = bound.getBoundingClientRect();
-      button.style.transform = `translate(${right + 30}px, calc(100vh - 20vh))`;
-      button.style.opacity = '0';
-      button.disabled = true;
-    }
-  }, [boundRef, buttonRef]);
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
+
   useEffect(() => {
     if (isSuccess && teamInfoData) {
       addTags(teamInfoData.subjectArticleDateAndTagResponses);
     }
   }, [isSuccess]);
 
-  const { data: articlesData, refetch } = useQuery({
+  const {
+    data: articlesData,
+    refetch,
+    isSuccess: isPaginationReady,
+  } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+  // 가장 비용이 적은 캐싱
+  if (isPaginationReady && articlesData) {
+    totalPageCache = articlesData.page.totalPages;
+  }
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
@@ -107,9 +114,12 @@ export const TeamDashboardPage = () => {
   const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
   const isTeamManager = teamInfoData?.teamManager || false;
 
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <Fragment>
-      <Spacer h={28} />
+      <Spacer h={isMobile ? 16 : 28} />
       <Grid>
         {teamInfoData && (
           <SidebarAndAnnouncement
@@ -120,7 +130,7 @@ export const TeamDashboardPage = () => {
         <CalendarSection>
           <CustomCalendar
             tags={tags}
-            onDateSelect={setSelectedDate}
+            onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
@@ -130,14 +140,14 @@ export const TeamDashboardPage = () => {
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
-            key={`${['articles-by-date', teamId, selectedDate, page]}?${status}`}
           />
           <Pagination
-            totalPages={articlesData?.page?.totalPages ?? 0}
+            totalPages={articlesData?.page?.totalPages ?? totalPageCache}
             currentPageProp={page}
             onPageChange={handlePageChange}
+            hideShadow={isMobile}
           />
-          <Spacer h={40} />
+          <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
@@ -152,8 +162,8 @@ export const TeamDashboardPage = () => {
               teamId={Number(teamId)}
             />
           )}
+          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
-        <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
     </Fragment>
   );
@@ -168,6 +178,10 @@ const Grid = styled.div`
   grid-template-rows: auto 1fr auto;
   gap: 24px 40px;
   height: 100vh;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: block;
+  }
 `;
 
 const CalendarSection = styled.section`
@@ -177,4 +191,9 @@ const CalendarSection = styled.section`
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 8px 24px 16px 24px;
+    border-radius: 10px;
+  }
 `;

@@ -1,8 +1,12 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { SText } from '@/components/commons/SText';
 
 import { useNavigate } from 'react-router-dom';
 
 import navArrow from '@/assets/Header/jumpArrow.svg';
+import { breakpoints } from '@/constants/breakpoints';
+import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 export const ProfileBoxContainer = styled.div`
@@ -11,12 +15,22 @@ export const ProfileBoxContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 24px;
+  }
 `;
 
 const ProfileUserWrapper = styled.div`
   display: flex;
   gap: 18px;
   height: 48px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 24px;
+    gap: 12px;
+    align-items: center;
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -24,6 +38,11 @@ const ProfileImage = styled.img`
   height: 48px;
   object-fit: cover;
   border-radius: 50%;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 export const SimpleProfileWrap = styled.div`
@@ -32,21 +51,30 @@ export const SimpleProfileWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 200px;
+    height: 24px;
+  }
 `;
 
 export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
   img,
   name,
 }) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <ProfileUserWrapper>
       {img && <ProfileImage src={img} alt={'profile image'} />}
       {name && (
         <SText
-          fontSize={'16px'}
-          fontWeight={400}
-          fontFamily={'Pretendard'}
-          lineHeight={'48px'}
+          fontSize={isMobile ? '12px' : '16px'}
+          fontWeight={500}
+          fontFamily={'NanumSquareNeo'}
+          lineHeight={isMobile ? '' : '48px'}
+          color="#333"
         >
           {name}
         </SText>
@@ -55,13 +83,13 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
   );
 };
 
-export const GrayDivider = styled.hr<{
+export const Divider = styled.hr<{
   margin?: string;
+  color?: string;
 }>`
   margin: ${(props) => props.margin};
-  // margin: 9px 0;
   width: 100%;
-  background-color: #ccc;
+  border: 0.5px solid ${(props) => props.color || colors.buttonPurple};
 `;
 
 const TeamNavWrapper = styled.div`
@@ -69,12 +97,17 @@ const TeamNavWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 23px;
+  padding: 12px 28px;
   box-sizing: border-box;
   cursor: pointer;
 
   &:hover {
     background-color: #f0f0f0;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 10px 24px;
+    align-items: center;
   }
 `;
 
@@ -84,6 +117,9 @@ export const MyTeamNav: React.FC<{
   teamId: number;
 }> = ({ teamImg, teamName, teamId }) => {
   const navigate = useNavigate();
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     <TeamNavWrapper
@@ -95,9 +131,10 @@ export const MyTeamNav: React.FC<{
         <TeamImg src={teamImg} />
         <SText
           fontFamily={'Pretendard'}
-          fontSize={'12px'}
+          fontSize={isMobile ? '10px' : '12px'}
           fontWeight={500}
-          lineHeight={'30px'}
+          lineHeight={isMobile ? '' : '30px'}
+          color="#333"
         >
           {teamName}
         </SText>
@@ -110,19 +147,40 @@ export const MyTeamNav: React.FC<{
 const TeamInfoWrap = styled.div`
   display: flex;
   gap: 10px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    align-items: center;
+  }
 `;
 
 const TeamImg = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const Arrow = styled.img`
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 6px;
+  }
 `;
 
 const TeamNavButton = () => {
-  return <img src={navArrow} alt={'jump button to team page'} />;
+  return <Arrow src={navArrow} alt={'jump button to team page'} />;
 };
+
 export const LogoutWrap = styled.div`
-  width: calc(100% - 34px);
-  margin-bottom: 14px;
-  margin-top: 10px;
+  width: calc(100% - 48px);
+  margin-bottom: 6px;
+  margin-top: 4px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-bottom: 2px;
+    margin-top: 0;
+  }
 `;

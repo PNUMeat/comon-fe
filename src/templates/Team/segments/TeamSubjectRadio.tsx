@@ -21,7 +21,7 @@ const TeamSubjectButton = styled.button<{ isSelected: boolean }>`
   transition: all 0.2s;
 `;
 
-const options = ['스터디', '코딩테스트'];
+const options = ['코딩테스트', '스터디'];
 
 export const TeamSubjectRadio: React.FC<{
   defaultValue?: string;

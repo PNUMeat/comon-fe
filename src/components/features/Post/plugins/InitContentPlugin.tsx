@@ -1,6 +1,6 @@
 import { $createImageNode } from '@/components/features/Post/nodes/ImageNode';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { $createCodeNode } from '@lexical/code';
 import { $createLinkNode } from '@lexical/link';
@@ -32,7 +32,7 @@ const mergeStyles = (parentStyle: string, childStyle: string): string => {
   }
   return parentStyle + '; ' + childStyle;
 };
-/** HTML -> LexicalNode[] 로 직접 변환해주는 함수 예시 */
+
 const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(htmlString, 'text/html');
@@ -304,18 +304,21 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
 export const InitContentPlugin: React.FC<{ content: string }> = ({
   content,
 }) => {
-  const isInitializedRef = useRef(true);
   const [editor] = useLexicalComposerContext();
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    return editor.update(() => {
-      const nodes = parseHtmlStrToLexicalNodes(content);
-      $getRoot().clear().select();
-      const selection = $getSelection();
-      if (selection && isInitializedRef.current) {
-        selection.insertNodes(nodes);
-        isInitializedRef.current = false;
-      }
-    });
+    if (!initialized) {
+      return editor.update(() => {
+        const nodes = parseHtmlStrToLexicalNodes(content);
+        $getRoot().clear().select();
+        const selection = $getSelection();
+        if (selection) {
+          selection.insertNodes(nodes);
+          setInitialized(true);
+        }
+      });
+    }
   }, [editor]);
 
   return null;

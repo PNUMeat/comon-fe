@@ -11,7 +11,7 @@
     outline: none;
 }
 
-.editor-text-bold {
+.editor-text-bold, .f {
     font-weight: bold;
 }
 
@@ -84,7 +84,7 @@ button {
     position: relative;
     font-family: inherit;
     min-width: 280px;
-    max-width: 390px;
+    width: 100%;
 }
 
 .link-editor .link-input a {
