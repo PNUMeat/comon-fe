@@ -17,12 +17,12 @@ import {
   queryMyTeamInfo,
 } from '@/api/mypage';
 import { withdrawTeam } from '@/api/team';
+import leftArrow from '@/assets/MyDashboard/leftArrow.png';
+import rightArrow from '@/assets/MyDashboard/rightArrow.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import leftArrow from '@/assets/MyDashboard/leftArrow.png';
-import rightArrow from '@/assets/MyDashboard/rightArrow.png';
 
 const ModeButtonsWrapper = styled.div`
   margin-bottom: 54px;
@@ -115,6 +115,7 @@ const ArticleWrapper = styled.div<{
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
+    // width: 340px;
     height: ${(props) => (props.height ? props.height : '430px')};
     padding: 30px 28px;
     position: relative;
@@ -715,7 +716,7 @@ const TeamButton: React.FC<{
   );
 };
 
-const MoveButtonWrap = styled.div<{disabled : boolean}>`
+const MoveButtonWrap = styled.div<{ disabled: boolean }>`
   display: flex;
   width: 30px;
   height: 45px;
@@ -742,20 +743,15 @@ const MoveButtonIcon = styled.img`
 
 const MoveButton: React.FC<{
   onClick: () => void;
-  src : string;
+  src: string;
   disabled: boolean;
-}> = ({ onClick, src, disabled}) => {
+}> = ({ onClick, src, disabled }) => {
   return (
-    <MoveButtonWrap
-      onClick={onClick}
-      disabled={disabled}
-    >
-      { !disabled && (
-        <MoveButtonIcon src={src} alt='move button' />
-      )}
+    <MoveButtonWrap onClick={onClick} disabled={disabled}>
+      {!disabled && <MoveButtonIcon src={src} alt="move button" />}
     </MoveButtonWrap>
   );
-}
+};
 
 const TEAMS_PER_VIEW = 5;
 
@@ -785,22 +781,21 @@ export const MyTeams = () => {
   const isMobile = width <= breakpoints.mobile;
 
   const teamsLength = data?.length || 0;
-  const visibleTeams = data?.slice(startIndex, startIndex + TEAMS_PER_VIEW) || [];
+  const visibleTeams =
+    data?.slice(startIndex, startIndex + TEAMS_PER_VIEW) || [];
 
   const canGoPrev = startIndex > 0;
   const canGoNext = startIndex + TEAMS_PER_VIEW < teamsLength;
 
-  
-
   const goPrev = () => {
     if (!canGoPrev) return;
     setStartIndex((prev) => Math.max(0, prev - 1));
-  }
+  };
 
   const goNext = () => {
     if (!canGoNext) return;
     setStartIndex((prev) => Math.min(teamsLength - TEAMS_PER_VIEW, prev + 1));
-  }
+  };
 
   return (
     <Flex direction={'column'}>
@@ -810,9 +805,8 @@ export const MyTeams = () => {
           onClick={goPrev}
           src={leftArrow}
           disabled={!canGoPrev}
-        >
-        </MoveButton>
-        { data &&
+        ></MoveButton>
+        {data &&
           visibleTeams.map((team: TeamAbstraction) => (
             <TeamButton
               key={team.teamId}
@@ -828,8 +822,7 @@ export const MyTeams = () => {
           onClick={goNext}
           src={rightArrow}
           disabled={!canGoNext}
-          >
-        </MoveButton>
+        ></MoveButton>
       </Flex>
 
       {mode === 'history' && teamId != null && (

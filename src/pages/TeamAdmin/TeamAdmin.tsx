@@ -1,4 +1,3 @@
-import { useJumpOnClick } from '@/hooks/useJumpOnClick';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -16,6 +15,7 @@ import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 import { HeightInNumber } from '@/components/types';
 
 import {
@@ -291,6 +291,8 @@ const CalendarSection = styled.section`
   position: relative;
 `;
 
+let totalPageCache = 0;
+
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 export const TeamAdmin = () => {
   const width = useWindowWidth();
@@ -318,7 +320,7 @@ export const TeamAdmin = () => {
   //TODO: useCalendarTag
   const [tags, setTags] = useState<ICalendarTag[]>([]);
 
-  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const addTags = (newTags: ICalendarTag[]) => {
     setTags((prevTags) => {
@@ -351,11 +353,19 @@ export const TeamAdmin = () => {
     }
   }, [isSuccess]);
 
-  const { data: articlesData, refetch } = useQuery({
+  const {
+    data: articlesData,
+    refetch,
+    isSuccess: isPaginationReady,
+  } = useQuery({
     queryKey: ['articles-by-date', id, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(id), selectedDate, page),
     enabled: !!id && !!selectedDate,
   });
+  // 가장 비용이 적은 캐싱
+  if (isPaginationReady && articlesData) {
+    totalPageCache = articlesData.page.totalPages;
+  }
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
@@ -554,7 +564,7 @@ export const TeamAdmin = () => {
             onShowArticleDetail={handleShowArticleDetail}
           />
           <Pagination
-            totalPages={articlesData?.page?.totalPages ?? 0}
+            totalPages={articlesData?.page?.totalPages ?? totalPageCache}
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}

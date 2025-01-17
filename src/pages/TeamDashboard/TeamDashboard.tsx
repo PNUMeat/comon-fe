@@ -1,4 +1,3 @@
-import { useJumpOnClick } from '@/hooks/useJumpOnClick';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
@@ -9,6 +8,7 @@ import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
 import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -30,6 +30,8 @@ import {
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
+
+let totalPageCache = 0;
 
 export const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -67,24 +69,33 @@ export const TeamDashboardPage = () => {
     });
   };
 
-  const { boundRef, buttonRef, onClickJump } = useJumpOnClick();
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
   });
+
   useEffect(() => {
     if (isSuccess && teamInfoData) {
       addTags(teamInfoData.subjectArticleDateAndTagResponses);
     }
   }, [isSuccess]);
 
-  const { data: articlesData, refetch } = useQuery({
+  const {
+    data: articlesData,
+    refetch,
+    isSuccess: isPaginationReady,
+  } = useQuery({
     queryKey: ['articles-by-date', teamId, selectedDate, page],
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+  // 가장 비용이 적은 캐싱
+  if (isPaginationReady && articlesData) {
+    totalPageCache = articlesData.page.totalPages;
+  }
 
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
@@ -131,7 +142,7 @@ export const TeamDashboardPage = () => {
             onShowArticleDetail={handleShowArticleDetail}
           />
           <Pagination
-            totalPages={articlesData?.page?.totalPages ?? 0}
+            totalPages={articlesData?.page?.totalPages ?? totalPageCache}
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}

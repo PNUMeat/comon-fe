@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints.ts';
 import styled from '@emotion/styled';
 
 const Outer = styled.button<{ size: number }>`
@@ -14,6 +15,12 @@ const Outer = styled.button<{ size: number }>`
   border-radius: 8px;
   box-shadow: 5px 7px 5.8px rgba(63, 64, 77, 0.07);
   transition: opacity 0.3s;
+  z-index: 999999;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    right: 0;
+    bottom: 12vh;
+  }
 `;
 
 const Inner = styled.div`

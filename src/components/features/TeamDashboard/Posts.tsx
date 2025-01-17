@@ -64,47 +64,32 @@ export const Posts: React.FC<PostsProps> = ({
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
   return (
     <div style={{ position: 'relative', height: isMobile ? '391px' : '' }}>
-      <Suspense
-        fallback={
-          <NoArticleDiv>
-            <Flex
-              justify="center"
-              align="center"
-              style={{ minHeight: '216px' }}
-            >
-              <SText color="#ccc" fontSize="24px" fontWeight={400}>
-                게시글이 존재하지 않아요
-              </SText>
-            </Flex>
-          </NoArticleDiv>
-        }
-      >
-        <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
-          <Flex justify="space-between" align="center">
-            <Flex width={35} justify="space-between" align="center">
-              <SText color="#333" fontSize="24px" fontWeight={700}>
-                {selectedDate}
-              </SText>
-              {category && (
-                <Tag
-                  bgColor={categoryColors[category.articleCategory]}
-                  label={category.articleCategory}
-                  padding="4px 10px"
-                  fontSize="10px"
-                />
-              )}
-            </Flex>
-            <StyledButton
-              isClicked={isButtonClicked}
-              onClick={handleButtonClick}
-            >
-              <RocketIcon src={RocketImg} />
-              주제 확인하기
-            </StyledButton>
+      <Box width="100%" padding="10px 40px" style={{ zIndex: 2 }}>
+        <Flex justify="space-between" align="center">
+          <Flex width={35} justify="space-between" align="center">
+            <SText color="#333" fontSize="24px" fontWeight={700}>
+              {selectedDate}
+            </SText>
+            {category && (
+              <Tag
+                bgColor={categoryColors[category.articleCategory]}
+                label={category.articleCategory}
+                padding="4px 10px"
+                fontSize="10px"
+              />
+            )}
           </Flex>
-        </Box>
+          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
+            <RocketIcon src={RocketImg} />
+            주제 확인하기
+          </StyledButton>
+        </Flex>
+      </Box>
+
+      <Suspense fallback={<NoArticleDiv />}>
         {data?.content?.length === 0 ? (
           <NoArticleDiv>
             <Flex
@@ -180,8 +165,8 @@ export const Posts: React.FC<PostsProps> = ({
             ))}
           </List>
         )}
-        <Spacer h={260} />
       </Suspense>
+      <Spacer h={260} />
     </div>
   );
 };
@@ -227,7 +212,7 @@ const NoArticleDiv = styled.div`
   top: 0px;
   left: 50%;
   padding: 90px 40px;
-  min-height: 216px;
+  height: 216px;
   transform: translateX(-50%);
   width: calc(100% - 80px);
   z-index: 1;
@@ -243,7 +228,7 @@ const List = styled.div`
   top: 0px;
   left: 50%;
   padding: 90px 40px;
-  min-height: 216px;
+  height: 216px;
   transform: translateX(-50%);
   width: calc(100% - 80px);
   z-index: 1;

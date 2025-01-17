@@ -33,10 +33,7 @@ export const SText = styled.div<TextProps>`
     props.shouldCut
       ? `
   width: 100%;
-  // 단일 라인에서는 필요 없음
-  // display: -webkit-box;
-  // -webkit-line-clamp: 1;
-  // -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;`
       : ''};
