@@ -423,8 +423,6 @@ const PostEditor: React.FC<{
     }
   };
 
-  // console.log('!!', content);
-
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
@@ -437,6 +435,7 @@ const PostEditor: React.FC<{
             }
           }}
           defaultValue={title}
+          maxLength={50}
         />
         <ToolbarPlugin
           setIsLinkEditMode={setIsLinkEditMode}
