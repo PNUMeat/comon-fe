@@ -339,10 +339,7 @@ export const TeamAdmin = () => {
     });
   };
 
-  const {
-    data: teamInfoData,
-    isSuccess,
-  } = useQuery({
+  const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', id, year, month],
     queryFn: () => getTeamInfoAndTags(Number(id), year, month),
     enabled: !!id,
@@ -560,8 +557,9 @@ export const TeamAdmin = () => {
             totalPages={articlesData?.page?.totalPages ?? 0}
             currentPageProp={page}
             onPageChange={handlePageChange}
+            hideShadow={isMobile}
           />
-          <Spacer h={40} />
+          <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail
               teamId={Number(id)}

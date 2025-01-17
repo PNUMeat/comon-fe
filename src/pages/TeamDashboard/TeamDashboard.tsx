@@ -134,8 +134,9 @@ export const TeamDashboardPage = () => {
             totalPages={articlesData?.page?.totalPages ?? 0}
             currentPageProp={page}
             onPageChange={handlePageChange}
+            hideShadow={isMobile}
           />
-          <Spacer h={40} />
+          <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
