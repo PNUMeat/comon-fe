@@ -1,3 +1,5 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
@@ -12,7 +14,7 @@ const registerFileCacheWorker = async (): Promise<void> => {
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
-        'src/workers/fileCacher.ts',
+        isDevMode() ? 'src/workers/fileCacher.ts' : '/sw.js',
         {
           type: 'module',
         }
