@@ -6,10 +6,6 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
-importScripts(
-  'https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js'
-);
-
 precacheAndRoute(self.__WB_MANIFEST || []);
 
 declare const self: ServiceWorkerGlobalScope;

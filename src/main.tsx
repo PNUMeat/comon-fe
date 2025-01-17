@@ -14,7 +14,7 @@ const registerFileCacheWorker = async (): Promise<void> => {
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
-        isDevMode() ? 'src/workers/fileCacher.ts' : '/sw.js',
+        isDevMode() ? 'src/workers/cacheWorker.ts' : '/sw.js',
         {
           type: 'module',
         }
