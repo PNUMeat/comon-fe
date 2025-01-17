@@ -30,7 +30,7 @@ export default defineConfig({
     VitePWA({
       strategies: 'injectManifest',
       srcDir: 'src/workers',
-      filename: 'fileCacher.ts',
+      filename: 'cacheWorker.ts',
       registerType: 'autoUpdate',
       manifest: {
         name: 'Code Monster',
@@ -51,6 +51,9 @@ export default defineConfig({
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
+      },
+      workbox: {
+        globPatterns: ['**/*.{woff,woff2,ttf,otf}'],
       },
     }),
   ],
