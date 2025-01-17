@@ -92,7 +92,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               >
                 {teamInfo.teamName}
               </SText>
-              <Spacer h={6} />
+              <Spacer h={isMobile ? 4 : 6} />
               <SText
                 fontSize={isMobile ? '10px' : '16px'}
                 color="#777"
@@ -100,7 +100,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               >
                 since {teamInfo.createdAt}
               </SText>
-              <Spacer h={isMobile ? 6 : 16} />
+              <Spacer h={isMobile ? 4 : 16} />
               <Label
                 background={isMobile ? '#F4F4F4' : '#6E74FA'}
                 color={isMobile ? '#8488ec' : '#fff'}
@@ -167,7 +167,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                       </SText>
                     </Flex>
                   </Link>
-                  <Spacer h={4} />
+                  <Spacer h={2} />
                   <Link
                     to={`${PATH.TEAM_MODIFICATION}`}
                     style={{ textDecoration: 'none' }}
