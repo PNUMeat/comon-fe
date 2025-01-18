@@ -91,6 +91,7 @@
 @font-face {
   font-family: 'NanumSquareNeo';
   font-weight: 700;
+  font-display: swap;
   src:
     local('NanumSquareNeo Extra Bold'),
     url(./assets/fonts/NanumSquareNeoTTF-dEb.woff2) format('woff2');
@@ -99,6 +100,7 @@
 @font-face {
   font-family: 'NanumSquareNeo';
   font-weight: 500;
+  font-display: swap;
   src:
     local('NanumSquareNeo Regular'),
     url(./assets/fonts/NanumSquareNeoTTF-bRg.woff2) format('woff2');
