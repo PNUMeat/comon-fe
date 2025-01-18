@@ -10,7 +10,7 @@ import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { Suspense } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -295,27 +295,37 @@ const WaitBox = styled.div`
   }
 `;
 
+const BannerFallbackText: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <SText whiteSpace={'no-wrap'} fontFamily={'Noto Sans KR'}>
+      {children}
+    </SText>
+  );
+};
+
 const BannerFallback = () => {
   return (
     <Flex height={491} direction={'column'} justify={'center'} align={'center'}>
-      <SText whiteSpace={'no-wrap'}>
+      <BannerFallbackText>
         ░█████╗░░█████╗░███╗░░░███╗░█████╗░███╗░░██╗
-      </SText>
-      <SText whiteSpace={'no-wrap'}>
+      </BannerFallbackText>
+      <BannerFallbackText>
         ██╔══██╗██╔══██╗████╗░████║██╔══██╗████╗░██║
-      </SText>
-      <SText whiteSpace={'no-wrap'}>
+      </BannerFallbackText>
+      <BannerFallbackText>
         ██║░░╚═╝██║░░██║██╔████╔██║██║░░██║██╔██╗██║
-      </SText>
-      <SText whiteSpace={'no-wrap'}>
+      </BannerFallbackText>
+      <BannerFallbackText>
         ██║░░██╗██║░░██║██║╚██╔╝██║██║░░██║██║╚████║
-      </SText>
-      <SText whiteSpace={'no-wrap'}>
+      </BannerFallbackText>
+      <BannerFallbackText>
         ╚█████╔╝╚█████╔╝██║░╚═╝░██║╚█████╔╝██║░╚███║
-      </SText>
-      <SText whiteSpace={'no-wrap'}>
+      </BannerFallbackText>
+      <BannerFallbackText>
         ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝░╚════╝░╚═╝░░╚══╝
-      </SText>
+      </BannerFallbackText>
     </Flex>
   );
 };
