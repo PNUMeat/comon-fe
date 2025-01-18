@@ -20,7 +20,9 @@ import together from '@/assets/Home/goalTogether.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { useBottomBound } from '@/pages/Home/useBottomBound.ts';
 import { PATH } from '@/routes/path';
+import { isNanumFontFamilyLoadedAtom } from '@/store/load.ts';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai/index';
 
 const HomeComment = styled.div`
   color: #333;
@@ -146,6 +148,7 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
+  const [isNanumFFReady] = useAtom(isNanumFontFamilyLoadedAtom);
   const { bottomRef, effectRef } = useBottomBound();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -154,7 +157,7 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
-        {!isMobile && <EventFloating />}
+        {!isMobile && isNanumFFReady && <EventFloating />}
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}

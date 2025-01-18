@@ -9,16 +9,24 @@ import { VitePWA } from 'vite-plugin-pwa';
 const fontFolderPath = path.resolve(__dirname, 'src/assets/fonts');
 const fontFiles = fs.readdirSync(fontFolderPath);
 
-const preloadTags = fontFiles.map((file) => ({
-  tag: 'link',
-  attrs: {
-    rel: 'preload',
-    href: `/src/assets/fonts/${file}`,
-    as: 'font',
-    type: 'font/woff2',
-    crossorigin: 'anonymous',
-  },
-}));
+const preloadTags = fontFiles
+  .map((file) => {
+    if (file.includes('Nanum')) {
+      return null;
+    }
+
+    return {
+      tag: 'link',
+      attrs: {
+        rel: 'preload',
+        href: `/src/assets/fonts/${file}`,
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: 'anonymous',
+      },
+    };
+  })
+  .filter((tag) => tag !== null);
 
 export default defineConfig({
   plugins: [
