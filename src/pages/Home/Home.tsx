@@ -19,10 +19,9 @@ import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { useBottomBound } from '@/pages/Home/useBottomBound.ts';
+import { useNanumFont } from '@/pages/Home/useNanumFont.ts';
 import { PATH } from '@/routes/path';
-import { isNanumFontFamilyLoadedAtom } from '@/store/load.ts';
 import styled from '@emotion/styled';
-import { useAtom } from 'jotai/index';
 
 const HomeComment = styled.div`
   color: #333;
@@ -148,8 +147,8 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
-  const [isNanumFFReady] = useAtom(isNanumFontFamilyLoadedAtom);
   const { bottomRef, effectRef } = useBottomBound();
+  const { isNanumFFReady } = useNanumFont();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
