@@ -54,6 +54,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// lazy 취소
 export const router = createBrowserRouter(
   [
     {
