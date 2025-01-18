@@ -199,7 +199,7 @@ const PostSubjectViewer: React.FC<{
   );
 };
 
-export const Posting = () => {
+const Posting = () => {
   const location = useLocation();
   const { article, articleId, articleTitle } = location?.state ?? {
     article: null,
@@ -392,3 +392,5 @@ const TopicViewer = styled.div`
 
   ${viewStyle}
 `;
+
+export default Posting;

@@ -105,7 +105,7 @@ const categories: DashboardCategories[] = [
   { label: '내 팀 관리', path: 'teams' },
 ];
 
-export const MyDashboard = () => {
+const MyDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const category = location.pathname.split('/')[2];
@@ -137,3 +137,5 @@ export const MyDashboard = () => {
     </DashboardGird>
   );
 };
+
+export default MyDashboard;

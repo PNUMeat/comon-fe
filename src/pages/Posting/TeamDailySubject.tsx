@@ -29,7 +29,7 @@ import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 
-export const TeamDailySubject = () => {
+const TeamDailySubject = () => {
   const location = useLocation();
   const {
     articleId,
@@ -229,3 +229,5 @@ const ClickImage = styled.img`
 const ActionText = styled.div`
   margin-left: 8px;
 `;
+
+export default TeamDailySubject;

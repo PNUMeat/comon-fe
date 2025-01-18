@@ -26,6 +26,18 @@ export const LazyEnrollTemplate = delayedLazy(
   () => import('@/templates/User/EnrollTemplate')
 );
 
+export const LazyTeamRegistrationTemplate = delayedLazy(
+  () => import('@/templates/Team/TeamRegistrationTemplate')
+);
+
+export const LazyTeamModificationTemplate = delayedLazy(
+  () => import('@/templates/Team/TeamModificationTemplate')
+);
+
+export const LazyMyDashboard = delayedLazy(
+  () => import('@/templates/MyDashboard/MyDashboard')
+);
+
 export const LazySkeleton = () => (
   <Flex align="center" direction="column">
     <Spacer h={150} />
@@ -35,6 +47,24 @@ export const LazySkeleton = () => (
   </Flex>
 );
 
+export const LazyPosting = React.lazy(() => import('@/pages/Posting/Posting'));
+
+export const LazyTeamDailySubject = React.lazy(
+  () => import('@/pages/Posting/TeamDailySubject')
+);
+
+export const LazyTeamJoinPage = React.lazy(
+  () => import('@/pages/TeamJoin/TeamJoin.tsx')
+);
+
 export const LazyEditorImage = React.lazy(
   () => import('@/components/features/Post/nodes/LazyEditorImage')
+);
+
+export const LazyTeamDashboardPage = React.lazy(
+  () => import('@/pages/TeamDashboard/TeamDashboard')
+);
+
+export const LazyTeamAdmin = React.lazy(
+  () => import('@/pages/TeamAdmin/TeamAdmin.tsx')
 );

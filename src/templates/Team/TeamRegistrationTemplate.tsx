@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 
 import { TeamForm } from '@/templates/Team/TeamForm';
 
-export const TeamRegistrationTemplate = () => {
+const TeamRegistrationTemplate = () => {
   return (
     <Fragment>
       <GradientGlassPanel>
@@ -15,3 +15,5 @@ export const TeamRegistrationTemplate = () => {
     </Fragment>
   );
 };
+
+export default TeamRegistrationTemplate;

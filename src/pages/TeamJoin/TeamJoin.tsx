@@ -33,7 +33,7 @@ const TeamData = () => {
       if (
         error.response &&
         error.response.status === 401 &&
-        error.response.data.code === 100
+        (error.response.data.code === 100 || error.response.data.code === 101)
       ) {
         return false;
       }
@@ -100,7 +100,7 @@ const TeamData = () => {
   );
 };
 
-export const TeamJoinPage = () => {
+const TeamJoinPage = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
@@ -143,3 +143,5 @@ const ClickImage = styled.img`
 const ActionText = styled.div`
   margin-left: 8px;
 `;
+
+export default TeamJoinPage;

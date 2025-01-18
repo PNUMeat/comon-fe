@@ -294,7 +294,7 @@ const CalendarSection = styled.section`
 let totalPageCache = 0;
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
-export const TeamAdmin = () => {
+const TeamAdmin = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
@@ -707,3 +707,5 @@ export const SaveButton = styled(ButtonBase)`
   background: #6e74fa;
   color: white;
 `;
+
+export default TeamAdmin;

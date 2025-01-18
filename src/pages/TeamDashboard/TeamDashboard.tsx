@@ -33,7 +33,7 @@ import { useAtom } from 'jotai';
 
 let totalPageCache = 0;
 
-export const TeamDashboardPage = () => {
+const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
@@ -197,3 +197,5 @@ const CalendarSection = styled.section`
     border-radius: 10px;
   }
 `;
+
+export default TeamDashboardPage;
