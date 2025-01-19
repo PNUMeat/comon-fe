@@ -3,20 +3,15 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { Box } from '@/components/commons/Box';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Flex } from '@/components/commons/Flex';
-import { InputContainer } from '@/components/commons/Form/segments/InputContainer';
-import { InputField } from '@/components/commons/Form/segments/InputField';
-import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { Wrap } from '@/components/commons/Wrap';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
-import { HeightInNumber } from '@/components/types';
 
 import {
   Fragment,
@@ -26,7 +21,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -41,7 +35,6 @@ import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { breakpoints } from '@/constants/breakpoints';
-import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
@@ -89,12 +82,11 @@ const Announcement = styled.header`
   }
 `;
 
-const leftPadding = '32px';
-
 const PostImage = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 8px;
+  cursor: pointer;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 10px;
@@ -201,86 +193,128 @@ const SubjectControlButton: React.FC<{
 const AnnouncementAndSubject = forwardRef<
   HTMLDivElement,
   {
-    onClick: () => void;
     announcementToday: string;
     id: string;
     selectedDate: string;
   }
->(({ announcementToday, onClick, id, selectedDate }, ref) => {
+>(({ announcementToday, id, selectedDate }, ref) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  const handleClick = () => {
-    onClick();
-    toggleExpand();
+  const [isEditing, setIsEditing] = useState(false);
+  const [announcement, setAnnouncement] = useState<string>(
+    announcementToday || ''
+  );
+
+  const toggleEditing = () => setIsEditing((prev) => !prev);
+
+  const handleSave = () => {
+    setIsEditing(false);
+    updateAnnouncement(Number(id), announcement).then(() => {
+      window.location.reload();
+    });
   };
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const toggleExpand = () => setIsExpanded((prev) => !prev);
+  const handleCancel = () => {
+    setAnnouncement(announcementToday || '');
+    setIsEditing(false);
+  };
 
   return (
     <Announcement>
       <Box
         width={isMobile ? '204px' : '470px'}
-        height={isExpanded ? 'auto' : isMobile ? 'auto' : '70px'}
+        height={isEditing ? 'auto' : isMobile ? 'auto' : '70px'}
         padding={isMobile ? '6px 14px' : '12px 28px'}
         borderRadius={isMobile ? '4px' : '20px'}
         borderWidth={isMobile ? '0px' : '1px'}
         style={{
           overflow: 'hidden',
           cursor: 'pointer',
-          textOverflow: isExpanded ? 'unset' : 'ellipsis',
-          whiteSpace: isExpanded ? 'normal' : 'nowrap',
+          textOverflow: isEditing ? 'unset' : 'ellipsis',
+          whiteSpace: isEditing ? 'normal' : 'nowrap',
           position: 'relative',
         }}
         ref={ref}
+        onClick={!isEditing ? toggleEditing : undefined}
       >
         <AnnouncementImageWrapper>
           <AnnouncementImage src={AnnouncementIcon} />
         </AnnouncementImageWrapper>
-        <Flex
-          direction="column"
-          gap={isMobile ? '2px' : '4px'}
-          style={{
-            marginLeft: '16px',
-          }}
-        >
-          <SText
-            color="#333"
-            fontSize={isMobile ? '10px' : '18px'}
-            fontWeight={700}
-          >
-            Team announcement
-          </SText>
-
-          <SText
-            color="#333"
-            fontSize={isMobile ? '10px' : '14px'}
-            fontWeight={isMobile ? 400 : 500}
+        {!isEditing ? (
+          <>
+            <Flex
+              direction="column"
+              gap={isMobile ? '2px' : '4px'}
+              style={{
+                marginLeft: '16px',
+              }}
+            >
+              <SText
+                color="#333"
+                fontSize={isMobile ? '10px' : '18px'}
+                fontWeight={700}
+              >
+                Team announcement
+              </SText>
+              <SText
+                color="#333"
+                fontSize={isMobile ? '10px' : '14px'}
+                fontWeight={isMobile ? 400 : 500}
+                style={{
+                  whiteSpace: 'normal',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {announcementToday || '공지가 등록되지 않았습니다.'}
+              </SText>
+            </Flex>
+            <PostImage
+              src={announcementTodayIcon}
+              alt="announcement modify button"
+            />
+          </>
+        ) : (
+          <Flex
+            direction="column"
             style={{
-              whiteSpace: isExpanded ? 'normal' : 'nowrap',
-              overflow: 'hidden',
-              textOverflow: isExpanded ? 'unset' : 'ellipsis',
+              marginLeft: '16px',
+              marginTop: '4px',
             }}
           >
-            {announcementToday
-              ? announcementToday
-              : '공지가 등록되지 않았습니다.'}
-          </SText>
-        </Flex>
-        <PostImage
-          src={announcementTodayIcon}
-          alt="announcement modify button"
-          onClick={handleClick} // TODO:
-          style={{ cursor: 'pointer' }}
-        />
+            <SText
+              color="#333"
+              fontSize={isMobile ? '10px' : '18px'}
+              fontWeight={700}
+            >
+              Team announcement
+            </SText>
+            <Spacer h={isMobile ? 8 : 10} />
+            <AnnouncementInputContainer>
+              <AnnouncementInputField
+                placeholder={'공지글 입력'}
+                maxLength={50}
+                value={announcement}
+                onChange={(e) => setAnnouncement(e.target.value)}
+              />
+            </AnnouncementInputContainer>
+            <AnnouncementInputHelperText>
+              {announcement.length}/{50}자
+            </AnnouncementInputHelperText>
+            <Spacer h={12} />
+            <Flex justify="center" gap={isMobile ? '4px' : '14px'}>
+              <CancelButton onClick={handleCancel}>취소</CancelButton>
+              <SaveButton onClick={handleSave}>저장하기</SaveButton>
+            </Flex>
+          </Flex>
+        )}
       </Box>
 
       <SubjectControlButton id={id} selectedDate={selectedDate} />
     </Announcement>
   );
 });
-AnnouncementAndSubject.displayName = 'AnnouncementAndSubject';
 
 const CalendarSection = styled.section`
   grid-area: calendar;
@@ -544,7 +578,6 @@ const TeamAdmin = () => {
 
         <AnnouncementAndSubject
           announcementToday={announcementToday}
-          onClick={() => setShow(true)}
           ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
@@ -592,120 +625,87 @@ const TeamAdmin = () => {
         </CalendarSection>
         <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
       </Grid>
-      <Spacer h={200} />
-      {createPortal(
-        <PromptModal
-          ref={modalRef}
-          teamId={Number(id)}
-          onClose={() => setShow(false)}
-          initialAnnouncement={
-            teamInfoData?.myTeamResponse.teamAnnouncement || ''
-          }
-        />,
-        document.body
-      )}
     </Fragment>
   );
 };
 
-const ModalWrap = styled.div<HeightInNumber>`
-  height: ${(props) => (props.h ? `${props.h}px` : '0')};
-  position: fixed;
-  background: #fff;
-  color: #000;
-  box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
-  box-sizing: border-box;
-  padding: 16px;
-  border: 1px solid ${colors.borderPurple};
-  border-radius: 20px;
+const AnnouncementInputContainer = styled.div`
+  display: flex;
   align-items: center;
+  height: 60px;
+  align-self: stretch;
+  border-radius: 20px;
+  border: 1px solid #cdcfff;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 36px;
+    border-radius: 10px;
+  }
 `;
 
-const PromptModal = forwardRef<
-  HTMLDivElement,
-  { teamId: number; onClose: () => void; initialAnnouncement: string }
->(({ teamId, onClose, initialAnnouncement }, ref) => {
-  const [announcement, setAnnouncement] = useState<string>(
-    initialAnnouncement || ''
-  );
+const AnnouncementInputField = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  padding-left: 12px;
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnnouncement(e.target.value);
-  };
+  ::placeholder {
+    color: #ccc;
+  }
 
-  return (
-    <ModalWrap h={222} ref={ref}>
-      <div style={{ padding: `0 24px 0 ${leftPadding}` }}>
-        <AnnouncementImage src={AnnouncementIcon} />
-        <SText color="#333" fontSize="18px" fontWeight={700}>
-          Team announcement
-        </SText>
-      </div>
-      <Spacer h={25} />
-      <Wrap>
-        <InputContainer>
-          <InputField
-            placeholder={'공지글 입력'}
-            maxLength={50}
-            value={announcement}
-            onChange={onChange}
-          />
-        </InputContainer>
-        <InputHelperText>
-          {announcement.length}/{50}자
-        </InputHelperText>
-      </Wrap>
-      <Spacer h={44} />
-      <div
-        style={{
-          display: 'flex',
-          gap: '14px',
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        <CancelButton onClick={onClose}>취소</CancelButton>
-        <SaveButton
-          onClick={() => {
-            updateAnnouncement(teamId, announcement).then(() => {
-              window.location.reload();
-            });
-          }}
-        >
-          저장하기
-        </SaveButton>
-      </div>
-    </ModalWrap>
-  );
-});
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+  }
+`;
 
-PromptModal.displayName = 'PromptModal';
+const AnnouncementInputHelperText = styled.span`
+  font-size: 14px;
+  font-weight: 400;
+  color: #ccc;
+  display: block;
+  margin-top: 4px;
+  text-align: right;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+  }
+`;
 
 const ButtonBase = styled.button`
   display: flex;
-  height: 31px;
-  padding: 9px 41px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   border-radius: 40px;
   border: none;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: bold;
   text-align: center;
   line-height: 1.5;
+  width: 90px;
+  height: 30px;
+  font-weight: 500;
+  padding: 6px 20px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 8px;
+    width: 43px;
+    height: 15px;
+    padding: 0;
+  }
 `;
 
 export const CancelButton = styled(ButtonBase)`
   background: #d9d9d9;
-  color: black;
+  color: #000;
+  font-size: 14px;
 `;
 
 export const SaveButton = styled(ButtonBase)`
-  padding: 9px 34px;
   background: #6e74fa;
   color: white;
+  font-size: 14px;
 `;
 
 export default TeamAdmin;
