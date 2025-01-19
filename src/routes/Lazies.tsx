@@ -57,9 +57,9 @@ export const LazySkeleton = () => (
 //   () => import('@/pages/TeamJoin/TeamJoin.tsx')
 // );
 //
-// export const LazyEditorImage = React.lazy(
-//   () => import('@/components/features/Post/nodes/LazyEditorImage')
-// );
+export const LazyEditorImage = lazy(
+  () => import('@/components/features/Post/nodes/LazyEditorImage')
+);
 //
 // export const LazyTeamDashboardPage = React.lazy(
 //   () => import('@/pages/TeamDashboard/TeamDashboard')
