@@ -9,22 +9,19 @@ import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { NotFound } from '@/pages/NotFound/NotFound';
-import {
-  LazyEnrollTemplate,
-  LazyMyDashboard,
-  LazyPosting,
-  LazySkeleton,
-  LazyTeamAdmin,
-  LazyTeamDailySubject,
-  LazyTeamDashboardPage,
-  LazyTeamJoinPage,
-  LazyTeamModificationTemplate,
-  LazyTeamRegistrationTemplate,
-} from '@/routes/Lazies';
+import Posting from '@/pages/Posting/Posting.tsx';
+import TeamDailySubject from '@/pages/Posting/TeamDailySubject.tsx';
+import TeamAdmin from '@/pages/TeamAdmin/TeamAdmin.tsx';
+import TeamDashboardPage from '@/pages/TeamDashboard/TeamDashboard.tsx';
+import TeamJoinPage from '@/pages/TeamJoin/TeamJoin.tsx';
+import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
+import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
+import TeamModificationTemplate from '@/templates/Team/TeamModificationTemplate.tsx';
+import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -67,9 +64,7 @@ export const router = createBrowserRouter(
       path: PATH.POSTING,
       element: (
         <PrivateRoute>
-          <Suspense fallback={<LazySkeleton />}>
-            <LazyPosting />
-          </Suspense>
+          <Posting />
         </PrivateRoute>
       ),
     },
@@ -77,9 +72,7 @@ export const router = createBrowserRouter(
       path: PATH.SUBJECT,
       element: (
         <PrivateRoute>
-          <Suspense fallback={<LazySkeleton />}>
-            <LazyTeamDailySubject />
-          </Suspense>
+          <TeamDailySubject />
         </PrivateRoute>
       ),
     },
@@ -124,9 +117,7 @@ export const router = createBrowserRouter(
           path: PATH.TEAM_REGISTRATION,
           element: (
             <PrivateRoute>
-              <Suspense fallback={<LazySkeleton />}>
-                <LazyTeamRegistrationTemplate />
-              </Suspense>
+              <TeamRegistrationTemplate />
             </PrivateRoute>
           ),
         },
@@ -134,18 +125,14 @@ export const router = createBrowserRouter(
           path: PATH.TEAM_MODIFICATION,
           element: (
             <PrivateRoute>
-              <Suspense fallback={<LazySkeleton />}>
-                <LazyTeamModificationTemplate />
-              </Suspense>
+              <TeamModificationTemplate />
             </PrivateRoute>
           ),
         },
         {
           element: (
             <PrivateRoute>
-              <Suspense fallback={<LazySkeleton />}>
-                <LazyMyDashboard />
-              </Suspense>
+              <MyDashboard />
             </PrivateRoute>
           ),
           children: [
@@ -170,19 +157,11 @@ export const router = createBrowserRouter(
       children: [
         {
           path: `${PATH.TEAM_DASHBOARD}/:teamId`,
-          element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <LazyTeamDashboardPage />
-            </Suspense>
-          ),
+          element: <TeamDashboardPage />,
         },
         {
           path: `${PATH.TEAM_ADMIN}/:id`,
-          element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <LazyTeamAdmin />
-            </Suspense>
-          ),
+          element: <TeamAdmin />,
         },
       ],
     },
@@ -191,11 +170,7 @@ export const router = createBrowserRouter(
       children: [
         {
           path: PATH.TEAMS,
-          element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <LazyTeamJoinPage />
-            </Suspense>
-          ),
+          element: <TeamJoinPage />,
         },
       ],
     },

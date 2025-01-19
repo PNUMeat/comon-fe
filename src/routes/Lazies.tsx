@@ -3,7 +3,7 @@ import { SText } from '@/components/commons/SText';
 import { SimpleLoader } from '@/components/commons/SimpleLoader';
 import { Spacer } from '@/components/commons/Spacer';
 
-import React, { ComponentType, LazyExoticComponent, lazy } from 'react';
+import { ComponentType, LazyExoticComponent, lazy } from 'react';
 
 /**
  * useState, useEffect 써서 MinTimePreservedFallback을 만드는 건 좀 별로 인거 같음.
@@ -26,17 +26,17 @@ export const LazyEnrollTemplate = delayedLazy(
   () => import('@/templates/User/EnrollTemplate')
 );
 
-export const LazyTeamRegistrationTemplate = delayedLazy(
-  () => import('@/templates/Team/TeamRegistrationTemplate')
-);
+// export const LazyTeamRegistrationTemplate = delayedLazy(
+//   () => import('@/templates/Team/TeamRegistrationTemplate')
+// );
 
 export const LazyTeamModificationTemplate = delayedLazy(
   () => import('@/templates/Team/TeamModificationTemplate')
 );
-
-export const LazyMyDashboard = delayedLazy(
-  () => import('@/templates/MyDashboard/MyDashboard')
-);
+//
+// export const LazyMyDashboard = delayedLazy(
+//   () => import('@/templates/MyDashboard/MyDashboard')
+// );
 
 export const LazySkeleton = () => (
   <Flex align="center" direction="column">
@@ -47,24 +47,24 @@ export const LazySkeleton = () => (
   </Flex>
 );
 
-export const LazyPosting = React.lazy(() => import('@/pages/Posting/Posting'));
-
-export const LazyTeamDailySubject = React.lazy(
-  () => import('@/pages/Posting/TeamDailySubject')
-);
-
-export const LazyTeamJoinPage = React.lazy(
-  () => import('@/pages/TeamJoin/TeamJoin.tsx')
-);
-
-export const LazyEditorImage = React.lazy(
-  () => import('@/components/features/Post/nodes/LazyEditorImage')
-);
-
-export const LazyTeamDashboardPage = React.lazy(
-  () => import('@/pages/TeamDashboard/TeamDashboard')
-);
-
-export const LazyTeamAdmin = React.lazy(
-  () => import('@/pages/TeamAdmin/TeamAdmin.tsx')
-);
+// export const LazyPosting = React.lazy(() => import('@/pages/Posting/Posting'));
+//
+// export const LazyTeamDailySubject = React.lazy(
+//   () => import('@/pages/Posting/TeamDailySubject')
+// );
+//
+// export const LazyTeamJoinPage = React.lazy(
+//   () => import('@/pages/TeamJoin/TeamJoin.tsx')
+// );
+//
+// export const LazyEditorImage = React.lazy(
+//   () => import('@/components/features/Post/nodes/LazyEditorImage')
+// );
+//
+// export const LazyTeamDashboardPage = React.lazy(
+//   () => import('@/pages/TeamDashboard/TeamDashboard')
+// );
+//
+// export const LazyTeamAdmin = React.lazy(
+//   () => import('@/pages/TeamAdmin/TeamAdmin.tsx')
+// );
