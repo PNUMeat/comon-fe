@@ -246,7 +246,7 @@ const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        image: (postImages && postImages[0]) ?? null,
+        images: postImages,
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -286,7 +286,7 @@ const Posting = () => {
 
     createPost({
       teamId: parseInt(id),
-      image: (postImages && postImages[0]) ?? null,
+      images: postImages,
       articleBody: articleBody,
       articleTitle: postTitle,
     })

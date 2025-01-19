@@ -316,7 +316,7 @@ const PostWriteSection = forwardRef<
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
+          setImages((prev) => [...prev, file]);
         }
         break;
       }
@@ -381,7 +381,7 @@ const PostSectionWrap: React.FC<{
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
+          setImages((prev) => [...prev, file]);
         }
       }
     },

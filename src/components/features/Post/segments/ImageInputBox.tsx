@@ -104,8 +104,7 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
       src: fileInput ? createImagePreviewUrl(fileInput) : urlInput,
       altText: altText || '이미지',
     });
-    // TODO : 이렇게?
-    setPostImages([fileInput]);
+    setPostImages((prev) => [...prev, fileInput]);
     closeImageInput();
   };
 
