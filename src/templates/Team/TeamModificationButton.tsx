@@ -1,10 +1,11 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
 import { useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { modifyTeam } from '@/api/team.ts';
 import click from '@/assets/TeamJoin/click.png';
+import { PATH } from '@/routes/path.tsx';
 import {
   formTextInputAtom,
   formTextareaAtom,
@@ -14,24 +15,29 @@ import {
   teamSubjectAtom,
 } from '@/store/form.ts';
 import { serializeForm } from '@/templates/User/utils.ts';
-import { useAtomValue } from 'jotai/index';
+import { useAtom } from 'jotai';
 
 export const TeamModificationButton = () => {
-  const teamName = useAtomValue(formTextInputAtom);
-  const teamExplain = useAtomValue(formTextareaAtom);
-  const topic = useAtomValue(teamSubjectAtom);
-  const memberLimit = useAtomValue(teamMaxNumAtom);
-  const password = useAtomValue(teamPasswordAtom);
-  const image = useAtomValue(imageAtom);
-  const location = useLocation();
-  const { teamId } = location.state;
-  const teamIdInt = parseInt(teamId);
+  const [teamName] = useAtom(formTextInputAtom);
+  const [teamExplain] = useAtom(formTextareaAtom);
+  const [topic] = useAtom(teamSubjectAtom);
+  const [memberLimit] = useAtom(teamMaxNumAtom);
+  const [password] = useAtom(teamPasswordAtom);
+  const [image] = useAtom(imageAtom);
   const [saveCache, setSaveCache] = useState<number>(0);
+  const location = useLocation();
 
   const cache = useMemo(
     () => serializeForm(teamName, teamExplain, image, topic, memberLimit),
     [saveCache]
   );
+
+  const { teamId } = location.state;
+
+  if (!teamId) {
+    return <Navigate to={PATH.TEAMS} />;
+  }
+  const teamIdInt = parseInt(teamId);
 
   const onClick = () => {
     console.log('버튼 확인', cache);
