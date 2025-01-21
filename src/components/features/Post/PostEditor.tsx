@@ -123,6 +123,11 @@ type ExportHandler = (
   node: LexicalNode
 ) => DOMExportOutput;
 
+const IS_BOLD = 1;
+const IS_ITALIC = 1 << 1;
+const IS_STRIKETHROUGH = 1 << 2;
+const IS_UNDERLINE = 1 << 3;
+
 type ConvertNode = typeof CodeNode | typeof TextNode | typeof CodeHighlightNode;
 
 const initialConfig = {
@@ -196,6 +201,34 @@ const initialConfig = {
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
           const textNode = node as TextNode;
           const element = document.createElement('span');
+          const format = textNode.getFormat();
+
+          let formattedElement = element;
+
+          if (format & IS_BOLD) {
+            const boldElement = document.createElement('strong');
+            boldElement.appendChild(element);
+            formattedElement = boldElement;
+          }
+
+          if (format & IS_ITALIC) {
+            const italicElement = document.createElement('em');
+            italicElement.appendChild(formattedElement);
+            formattedElement = italicElement;
+          }
+
+          if (format & IS_UNDERLINE) {
+            const underlineElement = document.createElement('u');
+            underlineElement.appendChild(formattedElement);
+            formattedElement = underlineElement;
+          }
+
+          if (format & IS_STRIKETHROUGH) {
+            const strikeElement = document.createElement('s');
+            strikeElement.appendChild(formattedElement);
+            formattedElement = strikeElement;
+          }
+
           element.textContent = textNode.getTextContent();
           return { element };
         },
@@ -464,7 +497,6 @@ const PostSectionWrap: React.FC<{
     const files = event.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
-      console.log('on drop', file);
       if (file.type.startsWith('image/')) {
         const imageURL = URL.createObjectURL(file);
         const imgPayload: InsertImagePayload = {
