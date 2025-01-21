@@ -21,12 +21,14 @@ interface ArticleDetailProps {
   data: IArticle;
   teamId: number;
   refetchArticles: () => void;
+  shouldBlur?: boolean;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   data,
   teamId,
   refetchArticles,
+  shouldBlur = true,
 }) => {
   const article = useMemo(
     () =>
@@ -131,6 +133,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         </Flex>
         <Spacer h={36} />
         <ArticleViewer
+          shouldBlur={shouldBlur}
           dangerouslySetInnerHTML={{
             __html: article,
           }}
@@ -140,7 +143,18 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   );
 };
 
-const ArticleViewer = styled.div`
+const ArticleViewer = styled.div<{
+  shouldBlur: boolean;
+}>`
   line-height: 1.5;
   ${viewStyle}
+
+  ${(props) =>
+    props.shouldBlur
+      ? `
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+  `
+      : ''}
 `;

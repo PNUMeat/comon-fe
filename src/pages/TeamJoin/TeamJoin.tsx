@@ -35,6 +35,7 @@ const TeamData = () => {
         error.response.status === 401 &&
         (error.response.data.code === 100 || error.response.data.code === 101)
       ) {
+        console.log('asdasd tj');
         return false;
       }
 

@@ -19,7 +19,8 @@ import {
   getArticlesByDate,
   getTeamInfoAndTags,
 } from '@/api/dashboard';
-import { ITeamInfo } from '@/api/team';
+import { ITeamInfo, getTeamList } from '@/api/team';
+import { ServerResponse } from '@/api/types.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import {
   currentViewAtom,
@@ -29,6 +30,7 @@ import {
 } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useAtom } from 'jotai';
 
 let totalPageCache = 0;
@@ -117,6 +119,29 @@ const TeamDashboardPage = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
+  const { data: teamData } = useQuery({
+    queryKey: ['team-list', 0],
+    queryFn: () => getTeamList('recent', 0, 6),
+    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        (error.response.data.code === 100 || error.response.data.code === 101)
+      ) {
+        console.log('asdasd');
+        return false;
+      }
+
+      return failureCount < 3;
+    },
+  });
+
+  const isMyTeam = (teamData?.myTeams ?? []).reduce(
+    (acc, myTeam) => acc || myTeam.teamId === parseInt(teamId as string),
+    false
+  );
+  console.log('is team', teamData?.myTeams);
+
   return (
     <Fragment>
       <Spacer h={isMobile ? 16 : 28} />
@@ -158,6 +183,7 @@ const TeamDashboardPage = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              shouldBlur={!isMyTeam}
               refetchArticles={refetch}
               teamId={Number(teamId)}
             />

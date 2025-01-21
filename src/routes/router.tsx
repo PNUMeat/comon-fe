@@ -24,11 +24,11 @@ import TeamModificationTemplate from '@/templates/Team/TeamModificationTemplate.
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 
 const useAuth = () => {
-  if (isDevMode()) {
-    return {
-      isAuthenticated: true,
-    };
-  }
+  // if (isDevMode()) {
+  //   return {
+  //     isAuthenticated: true,
+  //   };
+  // }
   return {
     isAuthenticated: checkRemainingCookies(),
   };
@@ -150,9 +150,9 @@ export const router = createBrowserRouter(
     },
     {
       element: (
-        <PrivateRoute>
-          <SingleSectionLayout />
-        </PrivateRoute>
+        // <PrivateRoute>
+        <SingleSectionLayout />
+        // </PrivateRoute>
       ),
       children: [
         {
@@ -161,7 +161,11 @@ export const router = createBrowserRouter(
         },
         {
           path: `${PATH.TEAM_ADMIN}/:id`,
-          element: <TeamAdmin />,
+          element: (
+            <PrivateRoute>
+              <TeamAdmin />
+            </PrivateRoute>
+          ),
         },
       ],
     },

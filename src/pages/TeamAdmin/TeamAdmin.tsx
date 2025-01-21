@@ -619,6 +619,7 @@ const TeamAdmin = () => {
               }
               refetchArticles={refetch}
               teamId={Number(id)}
+              shouldBlur={false}
             />
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
