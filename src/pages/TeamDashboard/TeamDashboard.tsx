@@ -140,7 +140,6 @@ const TeamDashboardPage = () => {
     (acc, myTeam) => acc || myTeam.teamId === parseInt(teamId as string),
     false
   );
-  console.log('is team', teamData?.myTeams);
 
   return (
     <Fragment>
@@ -150,6 +149,7 @@ const TeamDashboardPage = () => {
           <SidebarAndAnnouncement
             teamInfo={teamInfo}
             isTeamManager={isTeamManager}
+            isMyTeam={isMyTeam}
           />
         )}
         <CalendarSection>
