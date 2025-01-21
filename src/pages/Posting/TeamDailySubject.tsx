@@ -95,7 +95,7 @@ const TeamDailySubject = () => {
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
         articleBody: replacedArticleBody,
-        image: subjectImages ? subjectImages[0] : null,
+        image: subjectImages ? subjectImages[0].img : null,
         articleCategory: tag,
       })
         .then(() => {
@@ -132,7 +132,7 @@ const TeamDailySubject = () => {
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
       articleBody: replacedArticleBody,
-      image: subjectImages ? subjectImages[0] : null,
+      image: subjectImages ? subjectImages[0].img : null,
       articleCategory: tag,
     })
       .then((data) => {
