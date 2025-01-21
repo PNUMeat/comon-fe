@@ -59,6 +59,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       description: '삭제된 게시글은 복구되지 않아요',
       isVisible: true,
       onConfirm: deleteArticle,
+      onCancel: () => {},
     });
   };
 
