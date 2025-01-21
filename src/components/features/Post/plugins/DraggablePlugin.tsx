@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { postImagesAtom } from '@/store/posting.ts';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { eventFiles } from '@lexical/rich-text';
 import {
@@ -8,6 +9,7 @@ import {
   isHTMLElement,
   mergeRegister,
 } from '@lexical/utils';
+import { useSetAtom } from 'jotai';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -480,6 +482,7 @@ const useDraggableBlockMenu = (
   const isDraggingBlockRef = useRef<boolean>(false);
   const [draggableBlockElem, setDraggableBlockElem] =
     useState<HTMLElement | null>(null);
+  const setPostImages = useSetAtom(postImagesAtom);
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
@@ -592,6 +595,32 @@ const useDraggableBlockMenu = (
         targetNode.insertBefore(draggedNode);
       }
 
+      editor.read(() => {
+        const dragElement = editor.getElementByKey(dragData);
+        if (!dragElement) {
+          return;
+        }
+        const imgs = dragElement.querySelectorAll('img');
+        const imgArray = [...imgs];
+        if (imgArray.length === 0) {
+          return;
+        }
+
+        const line = $getRoot()
+          .getChildren()
+          .findIndex((node) => node.getKey() === dragData);
+        const imgNodeKeys = imgArray
+          .map((img) => $getNearestNodeFromDOMNode(img)?.getKey())
+          .filter((key) => key !== undefined);
+        setPostImages((prev) =>
+          prev.map((item, idx) =>
+            imgNodeKeys.includes(item.key)
+              ? { ...item, line: line, idx: idx }
+              : item
+          )
+        );
+      });
+
       setDraggableBlockElem(null);
 
       return true;
@@ -627,6 +656,15 @@ const useDraggableBlockMenu = (
       const node = $getNearestNodeFromDOMNode(draggableBlockElem);
       if (node) {
         nodeKey = node.getKey();
+        // const imgSpan = draggableBlockElem.querySelector('.editor-image');
+        // if (imgSpan) {
+        //   const div = imgSpan.children[0];
+        //   if (div) {
+        //     const img = div.children[0];
+        //     const imgNodeKey = $getNearestNodeFromDOMNode(img);
+        //     console.log('??', img, imgNodeKey);
+        //   }
+        // }
       }
     });
 

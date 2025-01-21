@@ -239,6 +239,7 @@ const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
+    // TODO: 위치만 바꾼 경우는?
     const articleBody = postImages
       ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
       : articleBodyTrim;
@@ -285,13 +286,16 @@ const Posting = () => {
     }
 
     console.log('????', postImages, articleBody);
-    // setIsPending(false);
-    // return;
-
     createPost({
       teamId: parseInt(id),
-      // TODO: 정렬
-      images: postImages.map((imgObj) => imgObj.img),
+      images: postImages
+        .sort((a, b) => {
+          if (a.line !== b.line) {
+            return a.line - b.line;
+          }
+          return a.idx - b.idx;
+        })
+        .map((imgObj) => imgObj.img),
       articleBody: articleBody,
       articleTitle: postTitle,
     })

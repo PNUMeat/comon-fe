@@ -45,7 +45,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import {
   $getNodeByKey,
   $getRoot,
@@ -297,7 +297,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
-  const [, setImages] = useAtom(postImagesAtom);
+  const setImages = useSetAtom(postImagesAtom);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -328,6 +328,12 @@ const useDetectImageMutation = () => {
               const line = $getRoot()
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
+              const imgObjs: {
+                key: string;
+                img: File;
+                line: number;
+                idx: number;
+              }[] = [];
 
               Promise.all(
                 [...imgs].map((img, idx) =>
@@ -335,21 +341,30 @@ const useDetectImageMutation = () => {
                     .then((foundImg) =>
                       blobUrlToFile(foundImg.src, `img-${nodeKey}.png`)
                     )
-                    .then((newImgFile) => ({
-                      key: nodeKey,
-                      img: newImgFile,
-                      line: line,
-                      idx: idx,
-                    }))
+                    .then((newImgFile) => {
+                      imgObjs.push({
+                        key: nodeKey,
+                        img: newImgFile,
+                        line: line,
+                        idx: idx,
+                      });
+                    })
                     .catch((err) => {
                       console.error('img err', err);
-                      return null;
                     })
                 )
-              ).then((newImgs) => {
-                const filteredImgs = newImgs.filter((img) => img !== null);
-
-                setImages((prev) => [...prev, ...filteredImgs]);
+              ).then(() => {
+                setImages((prev) => {
+                  const filteredNewImages = imgObjs.filter(
+                    (newImg) =>
+                      !prev.some(
+                        (img) =>
+                          img.line === newImg.line && img.idx === newImg.idx
+                      )
+                  );
+                  console.log('filterred', [...prev, ...filteredNewImages]);
+                  return [...prev, ...filteredNewImages];
+                });
               });
             });
             return;
