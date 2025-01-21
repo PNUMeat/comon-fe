@@ -14,6 +14,18 @@ export const viewStyle = `& {
       display: inline-block;
     }
     
+    .editor-text-bold {
+      font-weight: bold;
+    }
+    
+    .editor-text-italic {
+      font-style: italic;
+    }
+    
+    .editor-text-strikethrough {
+      text-decoration: line-through
+    }
+    
     h1 {
       font-size: 32px;
       font-weight: 600;

@@ -198,36 +198,24 @@ const initialConfig = {
           const element = document.createElement('span');
           const format = textNode.getFormat();
 
-          let formattedElement = element;
-
           if (format === 1) {
-            const boldElement = document.createElement('strong');
-            boldElement.appendChild(element);
-            formattedElement = boldElement;
+            element.className = 'editor-text-bold';
           }
 
           if (format === 2) {
-            const italicElement = document.createElement('em');
-            italicElement.appendChild(formattedElement);
-            formattedElement = italicElement;
+            element.className = 'editor-text-italic';
           }
 
           if (format === 3) {
-            const boldElement = document.createElement('strong');
-            const italicElement = document.createElement('em');
-            boldElement.appendChild(element);
-            italicElement.appendChild(boldElement);
-            formattedElement = italicElement;
+            element.className = 'editor-text-bold editor-text-italic';
           }
 
           if (format === 4) {
-            const strikeElement = document.createElement('s');
-            strikeElement.appendChild(formattedElement);
-            formattedElement = strikeElement;
+            element.className = 'editor-text-strikethrough';
           }
 
-          formattedElement.textContent = textNode.getTextContent();
-          return { element: formattedElement };
+          element.textContent = textNode.getTextContent();
+          return { element };
         },
       ],
     ]),
