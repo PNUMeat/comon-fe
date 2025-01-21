@@ -7,7 +7,7 @@ const readableBytes = (bytes: number) => {
   return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 };
 
-export const useImageCompressor = (quality: number) => {
+export const useImageCompressor = (quality: number, maxSizeMb?: number) => {
   const workerRef = useRef<Worker | null>(null);
 
   const compressImage = useCallback((file: File): Promise<File> => {
@@ -46,6 +46,7 @@ export const useImageCompressor = (quality: number) => {
           fileType: file.type,
           fileName: file.name,
           quality: quality,
+          maxSizeMb: maxSizeMb,
         });
       };
       reader.readAsDataURL(file);
