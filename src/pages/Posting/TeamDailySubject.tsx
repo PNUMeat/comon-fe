@@ -95,7 +95,17 @@ const TeamDailySubject = () => {
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
         articleBody: replacedArticleBody,
-        image: subjectImages ? subjectImages[0].img : null,
+        images:
+          subjectImages.length > 0
+            ? subjectImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleCategory: tag,
       })
         .then(() => {
@@ -132,7 +142,14 @@ const TeamDailySubject = () => {
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
       articleBody: replacedArticleBody,
-      image: subjectImages ? subjectImages[0].img : null,
+      images: subjectImages
+        .sort((a, b) => {
+          if (a.line !== b.line) {
+            return a.line - b.line;
+          }
+          return a.idx - b.idx;
+        })
+        .map((imgObj) => imgObj.img),
       articleCategory: tag,
     })
       .then((data) => {

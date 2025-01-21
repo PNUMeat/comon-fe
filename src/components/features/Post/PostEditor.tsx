@@ -300,7 +300,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
-  const { compressImage } = useImageCompressor(0.5);
+  const { compressImage } = useImageCompressor(0.5, 1);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -395,7 +395,6 @@ const PostWriteSection = forwardRef<
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
-  // const [images] = useAtom(postImagesAtom);
   useDetectImageMutation();
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -459,7 +458,6 @@ const PostSectionWrap: React.FC<{
   children: ReactNode;
 }> = ({ shouldHighlight, children }) => {
   const [editor] = useLexicalComposerContext();
-  // const [images] = useAtom(postImagesAtom);
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -467,17 +465,14 @@ const PostSectionWrap: React.FC<{
     if (files.length > 0) {
       const file = files[0];
       console.log('on drop', file);
-      // if (file.type.startsWith('image/') && images.length === 0) {
       if (file.type.startsWith('image/')) {
         const imageURL = URL.createObjectURL(file);
-        console.log('wtf', imageURL);
         const imgPayload: InsertImagePayload = {
           altText: '붙여넣은 이미지',
           maxWidth: 600,
           src: imageURL,
         };
         editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-        // setImages((prev) => [...prev, file]);
       }
     }
   }, []);

@@ -5,7 +5,7 @@ type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  images: File[];
+  images: File[] | null;
 };
 
 type PostingMutationResp = {
@@ -23,9 +23,11 @@ export const createPost = async ({
   formData.append('teamId', teamId.toString());
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  images.forEach((img) => {
-    formData.append('images', img);
-  });
+  if (images) {
+    images.forEach((img) => {
+      formData.append('images', img);
+    });
+  }
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     'v1/articles',
@@ -55,9 +57,11 @@ export const mutatePost = async ({
   formData.append('articleId', articleId.toString());
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  images.forEach((img) => {
-    formData.append('images', img);
-  });
+  if (images) {
+    images.forEach((img) => {
+      formData.append('images', img);
+    });
+  }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,

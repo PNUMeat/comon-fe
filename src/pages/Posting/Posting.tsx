@@ -288,14 +288,17 @@ const Posting = () => {
     console.log('????', postImages, articleBody);
     createPost({
       teamId: parseInt(id),
-      images: postImages
-        .sort((a, b) => {
-          if (a.line !== b.line) {
-            return a.line - b.line;
-          }
-          return a.idx - b.idx;
-        })
-        .map((imgObj) => imgObj.img),
+      images:
+        postImages.length > 0
+          ? postImages
+              .sort((a, b) => {
+                if (a.line !== b.line) {
+                  return a.line - b.line;
+                }
+                return a.idx - b.idx;
+              })
+              .map((imgObj) => imgObj.img)
+          : null,
       articleBody: articleBody,
       articleTitle: postTitle,
     })
