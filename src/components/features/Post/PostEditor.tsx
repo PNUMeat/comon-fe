@@ -123,11 +123,6 @@ type ExportHandler = (
   node: LexicalNode
 ) => DOMExportOutput;
 
-const IS_BOLD = 1;
-const IS_ITALIC = 1 << 1;
-const IS_STRIKETHROUGH = 1 << 2;
-const IS_UNDERLINE = 1 << 3;
-
 type ConvertNode = typeof CodeNode | typeof TextNode | typeof CodeHighlightNode;
 
 const initialConfig = {
@@ -205,32 +200,34 @@ const initialConfig = {
 
           let formattedElement = element;
 
-          if (format & IS_BOLD) {
+          if (format === 1) {
             const boldElement = document.createElement('strong');
             boldElement.appendChild(element);
             formattedElement = boldElement;
           }
 
-          if (format & IS_ITALIC) {
+          if (format === 2) {
             const italicElement = document.createElement('em');
             italicElement.appendChild(formattedElement);
             formattedElement = italicElement;
           }
 
-          if (format & IS_UNDERLINE) {
-            const underlineElement = document.createElement('u');
-            underlineElement.appendChild(formattedElement);
-            formattedElement = underlineElement;
+          if (format === 3) {
+            const boldElement = document.createElement('strong');
+            const italicElement = document.createElement('em');
+            boldElement.appendChild(element);
+            italicElement.appendChild(boldElement);
+            formattedElement = italicElement;
           }
 
-          if (format & IS_STRIKETHROUGH) {
+          if (format === 4) {
             const strikeElement = document.createElement('s');
             strikeElement.appendChild(formattedElement);
             formattedElement = strikeElement;
           }
 
-          element.textContent = textNode.getTextContent();
-          return { element };
+          formattedElement.textContent = textNode.getTextContent();
+          return { element: formattedElement };
         },
       ],
     ]),
