@@ -15,7 +15,7 @@ function compressImage(
   image: ImageBitmap,
   fileType: string,
   fileName: string,
-  quality?: number
+  quality: number = 0.8
 ): Promise<File> {
   return new Promise((resolve, reject) => {
     const canvas = new OffscreenCanvas(image.width, image.height);
@@ -40,22 +40,50 @@ function compressImage(
 
     ctx.drawImage(image, 0, 0);
 
-    const compressOptions = {
-      type: 'image/jpeg',
-      quality: fileType === 'image/jpeg' ? quality : undefined,
+    const compressImageRecursively = (
+      currentQuality: number
+    ): Promise<File> => {
+      return new Promise((resolve, reject) => {
+        const compressOptions = {
+          type: 'image/jpeg',
+          quality: fileType === 'image/jpeg' ? currentQuality : undefined,
+        };
+
+        canvas
+          .convertToBlob(compressOptions)
+          .then((blob) => {
+            if (blob.size <= 1 * 1024 * 1024 || currentQuality <= 0.1) {
+              const compressedFile = new File([blob], fileName, {
+                type: fileType,
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(compressImageRecursively(currentQuality - 0.1));
+            }
+          })
+          .catch(reject);
+      });
     };
 
-    canvas
-      .convertToBlob(compressOptions)
-      .then((blob) => {
-        const fileLastModified = Date.now();
-        const compressedFile = new File([blob], fileName, {
-          type: fileType,
-          lastModified: fileLastModified,
-        });
-        resolve(compressedFile);
-      })
-      .catch(reject);
+    compressImageRecursively(quality).then(resolve).catch(reject);
+
+    // const compressOptions = {
+    //   type: 'image/jpeg',
+    //   quality: fileType === 'image/jpeg' ? quality : undefined,
+    // };
+    //
+    // canvas
+    //   .convertToBlob(compressOptions)
+    //   .then((blob) => {
+    //     const fileLastModified = Date.now();
+    //     const compressedFile = new File([blob], fileName, {
+    //       type: fileType,
+    //       lastModified: fileLastModified,
+    //     });
+    //     resolve(compressedFile);
+    //   })
+    //   .catch(reject);
   });
 }
 
