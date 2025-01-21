@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
+
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
@@ -298,6 +300,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
+  const { compressImage } = useImageCompressor(0.5);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -341,10 +344,11 @@ const useDetectImageMutation = () => {
                     .then((foundImg) =>
                       blobUrlToFile(foundImg.src, `img-${nodeKey}.png`)
                     )
-                    .then((newImgFile) => {
+                    .then((newImgFile) => compressImage(newImgFile))
+                    .then((compressedImgFile) => {
                       imgObjs.push({
                         key: nodeKey,
-                        img: newImgFile,
+                        img: compressedImgFile,
                         line: line,
                         idx: idx,
                       });
