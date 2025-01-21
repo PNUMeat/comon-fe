@@ -1,4 +1,4 @@
-import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+import { checkRemainingCookies } from '@/utils/cookie';
 
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
