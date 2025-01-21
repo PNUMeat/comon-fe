@@ -1,8 +1,9 @@
 import { DragEventHandler, MutableRefObject, useState } from 'react';
 
-import { postImagesAtom } from '@/store/posting';
+// import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useSetAtom } from 'jotai';
+
+// import { useSetAtom } from 'jotai';
 
 const gray300 = '#CBD5E0';
 const gray500 = '#A0AEC0';
@@ -78,7 +79,7 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
   const [fileInput, setFileInput] = useState<File | null>(null);
   const [urlInput, setUrlInput] = useState('');
   const [altText, setAltText] = useState('');
-  const setPostImages = useSetAtom(postImagesAtom);
+  // const setPostImages = useSetAtom(postImagesAtom);
 
   const switchToFileImage = (file: File | null) => {
     setFileInput(file);
@@ -104,7 +105,7 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
       src: fileInput ? createImagePreviewUrl(fileInput) : urlInput,
       altText: altText || '이미지',
     });
-    setPostImages((prev) => [...prev, fileInput]);
+    // setPostImages((prev) => [...prev, fileInput]);
     closeImageInput();
   };
 

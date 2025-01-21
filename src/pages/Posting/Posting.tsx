@@ -246,7 +246,7 @@ const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        images: postImages,
+        images: postImages.map((imgObj) => imgObj.img),
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -284,9 +284,14 @@ const Posting = () => {
       return;
     }
 
+    console.log('????', postImages, articleBody);
+    // setIsPending(false);
+    // return;
+
     createPost({
       teamId: parseInt(id),
-      images: postImages,
+      // TODO: 정렬
+      images: postImages.map((imgObj) => imgObj.img),
       articleBody: articleBody,
       articleTitle: postTitle,
     })
