@@ -5,9 +5,10 @@ export const alertAtom = atom<{ message: string; isVisible: boolean }>({
   isVisible: false,
 });
 
-export const confirmAtom = atom<{ message: string; description: string; isVisible: boolean; onConfirm: () => void }>({
+export const confirmAtom = atom<{ message: string; description: string; isVisible: boolean; onConfirm: () => void; onCancel: () => void }>({
   message: '',
   description: '',
   isVisible: false,
   onConfirm: () => {},
+  onCancel: () => {},
 });

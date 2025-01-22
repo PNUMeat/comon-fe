@@ -28,6 +28,7 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
+import { usePrompt } from '@/hooks/usePrompt';
 
 export const TeamDailySubject = () => {
   const location = useLocation();
@@ -66,6 +67,9 @@ export const TeamDailySubject = () => {
   const padding = isMobile ? '0 12px' : '0 105px';
   const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
+
+  usePrompt(true);
+  
   useEffect(() => {
     document.documentElement.scrollTo({
       top: 0,

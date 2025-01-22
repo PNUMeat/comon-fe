@@ -4,16 +4,17 @@ import { useAtomValue, useSetAtom } from "jotai";
 import styled from "@emotion/styled";
 
 export const Confirm: React.FC = () => {
-  const { message, description, isVisible, onConfirm} = useAtomValue(confirmAtom);
+  const { message, description, isVisible, onConfirm, onCancel } = useAtomValue(confirmAtom);
   const setModal = useSetAtom(confirmAtom);
 
-  const cancel = () => {
-    setModal({ message: '', description: '', isVisible: false, onConfirm: () => {} });
+  const confirm = () => {
+    setModal({ message: '', description: '', isVisible: false, onConfirm: () => {}, onCancel: () => {} });
+    onConfirm();
   }
 
-  const confirm = () => {
-    setModal({ message: '', description: '', isVisible: false, onConfirm: () => {} });
-    onConfirm();
+  const cancel = () => {
+    setModal({ message: '', description: '', isVisible: false, onConfirm: () => {}, onCancel: () => {} });
+    onCancel();
   }
 
   return (
