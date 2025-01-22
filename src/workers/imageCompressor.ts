@@ -15,7 +15,7 @@ function compressImage(
   image: ImageBitmap,
   fileType: string,
   fileName: string,
-  quality: number = 0.8,
+  quality: number = 1,
   maxSizeMb?: number
 ): Promise<File> {
   return new Promise((resolve, reject) => {

@@ -318,7 +318,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
-  const { compressImage } = useImageCompressor(0.5, 1);
+  const { compressImage } = useImageCompressor(1, 1);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(

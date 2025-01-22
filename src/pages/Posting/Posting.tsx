@@ -1,5 +1,6 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { usePrompt } from '@/hooks/usePrompt';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -36,7 +37,6 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { usePrompt } from '@/hooks/usePrompt';
 
 const GapFlex = styled.div<{
   gap?: number;
@@ -289,7 +289,9 @@ const Posting = () => {
       return;
     }
 
-    console.log('????', postImages, articleBody);
+    // console.log('????', articleBody);
+    postImages.forEach((img) => console.log('i', img.img.name));
+
     createPost({
       teamId: parseInt(id),
       images:
