@@ -216,6 +216,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
               {isLoggedIn ? '내정보' : '로그인'}
             </button>
             <HeaderInfoModal
+              isLoggedIn={isLoggedIn}
               setModalRef={setModalRef}
               onClickLogout={onClickLogout}
             />

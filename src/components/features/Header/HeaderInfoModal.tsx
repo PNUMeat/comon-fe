@@ -64,9 +64,10 @@ const MyPageImage = styled.img`
 `;
 
 export const HeaderInfoModal: React.FC<{
+  isLoggedIn: boolean;
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
-}> = ({ setModalRef, onClickLogout }) => {
+}> = ({ isLoggedIn, setModalRef, onClickLogout }) => {
   const navigate = useNavigate();
   const { data } = useQuery({
     queryFn: getMemberInfo,
@@ -91,6 +92,10 @@ export const HeaderInfoModal: React.FC<{
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>
