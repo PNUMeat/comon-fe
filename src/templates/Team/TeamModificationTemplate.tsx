@@ -33,7 +33,7 @@ const SuspenseTeamForm = () => {
   return <TeamForm h={977} team={modiee} />;
 };
 
-export const TeamModificationTemplate = () => {
+const TeamModificationTemplate = () => {
   return (
     <Fragment>
       <GradientGlassPanel>
@@ -45,3 +45,5 @@ export const TeamModificationTemplate = () => {
     </Fragment>
   );
 };
+
+export default TeamModificationTemplate;

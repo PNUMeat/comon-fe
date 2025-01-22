@@ -200,7 +200,7 @@ const PostSubjectViewer: React.FC<{
   );
 };
 
-export const Posting = () => {
+const Posting = () => {
   const location = useLocation();
   const { article, articleId, articleTitle } = location?.state ?? {
     article: null,
@@ -243,6 +243,7 @@ export const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
+    // TODO: 위치만 바꾼 경우는?
     const articleBody = postImages
       ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
       : articleBodyTrim;
@@ -250,7 +251,7 @@ export const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        image: (postImages && postImages[0]) ?? null,
+        images: postImages.map((imgObj) => imgObj.img),
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -288,9 +289,20 @@ export const Posting = () => {
       return;
     }
 
+    console.log('????', postImages, articleBody);
     createPost({
       teamId: parseInt(id),
-      image: (postImages && postImages[0]) ?? null,
+      images:
+        postImages.length > 0
+          ? postImages
+              .sort((a, b) => {
+                if (a.line !== b.line) {
+                  return a.line - b.line;
+                }
+                return a.idx - b.idx;
+              })
+              .map((imgObj) => imgObj.img)
+          : null,
       articleBody: articleBody,
       articleTitle: postTitle,
     })
@@ -396,3 +408,5 @@ const TopicViewer = styled.div`
 
   ${viewStyle}
 `;
+
+export default Posting;

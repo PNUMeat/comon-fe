@@ -17,6 +17,7 @@ import { ITeamInfo, joinTeam } from '@/api/team';
 import magnifier from '@/assets/TeamJoin/magnifier.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
 import more from '@/assets/TeamJoin/more.png';
 
@@ -271,10 +272,11 @@ const FlipCardContent = ({
                 backgroundColor={colors.buttonPurple}
                 onClick={(e) => {
                   e.stopPropagation();
+                  navigate(`${PATH.TEAM_DASHBOARD}/${team.teamId}`);
                 }}
-                cursor={'text'}
+                // cursor={'text'}
               >
-                {team.memberCount} members
+                {/*{team.memberCount} members*/}팀 둘러보기 {team.memberCount}
               </Button>
               {/* <Button backgroundColor={colors.buttonPink}>
                 {team.streakDays}일차 코몬

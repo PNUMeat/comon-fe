@@ -15,7 +15,8 @@ function compressImage(
   image: ImageBitmap,
   fileType: string,
   fileName: string,
-  quality?: number
+  quality: number = 0.8,
+  maxSizeMb?: number
 ): Promise<File> {
   return new Promise((resolve, reject) => {
     const canvas = new OffscreenCanvas(image.width, image.height);
@@ -39,6 +40,39 @@ function compressImage(
     }
 
     ctx.drawImage(image, 0, 0);
+
+    if (maxSizeMb) {
+      const compressImageRecursively = (
+        currentQuality: number
+      ): Promise<File> => {
+        return new Promise((resolve, reject) => {
+          const compressOptions = {
+            type: 'image/jpeg',
+            quality: fileType === 'image/jpeg' ? currentQuality : undefined,
+          };
+
+          canvas
+            .convertToBlob(compressOptions)
+            .then((blob) => {
+              if (
+                blob.size <= maxSizeMb * 1024 * 1024 ||
+                currentQuality <= 0.1
+              ) {
+                const compressedFile = new File([blob], fileName, {
+                  type: fileType,
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(compressImageRecursively(currentQuality - 0.1));
+              }
+            })
+            .catch(reject);
+        });
+      };
+
+      compressImageRecursively(quality).then(resolve).catch(reject);
+    }
 
     const compressOptions = {
       type: 'image/jpeg',

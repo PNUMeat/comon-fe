@@ -39,7 +39,7 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 60 * 60 * 24 * 7, // 7일
+        maxAgeSeconds: 60 * 60 * 24, // 1일
       }),
     ],
   })

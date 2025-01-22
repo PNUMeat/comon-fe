@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
+
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
@@ -45,8 +47,10 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import {
+  $getNodeByKey,
+  $getRoot,
   $isLineBreakNode,
   DOMExportOutput,
   EditorThemeClasses,
@@ -192,6 +196,24 @@ const initialConfig = {
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
           const textNode = node as TextNode;
           const element = document.createElement('span');
+          const format = textNode.getFormat();
+
+          if (format === 1) {
+            element.className = 'editor-text-bold';
+          }
+
+          if (format === 2) {
+            element.className = 'editor-text-italic';
+          }
+
+          if (format === 3) {
+            element.className = 'editor-text-bold editor-text-italic';
+          }
+
+          if (format === 4) {
+            element.className = 'editor-text-strikethrough';
+          }
+
           element.textContent = textNode.getTextContent();
           return { element };
         },
@@ -263,25 +285,117 @@ const EditorPlaceholder = styled.div`
   }
 `;
 
+const blobUrlToFile = async (blobUrl: string, fileName: string) => {
+  return await fetch(blobUrl)
+    .then((res) => res.blob())
+    .then((blob) => new File([blob], fileName, { type: blob.type }))
+    .catch((error) => {
+      console.error('Error converting blob URL to file:', error);
+      throw error;
+    });
+};
+
+const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const maxAttempts = 10; // 10 * 100ms
+    let attempts = 0;
+
+    const intervalId = setInterval(() => {
+      attempts++;
+      const img = element.querySelector('img');
+
+      if (img) {
+        clearInterval(intervalId);
+        resolve(img);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(intervalId);
+        reject(new Error('Failed to find img element after max attempts'));
+      }
+    }, 100);
+  });
+};
+
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
+  const { compressImage } = useImageCompressor(0.5, 1);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
       (mutations) => {
-        // mutations.forEach((mutation, nodeKey) => {
-        // TODO: 여러개되면 이미지 순서가 바뀔 수도 있으니까 개별적으로 없애야함
-        mutations.forEach((mutation) => {
-          if (mutation === 'destroyed') {
-            setImages([]);
+        mutations.forEach((mutation, nodeKey) => {
+          if (mutation === 'created') {
+            editor.update(() => {
+              const element = editor.getElementByKey(nodeKey);
+              if (!element) {
+                return;
+              }
+
+              const node = $getNodeByKey(nodeKey);
+              if (!node) {
+                return;
+              }
+
+              const parentNodeKey = node
+                .getParentKeys()
+                .filter((key) => key !== 'root')[0];
+              const parent = editor.getElementByKey(parentNodeKey);
+              if (!parent) {
+                return;
+              }
+
+              const imgs = parent.querySelectorAll('.editor-image');
+              const line = $getRoot()
+                .getChildren()
+                .findIndex((node) => node.getKey() === parentNodeKey);
+              const imgObjs: {
+                key: string;
+                img: File;
+                line: number;
+                idx: number;
+              }[] = [];
+
+              Promise.all(
+                [...imgs].map((img, idx) =>
+                  findImgElement(img as HTMLElement)
+                    .then((foundImg) =>
+                      blobUrlToFile(foundImg.src, `img-${nodeKey}.png`)
+                    )
+                    .then((newImgFile) => compressImage(newImgFile))
+                    .then((compressedImgFile) => {
+                      imgObjs.push({
+                        key: nodeKey,
+                        img: compressedImgFile,
+                        line: line,
+                        idx: idx,
+                      });
+                    })
+                    .catch((err) => {
+                      console.error('img err', err);
+                    })
+                )
+              ).then(() => {
+                setImages((prev) => {
+                  const filteredNewImages = imgObjs.filter(
+                    (newImg) =>
+                      !prev.some(
+                        (img) =>
+                          img.line === newImg.line && img.idx === newImg.idx
+                      )
+                  );
+                  console.log('filterred', [...prev, ...filteredNewImages]);
+                  return [...prev, ...filteredNewImages];
+                });
+              });
+            });
             return;
           }
-          // if (mutation === 'created') {
-          //   console.log('Node created:', nodeKey);
-          //   editor.getElementByKey(nodeKey);
-          // }
+          if (mutation === 'destroyed') {
+            setImages((prev) =>
+              prev.filter((imgObj) => imgObj.key !== nodeKey)
+            );
+          }
         });
       }
     );
@@ -299,7 +413,6 @@ const PostWriteSection = forwardRef<
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
-  const [images, setImages] = useAtom(postImagesAtom);
   useDetectImageMutation();
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -307,8 +420,7 @@ const PostWriteSection = forwardRef<
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         const file = items[i].getAsFile();
-        // TODO: 이미지 여러개 들어갈때 수정 + 이미지 순서 바꿨을 때
-        if (file && images.length === 0) {
+        if (file) {
           const imageURL = URL.createObjectURL(file);
           const imgPayload: InsertImagePayload = {
             altText: '붙여넣은 이미지',
@@ -316,7 +428,6 @@ const PostWriteSection = forwardRef<
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
         }
         break;
       }
@@ -365,28 +476,23 @@ const PostSectionWrap: React.FC<{
   children: ReactNode;
 }> = ({ shouldHighlight, children }) => {
   const [editor] = useLexicalComposerContext();
-  const [images, setImages] = useAtom(postImagesAtom);
 
-  const onDrop = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        const file = files[0];
-        if (file.type.startsWith('image/') && images.length === 0) {
-          const imageURL = URL.createObjectURL(file);
-          const imgPayload: InsertImagePayload = {
-            altText: '붙여넣은 이미지',
-            maxWidth: 600,
-            src: imageURL,
-          };
-          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
-        }
+  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        const imageURL = URL.createObjectURL(file);
+        const imgPayload: InsertImagePayload = {
+          altText: '붙여넣은 이미지',
+          maxWidth: 600,
+          src: imageURL,
+        };
+        editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
       }
-    },
-    [images]
-  );
+    }
+  }, []);
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();

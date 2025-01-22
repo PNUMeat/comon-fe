@@ -30,7 +30,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 import { usePrompt } from '@/hooks/usePrompt';
 
-export const TeamDailySubject = () => {
+const TeamDailySubject = () => {
   const location = useLocation();
   const {
     articleId,
@@ -99,7 +99,17 @@ export const TeamDailySubject = () => {
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
         articleBody: replacedArticleBody,
-        image: subjectImages ? subjectImages[0] : null,
+        images:
+          subjectImages.length > 0
+            ? subjectImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleCategory: tag,
       })
         .then(() => {
@@ -136,7 +146,14 @@ export const TeamDailySubject = () => {
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
       articleBody: replacedArticleBody,
-      image: subjectImages ? subjectImages[0] : null,
+      images: subjectImages
+        .sort((a, b) => {
+          if (a.line !== b.line) {
+            return a.line - b.line;
+          }
+          return a.idx - b.idx;
+        })
+        .map((imgObj) => imgObj.img),
       articleCategory: tag,
     })
       .then((data) => {
@@ -233,3 +250,5 @@ const ClickImage = styled.img`
 const ActionText = styled.div`
   margin-left: 8px;
 `;
+
+export default TeamDailySubject;
