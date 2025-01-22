@@ -31,7 +31,7 @@ registerRoute(
   })
 );
 
-// Stale While Revalidate (CSS, JS, API)
+// Stale While Revalidate (CSS, JS)
 registerRoute(
   ({ request }) => ['style', 'script', 'worker'].includes(request.destination),
   new StaleWhileRevalidate({

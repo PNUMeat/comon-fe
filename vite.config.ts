@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import * as fs from 'fs';
 import path from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -8,16 +9,24 @@ import { VitePWA } from 'vite-plugin-pwa';
 const fontFolderPath = path.resolve(__dirname, 'src/assets/fonts');
 const fontFiles = fs.readdirSync(fontFolderPath);
 
-const preloadTags = fontFiles.map((file) => ({
-  tag: 'link',
-  attrs: {
-    rel: 'preload',
-    href: `/src/assets/fonts/${file}`,
-    as: 'font',
-    type: 'font/woff2',
-    crossorigin: 'anonymous',
-  },
-}));
+const preloadTags = fontFiles
+  .map((file) => {
+    if (file.includes('Nanum')) {
+      return null;
+    }
+
+    return {
+      tag: 'link',
+      attrs: {
+        rel: 'preload',
+        href: `/src/assets/fonts/${file}`,
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: 'anonymous',
+      },
+    };
+  })
+  .filter((tag) => tag !== null);
 
 export default defineConfig({
   plugins: [
@@ -53,8 +62,15 @@ export default defineConfig({
         background_color: '#ffffff',
       },
       workbox: {
-        globPatterns: ['**/*.{woff,woff2,ttf,otf}'],
+        globPatterns: ['**/*.{woff,woff2}'],
       },
+    }),
+    visualizer({
+      open: true,
+      filename: 'bundles.html',
+      gzipSize: true,
+      brotliSize: true,
+      template: 'treemap',
     }),
   ],
   build: {
@@ -68,6 +84,30 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
       },
+    },
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-external-state': ['@tanstack/react-query', 'axios'],
+          'vendor-editor': [
+            'lexical',
+            '@lexical/code',
+            '@lexical/html',
+            '@lexical/link',
+            '@lexical/rich-text',
+            '@lexical/selection',
+            '@lexical/utils',
+            'prismjs',
+          ],
+          calendar: ['react-calendar'],
+          slick: ['react-slick', 'slick-carousel'],
+        },
+      },
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true,
     },
   },
   resolve: {

@@ -10,7 +10,7 @@ import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { Suspense, useEffect, useRef } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -18,6 +18,8 @@ import achievement from '@/assets/Home/goalAchievement.svg';
 import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
 import { breakpoints } from '@/constants/breakpoints';
+import { useBottomBound } from '@/pages/Home/useBottomBound.ts';
+import { useNanumFont } from '@/pages/Home/useNanumFont.ts';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
@@ -145,80 +147,8 @@ export const Home = () => {
   const onClickLogin = () => {
     navigate(PATH.LOGIN);
   };
-  const bottomRef = useRef<HTMLDivElement | null>(null);
-  const effectRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!bottomRef || !bottomRef.current || !effectRef || !effectRef.current) {
-      return;
-    }
-    const bottom = bottomRef.current;
-    const effect = effectRef.current;
-    const fadeIn = 0;
-    const fadeOut = 3000 + fadeIn;
-    let animationFrameId: number | null = null;
-    let startTime: number | null = null;
-    let fadeOutStartTime: number | null = null;
-
-    const animate = (pos: number) => (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      if (elapsed < fadeIn) {
-        animationFrameId = requestAnimationFrame(animate(pos));
-        return;
-      }
-
-      if (effect.style.opacity === '' || effect.style.opacity === '0') {
-        effect.style.opacity = '1';
-        Array.from(effect.children).forEach((child) => {
-          (child as HTMLElement).style.opacity = '1';
-        });
-        fadeOutStartTime = timestamp;
-      }
-
-      if (fadeOutStartTime) {
-        const fadeOutElapsed = timestamp - fadeOutStartTime;
-        if (fadeOutElapsed < fadeOut) {
-          const opacity = 1 - fadeOutElapsed / fadeOut;
-          effect.style.opacity = opacity.toString();
-          animationFrameId = requestAnimationFrame(animate(pos));
-        } else {
-          effect.style.opacity = '0';
-          Array.from(effect.children).forEach((child) => {
-            (child as HTMLElement).style.opacity = '0';
-          });
-          animationFrameId = null;
-        }
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const { bottom } = document.body.getBoundingClientRect();
-          if (animationFrameId !== null) {
-            cancelAnimationFrame(animationFrameId);
-            effect.style.opacity = '0';
-            Array.from(effect.children).forEach((child) => {
-              (child as HTMLElement).style.opacity = '0';
-            });
-          }
-          animationFrameId = requestAnimationFrame(animate(bottom));
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    observer.observe(bottom);
-
-    return () => {
-      if (animationFrameId !== null) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      observer.disconnect();
-    };
-  }, []);
-
+  const { bottomRef, effectRef } = useBottomBound();
+  const { isNanumFFReady } = useNanumFont();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
@@ -226,7 +156,7 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
-        {!isMobile && <EventFloating />}
+        {!isMobile && isNanumFFReady && <EventFloating />}
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
@@ -234,7 +164,7 @@ export const Home = () => {
           transform={'translate(0, -30px)'}
         >
           <Flex direction={'column'} align={'center'}>
-            <Suspense fallback={<div style={{ height: '491px' }}>배너</div>}>
+            <Suspense fallback={<BannerFallback />}>
               <LazyImage
                 altText={'코몬 배너 이미지'}
                 w={isMobile ? 310 : 940}
@@ -363,3 +293,38 @@ const WaitBox = styled.div`
     pointer-events: none;
   }
 `;
+
+const BannerFallbackText: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <SText whiteSpace={'no-wrap'} fontFamily={'Noto Sans KR'}>
+      {children}
+    </SText>
+  );
+};
+
+const BannerFallback = () => {
+  return (
+    <Flex height={491} direction={'column'} justify={'center'} align={'center'}>
+      <BannerFallbackText>
+        ░█████╗░░█████╗░███╗░░░███╗░█████╗░███╗░░██╗
+      </BannerFallbackText>
+      <BannerFallbackText>
+        ██╔══██╗██╔══██╗████╗░████║██╔══██╗████╗░██║
+      </BannerFallbackText>
+      <BannerFallbackText>
+        ██║░░╚═╝██║░░██║██╔████╔██║██║░░██║██╔██╗██║
+      </BannerFallbackText>
+      <BannerFallbackText>
+        ██║░░██╗██║░░██║██║╚██╔╝██║██║░░██║██║╚████║
+      </BannerFallbackText>
+      <BannerFallbackText>
+        ╚█████╔╝╚█████╔╝██║░╚═╝░██║╚█████╔╝██║░╚███║
+      </BannerFallbackText>
+      <BannerFallbackText>
+        ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝░╚════╝░╚═╝░░╚══╝
+      </BannerFallbackText>
+    </Flex>
+  );
+};
