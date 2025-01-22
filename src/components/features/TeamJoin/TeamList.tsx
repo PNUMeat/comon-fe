@@ -77,7 +77,9 @@ export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
         ) : (
           teams.map((team) => {
             const profiles = team.members.slice(0, 6).map((member) => member.imageUrl);
-            team.members.length > 6 && profiles.push(more);
+            if (team.members.length > 6) {
+              profiles.push(more);
+            }
 
             return (
               <FlipCardItem
