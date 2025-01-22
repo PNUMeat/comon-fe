@@ -290,7 +290,14 @@ const Posting = () => {
     }
 
     // console.log('????', articleBody);
-    postImages.forEach((img) => console.log('i', img.img.name));
+    postImages
+      .sort((a, b) => {
+        if (a.line !== b.line) {
+          return a.line - b.line;
+        }
+        return a.idx - b.idx;
+      })
+      .forEach((img) => console.log('i', img.img.name));
 
     createPost({
       teamId: parseInt(id),

@@ -49,6 +49,7 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
 import { useSetAtom } from 'jotai';
 import {
+  $getNearestNodeFromDOMNode,
   $getNodeByKey,
   $getRoot,
   $isLineBreakNode,
@@ -349,48 +350,59 @@ const useDetectImageMutation = () => {
               const line = $getRoot()
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
-              const imgObjs: {
-                key: string;
-                img: File;
-                line: number;
-                idx: number;
-              }[] = [];
 
+              /**
+               * 진짜 건들이면 안되는 코드
+               * 건들이는 순간 비동기 흐름다 깨져서 Promise.all이 resolve가 안됨
+               */
               Promise.all(
-                [...imgs].map((img, idx) =>
-                  findImgElement(img as HTMLElement)
-                    .then((foundImg) =>
-                      blobUrlToFile(foundImg.src, `img-${nodeKey}.png`)
-                    )
-                    .then((newImgFile) => compressImage(newImgFile))
-                    .then((compressedImgFile) => {
-                      imgObjs.push({
-                        key: nodeKey,
-                        img: compressedImgFile,
-                        line: line,
-                        idx: idx,
-                      });
-                    })
-                    .catch((err) => {
-                      console.error('img err', err);
-                    })
+                [...imgs].map((img) =>
+                  findImgElement(img as HTMLElement).then((foundImg) => {
+                    let myNodeKey = '';
+                    editor.read(() => {
+                      const node = $getNearestNodeFromDOMNode(img);
+                      if (node) {
+                        myNodeKey = node.getKey();
+                      }
+                    });
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}.png`);
+                  })
                 )
-              ).then(() => {
-                setImages((prev) => {
-                  const filteredNewImages = imgObjs.filter(
-                    (newImg) =>
-                      !prev.some(
-                        (img) =>
-                          img.line === newImg.line && img.idx === newImg.idx
-                      )
-                  );
-                  console.log('filterred', [...prev, ...filteredNewImages]);
-                  return [...prev, ...filteredNewImages];
+              )
+                .then(async (results) => {
+                  const compressedImg = [];
+
+                  for (const imgFile of results) {
+                    const requestId = `${imgFile.name}-${Date.now()}`;
+                    const res = await compressImage(requestId, imgFile);
+                    compressedImg.push(res);
+                  }
+
+                  const imgObjs = compressedImg.map((img, idx) => ({
+                    key: img.name.split('-')[1].split('.')[0],
+                    img: img,
+                    line: line,
+                    idx: idx,
+                  }));
+
+                  setImages((prev) => {
+                    const filteredNewImages = imgObjs.filter(
+                      (newImg) =>
+                        !prev.some(
+                          (img) =>
+                            img.line === newImg.line && img.idx === newImg.idx
+                        )
+                    );
+                    return [...prev, ...filteredNewImages];
+                  });
+                })
+                .catch((err) => {
+                  console.error('Promise.all error', err);
                 });
-              });
             });
             return;
           }
+
           if (mutation === 'destroyed') {
             setImages((prev) =>
               prev.filter((imgObj) => imgObj.key !== nodeKey)

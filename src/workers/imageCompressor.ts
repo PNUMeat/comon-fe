@@ -12,12 +12,13 @@
  */
 
 function compressImage(
+  requestId: string,
   image: ImageBitmap,
   fileType: string,
   fileName: string,
   quality: number = 1,
   maxSizeMb?: number
-): Promise<File> {
+): Promise<{ requestId: string; compressedImage: File }> {
   return new Promise((resolve, reject) => {
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
@@ -44,7 +45,7 @@ function compressImage(
     if (maxSizeMb) {
       const compressImageRecursively = (
         currentQuality: number
-      ): Promise<File> => {
+      ): Promise<{ requestId: string; compressedImage: File }> => {
         return new Promise((resolve, reject) => {
           const compressOptions = {
             type: 'image/jpeg',
@@ -62,7 +63,7 @@ function compressImage(
                   type: fileType,
                   lastModified: Date.now(),
                 });
-                resolve(compressedFile);
+                resolve({ requestId, compressedImage: compressedFile });
               } else {
                 resolve(compressImageRecursively(currentQuality - 0.1));
               }
@@ -87,14 +88,14 @@ function compressImage(
           type: fileType,
           lastModified: fileLastModified,
         });
-        resolve(compressedFile);
+        resolve({ requestId: requestId, compressedImage: compressedFile });
       })
       .catch(reject);
   });
 }
 
 self.onmessage = (e) => {
-  const { src, fileType, fileName, quality } = e.data;
+  const { requestId, src, fileType, fileName, quality } = e.data;
   /*
     worker는 Web API에 접근할 수 없어서,
     const image = new Image() <- 이게 안되서 이렇게 해야함
@@ -110,10 +111,13 @@ self.onmessage = (e) => {
 
   imagePromise
     .then((imageBitmap) =>
-      compressImage(imageBitmap, fileType, fileName, quality)
+      compressImage(requestId, imageBitmap, fileType, fileName, quality)
     )
     .then((compressedImage) => {
-      self.postMessage({ compressedImage: compressedImage });
+      self.postMessage({
+        compressedImage: compressedImage.compressedImage,
+        requestId: compressedImage.requestId,
+      });
     })
     .catch((error) => {
       self.postMessage({ error: 'Image Compression failed: ' + error });
