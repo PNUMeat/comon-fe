@@ -19,6 +19,7 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
+import more from '@/assets/TeamJoin/more.png';
 
 import { ProfileList } from './ProfileList';
 import { SearchBar } from './SearchBar';
@@ -76,7 +77,10 @@ export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
           </SText>
         ) : (
           teams.map((team) => {
-            const profiles = team.members.map((member) => member.imageUrl);
+            const profiles = team.members.slice(0, 6).map((member) => member.imageUrl);
+            if (team.members.length > 6) {
+              profiles.push(more);
+            }
 
             return (
               <FlipCardItem
