@@ -1,4 +1,4 @@
-import { checkRemainingCookies } from '@/utils/cookie';
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
@@ -24,11 +24,11 @@ import TeamModificationTemplate from '@/templates/Team/TeamModificationTemplate.
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 
 const useAuth = () => {
-  // if (isDevMode()) {
-  //   return {
-  //     isAuthenticated: true,
-  //   };
-  // }
+  if (isDevMode()) {
+    return {
+      isAuthenticated: true,
+    };
+  }
   return {
     isAuthenticated: checkRemainingCookies(),
   };

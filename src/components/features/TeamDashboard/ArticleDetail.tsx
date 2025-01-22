@@ -40,6 +40,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         : (data?.articleBody ?? ''),
     [data]
   );
+  // TODO: 여기서?
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);
 
