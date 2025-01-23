@@ -1,3 +1,5 @@
+import { usePrompt } from '@/hooks/usePrompt';
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -16,6 +18,7 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { ITopicResponse } from '@/api/dashboard.ts';
 // import { ITopicResponse } from '@/api/dashboard.ts';
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
@@ -28,7 +31,6 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
-import { usePrompt } from '@/hooks/usePrompt';
 
 const TeamDailySubject = () => {
   const location = useLocation();
@@ -37,21 +39,26 @@ const TeamDailySubject = () => {
     articleCategory,
     articleBody,
     articleTitle,
-    articleImageUrl,
-    // refetch,
+    articleImageUrls,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
-    articleImageUrl: null,
-    // refetch: null,
+    articleImageUrls: null,
   };
 
-  const regroupedArticleContent =
-    (articleImageUrl
-      ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
-      : articleBody) ?? '';
+  const locationData = {
+    articleBody: articleBody,
+    articleId: articleId,
+    articleTitle: articleTitle,
+    articleCategory: articleCategory,
+    imageUrls: articleImageUrls,
+  } as ITopicResponse;
+
+  const { result: regroupedArticleContent } =
+    useRegroupImageAndArticle(locationData);
+
   const [content, setContent] = useState<string>(() => regroupedArticleContent);
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
@@ -69,7 +76,7 @@ const TeamDailySubject = () => {
   const { id, selectedDate } = useParams();
 
   usePrompt(true);
-  
+
   useEffect(() => {
     document.documentElement.scrollTo({
       top: 0,

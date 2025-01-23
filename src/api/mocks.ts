@@ -103,7 +103,7 @@ export const teamArticlesMock = {
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
         createdDate: '2025-01-13 20:33:36',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -115,7 +115,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
         createdDate: '2025-01-13 20:29:10',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -128,7 +128,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -140,7 +140,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:37:18',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -152,7 +152,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:36:57',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -235,7 +235,7 @@ export const myArticlesMock = {
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
         createdDate: '2025-01-13 20:33:36',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -246,7 +246,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
         createdDate: '2025-01-13 20:29:10',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -258,7 +258,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -269,7 +269,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:37:18',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -280,7 +280,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:36:57',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -291,7 +291,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">asdasd</span></p>',
         createdDate: '2025-01-02 02:08:25',
-        imageUrl: null,
+        imageUrls: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -312,118 +312,118 @@ export const teamCombinedMock = {
   message: null,
   data: {
     myTeams: [
-      {
-        teamId: 16,
-        teamName: 'aa',
-        teamExplain: '11',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '스터디',
-        memberLimit: 12,
-        memberCount: 1,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '',
-        createdAt: '2024-12-26',
-      },
-      {
-        teamId: 15,
-        teamName: 'scroll',
-        teamExplain: 'scsc',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '스터디',
-        memberLimit: 12,
-        memberCount: 1,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '',
-        createdAt: '2024-12-26',
-      },
-      {
-        teamId: 14,
-        teamName: 'asd',
-        teamExplain: 'qqqq',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '코딩테스트',
-        memberLimit: 12,
-        memberCount: 1,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '',
-        createdAt: '2024-12-26',
-      },
-      {
-        teamId: 13,
-        teamName: 'asd',
-        teamExplain: 'qqqq',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '코딩테스트',
-        memberLimit: 12,
-        memberCount: 1,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '',
-        createdAt: '2024-12-26',
-      },
-      {
-        teamId: 10,
-        teamName: 'Team QA',
-        teamExplain: 'qa',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '스터디',
-        memberLimit: 5,
-        memberCount: 1,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '',
-        createdAt: '2024-12-27',
-      },
-      {
-        teamId: 3,
-        teamName: '파댕이 밥주기',
-        teamExplain: '파댕이 밥',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/bae6cb5b-2772-41a7-b56f-808766d0dc50',
-        topic: '코딩테스트',
-        memberLimit: 10,
-        memberCount: 6,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '수정테스트(2025/01/02)',
-        createdAt: '2024-12-23',
-      },
-      {
-        teamId: 2,
-        teamName: '장진영팀',
-        teamExplain: '코딩테스트 입니당~~',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '코딩테스트',
-        memberLimit: 11,
-        memberCount: 4,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '안녕하세요 공지입니다.',
-        createdAt: '2024-12-22',
-      },
-      {
-        teamId: 1,
-        teamName: '제육돈까스햄버거파티',
-        teamExplain: '',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
-        topic: '스터디',
-        memberLimit: 20,
-        memberCount: 4,
-        streakDays: 0,
-        successMemberCount: 0,
-        teamAnnouncement: '하이하이하이하이',
-        createdAt: '2024-12-22',
-      },
+      // {
+      //   teamId: 16,
+      //   teamName: 'aa',
+      //   teamExplain: '11',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '스터디',
+      //   memberLimit: 12,
+      //   memberCount: 1,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '',
+      //   createdAt: '2024-12-26',
+      // },
+      // {
+      //   teamId: 15,
+      //   teamName: 'scroll',
+      //   teamExplain: 'scsc',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '스터디',
+      //   memberLimit: 12,
+      //   memberCount: 1,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '',
+      //   createdAt: '2024-12-26',
+      // },
+      // {
+      //   teamId: 14,
+      //   teamName: 'asd',
+      //   teamExplain: 'qqqq',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '코딩테스트',
+      //   memberLimit: 12,
+      //   memberCount: 1,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '',
+      //   createdAt: '2024-12-26',
+      // },
+      // {
+      //   teamId: 13,
+      //   teamName: 'asd',
+      //   teamExplain: 'qqqq',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '코딩테스트',
+      //   memberLimit: 12,
+      //   memberCount: 1,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '',
+      //   createdAt: '2024-12-26',
+      // },
+      // {
+      //   teamId: 10,
+      //   teamName: 'Team QA',
+      //   teamExplain: 'qa',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '스터디',
+      //   memberLimit: 5,
+      //   memberCount: 1,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '',
+      //   createdAt: '2024-12-27',
+      // },
+      // {
+      //   teamId: 3,
+      //   teamName: '파댕이 밥주기',
+      //   teamExplain: '파댕이 밥',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/bae6cb5b-2772-41a7-b56f-808766d0dc50',
+      //   topic: '코딩테스트',
+      //   memberLimit: 10,
+      //   memberCount: 6,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '수정테스트(2025/01/02)',
+      //   createdAt: '2024-12-23',
+      // },
+      // {
+      //   teamId: 2,
+      //   teamName: '장진영팀',
+      //   teamExplain: '코딩테스트 입니당~~',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '코딩테스트',
+      //   memberLimit: 11,
+      //   memberCount: 4,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '안녕하세요 공지입니다.',
+      //   createdAt: '2024-12-22',
+      // },
+      // {
+      //   teamId: 1,
+      //   teamName: '제육돈까스햄버거파티',
+      //   teamExplain: '',
+      //   imageUrl:
+      //     'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+      //   topic: '스터디',
+      //   memberLimit: 20,
+      //   memberCount: 4,
+      //   streakDays: 0,
+      //   successMemberCount: 0,
+      //   teamAnnouncement: '하이하이하이하이',
+      //   createdAt: '2024-12-22',
+      // },
     ],
     allTeams: {
       content: [

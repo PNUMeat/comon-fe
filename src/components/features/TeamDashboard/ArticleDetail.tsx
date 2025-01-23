@@ -1,12 +1,14 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IArticle } from '@/api/dashboard';
@@ -30,16 +32,8 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   refetchArticles,
   shouldBlur = true,
 }) => {
-  const article = useMemo(
-    () =>
-      data?.imageUrl
-        ? data?.articleBody.replace(
-            /(<img[^>]*src=")\?("[^>]*>)/g,
-            `$1${data?.imageUrl}$2`
-          )
-        : (data?.articleBody ?? ''),
-    [data]
-  );
+  const { result: article } = useRegroupImageAndArticle(data);
+
   // TODO: 여기서?
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);

@@ -1,6 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
 import { usePrompt } from '@/hooks/usePrompt';
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -130,6 +131,8 @@ const PostSubjectViewer: React.FC<{
     }
   }, [show]);
 
+  const { result } = useRegroupImageAndArticle(data);
+
   return (
     <PostSubjectViewWrap
       height={show ? Math.max(height, minShowHeight) : 57}
@@ -161,9 +164,7 @@ const PostSubjectViewer: React.FC<{
         <TopicViewer
           ref={contentRef}
           dangerouslySetInnerHTML={{
-            __html: data?.imageUrl
-              ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-              : data?.articleBody,
+            __html: result,
           }}
         />
       ) : null}
