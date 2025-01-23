@@ -56,6 +56,7 @@ const TeamDailySubject = () => {
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
+  const [disablePrompt, setDisablePrompt] = useState(false);
   const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -68,7 +69,7 @@ const TeamDailySubject = () => {
   const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
 
-  usePrompt(true);
+  usePrompt(!disablePrompt);
   
   useEffect(() => {
     document.documentElement.scrollTo({
@@ -118,6 +119,7 @@ const TeamDailySubject = () => {
               queryKey: ['team-info', id, year, month],
             })
             .then(() => {
+              setDisablePrompt(true);
               alert('주제 수정이 완료되었습니다.');
               navigate(`/team-admin/${id}`);
             })
@@ -174,7 +176,7 @@ const TeamDailySubject = () => {
             setSubjectImages([]);
             setDashboardView('topic');
             setSelectedPostId(parseInt(articleId));
-
+            setDisablePrompt(true);
             navigate(`/team-admin/${id}`);
           });
       })
