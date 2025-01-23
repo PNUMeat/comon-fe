@@ -365,7 +365,7 @@ const useDetectImageMutation = () => {
                         myNodeKey = node.getKey();
                       }
                     });
-                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}.jpeg`);
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
                   })
                 )
               )
@@ -373,7 +373,7 @@ const useDetectImageMutation = () => {
                   const compressedImg = [];
 
                   for (const imgFile of results) {
-                    const requestId = `${imgFile.name}-${Date.now()}`;
+                    const requestId = `${imgFile.name}-${Date.now()}.jpeg`;
                     const res = await compressImage(requestId, imgFile);
                     compressedImg.push(res);
                   }
