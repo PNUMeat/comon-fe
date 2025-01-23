@@ -1,3 +1,5 @@
+import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Container } from '@/components/commons/Container';
@@ -64,23 +66,6 @@ const StartButton = styled.button`
   }
 `;
 
-const StartButtonDescription = styled.p`
-  color: #777;
-  text-align: center;
-  font-family: 'Pretendard', sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px;
-  letter-spacing: -0.32px;
-  margin-top: 12px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 12px;
-    letter-spacing: -0.24px;
-    margin-top: 10px;
-  }
-`;
-
 const GoalBox = styled.div<HeightInNumber>`
   height: ${(props) => props.h}px;
   display: flex;
@@ -143,8 +128,11 @@ const aims = [
 
 export const Home = () => {
   const navigate = useNavigate();
-  // TODO: Link를 사용하면 보라색 밑줄이 그여짐
   const onClickLogin = () => {
+    if (isLoggedIn() || isDevMode()) {
+      navigate(PATH.TEAMS);
+      return;
+    }
     navigate(PATH.LOGIN);
   };
   const { bottomRef, effectRef } = useBottomBound();
@@ -181,9 +169,9 @@ export const Home = () => {
 
             <Wrap>
               <StartButton onClick={onClickLogin}>시작하기</StartButton>
-              <StartButtonDescription>
-                계정 생성 or 로그인하러 가기
-              </StartButtonDescription>
+              {/*<StartButtonDescription>*/}
+              {/*  계정 생성 or 로그인하러 가기*/}
+              {/*</StartButtonDescription>*/}
             </Wrap>
             <Spacer h={90} />
             <Flex
