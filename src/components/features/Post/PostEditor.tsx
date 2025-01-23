@@ -287,7 +287,11 @@ const EditorPlaceholder = styled.div`
 `;
 
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
-  return await fetch(blobUrl, { mode: 'cors' })
+  return await fetch(blobUrl, {
+    headers: {
+      origin: 'https://test.codemonster.site',
+    },
+  })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
     .catch((error) => {
