@@ -45,7 +45,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           refetchArticles();
         })
         .catch(() =>
-          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true })
+          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true, onConfirm: () => {} }),
         );
     }
   };
