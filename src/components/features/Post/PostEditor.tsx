@@ -384,6 +384,7 @@ const useDetectImageMutation = () => {
                     line: line,
                     idx: idx,
                   }));
+                  // console.log('new img objs', imgObjs);
 
                   setImages((prev) => {
                     const filteredNewImages = imgObjs.filter(
@@ -393,7 +394,22 @@ const useDetectImageMutation = () => {
                             img.line === newImg.line && img.idx === newImg.idx
                         )
                     );
-                    return [...prev, ...filteredNewImages];
+                    // console.log('new img arr', filteredNewImages);
+                    if (filteredNewImages.length === 0) {
+                      // console.log('no new img');
+                      return prev;
+                    }
+
+                    const targetNewLine = line;
+                    const rearrangedArr = prev.map((imgObj) => {
+                      if (imgObj.line > targetNewLine) {
+                        return { ...imgObj, line: imgObj.line + 1 };
+                      }
+                      return imgObj;
+                    });
+                    const fin = [...rearrangedArr, ...filteredNewImages];
+                    // console.log('fin', fin);
+                    return fin;
                   });
                 })
                 .catch((err) => {
