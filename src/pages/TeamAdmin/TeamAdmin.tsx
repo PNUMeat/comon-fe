@@ -163,11 +163,11 @@ const SubjectControlButton: React.FC<{
       onClick={() =>
         navigate(`/team-subject/${id}/${selectedDate}`, {
           state: {
-            articleBody: data?.articleBody,
-            articleId: data?.articleId,
-            articleTitle: data?.articleTitle,
-            articleCategory: data?.articleCategory,
-            articleImageUrls: data?.imageUrls,
+            articleBody: data?.articleBody ?? null,
+            articleId: data?.articleId ?? null,
+            articleTitle: data?.articleTitle ?? null,
+            articleCategory: data?.articleCategory ?? null,
+            articleImageUrls: data?.imageUrls ?? null,
           },
         })
       }
@@ -321,6 +321,7 @@ const CalendarSection = styled.section`
 `;
 
 let totalPageCache = 0;
+let prevNoticeCache = '';
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 const TeamAdmin = () => {
@@ -352,6 +353,10 @@ const TeamAdmin = () => {
     year,
     month,
   });
+
+  if (myTeamResponse) {
+    prevNoticeCache = myTeamResponse.teamAnnouncement;
+  }
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -545,7 +550,7 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={myTeamResponse?.teamAnnouncement ?? ''}
+          announcementToday={prevNoticeCache}
           ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
