@@ -1,3 +1,4 @@
+import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
@@ -10,16 +11,11 @@ import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/Side
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 
-import {
-  IArticle,
-  ICalendarTag,
-  getArticlesByDate,
-  getTeamInfoAndTags,
-} from '@/api/dashboard';
-import { ITeamInfo, getTeamList } from '@/api/team';
+import { IArticle, getArticlesByDate } from '@/api/dashboard';
+import { getTeamList } from '@/api/team';
 import { ServerResponse } from '@/api/types.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import {
@@ -45,45 +41,18 @@ const TeamDashboardPage = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const [tags, setTags] = useState<ICalendarTag[]>([]);
-
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
   };
 
-  const addTags = (newTags: ICalendarTag[]) => {
-    setTags((prevTags) => {
-      const updatedTags = [...prevTags];
-
-      newTags.forEach((newTag) => {
-        const existingIndex = updatedTags.findIndex(
-          (tag) => tag.subjectDate === newTag.subjectDate
-        );
-        if (existingIndex !== -1) {
-          updatedTags[existingIndex] = newTag;
-        } else {
-          updatedTags.push(newTag);
-        }
-      });
-
-      return updatedTags;
-    });
-  };
-
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
-  const { data: teamInfoData, isSuccess } = useQuery({
-    queryKey: ['team-info', teamId, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
-    enabled: !!teamId,
+  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
+    teamId,
+    year,
+    month,
   });
-
-  useEffect(() => {
-    if (isSuccess && teamInfoData) {
-      addTags(teamInfoData.subjectArticleDateAndTagResponses);
-    }
-  }, [isSuccess]);
 
   const {
     data: articlesData,
@@ -113,8 +82,7 @@ const TeamDashboardPage = () => {
     setPage(newPage);
   };
 
-  const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
-  const isTeamManager = teamInfoData?.teamManager || false;
+  // const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -145,23 +113,23 @@ const TeamDashboardPage = () => {
     <Fragment>
       <Spacer h={isMobile ? 16 : 28} />
       <Grid>
-        {teamInfoData && (
+        {myTeamResponse && (
           <SidebarAndAnnouncement
-            teamInfo={teamInfo}
+            teamInfo={myTeamResponse}
             isTeamManager={isTeamManager}
             isMyTeam={isMyTeam}
           />
         )}
         <CalendarSection>
           <CustomCalendar
-            tags={tags}
+            tags={tagsMap.get(teamId as string) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
-            tags={tags}
+            tags={tagsMap.get(teamId as string) ?? []}
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}

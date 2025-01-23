@@ -1,3 +1,4 @@
+import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -24,13 +25,7 @@ import {
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
-import {
-  IArticle,
-  ICalendarTag,
-  getArticlesByDate,
-  getTeamInfoAndTags,
-  getTeamTopic,
-} from '@/api/dashboard';
+import { IArticle, getArticlesByDate, getTeamTopic } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
@@ -351,41 +346,14 @@ const TeamAdmin = () => {
 
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
-  //TODO: useCalendarTag
-  const [tags, setTags] = useState<ICalendarTag[]>([]);
 
-  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
-
-  const addTags = (newTags: ICalendarTag[]) => {
-    setTags((prevTags) => {
-      const updatedTags = [...prevTags];
-
-      newTags.forEach((newTag) => {
-        const existingIndex = updatedTags.findIndex(
-          (tag) => tag.subjectDate === newTag.subjectDate
-        );
-        if (existingIndex !== -1) {
-          updatedTags[existingIndex] = newTag;
-        } else {
-          updatedTags.push(newTag);
-        }
-      });
-
-      return updatedTags;
-    });
-  };
-
-  const { data: teamInfoData, isSuccess } = useQuery({
-    queryKey: ['team-info', id, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(id), year, month),
-    enabled: !!id,
+  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
+    teamId: id,
+    year,
+    month,
   });
 
-  useEffect(() => {
-    if (isSuccess && teamInfoData) {
-      addTags(teamInfoData.subjectArticleDateAndTagResponses);
-    }
-  }, [isSuccess]);
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const {
     data: articlesData,
@@ -453,8 +421,8 @@ const TeamAdmin = () => {
     }
   }, [show]);
 
-  const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
-  const isTeamManager = teamInfoData?.teamManager ?? false;
+  // const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
+  // const isTeamManager = teamInfoData?.teamManager ?? false;
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
@@ -480,8 +448,8 @@ const TeamAdmin = () => {
               >
                 <Suspense fallback={<div style={{ height: '84px' }} />}>
                   <ImageContainer
-                    src={teamInfoData?.myTeamResponse.imageUrl || ''}
-                    altText={teamInfoData?.myTeamResponse.teamName || ''}
+                    src={myTeamResponse?.imageUrl ?? ''}
+                    altText={myTeamResponse?.teamName ?? ''}
                     w={70}
                     h={70}
                     maxW={70}
@@ -577,21 +545,21 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={announcementToday}
+          announcementToday={myTeamResponse?.teamAnnouncement ?? ''}
           ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
         />
         <CalendarSection>
           <CustomCalendar
-            tags={tags}
+            tags={tagsMap.get(id) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
-            tags={tags}
+            tags={tagsMap.get(id) ?? []}
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
