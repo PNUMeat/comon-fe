@@ -95,9 +95,13 @@ const TeamDailySubject = () => {
       return;
     }
 
+    // const replacedArticleBody = subjectImages
+    //   ? content.trim().replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
+    //   : content.trim();
+
     const replacedArticleBody = subjectImages
-      ? content.trim().replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
-      : content.trim();
+      ? articleBody.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : articleBody.trim();
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
