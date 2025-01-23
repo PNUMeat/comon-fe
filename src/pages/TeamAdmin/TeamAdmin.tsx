@@ -187,9 +187,7 @@ const AnnouncementAndSubject: React.FC<{
   const isMobile = width <= breakpoints.mobile;
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(
-    () => announcementToday
-  );
+  const [announcement, setAnnouncement] = useState<string>(announcementToday);
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
