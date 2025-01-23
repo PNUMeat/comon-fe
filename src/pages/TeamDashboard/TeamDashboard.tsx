@@ -15,7 +15,7 @@ import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
-import { getTeamList } from '@/api/team';
+import { ITeamInfo, getTeamList } from '@/api/team';
 import { ServerResponse } from '@/api/types.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import {
@@ -113,13 +113,11 @@ const TeamDashboardPage = () => {
     <Fragment>
       <Spacer h={isMobile ? 16 : 28} />
       <Grid>
-        {myTeamResponse && (
-          <SidebarAndAnnouncement
-            teamInfo={myTeamResponse}
-            isTeamManager={isTeamManager}
-            isMyTeam={isMyTeam}
-          />
-        )}
+        <SidebarAndAnnouncement
+          teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
+          isTeamManager={isTeamManager}
+          isMyTeam={isMyTeam}
+        />
         <CalendarSection>
           <CustomCalendar
             tags={tagsMap.get(teamId as string) ?? []}
