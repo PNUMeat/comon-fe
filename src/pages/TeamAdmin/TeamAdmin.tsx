@@ -189,6 +189,8 @@ const AnnouncementAndSubject: React.FC<{
   const [isEditing, setIsEditing] = useState(false);
   const [announcement, setAnnouncement] = useState<string>(announcementToday);
 
+  console.error('????', announcement);
+
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
@@ -348,6 +350,8 @@ const TeamAdmin = () => {
       year,
       month,
     });
+
+  console.error('!!!', announcement);
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
