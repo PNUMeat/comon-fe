@@ -192,11 +192,11 @@ const AnnouncementAndSubject: React.FC<{
     announcementToday ?? ''
   );
 
+  console.error('?Q?!?!?!', announcementToday, announcement);
+
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
-    setAnnouncement(announcement);
-    setIsEditing(false);
     updateAnnouncement(Number(id), announcement)
       .then(() => {
         const [year, month] = selectedDate.split('-').map(Number);
@@ -205,9 +205,9 @@ const AnnouncementAndSubject: React.FC<{
         });
       })
       .catch(() => {
-        setAnnouncement(announcementToday ?? '');
         setIsEditing(true);
       });
+    setIsEditing(false);
   };
 
   const handleCancel = () => {
@@ -230,7 +230,6 @@ const AnnouncementAndSubject: React.FC<{
           whiteSpace: isEditing ? 'normal' : 'nowrap',
           position: 'relative',
         }}
-        // ref={ref}
         onClick={!isEditing ? toggleEditing : undefined}
       >
         <AnnouncementImageWrapper>
@@ -262,7 +261,7 @@ const AnnouncementAndSubject: React.FC<{
                   textOverflow: 'ellipsis',
                 }}
               >
-                {announcement ?? '공지가 등록되지 않았습니다.'}
+                {announcementToday ?? '공지가 등록되지 않았습니다.'}
               </SText>
             </Flex>
             <PostImage
