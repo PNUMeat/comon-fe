@@ -319,7 +319,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
-  const { compressImage } = useImageCompressor(1, 1);
+  const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -365,7 +365,7 @@ const useDetectImageMutation = () => {
                         myNodeKey = node.getKey();
                       }
                     });
-                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}.png`);
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
                   })
                 )
               )
