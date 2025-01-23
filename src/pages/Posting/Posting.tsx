@@ -210,6 +210,7 @@ const Posting = () => {
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [isPending, setIsPending] = useState(false);
+  const [disablePrompt, setDisablePrompt] = useState(false);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -223,7 +224,7 @@ const Posting = () => {
   const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
 
-  usePrompt(true);
+  usePrompt(!disablePrompt);
 
   useEffect(() => {
     document.documentElement.scrollTo({
@@ -266,6 +267,7 @@ const Posting = () => {
               setSelectedPostId(articleId);
               setPostImages([]);
               navigate(`/team-dashboard/${id}`);
+              setDisablePrompt(true);
               setAlert({ message: '게시글을 수정했어요', isVisible: true });
             })
             .catch(() => {
@@ -318,6 +320,7 @@ const Posting = () => {
             setPostImages([]);
             navigate(`/team-dashboard/${id}`);
             setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
+            setDisablePrompt(true);
           })
           .catch(() => {
             setAlert({
