@@ -316,7 +316,6 @@ const CalendarSection = styled.section`
 `;
 
 let totalPageCache = 0;
-let prevNoticeCache = '';
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 const TeamAdmin = () => {
@@ -343,15 +342,12 @@ const TeamAdmin = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
-    teamId: id,
-    year,
-    month,
-  });
-
-  if (myTeamResponse) {
-    prevNoticeCache = myTeamResponse.teamAnnouncement;
-  }
+  const { tagsMap, announcement, myTeamResponse, isTeamManager } =
+    useTeamInfoManager({
+      teamId: id,
+      year,
+      month,
+    });
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -500,9 +496,7 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={
-            myTeamResponse?.teamAnnouncement ?? prevNoticeCache
-          }
+          announcementToday={announcement}
           id={id}
           selectedDate={selectedDate}
         />
