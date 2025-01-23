@@ -1,7 +1,6 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
-// import { teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
-import { subjectMock, teamArticlesMock } from '@/api/mocks.ts';
+import { teamArticlesMock } from '@/api/mocks.ts';
 
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
@@ -23,11 +22,30 @@ export interface IArticle {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrl: string | null;
+  imageUrls: string[] | null;
   memberName: string;
   memberImage: string;
   isAuthor: boolean;
 }
+
+export const isIArticle = (obj: unknown): obj is IArticle => {
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const article = obj as Record<string, unknown>;
+
+  return (
+    typeof article.articleId === 'number' &&
+    typeof article.articleTitle === 'string' &&
+    typeof article.articleBody === 'string' &&
+    typeof article.createdDate === 'string' &&
+    (article.imageUrls === null ||
+      (Array.isArray(article.imageUrls) &&
+        article.imageUrls.every((url) => typeof url === 'string'))) &&
+    typeof article.memberName === 'string' &&
+    typeof article.memberImage === 'string' &&
+    typeof article.isAuthor === 'boolean'
+  );
+};
 
 export interface IArticlesByDateResponse {
   content: IArticle[];
@@ -45,10 +63,29 @@ export interface ITopicResponse {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrl: string | null;
+  imageUrls: string[] | null;
   authorName: string;
   authorImageUrl: string;
 }
+
+export const isITopicResponse = (obj: unknown): obj is ITopicResponse => {
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const topic = obj as Record<string, unknown>;
+
+  return (
+    typeof topic.articleId === 'number' &&
+    typeof topic.articleCategory === 'string' &&
+    typeof topic.articleTitle === 'string' &&
+    typeof topic.articleBody === 'string' &&
+    typeof topic.createdDate === 'string' &&
+    (topic.imageUrls === null ||
+      (Array.isArray(topic.imageUrls) &&
+        topic.imageUrls.every((url) => typeof url === 'string'))) &&
+    typeof topic.authorName === 'string' &&
+    typeof topic.authorImageUrl === 'string'
+  );
+};
 
 export const getTeamInfoAndTags = async (
   teamId: number,
@@ -90,9 +127,9 @@ export const getTeamTopic = async (
   teamId: number,
   date: string
 ): Promise<ITopicResponse> => {
-  if (isDevMode()) {
-    return subjectMock.data;
-  }
+  // if (isDevMode()) {
+  //   return subjectMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
     `/v1/articles/teams/${teamId}/subjects`,
