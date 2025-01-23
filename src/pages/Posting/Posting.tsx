@@ -300,6 +300,9 @@ const Posting = () => {
       })
       .forEach((img) => console.log('i', img.img.name));
 
+    console.log('??', postImages, articleBody);
+    postImages.forEach((i) => console.error(i.img));
+
     createPost({
       teamId: parseInt(id),
       images:
