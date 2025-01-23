@@ -179,7 +179,7 @@ const SubjectControlButton: React.FC<{
 };
 
 const AnnouncementAndSubject: React.FC<{
-  announcementToday: string;
+  announcementToday?: string;
   id: string;
   selectedDate: string;
 }> = ({ announcementToday, id, selectedDate }) => {
@@ -188,9 +188,9 @@ const AnnouncementAndSubject: React.FC<{
   const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(announcementToday);
-
-  console.error('????', announcement);
+  const [announcement, setAnnouncement] = useState<string>(
+    announcementToday ?? ''
+  );
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
@@ -205,13 +205,13 @@ const AnnouncementAndSubject: React.FC<{
         });
       })
       .catch(() => {
-        setAnnouncement(announcementToday);
+        setAnnouncement(announcementToday ?? '');
         setIsEditing(true);
       });
   };
 
   const handleCancel = () => {
-    setAnnouncement(announcementToday);
+    setAnnouncement(announcementToday ?? '');
     setIsEditing(false);
   };
 
@@ -262,7 +262,7 @@ const AnnouncementAndSubject: React.FC<{
                   textOverflow: 'ellipsis',
                 }}
               >
-                {announcement || '공지가 등록되지 않았습니다.'}
+                {announcement ?? '공지가 등록되지 않았습니다.'}
               </SText>
             </Flex>
             <PostImage
@@ -352,14 +352,11 @@ const TeamAdmin = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { tagsMap, announcement, myTeamResponse, isTeamManager } =
-    useTeamInfoManager({
-      teamId: id,
-      year,
-      month,
-    });
-
-  console.error('!!!', announcement);
+  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
+    teamId: id,
+    year,
+    month,
+  });
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -508,7 +505,7 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={announcement}
+          announcementToday={myTeamResponse?.teamAnnouncement}
           id={id}
           selectedDate={selectedDate}
         />
