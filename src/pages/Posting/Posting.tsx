@@ -244,13 +244,11 @@ const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
-    // const articleBody = postImages
-    //   ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
-    //   : articleBodyTrim;
 
-    const articleBody = postImages
-      ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
-      : articleBodyTrim;
+    const articleBody =
+      postImages.length > 0
+        ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
       mutatePost({
