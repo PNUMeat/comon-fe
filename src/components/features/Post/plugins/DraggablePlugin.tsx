@@ -612,13 +612,51 @@ const useDraggableBlockMenu = (
         const imgNodeKeys = imgArray
           .map((img) => $getNearestNodeFromDOMNode(img)?.getKey())
           .filter((key) => key !== undefined);
-        setPostImages((prev) =>
-          prev.map((item, idx) =>
-            imgNodeKeys.includes(item.key)
-              ? { ...item, line: line, idx: idx }
-              : item
-          )
-        );
+
+        // console.log('my img keys', imgArray, imgNodeKeys);
+
+        setPostImages((prev) => {
+          const targets = prev.filter((img) => imgNodeKeys.includes(img.key));
+          const targetOriginLine = targets[0].line;
+          const targetNewLine = line;
+          if (targetOriginLine === targetNewLine) {
+            return prev;
+          }
+
+          const rangeStart = Math.min(targetOriginLine, targetNewLine);
+          const rangeEnd = Math.max(targetOriginLine, targetNewLine);
+
+          const rearrangedArr = prev.map((imgObj) => {
+            if (imgNodeKeys.includes(imgObj.key)) {
+              // console.log('이동됨', imgObj.key);
+              return { ...imgObj, line: targetNewLine };
+            }
+
+            if (imgObj.line >= rangeStart && imgObj.line <= rangeEnd) {
+              if (
+                targetNewLine < targetOriginLine &&
+                imgObj.line >= targetNewLine
+                // && imgObj.line < targetOriginLine
+              ) {
+                // console.log('아래로 밀러남', imgObj.key);
+                return { ...imgObj, line: imgObj.line + 1 };
+              }
+
+              if (
+                targetNewLine > targetOriginLine &&
+                imgObj.line > targetOriginLine
+                // && imgObj.line <= targetNewLine
+              ) {
+                // console.log('위로 밀려남', imgObj.key);
+                return { ...imgObj, line: imgObj.line - 1 };
+              }
+            }
+            // console.log('그대로', imgObj.key);
+            return imgObj;
+          });
+          console.error('rearrange fin', rearrangedArr);
+          return rearrangedArr;
+        });
       });
 
       setDraggableBlockElem(null);
@@ -656,15 +694,6 @@ const useDraggableBlockMenu = (
       const node = $getNearestNodeFromDOMNode(draggableBlockElem);
       if (node) {
         nodeKey = node.getKey();
-        // const imgSpan = draggableBlockElem.querySelector('.editor-image');
-        // if (imgSpan) {
-        //   const div = imgSpan.children[0];
-        //   if (div) {
-        //     const img = div.children[0];
-        //     const imgNodeKey = $getNearestNodeFromDOMNode(img);
-        //     console.log('??', img, imgNodeKey);
-        //   }
-        // }
       }
     });
 

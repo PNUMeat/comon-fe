@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { usePrompt } from '@/hooks/usePrompt';
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -36,7 +38,6 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { usePrompt } from '@/hooks/usePrompt';
 
 const GapFlex = styled.div<{
   gap?: number;
@@ -130,6 +131,8 @@ const PostSubjectViewer: React.FC<{
     }
   }, [show]);
 
+  const { result } = useRegroupImageAndArticle(data);
+
   return (
     <PostSubjectViewWrap
       height={show ? Math.max(height, minShowHeight) : 57}
@@ -161,9 +164,7 @@ const PostSubjectViewer: React.FC<{
         <TopicViewer
           ref={contentRef}
           dangerouslySetInnerHTML={{
-            __html: data?.imageUrl
-              ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-              : data?.articleBody,
+            __html: result,
           }}
         />
       ) : null}
@@ -244,10 +245,11 @@ const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
-    // TODO: 위치만 바꾼 경우는?
-    const articleBody = postImages
-      ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
-      : articleBodyTrim;
+
+    const articleBody =
+      postImages.length > 0
+        ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
       mutatePost({
@@ -291,7 +293,18 @@ const Posting = () => {
       return;
     }
 
-    console.log('????', postImages, articleBody);
+    postImages
+      .sort((a, b) => {
+        if (a.line !== b.line) {
+          return a.line - b.line;
+        }
+        return a.idx - b.idx;
+      })
+      .forEach((img) => console.log('i', img.img.name));
+
+    console.log('??', postImages, articleBody);
+    postImages.forEach((i) => console.error(i.img));
+
     createPost({
       teamId: parseInt(id),
       images:

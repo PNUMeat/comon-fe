@@ -29,7 +29,7 @@ export type MyArticle = {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrl: string | null;
+  imageUrls: string[] | null;
   memberName: string;
   memberImage: string;
 };

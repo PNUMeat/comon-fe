@@ -1,3 +1,4 @@
+import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -13,24 +14,11 @@ import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButt
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import {
-  Fragment,
-  Suspense,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, Suspense, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
-import {
-  IArticle,
-  ICalendarTag,
-  getArticlesByDate,
-  getTeamInfoAndTags,
-  getTeamTopic,
-} from '@/api/dashboard';
+import { IArticle, getArticlesByDate, getTeamTopic } from '@/api/dashboard';
 import announcementTodayIcon from '@/assets/TeamAdmin/announcementToday.svg';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
@@ -168,11 +156,11 @@ const SubjectControlButton: React.FC<{
       onClick={() =>
         navigate(`/team-subject/${id}/${selectedDate}`, {
           state: {
-            articleBody: data?.articleBody,
-            articleId: data?.articleId,
-            articleTitle: data?.articleTitle,
-            articleCategory: data?.articleCategory,
-            articleImageUrl: data?.imageUrl,
+            articleBody: data?.articleBody ?? null,
+            articleId: data?.articleId ?? null,
+            articleTitle: data?.articleTitle ?? null,
+            articleCategory: data?.articleCategory ?? null,
+            articleImageUrls: data?.imageUrls ?? null,
           },
         })
       }
@@ -190,33 +178,30 @@ const SubjectControlButton: React.FC<{
   );
 };
 
-const AnnouncementAndSubject = forwardRef<
-  HTMLDivElement,
-  {
-    announcementToday: string;
-    id: string;
-    selectedDate: string;
-  }
->(({ announcementToday, id, selectedDate }, ref) => {
+const AnnouncementAndSubject: React.FC<{
+  announcementToday: string;
+  id: string;
+  selectedDate: string;
+}> = ({ announcementToday, id, selectedDate }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(
-    announcementToday || ''
-  );
+  const [announcement, setAnnouncement] = useState<string>(announcementToday);
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
+    setAnnouncement(announcement);
     setIsEditing(false);
-    updateAnnouncement(Number(id), announcement).then(() => {
-      window.location.reload();
+    updateAnnouncement(Number(id), announcement).catch(() => {
+      setAnnouncement(announcementToday);
+      setIsEditing(true);
     });
   };
 
   const handleCancel = () => {
-    setAnnouncement(announcementToday || '');
+    setAnnouncement(announcementToday);
     setIsEditing(false);
   };
 
@@ -235,7 +220,7 @@ const AnnouncementAndSubject = forwardRef<
           whiteSpace: isEditing ? 'normal' : 'nowrap',
           position: 'relative',
         }}
-        ref={ref}
+        // ref={ref}
         onClick={!isEditing ? toggleEditing : undefined}
       >
         <AnnouncementImageWrapper>
@@ -267,7 +252,7 @@ const AnnouncementAndSubject = forwardRef<
                   textOverflow: 'ellipsis',
                 }}
               >
-                {announcementToday || '공지가 등록되지 않았습니다.'}
+                {announcement || '공지가 등록되지 않았습니다.'}
               </SText>
             </Flex>
             <PostImage
@@ -304,8 +289,13 @@ const AnnouncementAndSubject = forwardRef<
             </AnnouncementInputHelperText>
             <Spacer h={12} />
             <Flex justify="center" gap={isMobile ? '4px' : '14px'}>
-              <CancelButton onClick={handleCancel}>취소</CancelButton>
-              <SaveButton onClick={handleSave}>저장하기</SaveButton>
+              <CancelButton onClick={handleCancel}>
+                <SText fontFamily={'Pretendard'}>취소</SText>
+              </CancelButton>
+
+              <SaveButton onClick={handleSave}>
+                <SText fontFamily={'Pretendard'}>저장하기</SText>
+              </SaveButton>
             </Flex>
           </Flex>
         )}
@@ -314,7 +304,7 @@ const AnnouncementAndSubject = forwardRef<
       <SubjectControlButton id={id} selectedDate={selectedDate} />
     </Announcement>
   );
-});
+};
 
 const CalendarSection = styled.section`
   grid-area: calendar;
@@ -326,15 +316,16 @@ const CalendarSection = styled.section`
 `;
 
 let totalPageCache = 0;
+let prevNoticeCache = '';
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 const TeamAdmin = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  const announcementRef = useRef<HTMLDivElement | null>(null);
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const [show, setShow] = useState<boolean>(false);
+  // const announcementRef = useRef<HTMLDivElement | null>(null);
+  // const modalRef = useRef<HTMLDivElement | null>(null);
+  // const [show, setShow] = useState<boolean>(false);
 
   const { id } = useParams<{ id: string }>();
 
@@ -351,41 +342,18 @@ const TeamAdmin = () => {
 
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
-  //TODO: useCalendarTag
-  const [tags, setTags] = useState<ICalendarTag[]>([]);
 
-  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
-
-  const addTags = (newTags: ICalendarTag[]) => {
-    setTags((prevTags) => {
-      const updatedTags = [...prevTags];
-
-      newTags.forEach((newTag) => {
-        const existingIndex = updatedTags.findIndex(
-          (tag) => tag.subjectDate === newTag.subjectDate
-        );
-        if (existingIndex !== -1) {
-          updatedTags[existingIndex] = newTag;
-        } else {
-          updatedTags.push(newTag);
-        }
-      });
-
-      return updatedTags;
-    });
-  };
-
-  const { data: teamInfoData, isSuccess } = useQuery({
-    queryKey: ['team-info', id, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(id), year, month),
-    enabled: !!id,
+  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
+    teamId: id,
+    year,
+    month,
   });
 
-  useEffect(() => {
-    if (isSuccess && teamInfoData) {
-      addTags(teamInfoData.subjectArticleDateAndTagResponses);
-    }
-  }, [isSuccess]);
+  if (myTeamResponse) {
+    prevNoticeCache = myTeamResponse.teamAnnouncement;
+  }
+
+  const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const {
     data: articlesData,
@@ -411,51 +379,6 @@ const TeamAdmin = () => {
     setCurrentView('article');
   };
 
-  useEffect(() => {
-    if (
-      announcementRef &&
-      'current' in announcementRef &&
-      announcementRef.current
-    ) {
-      const modal = modalRef.current;
-      if (!modal) {
-        return;
-      }
-      if (show) {
-        const moveModal = () => {
-          const announcement = announcementRef.current;
-          const { top, left, width } =
-            announcement?.getBoundingClientRect() ?? {
-              top: 0,
-              left: 0,
-              width: 0,
-            };
-          modal.style.top = `${top}px`;
-          modal.style.left = `${left}px`;
-          modal.style.width = `${width}px`;
-        };
-        const handleOutsideClick = (e: MouseEvent) => {
-          if (modalRef?.current?.contains(e.target as Node)) {
-            return;
-          }
-          setShow(false);
-        };
-        moveModal();
-        document.addEventListener('mousedown', handleOutsideClick);
-        document.addEventListener('scroll', moveModal);
-
-        return () => {
-          document.removeEventListener('mousedown', handleOutsideClick);
-          document.removeEventListener('scroll', moveModal);
-        };
-      }
-      modal.style.top = `99999px`;
-    }
-  }, [show]);
-
-  const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
-  const isTeamManager = teamInfoData?.teamManager ?? false;
-
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
@@ -480,8 +403,8 @@ const TeamAdmin = () => {
               >
                 <Suspense fallback={<div style={{ height: '84px' }} />}>
                   <ImageContainer
-                    src={teamInfoData?.myTeamResponse.imageUrl || ''}
-                    altText={teamInfoData?.myTeamResponse.teamName || ''}
+                    src={myTeamResponse?.imageUrl ?? ''}
+                    altText={myTeamResponse?.teamName ?? ''}
                     w={70}
                     h={70}
                     maxW={70}
@@ -577,21 +500,22 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={announcementToday}
-          ref={announcementRef}
+          announcementToday={
+            myTeamResponse?.teamAnnouncement ?? prevNoticeCache
+          }
           id={id}
           selectedDate={selectedDate}
         />
         <CalendarSection>
           <CustomCalendar
-            tags={tags}
+            tags={tagsMap.get(id) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
-            tags={tags}
+            tags={tagsMap.get(id) ?? []}
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}

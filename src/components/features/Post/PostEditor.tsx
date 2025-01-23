@@ -49,6 +49,7 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
 import { useSetAtom } from 'jotai';
 import {
+  $getNearestNodeFromDOMNode,
   $getNodeByKey,
   $getRoot,
   $isLineBreakNode,
@@ -286,7 +287,11 @@ const EditorPlaceholder = styled.div`
 `;
 
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
-  return await fetch(blobUrl)
+  return await fetch(blobUrl, {
+    headers: {
+      'Access-Control-Allow-Origin': import.meta.url,
+    },
+  })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
     .catch((error) => {
@@ -318,7 +323,7 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
   const setImages = useSetAtom(postImagesAtom);
-  const { compressImage } = useImageCompressor(0.5, 1);
+  const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -349,48 +354,75 @@ const useDetectImageMutation = () => {
               const line = $getRoot()
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
-              const imgObjs: {
-                key: string;
-                img: File;
-                line: number;
-                idx: number;
-              }[] = [];
 
+              /**
+               * 진짜 건들이면 안되는 코드
+               * 건들이는 순간 비동기 흐름다 깨져서 Promise.all이 resolve가 안됨
+               */
               Promise.all(
-                [...imgs].map((img, idx) =>
-                  findImgElement(img as HTMLElement)
-                    .then((foundImg) =>
-                      blobUrlToFile(foundImg.src, `img-${nodeKey}.png`)
-                    )
-                    .then((newImgFile) => compressImage(newImgFile))
-                    .then((compressedImgFile) => {
-                      imgObjs.push({
-                        key: nodeKey,
-                        img: compressedImgFile,
-                        line: line,
-                        idx: idx,
-                      });
-                    })
-                    .catch((err) => {
-                      console.error('img err', err);
-                    })
+                [...imgs].map((img) =>
+                  findImgElement(img as HTMLElement).then((foundImg) => {
+                    let myNodeKey = '';
+                    editor.read(() => {
+                      const node = $getNearestNodeFromDOMNode(img);
+                      if (node) {
+                        myNodeKey = node.getKey();
+                      }
+                    });
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
+                  })
                 )
-              ).then(() => {
-                setImages((prev) => {
-                  const filteredNewImages = imgObjs.filter(
-                    (newImg) =>
-                      !prev.some(
-                        (img) =>
-                          img.line === newImg.line && img.idx === newImg.idx
-                      )
-                  );
-                  console.log('filterred', [...prev, ...filteredNewImages]);
-                  return [...prev, ...filteredNewImages];
+              )
+                .then(async (results) => {
+                  const compressedImg = [];
+
+                  for (const imgFile of results) {
+                    const requestId = `${imgFile.name}-${Date.now()}.jpg`;
+                    const res = await compressImage(requestId, imgFile);
+                    compressedImg.push(res);
+                  }
+
+                  const imgObjs = compressedImg.map((img, idx) => ({
+                    key: img.name.split('-')[1].split('.')[0],
+                    img: img,
+                    line: line,
+                    idx: idx,
+                  }));
+                  // console.log('new img objs', imgObjs);
+
+                  setImages((prev) => {
+                    const filteredNewImages = imgObjs.filter(
+                      (newImg) =>
+                        !prev.some(
+                          (img) =>
+                            img.line === newImg.line && img.idx === newImg.idx
+                        )
+                    );
+                    // console.log('new img arr', filteredNewImages);
+                    if (filteredNewImages.length === 0) {
+                      // console.log('no new img');
+                      return prev;
+                    }
+
+                    const targetNewLine = line;
+                    const rearrangedArr = prev.map((imgObj) => {
+                      if (imgObj.line > targetNewLine) {
+                        return { ...imgObj, line: imgObj.line + 1 };
+                      }
+                      return imgObj;
+                    });
+                    const fin = [...rearrangedArr, ...filteredNewImages];
+                    console.error('add fin', fin);
+                    return fin;
+                  });
+                })
+                .catch((err) => {
+                  console.error('Promise.all error', err);
                 });
-              });
             });
             return;
           }
+
           if (mutation === 'destroyed') {
             setImages((prev) =>
               prev.filter((imgObj) => imgObj.key !== nodeKey)
@@ -516,9 +548,6 @@ const PostEditor: React.FC<{
   title?: string;
   tag?: string;
   setTag?: (tag: string) => void;
-  // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
-  //  임시방편이다.
-  // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
 }> = ({ forwardContent, forwardTitle, content, setTag, title, tag }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);

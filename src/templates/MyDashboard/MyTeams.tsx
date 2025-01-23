@@ -1,5 +1,6 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -580,12 +581,14 @@ const ArticleDetailViewer: React.FC<{
     (article) => article.articleId === selectedId
   ) as MyArticle;
 
-  const selectedArticleBody = selectedArticle?.imageUrl
-    ? selectedArticle?.articleBody.replace(
-        /src="\?"/,
-        `src="${selectedArticle.imageUrl}"`
-      )
-    : selectedArticle?.articleBody;
+  const { result: selectedArticleBody } =
+    useRegroupImageAndArticle(selectedArticle);
+  // const selectedArticleBody = selectedArticle?.imageUrl
+  //   ? selectedArticle?.articleBody.replace(
+  //       /src="\?"/,
+  //       `src="${selectedArticle.imageUrl}"`
+  //     )
+  //   : selectedArticle?.articleBody;
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -634,7 +637,7 @@ const ArticleDetailViewer: React.FC<{
         </ArticleWriter>
       </ArticleDetailHeader>
       <TeamArticleViewer
-        dangerouslySetInnerHTML={{ __html: selectedArticleBody ?? '' }}
+        dangerouslySetInnerHTML={{ __html: selectedArticleBody }}
       />
     </GradationArticleDetail>
   );

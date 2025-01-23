@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -48,9 +50,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     }
   };
 
-  const selectedTopicBody = data?.imageUrl
-    ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-    : data?.articleBody;
+  const { result: selectedTopicBody } = useRegroupImageAndArticle(data);
 
   return data ? (
     <Box width="100%" padding="30px 40px">
@@ -78,7 +78,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
-                    articleImageUrl: data?.imageUrl,
+                    articleImageUrls: data?.imageUrls,
                   }}
                 >
                   <LazyImage
@@ -126,7 +126,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         <Spacer h={36} />
         {data ? (
           <TopicViewer
-            dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
+            dangerouslySetInnerHTML={{ __html: selectedTopicBody }}
           />
         ) : null}
       </Flex>
