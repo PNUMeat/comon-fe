@@ -14,7 +14,7 @@ import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButt
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, Suspense, forwardRef, useRef, useState } from 'react';
+import { Fragment, Suspense, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -178,26 +178,27 @@ const SubjectControlButton: React.FC<{
   );
 };
 
-const AnnouncementAndSubject = forwardRef<
-  HTMLDivElement,
-  {
-    announcementToday: string;
-    id: string;
-    selectedDate: string;
-  }
->(({ announcementToday, id, selectedDate }, ref) => {
+const AnnouncementAndSubject: React.FC<{
+  announcementToday: string;
+  id: string;
+  selectedDate: string;
+}> = ({ announcementToday, id, selectedDate }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(announcementToday);
+  const [announcement, setAnnouncement] = useState<string>(
+    () => announcementToday
+  );
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
-    updateAnnouncement(Number(id), announcement).then(() => {
-      setIsEditing(false);
-      setAnnouncement(announcement);
+    setAnnouncement(announcement);
+    setIsEditing(false);
+    updateAnnouncement(Number(id), announcement).catch(() => {
+      setAnnouncement(announcementToday);
+      setIsEditing(true);
     });
   };
 
@@ -221,7 +222,7 @@ const AnnouncementAndSubject = forwardRef<
           whiteSpace: isEditing ? 'normal' : 'nowrap',
           position: 'relative',
         }}
-        ref={ref}
+        // ref={ref}
         onClick={!isEditing ? toggleEditing : undefined}
       >
         <AnnouncementImageWrapper>
@@ -305,7 +306,7 @@ const AnnouncementAndSubject = forwardRef<
       <SubjectControlButton id={id} selectedDate={selectedDate} />
     </Announcement>
   );
-});
+};
 
 const CalendarSection = styled.section`
   grid-area: calendar;
@@ -324,7 +325,7 @@ const TeamAdmin = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  const announcementRef = useRef<HTMLDivElement | null>(null);
+  // const announcementRef = useRef<HTMLDivElement | null>(null);
   // const modalRef = useRef<HTMLDivElement | null>(null);
   // const [show, setShow] = useState<boolean>(false);
 
@@ -546,7 +547,7 @@ const TeamAdmin = () => {
           announcementToday={
             myTeamResponse?.teamAnnouncement ?? prevNoticeCache
           }
-          ref={announcementRef}
+          // ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
         />
