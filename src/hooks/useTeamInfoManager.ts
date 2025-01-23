@@ -17,6 +17,7 @@ export const useTeamInfoManager = ({
   const [tagsMap, setTagsMap] = useState<Map<string, ICalendarTag[]>>(
     new Map()
   );
+  const [announcement, setAnnouncement] = useState('');
 
   const { data: teamInfoData, isSuccess } = useQuery({
     queryKey: ['team-info', teamId, year, month],
@@ -50,11 +51,13 @@ export const useTeamInfoManager = ({
   useEffect(() => {
     if (isSuccess && teamInfoData && teamId) {
       addTags(teamId, teamInfoData.subjectArticleDateAndTagResponses);
+      setAnnouncement(teamInfoData.myTeamResponse.teamAnnouncement);
     }
   }, [isSuccess, teamId]);
 
   return {
     tagsMap: tagsMap,
+    announcement: announcement,
     myTeamResponse: teamInfoData?.myTeamResponse,
     isTeamManager: teamInfoData?.teamManager || false,
   };
