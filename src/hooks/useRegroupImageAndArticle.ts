@@ -4,7 +4,7 @@ import { IArticle, ITopicResponse } from '@/api/dashboard.ts';
 import { MyArticle } from '@/api/mypage.ts';
 
 const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
-  console.log('data??', data);
+  console.error('data??', data);
 
   if (data.articleBody === null) {
     return 'put mock data';
@@ -12,7 +12,7 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
 
   // TODO: 백엔드 작업 완료되면 삭제
   if ('imageUrl' in data) {
-    console.log('아직 적용 안됨');
+    console.error('아직 적용 안됨');
     return data?.imageUrl
       ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
       : data?.articleBody;
