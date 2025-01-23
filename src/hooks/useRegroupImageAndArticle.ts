@@ -4,6 +4,8 @@ import { IArticle, ITopicResponse } from '@/api/dashboard.ts';
 import { MyArticle } from '@/api/mypage.ts';
 
 const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
+  console.log('data??', data);
+
   if (data.articleBody === null) {
     return 'put mock data';
   }

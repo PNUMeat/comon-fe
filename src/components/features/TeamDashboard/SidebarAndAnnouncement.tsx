@@ -8,9 +8,8 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Suspense, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { navigate } from '@/api/apiInstance.ts';
 import { ITeamInfo, joinTeam } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
@@ -39,7 +38,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -249,7 +248,13 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         <NewPostButton
           onClick={() => {
             if (isMyTeam) {
-              navigate(`/posting/${teamId}`);
+              navigate(`/posting/${teamId}`, {
+                state: {
+                  article: null,
+                  articleId: null,
+                  articleTitle: null,
+                },
+              });
             } else {
               const pwd = prompt('팀 비밀번호');
               if (!pwd || pwd.trim().length > 4) {
