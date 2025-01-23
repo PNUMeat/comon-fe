@@ -289,7 +289,7 @@ const EditorPlaceholder = styled.div`
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   return await fetch(blobUrl, {
     headers: {
-      origin: 'https://test.codemonster.site',
+      'Access-Control-Allow-Origin': import.meta.url,
     },
   })
     .then((res) => res.blob())
