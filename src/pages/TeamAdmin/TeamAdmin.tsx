@@ -254,7 +254,7 @@ const AnnouncementAndSubject: React.FC<{
                   textOverflow: 'ellipsis',
                 }}
               >
-                {announcementToday || '공지가 등록되지 않았습니다.'}
+                {announcement || '공지가 등록되지 않았습니다.'}
               </SText>
             </Flex>
             <PostImage
@@ -381,48 +381,6 @@ const TeamAdmin = () => {
     setCurrentView('article');
   };
 
-  // useEffect(() => {
-  //   if (
-  //     announcementRef &&
-  //     'current' in announcementRef &&
-  //     announcementRef.current
-  //   ) {
-  //     const modal = modalRef.current;
-  //     if (!modal) {
-  //       return;
-  //     }
-  //     if (show) {
-  //       const moveModal = () => {
-  //         const announcement = announcementRef.current;
-  //         const { top, left, width } =
-  //           announcement?.getBoundingClientRect() ?? {
-  //             top: 0,
-  //             left: 0,
-  //             width: 0,
-  //           };
-  //         modal.style.top = `${top}px`;
-  //         modal.style.left = `${left}px`;
-  //         modal.style.width = `${width}px`;
-  //       };
-  //       const handleOutsideClick = (e: MouseEvent) => {
-  //         if (modalRef?.current?.contains(e.target as Node)) {
-  //           return;
-  //         }
-  //         setShow(false);
-  //       };
-  //       moveModal();
-  //       document.addEventListener('mousedown', handleOutsideClick);
-  //       document.addEventListener('scroll', moveModal);
-  //
-  //       return () => {
-  //         document.removeEventListener('mousedown', handleOutsideClick);
-  //         document.removeEventListener('scroll', moveModal);
-  //       };
-  //     }
-  //     modal.style.top = `99999px`;
-  //   }
-  // }, [show]);
-
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
@@ -547,7 +505,6 @@ const TeamAdmin = () => {
           announcementToday={
             myTeamResponse?.teamAnnouncement ?? prevNoticeCache
           }
-          // ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
         />
