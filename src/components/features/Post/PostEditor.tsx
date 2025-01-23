@@ -287,7 +287,7 @@ const EditorPlaceholder = styled.div`
 `;
 
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
-  return await fetch(blobUrl, { mode: 'cors' })
+  return await fetch(blobUrl)
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
     .catch((error) => {
@@ -365,7 +365,7 @@ const useDetectImageMutation = () => {
                         myNodeKey = node.getKey();
                       }
                     });
-                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}.jpeg`);
                   })
                 )
               )
