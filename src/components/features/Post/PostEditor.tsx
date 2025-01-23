@@ -373,7 +373,7 @@ const useDetectImageMutation = () => {
                   const compressedImg = [];
 
                   for (const imgFile of results) {
-                    const requestId = `${imgFile.name}-${Date.now()}.jpeg`;
+                    const requestId = `${imgFile.name}-${Date.now()}.jpg`;
                     const res = await compressImage(requestId, imgFile);
                     compressedImg.push(res);
                   }
