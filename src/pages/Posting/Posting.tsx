@@ -270,18 +270,19 @@ const Posting = () => {
               setPostImages([]);
               navigate(`/team-dashboard/${id}`);
               setDisablePrompt(true);
-              setAlert({ message: '게시글을 수정했어요', isVisible: true });
+              setAlert({ message: '게시글을 수정했어요', isVisible: true, onConfirm: () => {} });
             })
             .catch(() => {
               setAlert({
                 message: '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
+                onConfirm: () => {},
               });
               setIsPending(false);
             });
         })
         .catch(() => {
-          setAlert({ message: '게시글 수정에 실패했어요', isVisible: true });
+          setAlert({ message: '게시글 수정에 실패했어요', isVisible: true, onConfirm: () => {} });
           setIsPending(false);
         });
       return;
@@ -331,20 +332,21 @@ const Posting = () => {
             setDashboardView('article');
             setSelectedPostId(articleId);
             setPostImages([]);
-            navigate(`/team-dashboard/${id}`);
-            setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
             setDisablePrompt(true);
+            navigate(`/team-dashboard/${id}`);
+            setAlert({ message: '글쓰기를 완료했어요', isVisible: true, onConfirm: () => {navigate(`/team-dashboard/${id}`)} });
           })
           .catch(() => {
             setAlert({
               message: '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
+              onConfirm: () => {},
             });
             setIsPending(false);
           });
       })
       .catch(() => {
-        setAlert({ message: '글쓰기에 실패했어요', isVisible: true });
+        setAlert({ message: '글쓰기에 실패했어요', isVisible: true, onConfirm: () => {} });
         setIsPending(false);
       });
   };

@@ -14,6 +14,8 @@ export const usePrompt = (when: boolean) => {
 
   useEffect(() => {
     if (blocker.state !== 'blocked') return;
+    console.log(when);
+    if (!when) return;
 
     if (window.confirm('정말로 이동하시겠습니까?')) {
       blocker.proceed();
