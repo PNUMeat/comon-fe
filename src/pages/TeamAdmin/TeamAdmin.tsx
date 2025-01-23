@@ -192,8 +192,6 @@ const AnnouncementAndSubject: React.FC<{
     announcementToday ?? ''
   );
 
-  console.error('?Q?!?!?!', announcementToday, announcement);
-
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
