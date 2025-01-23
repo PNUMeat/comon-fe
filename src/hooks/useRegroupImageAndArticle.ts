@@ -43,10 +43,10 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
 };
 
 export const useRegroupImageAndArticle = (
-  data: IArticle | ITopicResponse | MyArticle | undefined
+  data: IArticle | ITopicResponse | MyArticle | undefined | null
 ) => {
   const result = useMemo(() => {
-    if (data === undefined) {
+    if (data === undefined || data === null) {
       return '';
     }
 

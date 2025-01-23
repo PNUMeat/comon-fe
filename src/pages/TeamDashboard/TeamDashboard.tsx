@@ -126,7 +126,7 @@ const TeamDashboardPage = () => {
       if (
         error.response &&
         error.response.status === 401 &&
-        (error.response.data.code === 100 || error.response.data.code === 101)
+        error.response.data.code === 100
       ) {
         console.log('asdasd');
         return false;

@@ -74,7 +74,7 @@ export const HeaderInfoModal: React.FC<{
     queryKey: ['membersInfo'],
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
-    enabled: !!sessionStorage.getItem('Authorization'),
+    enabled: isLoggedIn,
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&

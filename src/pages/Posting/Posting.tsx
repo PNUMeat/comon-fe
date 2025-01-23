@@ -244,9 +244,12 @@ const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
-    // TODO: 위치만 바꾼 경우는?
+    // const articleBody = postImages
+    //   ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
+    //   : articleBodyTrim;
+
     const articleBody = postImages
-      ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
+      ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
       : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
@@ -290,7 +293,6 @@ const Posting = () => {
       return;
     }
 
-    // console.log('????', articleBody);
     postImages
       .sort((a, b) => {
         if (a.line !== b.line) {
