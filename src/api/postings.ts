@@ -27,6 +27,8 @@ export const createPost = async ({
     images.forEach((img) => {
       formData.append('images', img);
     });
+  } else {
+    formData.append('images', '');
   }
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
@@ -61,6 +63,8 @@ export const mutatePost = async ({
     images.forEach((img) => {
       formData.append('images', img);
     });
+  } else {
+    formData.append('images', '');
   }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(

@@ -28,6 +28,8 @@ export const createSubject = async ({
     images.forEach((img) => {
       formData.append('images', img);
     });
+  } else {
+    formData.append('images', '');
   }
 
   const res = await apiInstance.post(
@@ -69,6 +71,8 @@ export const mutateSubject = async ({
     images.forEach((img) => {
       formData.append('images', img);
     });
+  } else {
+    formData.append('images', '');
   }
 
   const res = await apiInstance.put(
