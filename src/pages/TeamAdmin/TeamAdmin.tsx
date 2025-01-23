@@ -26,7 +26,7 @@ import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
 const Grid = styled.div`
@@ -185,6 +185,7 @@ const AnnouncementAndSubject: React.FC<{
 }> = ({ announcementToday, id, selectedDate }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+  const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
   const [announcement, setAnnouncement] = useState<string>(announcementToday);
@@ -196,10 +197,17 @@ const AnnouncementAndSubject: React.FC<{
   const handleSave = () => {
     setAnnouncement(announcement);
     setIsEditing(false);
-    updateAnnouncement(Number(id), announcement).catch(() => {
-      setAnnouncement(announcementToday);
-      setIsEditing(true);
-    });
+    updateAnnouncement(Number(id), announcement)
+      .then(() => {
+        const [year, month] = selectedDate.split('-').map(Number);
+        queryClient.refetchQueries({
+          queryKey: ['team-info', id, year, month],
+        });
+      })
+      .catch(() => {
+        setAnnouncement(announcementToday);
+        setIsEditing(true);
+      });
   };
 
   const handleCancel = () => {
