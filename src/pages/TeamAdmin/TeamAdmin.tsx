@@ -14,14 +14,7 @@ import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButt
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import {
-  Fragment,
-  Suspense,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, Suspense, forwardRef, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -197,21 +190,19 @@ const AnnouncementAndSubject = forwardRef<
   const isMobile = width <= breakpoints.mobile;
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(
-    announcementToday || ''
-  );
+  const [announcement, setAnnouncement] = useState<string>(announcementToday);
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
-    setIsEditing(false);
     updateAnnouncement(Number(id), announcement).then(() => {
-      window.location.reload();
+      setIsEditing(false);
+      setAnnouncement(announcement);
     });
   };
 
   const handleCancel = () => {
-    setAnnouncement(announcementToday || '');
+    setAnnouncement(announcementToday);
     setIsEditing(false);
   };
 
@@ -299,8 +290,13 @@ const AnnouncementAndSubject = forwardRef<
             </AnnouncementInputHelperText>
             <Spacer h={12} />
             <Flex justify="center" gap={isMobile ? '4px' : '14px'}>
-              <CancelButton onClick={handleCancel}>취소</CancelButton>
-              <SaveButton onClick={handleSave}>저장하기</SaveButton>
+              <CancelButton onClick={handleCancel}>
+                <SText fontFamily={'Pretendard'}>취소</SText>
+              </CancelButton>
+
+              <SaveButton onClick={handleSave}>
+                <SText fontFamily={'Pretendard'}>저장하기</SText>
+              </SaveButton>
             </Flex>
           </Flex>
         )}
@@ -329,8 +325,8 @@ const TeamAdmin = () => {
   const isMobile = width <= breakpoints.mobile;
 
   const announcementRef = useRef<HTMLDivElement | null>(null);
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const [show, setShow] = useState<boolean>(false);
+  // const modalRef = useRef<HTMLDivElement | null>(null);
+  // const [show, setShow] = useState<boolean>(false);
 
   const { id } = useParams<{ id: string }>();
 
@@ -384,50 +380,47 @@ const TeamAdmin = () => {
     setCurrentView('article');
   };
 
-  useEffect(() => {
-    if (
-      announcementRef &&
-      'current' in announcementRef &&
-      announcementRef.current
-    ) {
-      const modal = modalRef.current;
-      if (!modal) {
-        return;
-      }
-      if (show) {
-        const moveModal = () => {
-          const announcement = announcementRef.current;
-          const { top, left, width } =
-            announcement?.getBoundingClientRect() ?? {
-              top: 0,
-              left: 0,
-              width: 0,
-            };
-          modal.style.top = `${top}px`;
-          modal.style.left = `${left}px`;
-          modal.style.width = `${width}px`;
-        };
-        const handleOutsideClick = (e: MouseEvent) => {
-          if (modalRef?.current?.contains(e.target as Node)) {
-            return;
-          }
-          setShow(false);
-        };
-        moveModal();
-        document.addEventListener('mousedown', handleOutsideClick);
-        document.addEventListener('scroll', moveModal);
-
-        return () => {
-          document.removeEventListener('mousedown', handleOutsideClick);
-          document.removeEventListener('scroll', moveModal);
-        };
-      }
-      modal.style.top = `99999px`;
-    }
-  }, [show]);
-
-  // const announcementToday = teamInfoData?.myTeamResponse.teamAnnouncement || '';
-  // const isTeamManager = teamInfoData?.teamManager ?? false;
+  // useEffect(() => {
+  //   if (
+  //     announcementRef &&
+  //     'current' in announcementRef &&
+  //     announcementRef.current
+  //   ) {
+  //     const modal = modalRef.current;
+  //     if (!modal) {
+  //       return;
+  //     }
+  //     if (show) {
+  //       const moveModal = () => {
+  //         const announcement = announcementRef.current;
+  //         const { top, left, width } =
+  //           announcement?.getBoundingClientRect() ?? {
+  //             top: 0,
+  //             left: 0,
+  //             width: 0,
+  //           };
+  //         modal.style.top = `${top}px`;
+  //         modal.style.left = `${left}px`;
+  //         modal.style.width = `${width}px`;
+  //       };
+  //       const handleOutsideClick = (e: MouseEvent) => {
+  //         if (modalRef?.current?.contains(e.target as Node)) {
+  //           return;
+  //         }
+  //         setShow(false);
+  //       };
+  //       moveModal();
+  //       document.addEventListener('mousedown', handleOutsideClick);
+  //       document.addEventListener('scroll', moveModal);
+  //
+  //       return () => {
+  //         document.removeEventListener('mousedown', handleOutsideClick);
+  //         document.removeEventListener('scroll', moveModal);
+  //       };
+  //     }
+  //     modal.style.top = `99999px`;
+  //   }
+  // }, [show]);
 
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
