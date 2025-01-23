@@ -10,15 +10,6 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
     return 'put mock data';
   }
 
-  // TODO: 백엔드 작업 완료되면 삭제
-  if ('imageUrl' in data) {
-    console.error('아직 적용 안됨');
-    return data?.imageUrl
-      ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-      : data?.articleBody;
-  }
-
-  console.log('dddd', data);
   if (data.imageUrls === null || data.imageUrls.length === 0) {
     return data.articleBody;
   }

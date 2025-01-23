@@ -167,7 +167,7 @@ const SubjectControlButton: React.FC<{
             articleId: data?.articleId,
             articleTitle: data?.articleTitle,
             articleCategory: data?.articleCategory,
-            articleImageUrl: data?.imageUrls,
+            articleImageUrls: data?.imageUrls,
           },
         })
       }
