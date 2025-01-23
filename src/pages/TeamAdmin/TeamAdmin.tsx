@@ -550,7 +550,9 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={prevNoticeCache}
+          announcementToday={
+            myTeamResponse?.teamAnnouncement ?? prevNoticeCache
+          }
           ref={announcementRef}
           id={id}
           selectedDate={selectedDate}
