@@ -26,7 +26,7 @@ import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
 const Grid = styled.div`
@@ -179,29 +179,37 @@ const SubjectControlButton: React.FC<{
 };
 
 const AnnouncementAndSubject: React.FC<{
-  announcementToday: string;
+  announcementToday?: string;
   id: string;
   selectedDate: string;
 }> = ({ announcementToday, id, selectedDate }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+  const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [announcement, setAnnouncement] = useState<string>(announcementToday);
+  const [announcement, setAnnouncement] = useState<string>(
+    announcementToday ?? ''
+  );
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
   const handleSave = () => {
-    setAnnouncement(announcement);
+    updateAnnouncement(Number(id), announcement)
+      .then(() => {
+        const [year, month] = selectedDate.split('-').map(Number);
+        queryClient.refetchQueries({
+          queryKey: ['team-info', id, year, month],
+        });
+      })
+      .catch(() => {
+        setIsEditing(true);
+      });
     setIsEditing(false);
-    updateAnnouncement(Number(id), announcement).catch(() => {
-      setAnnouncement(announcementToday);
-      setIsEditing(true);
-    });
   };
 
   const handleCancel = () => {
-    setAnnouncement(announcementToday);
+    setAnnouncement(announcementToday ?? '');
     setIsEditing(false);
   };
 
@@ -220,7 +228,6 @@ const AnnouncementAndSubject: React.FC<{
           whiteSpace: isEditing ? 'normal' : 'nowrap',
           position: 'relative',
         }}
-        // ref={ref}
         onClick={!isEditing ? toggleEditing : undefined}
       >
         <AnnouncementImageWrapper>
@@ -252,7 +259,7 @@ const AnnouncementAndSubject: React.FC<{
                   textOverflow: 'ellipsis',
                 }}
               >
-                {announcement || '공지가 등록되지 않았습니다.'}
+                {announcementToday ?? '공지가 등록되지 않았습니다.'}
               </SText>
             </Flex>
             <PostImage
@@ -316,7 +323,6 @@ const CalendarSection = styled.section`
 `;
 
 let totalPageCache = 0;
-let prevNoticeCache = '';
 
 // TODO: TeamDashboard랑 TeamAdmin 너무 똑같음 TeamAdmin이 TeamDashboard 가져오는 방향으로 수정필요
 const TeamAdmin = () => {
@@ -348,10 +354,6 @@ const TeamAdmin = () => {
     year,
     month,
   });
-
-  if (myTeamResponse) {
-    prevNoticeCache = myTeamResponse.teamAnnouncement;
-  }
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -500,9 +502,7 @@ const TeamAdmin = () => {
         </Sidebar>
 
         <AnnouncementAndSubject
-          announcementToday={
-            myTeamResponse?.teamAnnouncement ?? prevNoticeCache
-          }
+          announcementToday={myTeamResponse?.teamAnnouncement}
           id={id}
           selectedDate={selectedDate}
         />
