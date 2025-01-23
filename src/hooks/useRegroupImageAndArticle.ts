@@ -37,7 +37,7 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
     }
   );
 
-  console.log('img topics', articleWithImages);
+  console.error('img topics', articleWithImages);
 
   return articleWithImages;
 };

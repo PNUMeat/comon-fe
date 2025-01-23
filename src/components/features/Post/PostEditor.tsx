@@ -408,7 +408,7 @@ const useDetectImageMutation = () => {
                       return imgObj;
                     });
                     const fin = [...rearrangedArr, ...filteredNewImages];
-                    // console.log('fin', fin);
+                    console.error('add fin', fin);
                     return fin;
                   });
                 })

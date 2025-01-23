@@ -654,7 +654,7 @@ const useDraggableBlockMenu = (
             // console.log('그대로', imgObj.key);
             return imgObj;
           });
-          console.log('fin', rearrangedArr);
+          console.error('rearrange fin', rearrangedArr);
           return rearrangedArr;
         });
       });
