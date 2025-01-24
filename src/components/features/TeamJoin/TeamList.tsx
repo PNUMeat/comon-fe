@@ -28,9 +28,10 @@ import { SearchBar } from './SearchBar';
 interface TeamListProps {
   teams: ITeamInfo[];
   myTeam: ITeamInfo[];
+  isPending: boolean;
 }
 
-export const TeamList = ({ teams, myTeam }: TeamListProps) => {
+export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
   const myTeamIds = useMemo<Set<number>>(() => {
     return new Set(myTeam.map((team) => team.teamId));
   }, [myTeam]);
@@ -54,8 +55,11 @@ export const TeamList = ({ teams, myTeam }: TeamListProps) => {
         <SearchBar />
       </Flex>
       <Spacer h={34} />
-      <List itemCount={teams.length} h={440}>
-        {teams.length === 0 ? (
+      <List
+        itemCount={teams.length}
+        h={isPending ? 440 : teams.length === 0 ? 210 : 440}
+      >
+        {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
             <Flex height={210} justify="center" align="center">
               존재하지 않는 팀이에요.
@@ -277,7 +281,6 @@ const FlipCardContent = ({
   );
 };
 
-// const List = styled.div<{ itemCount: number }>`
 const List = styled.div<{ itemCount: number } & HeightInNumber>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
   height: ${({ h }) => h}px;
