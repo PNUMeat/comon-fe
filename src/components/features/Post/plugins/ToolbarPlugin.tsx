@@ -62,10 +62,10 @@ const TAG_LIST: {
   color: string;
   label: string;
 }[] = [
+  { color: '#FF5780', label: '코딩 테스트' },
   { color: '#6E74FA', label: '스터디 복습' },
   { color: '#C2C4FB', label: '스터디 예습' },
   { color: '#FFA379', label: '스터디' },
-  { color: '#FF5780', label: '코딩 테스트' },
 ];
 
 export const ToolbarPlugin: React.FC<{
@@ -82,6 +82,8 @@ export const ToolbarPlugin: React.FC<{
 
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isStrikethrough, setIsStrikethrough] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
 
@@ -89,6 +91,8 @@ export const ToolbarPlugin: React.FC<{
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -217,6 +221,8 @@ export const ToolbarPlugin: React.FC<{
             currentFontColor={fontColor}
             dispatchTextFormat={dispatchTextFormat}
             isBold={isBold}
+            isItalic={isItalic}
+            isStrikethrough={isStrikethrough}
           />
           <div
             style={{
@@ -254,6 +260,8 @@ export const ToolbarPlugin: React.FC<{
         currentFontColor={fontColor}
         dispatchTextFormat={dispatchTextFormat}
         isBold={isBold}
+        isItalic={isItalic}
+        isStrikethrough={isStrikethrough}
       />
       {setTag ? (
         <div
@@ -261,7 +269,7 @@ export const ToolbarPlugin: React.FC<{
             display: 'flex',
             width: '405px',
             gap: '13px',
-            marginRight: '78px',
+            // marginRight: '78px',
             alignItems: 'center',
           }}
         >

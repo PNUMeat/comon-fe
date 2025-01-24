@@ -69,6 +69,8 @@ export const FontDropdown: React.FC<{
   currentFontColor: string;
   dispatchTextFormat: (command: TextFormatType) => () => void;
   isBold: boolean;
+  isItalic: boolean;
+  isStrikethrough: boolean;
 }> = ({
   editor,
   currentFontFamily,
@@ -76,6 +78,8 @@ export const FontDropdown: React.FC<{
   currentFontColor,
   dispatchTextFormat,
   isBold,
+  isItalic,
+  isStrikethrough,
 }) => {
   const onClick = useCallback(
     (style: string, option: string) => {
@@ -128,15 +132,29 @@ export const FontDropdown: React.FC<{
         ))}
       </Dropdown>
 
-      <button onClick={dispatchTextFormat('bold')}>
-        <SText
-          fontSize={'16px'}
-          fontWeight={700}
-          color={isBold ? '#000' : '#777'}
+      <TextFlex>
+        <TextFormatButton
+          onClick={dispatchTextFormat('bold')}
+          isHighlighted={isBold}
+          textStyle={'bold'}
         >
           B
-        </SText>
-      </button>
+        </TextFormatButton>
+        <TextFormatButton
+          onClick={dispatchTextFormat('italic')}
+          isHighlighted={isItalic}
+          textStyle={'italic'}
+        >
+          I
+        </TextFormatButton>
+        <TextFormatButton
+          onClick={dispatchTextFormat('strikethrough')}
+          isHighlighted={isStrikethrough}
+          textStyle={'strikethrough'}
+        >
+          S
+        </TextFormatButton>
+      </TextFlex>
     </FontFlex>
   );
 };
@@ -144,10 +162,37 @@ export const FontDropdown: React.FC<{
 const FontFlex = styled.div`
   display: flex;
   align-items: center;
-  gap: 47px;
-  width: 360px;
+  // gap: 47px;
+  gap: 30px;
+  // width: 360px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     gap: 16px;
+  }
+`;
+
+const TextFlex = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
+const TextFormatButton = styled.button<{
+  isHighlighted: boolean;
+  textStyle: string;
+}>`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: ${({ isHighlighted }) => (isHighlighted ? '#6E74FA' : '#777')};
+  font-weight: ${({ isHighlighted }) => (isHighlighted ? 700 : 500)};
+
+  ${({ textStyle }) => textStyle === 'italic' && 'font-style: italic;'}
+  ${({ textStyle }) =>
+    textStyle === 'strikethrough' && 'text-decoration: line-through;'}
+    
+    @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 16px;
   }
 `;
