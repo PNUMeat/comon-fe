@@ -101,8 +101,6 @@ const TeamData = () => {
       : page;
   const isPending = isSearchMode ? searchPending : queryPending;
 
-  console.log();
-
   return (
     <KeywordContext.Provider value={{ keyword, setKeyword }}>
       {/* 나의 팀 */}
