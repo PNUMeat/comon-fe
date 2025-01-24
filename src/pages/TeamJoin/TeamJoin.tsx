@@ -41,16 +41,14 @@ const TeamData = () => {
 
   const { data: queryData, isPending: queryPending } = useQuery({
     queryKey: ['team-list', page === -1 ? 0 : page],
-    queryFn: () => {
-      return getTeamList('recent', page === -1 ? 0 : page, 6);
-    },
+    queryFn: () => getTeamList('recent', page === -1 ? 0 : page, 6),
     //placeholdreData에서 prevData ?? queryclient.getQueryData(['team-list', 이전 페이지`])
     // 위의 코드는 사용시 플로우를 완전히 제어 못할 거 같음
     // placeholderData: (prevData) => ({ prevData })},
     select: (data) => ({
-      myTeams: data.myTeams ?? [],
-      otherTeams: data.allTeams.content ?? [],
-      totalPages: data.allTeams.page.totalPages ?? 0,
+      myTeams: data.myTeams,
+      otherTeams: data.allTeams.content,
+      totalPages: data.allTeams.page.totalPages,
     }),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
