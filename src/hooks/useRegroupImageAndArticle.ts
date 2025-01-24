@@ -7,7 +7,10 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
   console.error('data??', data);
 
   if (data.articleBody === null) {
-    return 'put mock data';
+    if (data.articleId) {
+      return 'put mock data';
+    }
+    return '';
   }
 
   if (!data.imageUrls || data.imageUrls.length === 0) {
