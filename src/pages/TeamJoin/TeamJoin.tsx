@@ -62,23 +62,12 @@ const TeamData = () => {
     enabled: isSearchMode,
   });
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    // if (!keyword.trim()) {
-    //   // 검색어가 없을 때
-    //   getTeamList('recent', newPage, 6).then((data) => {
-    //   });
-    // } else {
-    //   // 검색어가 있을 때
-    //   searchTeams(keyword).then((result) => {
-    //   });
-    // }
-  };
+  const handlePageChange = (newPage: number) => setPage(newPage);
 
   const myTeam = queryData?.myTeams ?? [];
   const otherTeams = isSearchMode
-    ? (searchData?.otherTeams ?? [])
-    : (queryData?.otherTeams ?? []);
+    ? searchData?.otherTeams
+    : queryData?.otherTeams;
   const totalPages = isSearchMode
     ? (searchData?.totalPages ?? 1)
     : (queryData?.totalPages ?? 1);

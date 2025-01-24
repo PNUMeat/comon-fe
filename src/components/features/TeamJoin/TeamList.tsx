@@ -25,7 +25,7 @@ import { ProfileList } from './ProfileList';
 import { SearchBar } from './SearchBar';
 
 interface TeamListProps {
-  teams: ITeamInfo[];
+  teams?: ITeamInfo[];
   myTeam: ITeamInfo[];
 }
 
@@ -53,9 +53,8 @@ export const TeamList = ({ teams, myTeam }: TeamListProps) => {
         <SearchBar />
       </Flex>
       <Spacer h={34} />
-      {/*<List itemCount={teams.length} h={440}>*/}
-      <List itemCount={teams.length}>
-        {teams.length === 0 ? (
+      <List itemCount={teams?.length ? teams.length : 6}>
+        {!teams || teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
             <Flex height={210} justify="center" align="center">
               존재하지 않는 팀이에요.
