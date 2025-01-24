@@ -329,13 +329,11 @@ const TeamAdmin = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  // const announcementRef = useRef<HTMLDivElement | null>(null);
-  // const modalRef = useRef<HTMLDivElement | null>(null);
-  // const [show, setShow] = useState<boolean>(false);
-
   const { id } = useParams<{ id: string }>();
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA', {
+    timeZone: 'Asia/Seoul',
+  });
   const [selectedDate, setSelectedDate] = useState<string>(today);
   const [year, month] = selectedDate.split('-').map(Number);
 
