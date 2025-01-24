@@ -16,9 +16,7 @@ const SuspenseTeamForm = () => {
     queryKey: ['team-list', 0],
     queryFn: () => getTeamList('recent', 0, 1),
   });
-  //TODO : 이거 왜 터짐 ??
   const { teamId } = location.state;
-  console.log('??', teamId);
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
