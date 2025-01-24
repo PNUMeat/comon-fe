@@ -146,6 +146,7 @@ export const getTeamList = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
+  // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
   // if (isDevMode()) {
   //   return teamCombinedMock.data;
   // }
