@@ -227,7 +227,12 @@ const initialConfig = {
 
 const EditorContainer = styled.div`
   position: relative;
+  min-height: 700px;
   ${viewStyle}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-height: 400px;
+  }
 `;
 
 const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
@@ -470,7 +475,8 @@ const PostWriteSection = forwardRef<
 
   const onClick = useCallback(() => {
     editor.focus();
-  }, []);
+    console.log('???');
+  }, [editor]);
 
   return (
     <EditorContainer
