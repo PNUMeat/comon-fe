@@ -288,6 +288,7 @@ const EditorPlaceholder = styled.div`
 
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   return await fetch(blobUrl, {
+    mode: 'cors',
     headers: {
       'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
       Origin: 'https://test.codemonster.site/',
