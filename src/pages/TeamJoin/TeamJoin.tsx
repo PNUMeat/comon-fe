@@ -40,9 +40,9 @@ const TeamData = () => {
   const isSearchMode = keyword.trim().length > 0;
 
   const { data: queryData, isPending: queryPending } = useQuery({
-    queryKey: ['team-list', page],
+    queryKey: ['team-list', page === -1 ? 0 : page],
     queryFn: () => {
-      return getTeamList('recent', page, 6);
+      return getTeamList('recent', page === -1 ? 0 : page, 6);
     },
     //placeholdreData에서 prevData ?? queryclient.getQueryData(['team-list', 이전 페이지`])
     // 위의 코드는 사용시 플로우를 완전히 제어 못할 거 같음
