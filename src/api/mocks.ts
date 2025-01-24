@@ -84,7 +84,7 @@ export const membersInfoMock = {
       },
       {
         teamId: 1,
-        teamName: '코딩테스트트트',
+        teamName: '제목제목제목제목제목',
         teamImageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
       },
@@ -217,7 +217,7 @@ export const myPageTeamMock = {
     },
     {
       teamId: 1,
-      teamName: '코딩테스트트트',
+      teamName: '제목제목제목제목제목',
       teamManager: false,
       registerDate: null,
     },
