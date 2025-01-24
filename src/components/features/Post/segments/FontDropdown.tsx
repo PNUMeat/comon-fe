@@ -1,7 +1,10 @@
 import { Dropdown } from '@/components/commons/Dropdown/Dropdown';
 import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem';
 import { SText } from '@/components/commons/SText';
-import { FONT_FAMILY_OPTIONS } from '@/components/features/Post/constants';
+import {
+  FONT_FAMILY_OPTIONS,
+  convertToEnglishIfIsKoreanFont,
+} from '@/components/features/Post/constants';
 
 import { useCallback } from 'react';
 
@@ -44,16 +47,16 @@ const ColorBox = styled.div<{ color: string }>`
   }
 `;
 
-const LabelBox = styled.div`
-  font-size: 16px;
-  height: 20px;
+const LabelBox = styled.div<{ fontFamily: string }>`
+  font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: 20px;
   box-sizing: border-box;
+  font-family: ${(props) => props.fontFamily};
 
   // width: 100px;
-  // white-space: nowrap;
+  white-space: nowrap;
   // overflow: hidden;
   // text-overflow: ellipsis;
 
@@ -99,7 +102,15 @@ export const FontDropdown: React.FC<{
 
   return (
     <FontFlex>
-      <Dropdown buttonLabel={<LabelBox>{currentFontFamily}</LabelBox>}>
+      <Dropdown
+        buttonLabel={
+          <LabelBox
+            fontFamily={convertToEnglishIfIsKoreanFont(currentFontFamily)}
+          >
+            {currentFontFamily}
+          </LabelBox>
+        }
+      >
         {FONT_FAMILY_OPTIONS.map(([option, text]) => (
           <DropdownItem
             key={option}
@@ -119,7 +130,11 @@ export const FontDropdown: React.FC<{
           </DropdownItem>
         ))}
       </Dropdown>
-      <Dropdown buttonLabel={<LabelBox>{currentFontSize}</LabelBox>}>
+      <Dropdown
+        buttonLabel={
+          <LabelBox fontFamily={'Pretendard'}>{currentFontSize}</LabelBox>
+        }
+      >
         {FONT_SIZE_OPTIONS.map(([option, text]) => (
           <DropdownItem
             key={option}
