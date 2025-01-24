@@ -80,7 +80,11 @@ const TeamData = () => {
     enabled: isSearchMode,
   });
 
-  const handlePageChange = (newPage: number) => setPage(newPage);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    const currMode = isSearchMode ? SEARCH_MODE : QUERY_MODE;
+    prevPageCacheMap.set(currMode, newPage);
+  };
 
   const myTeam = queryData?.myTeams ?? myTeamCache;
   const otherTeams = isSearchMode
@@ -96,6 +100,8 @@ const TeamData = () => {
         ) as number)
       : page;
   const isPending = isSearchMode ? searchPending : queryPending;
+
+  console.log();
 
   return (
     <KeywordContext.Provider value={{ keyword, setKeyword }}>
