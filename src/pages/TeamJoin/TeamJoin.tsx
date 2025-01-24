@@ -7,10 +7,10 @@ import { Spacer } from '@/components/commons/Spacer';
 import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
 import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
+import { getTeamList, searchTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
 import click from '@/assets/TeamJoin/click.png';
 import { breakpoints } from '@/constants/breakpoints';
@@ -19,16 +19,23 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
+import { KeywordContext } from './KeywordContext';
+
 const TeamData = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
-  const [myTeam, setMyTeam] = useState<ITeamInfo[]>([]);
-  const [otherTeams, setOtherTeams] = useState<ITeamInfo[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
+  const isSearchMode = keyword.trim().length > 0;
 
-  const { data: initialData } = useQuery({
+  const { data: queryData } = useQuery({
     queryKey: ['team-list', page],
-    queryFn: () => getTeamList('recent', page, 6),
+    queryFn: () => {
+      return getTeamList('recent', page, 6);
+    },
+    select: (data) => ({
+      myTeams: data.myTeams ?? [],
+      otherTeams: data.allTeams.content ?? [],
+      totalPages: data.allTeams.page.totalPages ?? 1,
+    }),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
@@ -43,61 +50,53 @@ const TeamData = () => {
     },
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setMyTeam(initialData.myTeams || []);
-      setOtherTeams(initialData.allTeams.content || []);
-      setTotalPages(initialData.allTeams.page.totalPages || 1);
-    }
-  }, [initialData]);
-
-  const handleSearch = async (searchKeyword: string) => {
-    setKeyword(searchKeyword);
-
-    if (!searchKeyword.trim()) {
-      setMyTeam(initialData?.myTeams || []);
-      setOtherTeams(initialData?.allTeams.content || []);
-      setTotalPages(initialData?.allTeams.page.totalPages || 1);
-      return;
-    }
-
-    const res = await searchTeams(searchKeyword);
-    setOtherTeams(res.content || []);
-    setTotalPages(res.page.totalPages || 1);
-  };
+  const { data: searchData } = useQuery({
+    queryKey: ['team-search', keyword],
+    queryFn: () => searchTeams(keyword),
+    select: (data) => ({
+      otherTeams: data.content,
+      // TODO: 아직 검색은 백엔드에서 페이지 인덱스 지원x
+      // totalPages: data?.page?.totalPages,
+      totalPages: 1,
+    }),
+    enabled: isSearchMode,
+  });
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-
-    if (!keyword.trim()) {
-      // 검색어가 없을 때
-      getTeamList('recent', newPage, 6).then((data) => {
-        setMyTeam(data.myTeams || []);
-        setOtherTeams(data.allTeams.content || []);
-        setTotalPages(data.allTeams.page.totalPages || 1);
-      });
-    } else {
-      // 검색어가 있을 때
-      searchTeams(keyword).then((result) => {
-        setOtherTeams(result.content || []);
-        setTotalPages(result.page.totalPages || 1);
-      });
-    }
+    // if (!keyword.trim()) {
+    //   // 검색어가 없을 때
+    //   getTeamList('recent', newPage, 6).then((data) => {
+    //   });
+    // } else {
+    //   // 검색어가 있을 때
+    //   searchTeams(keyword).then((result) => {
+    //   });
+    // }
   };
 
+  const myTeam = queryData?.myTeams ?? [];
+  const otherTeams = isSearchMode
+    ? (searchData?.otherTeams ?? [])
+    : (queryData?.otherTeams ?? []);
+  const totalPages = isSearchMode
+    ? (searchData?.totalPages ?? 1)
+    : (queryData?.totalPages ?? 1);
+  const currPage = isSearchMode ? 1 : page;
+
   return (
-    <>
+    <KeywordContext.Provider value={{ keyword, setKeyword }}>
       {/* 나의 팀 */}
-      {myTeam.length > 0 && <MyTeamCard teams={myTeam || []} />}
+      {myTeam.length > 0 && <MyTeamCard teams={myTeam} />}
       {/* 활동 팀 찾기 */}
-      <TeamList teams={otherTeams} myTeam={myTeam} onSearch={handleSearch} />
+      <TeamList teams={otherTeams} myTeam={myTeam} />
       <Pagination
         totalPages={totalPages}
         onPageChange={handlePageChange}
-        currentPageProp={page}
+        currentPageProp={currPage}
       />
       <Spacer h={34} />
-    </>
+    </KeywordContext.Provider>
   );
 };
 
