@@ -289,10 +289,10 @@ const EditorPlaceholder = styled.div`
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   return await fetch(blobUrl, {
     mode: 'cors',
-    headers: {
-      'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
-      Origin: 'https://test.codemonster.site/',
-    },
+    // headers: {
+    //   'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
+    //   Origin: 'https://test.codemonster.site/',
+    // },
   })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))

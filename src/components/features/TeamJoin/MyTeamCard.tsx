@@ -11,6 +11,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Title } from '@/components/commons/Title';
 
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 
@@ -69,13 +70,15 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                 <Flex justify="space-between">
                   {!isMobile && (
                     <Box width="260px" height="260px">
-                      <ImageContainer
-                        src={team.imageUrl}
-                        altText={team.teamName}
-                        w="inherit"
-                        h="inherit"
-                        maxW={260}
-                      />
+                      <Suspense>
+                        <ImageContainer
+                          src={team.imageUrl}
+                          altText={team.teamName}
+                          w="inherit"
+                          h="inherit"
+                          maxW={260}
+                        />
+                      </Suspense>
                     </Box>
                   )}
                   <Flex

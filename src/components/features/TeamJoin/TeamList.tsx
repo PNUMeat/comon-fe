@@ -9,17 +9,18 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { HeightInNumber } from '@/components/types.ts';
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ITeamInfo, joinTeam } from '@/api/team';
 import magnifier from '@/assets/TeamJoin/magnifier.png';
+import more from '@/assets/TeamJoin/more.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
-import more from '@/assets/TeamJoin/more.png';
 
 import { ProfileList } from './ProfileList';
 import { SearchBar } from './SearchBar';
@@ -27,23 +28,13 @@ import { SearchBar } from './SearchBar';
 interface TeamListProps {
   teams: ITeamInfo[];
   myTeam: ITeamInfo[];
-  onSearch: (keyword: string) => void;
+  isPending: boolean;
 }
 
-export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
-  const [searchKeyword, setSearchKeyword] = useState('');
+export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
   const myTeamIds = useMemo<Set<number>>(() => {
     return new Set(myTeam.map((team) => team.teamId));
   }, [myTeam]);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  };
-
-  const handleSearchSubmit = () => {
-    onSearch(searchKeyword);
-  };
-
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
@@ -61,15 +52,14 @@ export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
       {!isMobile && <Spacer h={34} />}
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
       <Flex justify="flex-end" align="center" gap="10px">
-        <SearchBar
-          value={searchKeyword}
-          onChange={handleSearchChange}
-          onSearch={handleSearchSubmit}
-        />
+        <SearchBar />
       </Flex>
       <Spacer h={34} />
-      <List itemCount={teams.length}>
-        {teams.length === 0 ? (
+      <List
+        itemCount={teams.length}
+        h={isPending ? 440 : teams.length === 0 ? 210 : 440}
+      >
+        {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
             <Flex height={210} justify="center" align="center">
               존재하지 않는 팀이에요.
@@ -77,7 +67,9 @@ export const TeamList = ({ teams, onSearch, myTeam }: TeamListProps) => {
           </SText>
         ) : (
           teams.map((team) => {
-            const profiles = team.members.slice(0, 6).map((member) => member.imageUrl);
+            const profiles = team.members
+              .slice(0, 6)
+              .map((member) => member.imageUrl);
             if (team.members.length > 6) {
               profiles.push(more);
             }
@@ -289,8 +281,9 @@ const FlipCardContent = ({
   );
 };
 
-const List = styled.div<{ itemCount: number }>`
+const List = styled.div<{ itemCount: number } & HeightInNumber>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
+  height: ${({ h }) => h}px;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
