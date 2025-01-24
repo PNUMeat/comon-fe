@@ -5,10 +5,10 @@ import { FONT_FAMILY_OPTIONS } from '@/components/features/Post/constants';
 
 import { useCallback } from 'react';
 
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 import { $patchStyleText } from '@lexical/selection';
 import { $getSelection, LexicalEditor, TextFormatType } from 'lexical';
-import { breakpoints } from '@/constants/breakpoints';
 
 const FONT_COLOR_OPTIONS: string[] = [
   '#000',
@@ -19,8 +19,6 @@ const FONT_COLOR_OPTIONS: string[] = [
 ];
 
 const FONT_SIZE_OPTIONS: [string, string][] = [
-  ['10px', '10px'],
-  ['12px', '12px'],
   ['14px', '14px'],
   ['16px', '16px'],
   ['18px', '18px'],
@@ -123,7 +121,9 @@ export const FontDropdown: React.FC<{
             key={option}
             onClick={() => onClick('font-size', option || '20px')}
           >
-            <span>{text}</span>
+            <SText fontSize={text} textAlign={'left'}>
+              {text}
+            </SText>
           </DropdownItem>
         ))}
       </Dropdown>
