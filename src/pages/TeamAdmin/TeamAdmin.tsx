@@ -172,7 +172,7 @@ const SubjectControlButton: React.FC<{
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        {!isSuccess ? '요청 대기' : data?.articleId ? '주제 수정' : '주제 작성'}
+        {!isSuccess ? '요청 대기' : data?.articleId ? '문제 수정' : '문제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -480,7 +480,7 @@ const TeamAdmin = () => {
                     fontWeight={500}
                     lineHeight="24px"
                   >
-                    오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의
+                    오늘의 문제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의
                     게시글 및 태그를 수정, 변경할 수 있습니다.
                   </SText>
                   <Spacer h={32} />
