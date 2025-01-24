@@ -27,11 +27,11 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
+import { alertAtom } from '@/store/modal';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
-import { alertAtom } from '@/store/modal';
 
 const TeamDailySubject = () => {
   const location = useLocation();
@@ -79,7 +79,7 @@ const TeamDailySubject = () => {
   const { id, selectedDate } = useParams();
 
   usePrompt(!disablePrompt);
-  
+
   useEffect(() => {
     document.documentElement.scrollTo({
       top: 0,
@@ -97,14 +97,9 @@ const TeamDailySubject = () => {
     if (isPending) {
       return;
     }
-
-    // const replacedArticleBody = subjectImages
-    //   ? content.trim().replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
-    //   : content.trim();
-
     const replacedArticleBody = subjectImages
-      ? articleBody.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
-      : articleBody.trim();
+      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : content.trim();
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
@@ -133,7 +128,13 @@ const TeamDailySubject = () => {
             })
             .then(() => {
               setDisablePrompt(true);
-              setAlert({ message: '주제 수정이 완료되었습니다.', isVisible: true, onConfirm: () => {navigate(`/team-admin/${id}`);} });
+              setAlert({
+                message: '주제 수정이 완료되었습니다.',
+                isVisible: true,
+                onConfirm: () => {
+                  navigate(`/team-admin/${id}`);
+                },
+              });
             })
             .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
             .finally(() => {
@@ -189,7 +190,13 @@ const TeamDailySubject = () => {
             setDashboardView('topic');
             setSelectedPostId(parseInt(articleId));
             setDisablePrompt(true);
-            setAlert({ message: '주제 작성이 완료되었습니다.', isVisible: true, onConfirm: () => {navigate(`/team-admin/${id}`);} });
+            setAlert({
+              message: '주제 작성이 완료되었습니다.',
+              isVisible: true,
+              onConfirm: () => {
+                navigate(`/team-admin/${id}`);
+              },
+            });
           });
       })
       .catch((err) => {
