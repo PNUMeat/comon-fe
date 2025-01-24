@@ -53,6 +53,7 @@ export const TeamList = ({ teams, myTeam }: TeamListProps) => {
         <SearchBar />
       </Flex>
       <Spacer h={34} />
+      {/*<List itemCount={teams.length} h={440}>*/}
       <List itemCount={teams.length}>
         {teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
@@ -278,10 +279,17 @@ const FlipCardContent = ({
 
 const List = styled.div<{ itemCount: number }>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
+  max-height: ${({ itemCount }) => (itemCount === 0 ? 210 : 440)}px;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+
   @media (max-width: ${breakpoints.mobile}px) {
+    overflow: none;
+    transition: none;
+    max-height: 0;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 4px;
   }
