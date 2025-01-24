@@ -475,7 +475,6 @@ const PostWriteSection = forwardRef<
 
   const onClick = useCallback(() => {
     editor.focus();
-    console.log('???');
   }, [editor]);
 
   return (
