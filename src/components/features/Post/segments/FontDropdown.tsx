@@ -101,7 +101,7 @@ export const FontDropdown: React.FC<{
             key={option}
             onClick={() => onClick('font-family', option)}
           >
-            <span>{text}</span>
+            <SText fontFamily={option}>{text}</SText>
           </DropdownItem>
         ))}
       </Dropdown>
