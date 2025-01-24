@@ -642,3 +642,19 @@ export const teamPageMock = {
     ],
   },
 };
+
+export const createPostMock = {
+  status: 'success',
+  code: 201,
+  message: '게시글이 성공적으로 생성되었습니다.',
+  data: {
+    articleId: 452,
+  },
+};
+
+export const mutatePostMock = {
+  status: 'success',
+  code: 200,
+  message: '게시글이 성공적으로 수정되었습니다.',
+  data: null,
+};
