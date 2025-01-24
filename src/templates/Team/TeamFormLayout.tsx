@@ -40,7 +40,7 @@ const FORM_TITLES: Record<
     title: '팀 정보 입력하기',
     subtitle: '팀 생성 후에도 모든 정보를 수정할 수 있어요',
   },
-  '/team-modification': {
+  '/team-setting/team': {
     title: '팀 정보 수정하기',
     subtitle: '저장 후에도 모든 정보를 수정할 수 있어요',
   },
@@ -55,7 +55,7 @@ export const TeamFormLayout: React.FC<
   const currentPath = location.pathname;
   const { title, subtitle } = FORM_TITLES[currentPath];
   const isOnTeamReg = currentPath === PATH.TEAM_REGISTRATION;
-  const isOnTeamMod = currentPath === PATH.TEAM_MODIFICATION;
+  const isOnTeamMod = currentPath === `${PATH.TEAM_SETTING}/team`;
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;

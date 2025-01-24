@@ -31,7 +31,7 @@ export const LazyEnrollTemplate = delayedLazy(
 // );
 
 export const LazyTeamModificationTemplate = delayedLazy(
-  () => import('@/templates/Team/TeamModificationTemplate')
+  () => import('@/templates/Team/TeamSetting')
 );
 //
 // export const LazyMyDashboard = delayedLazy(

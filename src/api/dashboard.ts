@@ -1,9 +1,6 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
+// import { isDevMode } from '@/utils/cookie.ts';
 // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
 // import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
-import { teamArticlesMock } from '@/api/mocks.ts';
-
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';
@@ -97,7 +94,7 @@ export const getTeamInfoAndTags = async (
   // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
   // if (isDevMode()) {
   //   await new Promise((r) => setTimeout(r, 1000));
-  //
+
   //   return teamInfoMock.data;
   // }
 
@@ -114,9 +111,9 @@ export const getArticlesByDate = async (
   date: string,
   page: number
 ): Promise<IArticlesByDateResponse> => {
-  if (isDevMode()) {
-    return teamArticlesMock.data;
-  }
+  // if (isDevMode()) {
+  //   return teamArticlesMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
