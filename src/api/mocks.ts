@@ -99,6 +99,18 @@ export const teamArticlesMock = {
   data: {
     content: [
       {
+        articleId: 456,
+        articleTitle: '글자 export 제대로 되나?',
+        articleBody:
+          '<p dir="ltr"><span class="editor-text-bold" style="font-family: Noto Sans KR;color: #6E74FA;font-size: 26px;">노토 산스</span></p><p><br></p><p dir="ltr"><span class="editor-text-italic" style="font-family: Nanum Gothic;color: #EF2528;font-size: 28px;">나눔고딕</span></p><p><br></p><p dir="ltr"><span class="editor-text-strikethrough" style="font-family: Times New Roman;color: #FF377F;font-size: 24px;">Times New Roman</span></p><p><br></p><p dir="ltr"><span class="editor-text-bold editor-text-italic" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><br></p><p dir="ltr"><br></p><p><br></p>',
+        createdDate: '2025-01-25 04:09:53',
+        imageUrls: [],
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+        isAuthor: true,
+      },
+      {
         articleId: 242,
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
@@ -640,5 +652,37 @@ export const teamPageMock = {
         articleCategory: '코딩 테스트',
       },
     ],
+  },
+};
+
+export const createPostMock = {
+  status: 'success',
+  code: 201,
+  message: '게시글이 성공적으로 생성되었습니다.',
+  data: {
+    articleId: 452,
+  },
+};
+
+export const mutatePostMock = {
+  status: 'success',
+  code: 200,
+  message: '게시글이 성공적으로 수정되었습니다.',
+  data: null,
+};
+
+export const mutateTeamInfo = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    teamId: 16,
+    teamName: 'aa11asd',
+    teamExplain: '1122222바뿨보자zz',
+    topic: '코딩테스트',
+    memberLimit: 50,
+    password: '1122',
+    teamIconUrl:
+      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/eed4f55a-cf35-497a-bf4b-1f27fb8d1415',
   },
 };

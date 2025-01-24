@@ -198,24 +198,28 @@ const initialConfig = {
           const textNode = node as TextNode;
           const element = document.createElement('span');
           const format = textNode.getFormat();
+          const style = textNode.getStyle();
 
           if (format === 1) {
             element.className = 'editor-text-bold';
-          }
-
-          if (format === 2) {
+          } else if (format === 2) {
             element.className = 'editor-text-italic';
-          }
-
-          if (format === 3) {
+          } else if (format === 3) {
             element.className = 'editor-text-bold editor-text-italic';
-          }
-
-          if (format === 4) {
+          } else if (format === 4) {
             element.className = 'editor-text-strikethrough';
+          } else if (format === 5) {
+            element.className = 'editor-text-bold editor-text-strikethrough';
+          } else if (format === 6) {
+            element.className = 'editor-text-italic editor-text-strikethrough';
+          } else if (format === 7) {
+            element.className =
+              'editor-text-bold editor-text-italic editor-text-strikethrough';
           }
 
           element.textContent = textNode.getTextContent();
+          element.setAttribute('style', style);
+
           return { element };
         },
       ],
@@ -227,7 +231,12 @@ const initialConfig = {
 
 const EditorContainer = styled.div`
   position: relative;
+  min-height: 700px;
   ${viewStyle}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-height: 400px;
+  }
 `;
 
 const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
@@ -470,7 +479,7 @@ const PostWriteSection = forwardRef<
 
   const onClick = useCallback(() => {
     editor.focus();
-  }, []);
+  }, [editor]);
 
   return (
     <EditorContainer

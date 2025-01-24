@@ -50,7 +50,7 @@ export const TeamForm: React.FC<
   );
 
   return (
-    <TeamFormLayout h={h}>
+    <TeamFormLayout h={h} showButton>
       {isMobile ? (
         <MobileComponent />
       ) : (

@@ -49,8 +49,9 @@ const FORM_TITLES: Record<
 export const TeamFormLayout: React.FC<
   HeightInNumber & {
     children: ReactNode;
+    showButton?: boolean;
   }
-> = ({ h, children }) => {
+> = ({ h, children, showButton = false }) => {
   const location = useLocation();
   const currentPath = location.pathname;
   const { title, subtitle } = FORM_TITLES[currentPath];
@@ -67,8 +68,8 @@ export const TeamFormLayout: React.FC<
       <Spacer h={78} />
       <ComonFormGrid h={683}>{children}</ComonFormGrid>
       {isMobile ? <Spacer h={56} /> : <Spacer h={120} />}
-      {isOnTeamReg && <TeamRegistrationButton />}
-      {isOnTeamMod && <TeamModificationButton />}
+      {isOnTeamReg && showButton && <TeamRegistrationButton />}
+      {isOnTeamMod && showButton && <TeamModificationButton />}
     </TeamContainer>
   );
 };

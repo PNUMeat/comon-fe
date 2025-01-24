@@ -10,6 +10,8 @@ import { TeamForm } from '@/templates/Team/TeamForm';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
+import { TeamFormContext } from './TeamFormContext';
+
 const SuspenseTeamForm = () => {
   const location = useLocation();
   const { data } = useSuspenseQuery({
@@ -29,7 +31,20 @@ const SuspenseTeamForm = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  return <TeamForm h={977} team={modiee} />;
+  const teamData = {
+    teamName: modiee?.teamName,
+    teamExplain: modiee?.teamExplain,
+    topic: modiee?.topic,
+    memberLimit: modiee?.memberLimit,
+    password: null,
+    image: modiee?.imageUrl,
+  };
+
+  return (
+    <TeamFormContext.Provider value={teamData}>
+      <TeamForm h={977} team={modiee} />
+    </TeamFormContext.Provider>
+  );
 };
 
 const TeamModification = () => {
