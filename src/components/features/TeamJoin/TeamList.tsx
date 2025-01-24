@@ -284,13 +284,7 @@ const List = styled.div<{ itemCount: number } & HeightInNumber>`
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-
   @media (max-width: ${breakpoints.mobile}px) {
-    overflow: none;
-    transition: none;
-    max-height: 0;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 4px;
   }
