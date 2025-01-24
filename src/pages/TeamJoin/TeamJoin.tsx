@@ -66,8 +66,8 @@ const TeamData = () => {
 
   const myTeam = queryData?.myTeams ?? [];
   const otherTeams = isSearchMode
-    ? searchData?.otherTeams
-    : queryData?.otherTeams;
+    ? (searchData?.otherTeams ?? [])
+    : (queryData?.otherTeams ?? []);
   const totalPages = isSearchMode
     ? (searchData?.totalPages ?? 1)
     : (queryData?.totalPages ?? 1);

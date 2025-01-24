@@ -9,6 +9,7 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { HeightInNumber } from '@/components/types.ts';
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +26,7 @@ import { ProfileList } from './ProfileList';
 import { SearchBar } from './SearchBar';
 
 interface TeamListProps {
-  teams?: ITeamInfo[];
+  teams: ITeamInfo[];
   myTeam: ITeamInfo[];
 }
 
@@ -53,8 +54,8 @@ export const TeamList = ({ teams, myTeam }: TeamListProps) => {
         <SearchBar />
       </Flex>
       <Spacer h={34} />
-      <List itemCount={teams?.length ? teams.length : 6}>
-        {!teams || teams.length === 0 ? (
+      <List itemCount={teams.length} h={440}>
+        {teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
             <Flex height={210} justify="center" align="center">
               존재하지 않는 팀이에요.
@@ -276,9 +277,10 @@ const FlipCardContent = ({
   );
 };
 
-const List = styled.div<{ itemCount: number }>`
+// const List = styled.div<{ itemCount: number }>`
+const List = styled.div<{ itemCount: number } & HeightInNumber>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
-  max-height: ${({ itemCount }) => (itemCount === 0 ? 210 : 440)}px;
+  height: ${({ h }) => h}px;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
