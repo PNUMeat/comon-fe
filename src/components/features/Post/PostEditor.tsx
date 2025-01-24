@@ -220,7 +220,6 @@ const initialConfig = {
           element.textContent = textNode.getTextContent();
           element.setAttribute('style', style);
 
-          console.log('???', element);
           return { element };
         },
       ],
