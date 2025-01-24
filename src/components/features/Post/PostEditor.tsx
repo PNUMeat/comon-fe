@@ -198,24 +198,29 @@ const initialConfig = {
           const textNode = node as TextNode;
           const element = document.createElement('span');
           const format = textNode.getFormat();
+          const style = textNode.getStyle();
 
           if (format === 1) {
             element.className = 'editor-text-bold';
-          }
-
-          if (format === 2) {
+          } else if (format === 2) {
             element.className = 'editor-text-italic';
-          }
-
-          if (format === 3) {
+          } else if (format === 3) {
             element.className = 'editor-text-bold editor-text-italic';
-          }
-
-          if (format === 4) {
+          } else if (format === 4) {
             element.className = 'editor-text-strikethrough';
+          } else if (format === 5) {
+            element.className = 'editor-text-bold editor-text-strikethrough';
+          } else if (format === 6) {
+            element.className = 'editor-text-italic editor-text-strikethrough';
+          } else if (format === 7) {
+            element.className =
+              'editor-text-bold editor-text-italic editor-text-strikethrough';
           }
 
           element.textContent = textNode.getTextContent();
+          element.setAttribute('style', style);
+
+          console.log('???', element);
           return { element };
         },
       ],
