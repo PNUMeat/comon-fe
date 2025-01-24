@@ -268,8 +268,8 @@ const Posting = () => {
               setDashboardView('article');
               setSelectedPostId(articleId);
               setPostImages([]);
-              navigate(`/team-dashboard/${id}`);
               setDisablePrompt(true);
+              navigate(`/team-dashboard/${id}`);
               setAlert({
                 message: '게시글을 수정했어요',
                 isVisible: true,
