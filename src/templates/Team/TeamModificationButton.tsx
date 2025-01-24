@@ -1,5 +1,6 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
+import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { modifyTeam } from '@/api/team.ts';
@@ -24,6 +25,7 @@ export const TeamModificationButton = () => {
   const [password] = useAtom(teamPasswordAtom);
   const [image] = useAtom(imageAtom);
   const location = useLocation();
+  const [isDirty, setIsDirty] = useState(false);
   const { teamId } = location.state;
   const {
     teamName: currTeamName,
@@ -32,38 +34,46 @@ export const TeamModificationButton = () => {
     memberLimit: currMemberLimit,
     // image: currImage,
   } = useTeamOldData();
+
+  useEffect(() => {
+    const name = teamName.length === 0 ? currTeamName : teamName;
+    const exp = teamExplain.length === 0 ? currTeamExplain : teamExplain;
+    const top = topic ?? currTopic;
+    const mem = memberLimit ?? currMemberLimit;
+
+    const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}`;
+    const changed = `${name}-${exp}-${image?.name ?? null}-${top}-${mem}`;
+
+    setIsDirty(curr !== changed);
+  }, [teamName, teamExplain, topic, memberLimit]);
+
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const name = teamName.length === 0 ? currTeamName : teamName;
-  const exp = teamExplain.length === 0 ? currTeamExplain : teamExplain;
-  const top = topic ?? currTopic;
-  const mem = memberLimit ?? currMemberLimit;
-
-  const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}`;
-  const changed = `${name}-${exp}-${image?.name ?? null}-${top}-${mem}`;
-
-  const isDirty = curr !== changed;
-
   const onClick = () => {
     if (isDirty) {
+      const vMemberLimit = memberLimit ?? currMemberLimit;
       modifyTeam({
         teamId: parseInt(teamId),
-        teamName: name,
-        teamExplain: exp,
-        topic: top,
+        teamName: teamName.length === 0 ? currTeamName : teamName,
+        teamExplain: teamExplain.length === 0 ? currTeamExplain : teamExplain,
+        topic: topic ?? currTopic,
         image: image,
-        memberLimit: typeof mem === 'number' ? mem : parseInt(mem),
+        memberLimit:
+          typeof vMemberLimit === 'number'
+            ? vMemberLimit
+            : parseInt(vMemberLimit),
         // TODO: password 받아올 수 있으면 추가
         password: password.trim().length === 0 ? null : password,
       })
         .then(() => {
           //     성공했다고 토스트 띄워달라고 합니다
           alert('팀 수정 성공');
+          setIsDirty(false);
         })
         .catch(() => {
-          alert('팀 수정 요청 실패');
+          alert('팀 수정 요청 실패: 필드를 다시 입력해주세요');
         });
     }
   };
