@@ -160,7 +160,9 @@ const SubjectControlButton: React.FC<{
             articleId: data?.articleId ?? null,
             articleTitle: data?.articleTitle ?? null,
             articleCategory: data?.articleCategory ?? null,
-            articleImageUrls: data?.imageUrls ?? null,
+            // TODO: 이미지 하나로 롤백
+            // articleImageUrls: data?.imageUrls ?? null,
+            articleImageUrl: data?.imageUrl ?? null,
           },
         })
       }
