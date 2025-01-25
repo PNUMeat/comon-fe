@@ -24,6 +24,7 @@ import TeamSetting from '@/templates/Team/TeamSetting';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import TeamModification from '@/templates/Team/TeamModification';
 import MemberModification from '@/templates/Team/MemberModification';
+import { TeamInfomation } from '@/templates/Team/TeamInfomation';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -132,7 +133,7 @@ export const router = createBrowserRouter(
           children: [
             {
               path: `${PATH.TEAM_SETTING}/team`,
-              element: < TeamModification />,
+              element: < TeamInfomation />,
             },
             {
               path: `${PATH.TEAM_SETTING}/members`,
