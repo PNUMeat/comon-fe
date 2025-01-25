@@ -358,7 +358,7 @@ const useDetectImageMutation = () => {
               if (images.length === 0) {
                 firstNodeKey.current = nodeKey;
               }
-              // 이미지 최대 하나로 롤백
+              // 이미지 최대 하나로 제한
               else if (images.length > 1) {
                 if (nodeKey !== firstNodeKey.current) {
                   node.remove();
@@ -452,6 +452,9 @@ const useDetectImageMutation = () => {
             setImages((prev) =>
               prev.filter((imgObj) => imgObj.key !== nodeKey)
             );
+            if (firstNodeKey.current === nodeKey) {
+              firstNodeKey.current = '';
+            }
           }
         });
       }
