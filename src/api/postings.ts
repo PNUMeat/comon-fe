@@ -28,11 +28,13 @@ export const createPost = async ({
   formData.append('articleBody', articleBody);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
   }
+  // else {
+  // formData.append('images', '');
+  // }
 
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
@@ -69,11 +71,13 @@ export const mutatePost = async ({
   formData.append('articleBody', articleBody);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
   }
+  // else {
+  //   formData.append('images', '');
+  // }
 
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));

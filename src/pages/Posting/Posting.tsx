@@ -254,7 +254,17 @@ const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        images: postImages.map((imgObj) => imgObj.img),
+        images:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -302,17 +312,6 @@ const Posting = () => {
       setIsPending(false);
       return;
     }
-
-    postImages
-      .sort((a, b) => {
-        if (a.line !== b.line) {
-          return a.line - b.line;
-        }
-        return a.idx - b.idx;
-      })
-      .forEach((img) => console.log('i', img.img.name));
-
-    postImages.forEach((i) => console.error(i.img));
 
     createPost({
       teamId: parseInt(id),
