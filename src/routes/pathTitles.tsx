@@ -19,8 +19,8 @@ export const getTitle = (path: string): ReactNode => {
     return <Title src={calendar} title="마이페이지" />;
   }
 
-  if (path.startsWith('/team-modification')) {
-    return <Title src={crown} title="팀 수정" />;
+  if (path.startsWith('/team-setting')) {
+    return <Title src={crown} title="팀 설정" />;
   }
 
 
