@@ -11,27 +11,30 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
     return '';
   }
 
-  if (!data.imageUrls || data.imageUrls.length === 0) {
+  // if (!data.imageUrls || data.imageUrls.length === 0) {
+  if (!data.imageUrl) {
     return data.articleBody;
+  } else {
+    return data.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
   }
-
-  let imgIndex = 0;
-
-  const images = data.imageUrls;
-
-  const articleWithImages = data.articleBody.replace(
-    /(<img[^>]*src=")\?("[^>]*>)/g,
-    (match, prefix, suffix) => {
-      if (imgIndex < images.length) {
-        return `${prefix}${images[imgIndex++]}${suffix}`;
-      }
-      return match;
-    }
-  );
-
-  console.error('img topics', articleWithImages);
-
-  return articleWithImages;
+  // TODO: 이미지 하나
+  // let imgIndex = 0;
+  //
+  // const images = data.imageUrls;
+  //
+  // const articleWithImages = data.articleBody.replace(
+  //   /(<img[^>]*src=")\?("[^>]*>)/g,
+  //   (match, prefix, suffix) => {
+  //     if (imgIndex < images.length) {
+  //       return `${prefix}${images[imgIndex++]}${suffix}`;
+  //     }
+  //     return match;
+  //   }
+  // );
+  //
+  // console.error('img topics', articleWithImages);
+  //
+  // return articleWithImages;
 };
 
 export const useRegroupImageAndArticle = (

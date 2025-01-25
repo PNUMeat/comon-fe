@@ -42,10 +42,10 @@ export const TeamModificationButton = () => {
     const mem = memberLimit ?? currMemberLimit;
 
     const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}`;
-    const changed = `${name}-${exp}-${image?.name ?? null}-${top}-${mem}`;
+    const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}`;
 
     setIsDirty(curr !== changed);
-  }, [teamName, teamExplain, topic, memberLimit]);
+  }, [teamName, teamExplain, topic, memberLimit, image]);
 
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;

@@ -247,7 +247,7 @@ export const myArticlesMock = {
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
         createdDate: '2025-01-13 20:33:36',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -258,7 +258,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
         createdDate: '2025-01-13 20:29:10',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -270,7 +270,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -281,7 +281,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:37:18',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -292,7 +292,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:36:57',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -303,7 +303,7 @@ export const myArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">asdasd</span></p>',
         createdDate: '2025-01-02 02:08:25',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',

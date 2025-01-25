@@ -21,30 +21,13 @@ export interface IArticle {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrls: string[] | null;
+  // TODO: 이미지 하나 허용으로 롤백
+  // imageUrls: string[] | null;
+  imageUrl: string | null;
   memberName: string;
   memberImage: string;
   isAuthor: boolean;
 }
-
-export const isIArticle = (obj: unknown): obj is IArticle => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const article = obj as Record<string, unknown>;
-
-  return (
-    typeof article.articleId === 'number' &&
-    typeof article.articleTitle === 'string' &&
-    typeof article.articleBody === 'string' &&
-    typeof article.createdDate === 'string' &&
-    (article.imageUrls === null ||
-      (Array.isArray(article.imageUrls) &&
-        article.imageUrls.every((url) => typeof url === 'string'))) &&
-    typeof article.memberName === 'string' &&
-    typeof article.memberImage === 'string' &&
-    typeof article.isAuthor === 'boolean'
-  );
-};
 
 export interface IArticlesByDateResponse {
   content: IArticle[];
@@ -62,29 +45,12 @@ export interface ITopicResponse {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrls: string[] | null;
+  // TODO: 이미지 하나 허용으로 롤백
+  // imageUrls: string[] | null;
+  imageUrl: string | null;
   authorName: string;
   authorImageUrl: string;
 }
-
-export const isITopicResponse = (obj: unknown): obj is ITopicResponse => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const topic = obj as Record<string, unknown>;
-
-  return (
-    typeof topic.articleId === 'number' &&
-    typeof topic.articleCategory === 'string' &&
-    typeof topic.articleTitle === 'string' &&
-    typeof topic.articleBody === 'string' &&
-    typeof topic.createdDate === 'string' &&
-    (topic.imageUrls === null ||
-      (Array.isArray(topic.imageUrls) &&
-        topic.imageUrls.every((url) => typeof url === 'string'))) &&
-    typeof topic.authorName === 'string' &&
-    typeof topic.authorImageUrl === 'string'
-  );
-};
 
 export const getTeamInfoAndTags = async (
   teamId: number,
