@@ -26,6 +26,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -47,7 +48,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -333,8 +334,9 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
-  const setImages = useSetAtom(postImagesAtom);
+  const [images, setImages] = useAtom(postImagesAtom);
   const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
+  const firstNodeKey = useRef('');
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -350,6 +352,18 @@ const useDetectImageMutation = () => {
 
               const node = $getNodeByKey(nodeKey);
               if (!node) {
+                return;
+              }
+
+              if (images.length === 0) {
+                firstNodeKey.current = nodeKey;
+              }
+              // 이미지 최대 하나로 롤백
+              else if (images.length > 1) {
+                if (nodeKey !== firstNodeKey.current) {
+                  node.remove();
+                  alert('이미지는 최대 하나 까지만 넣을 수 있어요');
+                }
                 return;
               }
 
@@ -446,7 +460,7 @@ const useDetectImageMutation = () => {
     return () => {
       unregisterMutationListener();
     };
-  }, [editor]);
+  }, [editor, images]);
 };
 
 const PostWriteSection = forwardRef<
