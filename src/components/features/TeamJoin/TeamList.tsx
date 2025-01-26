@@ -14,7 +14,7 @@ import { HeightInNumber } from '@/components/types.ts';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ITeamInfo, joinTeam } from '@/api/team';
+import { ITeamInfo } from '@/api/team';
 import magnifier from '@/assets/TeamJoin/magnifier.png';
 import more from '@/assets/TeamJoin/more.png';
 import { breakpoints } from '@/constants/breakpoints';
@@ -164,16 +164,6 @@ const FlipCardContent = ({
 }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const joinOnClick = (teamId: number, password: string) => {
-    joinTeam(teamId, password)
-      .then(() => {
-        navigate(`/team-dashboard/${teamId}`);
-      })
-      .catch((err) => {
-        alert('팀 가입 요청에 실패했습니다.');
-        console.error(err);
-      });
-  };
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -239,6 +229,7 @@ const FlipCardContent = ({
             <PasswordInput
               type="password"
               placeholder="PASSWORD"
+              disabled
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               maxLength={4}
@@ -249,10 +240,10 @@ const FlipCardContent = ({
               backgroundColor={colors.buttonPurple}
               onClick={(e) => {
                 e.stopPropagation();
-                joinOnClick(team.teamId, password);
+                navigate(`${PATH.TEAM_DASHBOARD}/${team.teamId}`);
               }}
             >
-              팀 참가하기
+              팀 둘러보기
             </Button>
           </>
         ) : (
@@ -264,11 +255,10 @@ const FlipCardContent = ({
                 backgroundColor={colors.buttonPurple}
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate(`${PATH.TEAM_DASHBOARD}/${team.teamId}`);
                 }}
-                // cursor={'text'}
+                cursor={'text'}
               >
-                {/*{team.memberCount} members*/}팀 둘러보기 {team.memberCount}
+                {team.memberCount} members
               </Button>
               {/* <Button backgroundColor={colors.buttonPink}>
                 {team.streakDays}일차 코몬
@@ -309,6 +299,9 @@ const PasswordInput = styled.input`
   text-align: center;
   color: #ccc;
   background-color: transparent;
+  opacity: 0;
+  user-selection: none;
+  cursor: default;
 
   u &::placeholder {
     color: #ccc;

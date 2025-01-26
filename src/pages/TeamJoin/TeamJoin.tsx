@@ -19,7 +19,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { KeywordContext } from './KeywordContext';
+import { KeywordPageControlContext } from './KeywordPageControlContext.tsx';
 
 let myTeamCache: ITeamInfo[] = [];
 const totalPagesCacheMap: Map<string, number> = new Map();
@@ -70,15 +70,18 @@ const TeamData = () => {
   }
 
   const { data: searchData, isPending: searchPending } = useQuery({
-    queryKey: ['team-search', keyword],
-    queryFn: () => searchTeams(keyword),
+    queryKey: ['team-search', keyword, page === -1 ? 0 : page],
+    queryFn: () => searchTeams(keyword, 'recent', page === -1 ? 0 : page, 6),
     select: (data) => ({
       otherTeams: data.content,
-      // 아직 검색은 백엔드에서 페이지 인덱스 지원x
       totalPages: data?.page?.totalPages,
     }),
     enabled: isSearchMode,
   });
+
+  if (searchData) {
+    totalPagesCacheMap.set(SEARCH_MODE, searchData.totalPages);
+  }
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -91,7 +94,8 @@ const TeamData = () => {
     ? (searchData?.otherTeams ?? [])
     : (queryData?.otherTeams ?? []);
   const totalPages = isSearchMode
-    ? (searchData?.totalPages ?? 1)
+    ? (searchData?.totalPages ??
+      (totalPagesCacheMap.get(SEARCH_MODE) as number))
     : (queryData?.totalPages ?? (totalPagesCacheMap.get(QUERY_MODE) as number));
   const currPage =
     page === -1
@@ -102,7 +106,9 @@ const TeamData = () => {
   const isPending = isSearchMode ? searchPending : queryPending;
 
   return (
-    <KeywordContext.Provider value={{ keyword, setKeyword }}>
+    <KeywordPageControlContext.Provider
+      value={{ keyword, setKeyword, setPage }}
+    >
       {/* 나의 팀 */}
       {myTeam.length > 0 && <MyTeamCard teams={myTeam} />}
       {/* 활동 팀 찾기 */}
@@ -113,7 +119,7 @@ const TeamData = () => {
         currentPageProp={currPage}
       />
       <Spacer h={34} />
-    </KeywordContext.Provider>
+    </KeywordPageControlContext.Provider>
   );
 };
 

@@ -3,7 +3,7 @@ import { ChangeEvent, FC, KeyboardEvent, useRef } from 'react';
 import MagnifierIcon from '@/assets/TeamJoin/search.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
-import { useKeyword } from '@/pages/TeamJoin/KeywordContext.tsx';
+import { useKeyword } from '@/pages/TeamJoin/KeywordPageControlContext.tsx';
 import styled from '@emotion/styled';
 
 interface SearchBarProps {
@@ -12,11 +12,12 @@ interface SearchBarProps {
 
 export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { setKeyword } = useKeyword();
+  const { setKeyword, setPage } = useKeyword();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length === 0) {
       setKeyword('');
+      setPage(0);
     }
   };
 
@@ -25,6 +26,7 @@ export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
       const input = inputRef.current;
       if (input.value.trim().length > 0) {
         setKeyword(input.value);
+        setPage(0);
       }
     }
   };
