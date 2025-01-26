@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
+
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
@@ -24,6 +26,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -45,8 +48,11 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import {
+  $getNearestNodeFromDOMNode,
+  $getNodeByKey,
+  $getRoot,
   $isLineBreakNode,
   DOMExportOutput,
   EditorThemeClasses,
@@ -192,7 +198,29 @@ const initialConfig = {
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
           const textNode = node as TextNode;
           const element = document.createElement('span');
+          const format = textNode.getFormat();
+          const style = textNode.getStyle();
+
+          if (format === 1) {
+            element.className = 'editor-text-bold';
+          } else if (format === 2) {
+            element.className = 'editor-text-italic';
+          } else if (format === 3) {
+            element.className = 'editor-text-bold editor-text-italic';
+          } else if (format === 4) {
+            element.className = 'editor-text-strikethrough';
+          } else if (format === 5) {
+            element.className = 'editor-text-bold editor-text-strikethrough';
+          } else if (format === 6) {
+            element.className = 'editor-text-italic editor-text-strikethrough';
+          } else if (format === 7) {
+            element.className =
+              'editor-text-bold editor-text-italic editor-text-strikethrough';
+          }
+
           element.textContent = textNode.getTextContent();
+          element.setAttribute('style', style);
+
           return { element };
         },
       ],
@@ -204,7 +232,12 @@ const initialConfig = {
 
 const EditorContainer = styled.div`
   position: relative;
+  min-height: 700px;
   ${viewStyle}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-height: 400px;
+  }
 `;
 
 const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
@@ -263,25 +296,166 @@ const EditorPlaceholder = styled.div`
   }
 `;
 
+const blobUrlToFile = async (blobUrl: string, fileName: string) => {
+  return await fetch(blobUrl, {
+    mode: 'cors',
+    // headers: {
+    //   'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
+    //   Origin: 'https://test.codemonster.site/',
+    // },
+  })
+    .then((res) => res.blob())
+    .then((blob) => new File([blob], fileName, { type: blob.type }))
+    .catch((error) => {
+      console.error('Error converting blob URL to file:', error);
+      throw error;
+    });
+};
+
+const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const maxAttempts = 10; // 10 * 100ms
+    let attempts = 0;
+
+    const intervalId = setInterval(() => {
+      attempts++;
+      const img = element.querySelector('img');
+
+      if (img) {
+        clearInterval(intervalId);
+        resolve(img);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(intervalId);
+        reject(new Error('Failed to find img element after max attempts'));
+      }
+    }, 100);
+  });
+};
+
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
-  const setImages = useSetAtom(postImagesAtom);
+  const [images, setImages] = useAtom(postImagesAtom);
+  const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
+  const firstNodeKey = useRef('');
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
       (mutations) => {
-        // mutations.forEach((mutation, nodeKey) => {
-        // TODO: 여러개되면 이미지 순서가 바뀔 수도 있으니까 개별적으로 없애야함
-        mutations.forEach((mutation) => {
-          if (mutation === 'destroyed') {
-            setImages([]);
+        mutations.forEach((mutation, nodeKey) => {
+          if (mutation === 'created') {
+            editor.update(() => {
+              const element = editor.getElementByKey(nodeKey);
+              if (!element) {
+                return;
+              }
+
+              const node = $getNodeByKey(nodeKey);
+              if (!node) {
+                return;
+              }
+
+              if (images.length === 0) {
+                firstNodeKey.current = nodeKey;
+              }
+              // 이미지 최대 하나로 제한
+              else if (images.length > 1) {
+                if (nodeKey !== firstNodeKey.current) {
+                  node.remove();
+                  alert('이미지는 최대 하나 까지만 넣을 수 있어요');
+                }
+                return;
+              }
+
+              const parentNodeKey = node
+                .getParentKeys()
+                .filter((key) => key !== 'root')[0];
+              const parent = editor.getElementByKey(parentNodeKey);
+              if (!parent) {
+                return;
+              }
+
+              const imgs = parent.querySelectorAll('.editor-image');
+              const line = $getRoot()
+                .getChildren()
+                .findIndex((node) => node.getKey() === parentNodeKey);
+
+              /**
+               * 진짜 건들이면 안되는 코드
+               * 건들이는 순간 비동기 흐름다 깨져서 Promise.all이 resolve가 안됨
+               */
+              Promise.all(
+                [...imgs].map((img) =>
+                  findImgElement(img as HTMLElement).then((foundImg) => {
+                    let myNodeKey = '';
+                    editor.read(() => {
+                      const node = $getNearestNodeFromDOMNode(img);
+                      if (node) {
+                        myNodeKey = node.getKey();
+                      }
+                    });
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
+                  })
+                )
+              )
+                .then(async (results) => {
+                  const compressedImg = [];
+
+                  for (const imgFile of results) {
+                    const requestId = `${imgFile.name}-${Date.now()}.jpg`;
+                    const res = await compressImage(requestId, imgFile);
+                    compressedImg.push(res);
+                  }
+
+                  const imgObjs = compressedImg.map((img, idx) => ({
+                    key: img.name.split('-')[1].split('.')[0],
+                    img: img,
+                    line: line,
+                    idx: idx,
+                  }));
+                  // console.log('new img objs', imgObjs);
+
+                  setImages((prev) => {
+                    const filteredNewImages = imgObjs.filter(
+                      (newImg) =>
+                        !prev.some(
+                          (img) =>
+                            img.line === newImg.line && img.idx === newImg.idx
+                        )
+                    );
+                    // console.log('new img arr', filteredNewImages);
+                    if (filteredNewImages.length === 0) {
+                      // console.log('no new img');
+                      return prev;
+                    }
+
+                    const targetNewLine = line;
+                    const rearrangedArr = prev.map((imgObj) => {
+                      if (imgObj.line > targetNewLine) {
+                        return { ...imgObj, line: imgObj.line + 1 };
+                      }
+                      return imgObj;
+                    });
+                    const fin = [...rearrangedArr, ...filteredNewImages];
+                    console.error('add fin', fin);
+                    return fin;
+                  });
+                })
+                .catch((err) => {
+                  console.error('Promise.all error', err);
+                });
+            });
             return;
           }
-          // if (mutation === 'created') {
-          //   console.log('Node created:', nodeKey);
-          //   editor.getElementByKey(nodeKey);
-          // }
+
+          if (mutation === 'destroyed') {
+            setImages((prev) =>
+              prev.filter((imgObj) => imgObj.key !== nodeKey)
+            );
+            if (firstNodeKey.current === nodeKey) {
+              firstNodeKey.current = '';
+            }
+          }
         });
       }
     );
@@ -289,7 +463,7 @@ const useDetectImageMutation = () => {
     return () => {
       unregisterMutationListener();
     };
-  }, [editor]);
+  }, [editor, images]);
 };
 
 const PostWriteSection = forwardRef<
@@ -299,7 +473,6 @@ const PostWriteSection = forwardRef<
   }
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
-  const [images, setImages] = useAtom(postImagesAtom);
   useDetectImageMutation();
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -307,8 +480,7 @@ const PostWriteSection = forwardRef<
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         const file = items[i].getAsFile();
-        // TODO: 이미지 여러개 들어갈때 수정 + 이미지 순서 바꿨을 때
-        if (file && images.length === 0) {
+        if (file) {
           const imageURL = URL.createObjectURL(file);
           const imgPayload: InsertImagePayload = {
             altText: '붙여넣은 이미지',
@@ -316,7 +488,6 @@ const PostWriteSection = forwardRef<
             src: imageURL,
           };
           editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
         }
         break;
       }
@@ -325,7 +496,7 @@ const PostWriteSection = forwardRef<
 
   const onClick = useCallback(() => {
     editor.focus();
-  }, []);
+  }, [editor]);
 
   return (
     <EditorContainer
@@ -365,28 +536,23 @@ const PostSectionWrap: React.FC<{
   children: ReactNode;
 }> = ({ shouldHighlight, children }) => {
   const [editor] = useLexicalComposerContext();
-  const [images, setImages] = useAtom(postImagesAtom);
 
-  const onDrop = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        const file = files[0];
-        if (file.type.startsWith('image/') && images.length === 0) {
-          const imageURL = URL.createObjectURL(file);
-          const imgPayload: InsertImagePayload = {
-            altText: '붙여넣은 이미지',
-            maxWidth: 600,
-            src: imageURL,
-          };
-          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
-          setImages([file]);
-        }
+  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        const imageURL = URL.createObjectURL(file);
+        const imgPayload: InsertImagePayload = {
+          altText: '붙여넣은 이미지',
+          maxWidth: 600,
+          src: imageURL,
+        };
+        editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
       }
-    },
-    [images]
-  );
+    }
+  }, []);
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -410,9 +576,6 @@ const PostEditor: React.FC<{
   title?: string;
   tag?: string;
   setTag?: (tag: string) => void;
-  // TODO : 링크 생성 후 다른 화면을 클릭하면 링크 에딧 탭이 꺼져야 사용이 자연스러운데, 내용이 있어야만 selection이 업데이트 됨
-  //  임시방편이다.
-  // }> = ({ forwardContent, content = '<br/>'.repeat(35) }) => {
 }> = ({ forwardContent, forwardTitle, content, setTag, title, tag }) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
@@ -428,7 +591,7 @@ const PostEditor: React.FC<{
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
-          placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
+          placeholder={setTag ? '문제를 입력하세요' : '제목을 입력하세요'}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (forwardTitle) {
               forwardTitle(e.target.value);

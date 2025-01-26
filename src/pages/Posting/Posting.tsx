@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { usePrompt } from '@/hooks/usePrompt';
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -129,6 +131,8 @@ const PostSubjectViewer: React.FC<{
     }
   }, [show]);
 
+  const { result } = useRegroupImageAndArticle(data);
+
   return (
     <PostSubjectViewWrap
       height={show ? Math.max(height, minShowHeight) : 57}
@@ -142,7 +146,7 @@ const PostSubjectViewer: React.FC<{
             fontWeight={700}
             fontFamily={'Pretendard'}
           >
-            주제
+            문제
           </SText>
         ) : null}
         <SText
@@ -153,16 +157,14 @@ const PostSubjectViewer: React.FC<{
           whiteSpace={'normal'}
           wordBreak={'break-word'}
         >
-          {data?.articleTitle ?? '주제가 등록되지 않았어요'}
+          {data?.articleTitle ?? '문제가 등록되지 않았어요'}
         </SText>
       </GapFlex>
       {show && data ? (
         <TopicViewer
           ref={contentRef}
           dangerouslySetInnerHTML={{
-            __html: data?.imageUrl
-              ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-              : data?.articleBody,
+            __html: result,
           }}
         />
       ) : null}
@@ -179,7 +181,7 @@ const PostSubjectViewer: React.FC<{
           fontWeight={400}
           fontFamily={'Pretendard'}
         >
-          {show ? '주제 접기' : '펼쳐서 확인하기'}
+          {show ? '문제 접기' : '펼쳐서 확인하기'}
         </SText>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +201,7 @@ const PostSubjectViewer: React.FC<{
   );
 };
 
-export const Posting = () => {
+const Posting = () => {
   const location = useLocation();
   const { article, articleId, articleTitle } = location?.state ?? {
     article: null,
@@ -209,6 +211,7 @@ export const Posting = () => {
   const [content, setContent] = useState<string>(() => article ?? '');
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [isPending, setIsPending] = useState(false);
+  const [disablePrompt, setDisablePrompt] = useState(false);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -221,6 +224,9 @@ export const Posting = () => {
   const isMobile = width <= breakpoints.mobile;
   const buttonFontSize = isMobile ? '16px' : '20px';
   const { id } = useParams();
+
+  usePrompt(!disablePrompt);
+
   useEffect(() => {
     document.documentElement.scrollTo({
       top: 0,
@@ -239,14 +245,26 @@ export const Posting = () => {
     setIsPending(true);
 
     const articleBodyTrim = content.trim();
-    const articleBody = postImages
-      ? articleBodyTrim.replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
-      : articleBodyTrim;
+
+    const articleBody =
+      postImages.length > 0
+        ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        image: (postImages && postImages[0]) ?? null,
+        images:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -260,19 +278,35 @@ export const Posting = () => {
               setDashboardView('article');
               setSelectedPostId(articleId);
               setPostImages([]);
-              navigate(`/team-dashboard/${id}`);
-              setAlert({ message: '게시글을 수정했어요', isVisible: true });
+              setDisablePrompt(true);
+              setAlert({
+                message: '게시글을 수정했어요',
+                isVisible: true,
+                onConfirm: () => {
+                  navigate(`/team-dashboard/${id}`);
+                },
+              });
             })
             .catch(() => {
               setAlert({
                 message: '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
+                onConfirm: () => {},
               });
               setIsPending(false);
             });
         })
         .catch(() => {
-          setAlert({ message: '게시글 수정에 실패했어요', isVisible: true });
+          setAlert({
+            message: '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
+          setAlert({
+            message: '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
           setIsPending(false);
         });
       return;
@@ -286,7 +320,17 @@ export const Posting = () => {
 
     createPost({
       teamId: parseInt(id),
-      image: (postImages && postImages[0]) ?? null,
+      images:
+        postImages.length > 0
+          ? postImages
+              .sort((a, b) => {
+                if (a.line !== b.line) {
+                  return a.line - b.line;
+                }
+                return a.idx - b.idx;
+              })
+              .map((imgObj) => imgObj.img)
+          : null,
       articleBody: articleBody,
       articleTitle: postTitle,
     })
@@ -300,19 +344,31 @@ export const Posting = () => {
             setDashboardView('article');
             setSelectedPostId(articleId);
             setPostImages([]);
-            navigate(`/team-dashboard/${id}`);
-            setAlert({ message: '글쓰기를 완료했어요', isVisible: true });
+            setDisablePrompt(true);
+            // navigate(`/team-dashboard/${id}`);
+            setAlert({
+              message: '글쓰기를 완료했어요',
+              isVisible: true,
+              onConfirm: () => {
+                navigate(`/team-dashboard/${id}`);
+              },
+            });
           })
           .catch(() => {
             setAlert({
               message: '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
+              onConfirm: () => {},
             });
             setIsPending(false);
           });
       })
       .catch(() => {
-        setAlert({ message: '글쓰기에 실패했어요', isVisible: true });
+        setAlert({
+          message: '글쓰기에 실패했어요',
+          isVisible: true,
+          onConfirm: () => {},
+        });
         setIsPending(false);
       });
   };
@@ -392,3 +448,5 @@ const TopicViewer = styled.div`
 
   ${viewStyle}
 `;
+
+export default Posting;

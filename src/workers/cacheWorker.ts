@@ -6,6 +6,8 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
+export type {};
+
 precacheAndRoute(self.__WB_MANIFEST || []);
 
 declare const self: ServiceWorkerGlobalScope;
@@ -31,7 +33,7 @@ registerRoute(
   })
 );
 
-// Stale While Revalidate (CSS, JS, API)
+// Stale While Revalidate (CSS, JS)
 registerRoute(
   ({ request }) => ['style', 'script', 'worker'].includes(request.destination),
   new StaleWhileRevalidate({
@@ -39,7 +41,7 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 60 * 60 * 24 * 7, // 7일
+        maxAgeSeconds: 60 * 60 * 24, // 1일
       }),
     ],
   })

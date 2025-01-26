@@ -6,14 +6,14 @@ type SubjectMutationArg = {
   articleBody: string;
   articleCategory: string;
   selectedDate: string;
-  image: File | null;
+  images: File[] | null;
 };
 
 export const createSubject = async ({
   teamId,
   articleTitle,
   articleBody,
-  image,
+  images,
   articleCategory,
   selectedDate,
 }: SubjectMutationArg) => {
@@ -24,9 +24,15 @@ export const createSubject = async ({
   formData.append('articleBody', articleBody);
   formData.append('articleCategory', articleCategory);
   formData.append('selectedDate', selectedDate);
-  if (image) {
-    formData.append('image', image);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
+    });
   }
+  // else {
+  // formData.append('images', '');
+  // }
 
   const res = await apiInstance.post(
     `/v1/articles/teams/${teamId}/subjects`,
@@ -47,7 +53,7 @@ type PutSubjectArgs = {
   articleBody: string;
   articleCategory: string;
   articleId: number;
-  image: File | null;
+  images: File[] | null;
 };
 
 export const mutateSubject = async ({
@@ -56,16 +62,22 @@ export const mutateSubject = async ({
   articleBody,
   articleCategory,
   articleId,
-  image,
+  images,
 }: PutSubjectArgs) => {
   const formData = new FormData();
 
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
   formData.append('articleCategory', articleCategory);
-  if (image) {
-    formData.append('image', image);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
+    });
   }
+  // else {
+  //   formData.append('images', '');
+  // }
 
   const res = await apiInstance.put(
     `/v1/articles/teams/${teamId}/subjects/${articleId}`,

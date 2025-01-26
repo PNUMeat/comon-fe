@@ -2,14 +2,14 @@ import { ComonShortInput } from '@/components/commons/Form/ComonShortInput';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { PROPER_PASSWORD_LENGTH, teamPasswordAtom } from '@/store/form';
 import { useAtom } from 'jotai';
 
 export const TeamPasswordInput: React.FC<{
-  defaultValue?: number;
-}> = () => {
+  defaultValue?: string;
+}> = ({ defaultValue }) => {
   const [teamPassword, setTeamPassword] = useAtom(teamPasswordAtom);
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +18,12 @@ export const TeamPasswordInput: React.FC<{
     },
     [setTeamPassword]
   );
+
+  useEffect(() => {
+    if (defaultValue) {
+      setTeamPassword(defaultValue);
+    }
+  }, []);
 
   return (
     <Wrap>

@@ -9,19 +9,19 @@ import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom';
 
 import { Home } from '@/pages/Home/Home';
 import { NotFound } from '@/pages/NotFound/NotFound';
-import { Posting } from '@/pages/Posting/Posting';
-import { TeamDailySubject } from '@/pages/Posting/TeamDailySubject';
-import { TeamAdmin } from '@/pages/TeamAdmin/TeamAdmin';
-import { TeamDashboardPage } from '@/pages/TeamDashboard/TeamDashboard';
-import { TeamJoinPage } from '@/pages/TeamJoin/TeamJoin';
+import Posting from '@/pages/Posting/Posting.tsx';
+import TeamDailySubject from '@/pages/Posting/TeamDailySubject.tsx';
+import TeamAdmin from '@/pages/TeamAdmin/TeamAdmin.tsx';
+import TeamDashboardPage from '@/pages/TeamDashboard/TeamDashboard.tsx';
+import TeamJoinPage from '@/pages/TeamJoin/TeamJoin.tsx';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
-import { MyDashboard } from '@/templates/MyDashboard/MyDashboard';
+import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import { TeamModificationTemplate } from '@/templates/Team/TeamModificationTemplate';
-import { TeamRegistrationTemplate } from '@/templates/Team/TeamRegistrationTemplate';
+import TeamModification from '@/templates/Team/TeamModification.tsx';
+import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -51,6 +51,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// lazy 취소
 export const router = createBrowserRouter(
   [
     {
@@ -121,13 +122,26 @@ export const router = createBrowserRouter(
           ),
         },
         {
-          path: PATH.TEAM_MODIFICATION,
-          element: (
-            <PrivateRoute>
-              <TeamModificationTemplate />
-            </PrivateRoute>
-          ),
+          path: `${PATH.TEAM_SETTING}/team`,
+          element: <TeamModification />,
         },
+        // {
+        //   element: (
+        //     <PrivateRoute>
+        //       <TeamSetting />
+        //     </PrivateRoute>
+        //   ),
+        //   children: [
+        //     {
+        //       path: `${PATH.TEAM_SETTING}/team`,
+        //       element: <TeamModification />,
+        //     },
+        //     {
+        //       path: `${PATH.TEAM_SETTING}/members`,
+        //       element: <MemberModification />,
+        //     },
+        //   ],
+        // },
         {
           element: (
             <PrivateRoute>
@@ -149,9 +163,9 @@ export const router = createBrowserRouter(
     },
     {
       element: (
-        <PrivateRoute>
-          <SingleSectionLayout />
-        </PrivateRoute>
+        // <PrivateRoute>
+        <SingleSectionLayout />
+        // </PrivateRoute>
       ),
       children: [
         {
@@ -160,7 +174,11 @@ export const router = createBrowserRouter(
         },
         {
           path: `${PATH.TEAM_ADMIN}/:id`,
-          element: <TeamAdmin />,
+          element: (
+            <PrivateRoute>
+              <TeamAdmin />
+            </PrivateRoute>
+          ),
         },
       ],
     },
@@ -169,11 +187,7 @@ export const router = createBrowserRouter(
       children: [
         {
           path: PATH.TEAMS,
-          element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <TeamJoinPage />
-            </Suspense>
-          ),
+          element: <TeamJoinPage />,
         },
       ],
     },

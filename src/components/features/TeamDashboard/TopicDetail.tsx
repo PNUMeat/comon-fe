@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
@@ -39,18 +41,16 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     if (data) {
       deleteSubject(teamId, data.articleId)
         .then(() => {
-          alert('주제 삭제 성공');
+          alert('문제 삭제 성공');
           queryClient.refetchQueries({
             queryKey: ['team-topic', teamId, selectedDate],
           });
         })
-        .catch(() => alert('주제 삭제 실패'));
+        .catch(() => alert('문제 삭제 실패'));
     }
   };
 
-  const selectedTopicBody = data?.imageUrl
-    ? data?.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`)
-    : data?.articleBody;
+  const { result: selectedTopicBody } = useRegroupImageAndArticle(data);
 
   return data ? (
     <Box width="100%" padding="30px 40px">
@@ -78,6 +78,8 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
+                    // TODO: 이미지 하나 허용으로 롤백
+                    // articleImageUrls: data?.imageUrls,
                     articleImageUrl: data?.imageUrl,
                   }}
                 >
@@ -126,7 +128,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         <Spacer h={36} />
         {data ? (
           <TopicViewer
-            dangerouslySetInnerHTML={{ __html: selectedTopicBody ?? '' }}
+            dangerouslySetInnerHTML={{ __html: selectedTopicBody }}
           />
         ) : null}
       </Flex>
@@ -134,7 +136,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
   ) : (
     <Box width="100%" padding="30px 40px">
       <SText color="#ccc" fontSize="24px" fontWeight={400}>
-        주제가 등록되지 않았어요
+        문제가 등록되지 않았어요
       </SText>
     </Box>
   );

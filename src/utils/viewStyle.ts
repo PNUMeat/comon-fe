@@ -2,13 +2,28 @@ export const viewStyle = `& {
     img {
         max-width: 600px;
         object-fit: contain;
-        display: block;
     }
     
     span {
       white-space: pre-wrap !important;
       dir: ltr !important;
       word-break: break-word;
+    }
+    
+    span.editor-image {
+      display: inline-block;
+    }
+    
+    .editor-text-bold {
+      font-weight: bold;
+    }
+    
+    .editor-text-italic {
+      font-style: italic;
+    }
+    
+    .editor-text-strikethrough {
+      text-decoration: line-through
     }
     
     h1 {

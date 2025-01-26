@@ -110,7 +110,7 @@ export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
     Team
  */
 const peopleNumStorageAtom = atom<number | string>('');
-export const MAX_PEOPLE_NUM = 20;
+export const MAX_PEOPLE_NUM = 50;
 export const teamMaxNumAtom = atom(
   (get) => get(peopleNumStorageAtom),
   (_get, set, newValue: number) => {

@@ -1,9 +1,52 @@
-import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
+import { Spacer } from '@/components/commons/Spacer';
 
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
+
+type DashboardCategories = {
+  label: string;
+  path: string;
+};
+
+const TeamSetting = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const categories: DashboardCategories[] = [
+    { label: '팀 관리', path: 'team' },
+    { label: '멤버 관리', path: 'members' },
+  ];
+
+  const category = location.pathname.split('/')[2];
+
+  const teamId = location.state.teamId;
+
+  const handleNavigation = (path: string) => {
+    navigate(path, { state: { teamId } });
+  };
+
+  return (
+    <DashboardGird>
+      <DSidebar>
+        {categories.map((c) => (
+          <Category
+            key={c.path}
+            isSelected={c.path === category}
+            onClick={() => handleNavigation(`/team-setting/${c.path}`)}
+          >
+            {c.label}
+          </Category>
+        ))}
+      </DSidebar>
+      <DContent>
+      <Outlet />
+        <Spacer h={312} />
+      </DContent>
+    </DashboardGird>
+  );
+};
 
 const DashboardGird = styled.div`
   width: 100%;
@@ -95,47 +138,5 @@ const Category = styled.div<{ isSelected?: boolean }>`
   }
 `;
 
-type DashboardCategories = {
-  label: string;
-  path: string;
-};
 
-const categories: DashboardCategories[] = [
-  { label: '계정 정보', path: 'profile' },
-  { label: '내 팀 관리', path: 'teams' },
-];
-
-const MyDashboard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const category = location.pathname.split('/')[2];
-
-  if (!categories.some((valid) => valid.path === category)) {
-    return <Navigate to={'/my-dashboard-category-not-found'} />;
-  }
-
-  return (
-    <DashboardGird>
-      <DSidebar>
-        {categories.map((c) => (
-          <Category
-            key={c.path}
-            isSelected={c.path === category}
-            onClick={() => navigate(`/my-dashboard/${c.path}`)}
-          >
-            {c.label}
-          </Category>
-        ))}
-      </DSidebar>
-      <DContent>
-        <BackgroundGradient
-          count={1}
-          positions={[{ top: '200px', left: '-280px' }]}
-        />
-        <Outlet />
-      </DContent>
-    </DashboardGird>
-  );
-};
-
-export default MyDashboard;
+export default TeamSetting;

@@ -1,3 +1,5 @@
+import { usePrompt } from '@/hooks/usePrompt';
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -16,6 +18,7 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { ITopicResponse } from '@/api/dashboard.ts';
 // import { ITopicResponse } from '@/api/dashboard.ts';
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
@@ -24,38 +27,51 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
+import { alertAtom } from '@/store/modal';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useSetAtom } from 'jotai';
 
-export const TeamDailySubject = () => {
+const TeamDailySubject = () => {
   const location = useLocation();
   const {
     articleId,
     articleCategory,
     articleBody,
     articleTitle,
+    // TODO: 이미지 하나 허용으로 롤백
+    // articleImageUrls,
     articleImageUrl,
-    // refetch,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
+    // articleImageUrls: null,
     articleImageUrl: null,
-    // refetch: null,
   };
 
-  const regroupedArticleContent =
-    (articleImageUrl
-      ? articleBody.replace('src="?"', `src="${articleImageUrl}"`)
-      : articleBody) ?? '';
+  const locationData = {
+    articleBody: articleBody,
+    articleId: articleId,
+    articleTitle: articleTitle,
+    articleCategory: articleCategory,
+    // TODO: 이미지 하나 허용으로 롤백
+    // imageUrls: articleImageUrls,
+    imageUrl: articleImageUrl,
+  } as ITopicResponse;
+
+  const { result: regroupedArticleContent } =
+    useRegroupImageAndArticle(locationData);
+
   const [content, setContent] = useState<string>(() => regroupedArticleContent);
   const [subjectTitle, setSubjectTitle] = useState(() => articleTitle ?? '');
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
+  const [disablePrompt, setDisablePrompt] = useState(false);
   const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
+  const setAlert = useSetAtom(alertAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
   const navigate = useNavigate();
@@ -66,6 +82,9 @@ export const TeamDailySubject = () => {
   const padding = isMobile ? '0 12px' : '0 105px';
   const spacing = isMobile ? 8 : 39;
   const { id, selectedDate } = useParams();
+
+  usePrompt(!disablePrompt);
+
   useEffect(() => {
     document.documentElement.scrollTo({
       top: 0,
@@ -83,9 +102,8 @@ export const TeamDailySubject = () => {
     if (isPending) {
       return;
     }
-
     const replacedArticleBody = subjectImages
-      ? content.trim().replace(/(<img[^>]*src=")blob:[^"]*(")/g, '$1?$2')
+      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
       : content.trim();
 
     if (articleId && tag && articleBody && subjectTitle) {
@@ -95,7 +113,17 @@ export const TeamDailySubject = () => {
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
         articleBody: replacedArticleBody,
-        image: subjectImages ? subjectImages[0] : null,
+        images:
+          subjectImages.length > 0
+            ? subjectImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleCategory: tag,
       })
         .then(() => {
@@ -104,8 +132,14 @@ export const TeamDailySubject = () => {
               queryKey: ['team-info', id, year, month],
             })
             .then(() => {
-              alert('주제 수정이 완료되었습니다.');
-              navigate(`/team-admin/${id}`);
+              setDisablePrompt(true);
+              setAlert({
+                message: '문제 수정이 완료되었습니다.',
+                isVisible: true,
+                onConfirm: () => {
+                  navigate(`/team-admin/${id}`);
+                },
+              });
             })
             .catch(() => alert('팀 정보의 최신 상태 업데이트를 실패했습니다'))
             .finally(() => {
@@ -114,7 +148,7 @@ export const TeamDailySubject = () => {
             });
         })
         .catch((err) => {
-          alert('주제 수정에 실패했습니다.');
+          alert('문제 수정에 실패했습니다.');
           console.error(err);
           setIsPending(false);
         });
@@ -132,7 +166,14 @@ export const TeamDailySubject = () => {
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
       articleBody: replacedArticleBody,
-      image: subjectImages ? subjectImages[0] : null,
+      images: subjectImages
+        .sort((a, b) => {
+          if (a.line !== b.line) {
+            return a.line - b.line;
+          }
+          return a.idx - b.idx;
+        })
+        .map((imgObj) => imgObj.img),
       articleCategory: tag,
     })
       .then((data) => {
@@ -153,8 +194,14 @@ export const TeamDailySubject = () => {
             setSubjectImages([]);
             setDashboardView('topic');
             setSelectedPostId(parseInt(articleId));
-
-            navigate(`/team-admin/${id}`);
+            setDisablePrompt(true);
+            setAlert({
+              message: '문제 작성이 완료되었습니다.',
+              isVisible: true,
+              onConfirm: () => {
+                navigate(`/team-admin/${id}`);
+              },
+            });
           });
       })
       .catch((err) => {
@@ -167,7 +214,7 @@ export const TeamDailySubject = () => {
     <CommonLayout>
       <Flex direction={'column'} align={'center'} padding={padding}>
         <PageSectionHeader h={40}>
-          <Title src={write} title="주제 작성하기" />
+          <Title src={write} title="문제 작성하기" />
         </PageSectionHeader>
         <Spacer h={spacing} />
         <PostEditor
@@ -229,3 +276,5 @@ const ClickImage = styled.img`
 const ActionText = styled.div`
   margin-left: 8px;
 `;
+
+export default TeamDailySubject;

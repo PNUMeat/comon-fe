@@ -39,6 +39,9 @@ const InfoModal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 500px;
+  // overflow-x: hidden;
+  // overflow-y: scroll;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 230px;
@@ -64,13 +67,17 @@ const MyPageImage = styled.img`
 `;
 
 export const HeaderInfoModal: React.FC<{
+  isLoggedIn: boolean;
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
-}> = ({ setModalRef, onClickLogout }) => {
+}> = ({ isLoggedIn, setModalRef, onClickLogout }) => {
   const navigate = useNavigate();
   const { data } = useQuery({
     queryFn: getMemberInfo,
     queryKey: ['membersInfo'],
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn,
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
@@ -88,6 +95,10 @@ export const HeaderInfoModal: React.FC<{
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>

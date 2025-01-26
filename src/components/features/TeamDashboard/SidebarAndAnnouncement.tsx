@@ -1,3 +1,5 @@
+import { isLoggedIn } from '@/utils/cookie.ts';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -8,9 +10,9 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Suspense, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { ITeamInfo } from '@/api/team';
+import { ITeamInfo, joinTeam } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
@@ -25,18 +27,20 @@ import { useSetAtom } from 'jotai';
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
   isTeamManager: boolean;
+  isMyTeam: boolean;
 }
 
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
+  isMyTeam,
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -169,7 +173,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                   </Link>
                   <Spacer h={2} />
                   <Link
-                    to={`${PATH.TEAM_MODIFICATION}`}
+                    to={`${PATH.TEAM_SETTING}/team`}
+                    state={{ teamId: teamId }}
                     style={{ textDecoration: 'none' }}
                   >
                     <Flex
@@ -242,19 +247,52 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             </SText>
           </Flex>
         </Box>
-        {/*<Link to={PATH.POSTING} style={{ textDecoration: 'none' }}>*/}
-        <Link to={`/posting/${teamId}`} style={{ textDecoration: 'none' }}>
-          <NewPostButton>
-            <AnnouncementImage src={PencilIcon} />
-            <SText
-              fontSize={isMobile ? '10px' : '18px'}
-              color="#fff"
-              fontWeight={700}
-            >
-              오늘의 글쓰기
-            </SText>
-          </NewPostButton>
-        </Link>
+        <NewPostButton
+          onClick={() => {
+            if (isMyTeam) {
+              navigate(`/posting/${teamId}`, {
+                state: {
+                  article: null,
+                  articleId: null,
+                  articleTitle: null,
+                },
+              });
+            } else {
+              if (!isLoggedIn()) {
+                // session redirect
+                sessionStorage.setItem('redirect', location.pathname);
+                navigate(PATH.LOGIN, {
+                  state: {
+                    redirect: location.pathname,
+                  },
+                });
+                return;
+              }
+              const pwd = prompt('팀 비밀번호');
+              if (!pwd || pwd.trim().length > 4) {
+                return;
+              }
+
+              joinTeam(parseInt(teamId as string), pwd)
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => {
+                  alert('팀 가입 요청에 실패했습니다.');
+                  console.error(err);
+                });
+            }
+          }}
+        >
+          <AnnouncementImage src={PencilIcon} />
+          <SText
+            fontSize={isMobile ? '10px' : '18px'}
+            color="#fff"
+            fontWeight={700}
+          >
+            {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
+          </SText>
+        </NewPostButton>
       </Announcement>
     </>
   );

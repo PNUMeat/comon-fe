@@ -124,8 +124,8 @@ apiInstance.interceptors.response.use(
         }
 
         // 리프레시 토큰이 만료됨
-        sessionStorage.removeItem('Authorization');
-        navigate(PATH.LOGIN);
+        // sessionStorage.removeItem('Authorization');
+        // navigate(PATH.LOGIN);
         return Promise.reject(error);
       }
     }

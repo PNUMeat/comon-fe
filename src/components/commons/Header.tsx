@@ -5,7 +5,7 @@ import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
 
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
 import LogoEng from '@/assets/Header/logo_eng.png';
@@ -200,31 +200,27 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           </NavMenu>
         </Flex>
         <UserMenu>
-          {isLoggedIn ? (
-            <Fragment>
-              <button
-                onClick={() => {
+          <Fragment>
+            <button
+              onClick={() => {
+                if (isLoggedIn) {
                   modalControlRef.current.isClicked =
                     !modalControlRef.current.isClicked;
-                }}
-              >
-                내정보
-              </button>
-              <HeaderInfoModal
-                setModalRef={setModalRef}
-                onClickLogout={onClickLogout}
-              />
-            </Fragment>
-          ) : (
-            <Link
-              to={{
-                pathname: PATH.LOGIN,
+                } else {
+                  navigate(PATH.LOGIN, {
+                    state: { redirect: location.pathname },
+                  });
+                }
               }}
-              state={{ redirect: location.pathname }}
             >
-              로그인
-            </Link>
-          )}
+              {isLoggedIn ? '내정보' : '로그인'}
+            </button>
+            <HeaderInfoModal
+              isLoggedIn={isLoggedIn}
+              setModalRef={setModalRef}
+              onClickLogout={onClickLogout}
+            />
+          </Fragment>
         </UserMenu>
       </HeaderContainer>
     </Flex>

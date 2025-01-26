@@ -149,7 +149,6 @@ export const ComonImageInput: React.FC<{
         workerRef.current.onmessage = (e) => {
           const { compressedImage, error = undefined } = e.data;
           if (compressedImage && !error) {
-            console.log('after: ', readableBytes(compressedImage.size));
             setImage(compressedImage);
             return;
           }
@@ -162,7 +161,6 @@ export const ComonImageInput: React.FC<{
 
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const worker = workerRef.current;
-        console.log('before: ', readableBytes(file.size));
         worker?.postMessage({
           src: e?.target?.result,
           fileType: file.type,
@@ -225,11 +223,4 @@ export const ComonImageInput: React.FC<{
       </SideContainer>
     </Flex>
   );
-};
-
-const readableBytes = (bytes: number) => {
-  const i = Math.floor(Math.log(bytes) / Math.log(1024)),
-    sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 };

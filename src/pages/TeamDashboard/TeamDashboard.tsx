@@ -1,3 +1,4 @@
+import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
@@ -10,16 +11,12 @@ import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/Side
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 
-import {
-  IArticle,
-  ICalendarTag,
-  getArticlesByDate,
-  getTeamInfoAndTags,
-} from '@/api/dashboard';
-import { ITeamInfo } from '@/api/team';
+import { IArticle, getArticlesByDate } from '@/api/dashboard';
+import { ITeamInfo, getTeamList } from '@/api/team';
+import { ServerResponse } from '@/api/types.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import {
   currentViewAtom,
@@ -29,11 +26,12 @@ import {
 } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useAtom } from 'jotai';
 
 let totalPageCache = 0;
 
-export const TeamDashboardPage = () => {
+const TeamDashboardPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
@@ -43,45 +41,18 @@ export const TeamDashboardPage = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const [tags, setTags] = useState<ICalendarTag[]>([]);
-
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
   };
 
-  const addTags = (newTags: ICalendarTag[]) => {
-    setTags((prevTags) => {
-      const updatedTags = [...prevTags];
-
-      newTags.forEach((newTag) => {
-        const existingIndex = updatedTags.findIndex(
-          (tag) => tag.subjectDate === newTag.subjectDate
-        );
-        if (existingIndex !== -1) {
-          updatedTags[existingIndex] = newTag;
-        } else {
-          updatedTags.push(newTag);
-        }
-      });
-
-      return updatedTags;
-    });
-  };
-
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
-  const { data: teamInfoData, isSuccess } = useQuery({
-    queryKey: ['team-info', teamId, year, month],
-    queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
-    enabled: !!teamId,
+  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
+    teamId,
+    year,
+    month,
   });
-
-  useEffect(() => {
-    if (isSuccess && teamInfoData) {
-      addTags(teamInfoData.subjectArticleDateAndTagResponses);
-    }
-  }, [isSuccess]);
 
   const {
     data: articlesData,
@@ -111,32 +82,52 @@ export const TeamDashboardPage = () => {
     setPage(newPage);
   };
 
-  const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
-  const isTeamManager = teamInfoData?.teamManager || false;
+  // const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
+  const { data: teamData } = useQuery({
+    queryKey: ['team-list', 0],
+    queryFn: () => getTeamList('recent', 0, 6),
+    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.code === 100
+      ) {
+        console.log('asdasd');
+        return false;
+      }
+
+      return failureCount < 3;
+    },
+  });
+
+  const isMyTeam = (teamData?.myTeams ?? []).reduce(
+    (acc, myTeam) => acc || myTeam.teamId === parseInt(teamId as string),
+    false
+  );
 
   return (
     <Fragment>
       <Spacer h={isMobile ? 16 : 28} />
       <Grid>
-        {teamInfoData && (
-          <SidebarAndAnnouncement
-            teamInfo={teamInfo}
-            isTeamManager={isTeamManager}
-          />
-        )}
+        <SidebarAndAnnouncement
+          teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
+          isTeamManager={isTeamManager}
+          isMyTeam={isMyTeam}
+        />
         <CalendarSection>
           <CustomCalendar
-            tags={tags}
+            tags={tagsMap.get(teamId as string) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
-            tags={tags}
+            tags={tagsMap.get(teamId as string) ?? []}
             selectedDate={selectedDate}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
@@ -158,6 +149,7 @@ export const TeamDashboardPage = () => {
                   (article) => article.articleId === selectedArticleId
                 ) as IArticle
               }
+              shouldBlur={!isMyTeam}
               refetchArticles={refetch}
               teamId={Number(teamId)}
             />
@@ -197,3 +189,5 @@ const CalendarSection = styled.section`
     border-radius: 10px;
   }
 `;
+
+export default TeamDashboardPage;
