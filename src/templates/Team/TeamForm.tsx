@@ -9,22 +9,27 @@ import { HeightInNumber } from '@/components/types';
 
 import { Fragment } from 'react';
 
+import { TeamAdminResponse } from '@/api/team.ts';
 import { breakpoints } from '@/constants/breakpoints';
-import { useTeamOldData } from '@/templates/Team/TeamFormContext.tsx';
 import { TeamFormLayout } from '@/templates/Team/TeamFormLayout';
 import { TeamMaxPeopleInput } from '@/templates/Team/segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from '@/templates/Team/segments/TeamPasswordInput.tsx';
 import { TeamSubjectRadio } from '@/templates/Team/segments/TeamSubjectRadio';
 
-export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
+export const TeamForm: React.FC<
+  HeightInNumber & {
+    teamInfo?: TeamAdminResponse;
+  }
+> = ({ h, teamInfo }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-  // const location = useLocation();
 
-  const { teamName, teamExplain, topic, memberLimit, password, teamIconUrl } =
-    useTeamOldData();
-
-  // const currPath = location.pathname.split('/')[1];
+  const teamName = teamInfo?.teamName;
+  const teamExplain = teamInfo?.teamExplain;
+  const topic = teamInfo?.topic;
+  const memberLimit = teamInfo?.memberLimit;
+  const password = teamInfo?.password;
+  const teamIconUrl = teamInfo?.teamIconUrl;
 
   const MobileComponent = () => (
     <>
@@ -79,13 +84,11 @@ export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
       <FormFieldLabel>인원 제한</FormFieldLabel>
       <TeamMaxPeopleInput defaultValue={memberLimit} />
 
-      {/*{currPath === 'team-registration' ? (*/}
       <Fragment>
         {isMobile && <Spacer h={8} />}
         <FormFieldLabel>입장 비밀번호</FormFieldLabel>
         <TeamPasswordInput defaultValue={password} />
       </Fragment>
-      {/*) : null}*/}
     </TeamFormLayout>
   );
 };

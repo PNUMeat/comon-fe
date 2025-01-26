@@ -17,14 +17,12 @@ export const LoginTemplate = () => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       const sessionRedirect = sessionStorage.getItem('redirect');
+      if (sessionRedirect) {
+        sessionStorage.removeItem('redirect');
+      }
       const redirectDest =
-        location.state?.redirect ?? sessionRedirect ?? PATH.HOME;
-      // const navigatePath = redirectDest
-      //   ? redirectDest === PATH.HOME
-      //     ? PATH.TEAMS
-      //     : PATH.HOME
-      //   : PATH.HOME;
-      sessionStorage.removeItem('redirect');
+        sessionRedirect ?? location.state?.redirect ?? PATH.HOME;
+
       navigate(redirectDest, { replace: true });
     }
   }, []);
