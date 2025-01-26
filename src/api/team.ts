@@ -1,6 +1,6 @@
 // import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
-// import { teamCombinedMock } from '@/api/mocks.ts';
+// import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -175,12 +175,19 @@ export const joinTeam = async (teamId: number, password: string) => {
 };
 
 export const searchTeams = async (
-  keyword: string
+  keyword: string,
+  sort: string = 'recent',
+  page: number = 0,
+  size: number = 6
 ): Promise<ITeamSearchResponse> => {
+  // if (isDevMode()) {
+  //   return teamSearchMock.data;
+  // }
+
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
-      params: { keyword },
+      params: { keyword, sort, page, size },
     }
   );
 
