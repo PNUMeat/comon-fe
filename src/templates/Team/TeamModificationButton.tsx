@@ -32,7 +32,8 @@ export const TeamModificationButton = () => {
     teamExplain: currTeamExplain,
     topic: currTopic,
     memberLimit: currMemberLimit,
-    // image: currImage,
+    password: currPassword,
+    // teamIconUrl: currImage
   } = useTeamOldData();
 
   useEffect(() => {
@@ -40,12 +41,13 @@ export const TeamModificationButton = () => {
     const exp = teamExplain.length === 0 ? currTeamExplain : teamExplain;
     const top = topic ?? currTopic;
     const mem = memberLimit ?? currMemberLimit;
+    const pas = password ?? currPassword;
 
-    const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}`;
-    const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}`;
+    const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}-${currPassword}`;
+    const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}-${pas}`;
 
     setIsDirty(curr !== changed);
-  }, [teamName, teamExplain, topic, memberLimit, image]);
+  }, [teamName, teamExplain, topic, memberLimit, image, password]);
 
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
@@ -64,8 +66,10 @@ export const TeamModificationButton = () => {
           typeof vMemberLimit === 'number'
             ? vMemberLimit
             : parseInt(vMemberLimit),
-        // TODO: password 받아올 수 있으면 추가
-        password: password.trim().length === 0 ? null : password,
+        password:
+          currPassword === password || password.trim().length === 0
+            ? null
+            : password,
       })
         .then(() => {
           //     성공했다고 토스트 띄워달라고 합니다

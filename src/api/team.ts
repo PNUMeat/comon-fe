@@ -73,6 +73,16 @@ export interface ITeamSearchResponse {
   };
 }
 
+export interface TeamAdminResponse {
+  teamId: number;
+  teamName: string;
+  teamExplain: string;
+  topic: string;
+  memberLimit: number;
+  password: string;
+  teamIconUrl: string;
+}
+
 export const createTeam = async ({
   teamName,
   teamExplain,
@@ -200,4 +210,12 @@ export const withdrawTeam = async (teamId: number) => {
   );
 
   return res.data;
+};
+
+export const getTeamInfoAdmin = async (teamId: number) => {
+  const res = await apiInstance.get<ServerResponse<TeamAdminResponse>>(
+    `v1/teams/${teamId}`
+  );
+
+  return res.data.data;
 };

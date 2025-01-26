@@ -686,3 +686,153 @@ export const mutateTeamInfo = {
       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/eed4f55a-cf35-497a-bf4b-1f27fb8d1415',
   },
 };
+
+export const teamSearchMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    content: [
+      {
+        teamId: 59,
+        teamName: '팀생성1111',
+        teamExplain:
+          '비번 1111. 아 근데 팀 수정 이미지만 바꿨을 때는 버튼 활성화가 안되네',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/bfb0bae3-0112-4013-b554-9b608a38df63',
+        topic: '스터디',
+        memberLimit: 50,
+        memberCount: 2,
+        streakDays: 0,
+        createdAt: '2025-01-25',
+        members: [
+          {
+            memberName: '하내안',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+            memberExplain: '하내안입니다',
+            uuid: '495892de-1014-4987-b9ea-5137efeefc84',
+          },
+          {
+            memberName: '김민욱',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: '.',
+            uuid: '11114201-2411-48cf-a6aa-e6de4607956d',
+          },
+        ],
+      },
+      {
+        teamId: 56,
+        teamName: '팀 생성',
+        teamExplain: '생성 2번 됨',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+        topic: '코딩테스트',
+        memberLimit: 2,
+        memberCount: 1,
+        streakDays: 0,
+        createdAt: '2025-01-24',
+        members: [
+          {
+            memberName: '이지수',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: '난 파댕이가 좋아',
+            uuid: 'cfa66118-65c9-4f54-8cc2-a90c71a05e1d',
+          },
+        ],
+      },
+      {
+        teamId: 37,
+        teamName: '팀이름열자자채우기기',
+        teamExplain: '팀입니다',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+        topic: '코딩테스트',
+        memberLimit: 11,
+        memberCount: 1,
+        streakDays: 0,
+        createdAt: '2025-01-16',
+        members: [
+          {
+            memberName: '김민욱',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: '.',
+            uuid: '11114201-2411-48cf-a6aa-e6de4607956d',
+          },
+        ],
+      },
+      {
+        teamId: 35,
+        teamName: 'test용 팀',
+        teamExplain: 'test 용입니다',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+        topic: '코딩테스트',
+        memberLimit: 2,
+        memberCount: 1,
+        streakDays: 0,
+        createdAt: '2025-01-14',
+        members: [
+          {
+            memberName: '12312312312',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: 'qkrwjwhd ',
+            uuid: '8834ddd2-cfbf-482b-9260-d69ba49700b8',
+          },
+        ],
+      },
+      {
+        teamId: 34,
+        teamName: '팀7',
+        teamExplain: '많은 팀 테스트중입니다.',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+        topic: '코딩테스트',
+        memberLimit: 4,
+        memberCount: 1,
+        streakDays: 0,
+        createdAt: '2025-01-14',
+        members: [
+          {
+            memberName: '민경',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: '하이하이',
+            uuid: '73cce880-e310-4632-b546-9b30cb7e843e',
+          },
+        ],
+      },
+      {
+        teamId: 33,
+        teamName: '팀6',
+        teamExplain: '많은 팀 테스트중입니다.',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+        topic: '코딩테스트',
+        memberLimit: 6,
+        memberCount: 1,
+        streakDays: 0,
+        createdAt: '2025-01-14',
+        members: [
+          {
+            memberName: '민경',
+            imageUrl:
+              'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+            memberExplain: '하이하이',
+            uuid: '73cce880-e310-4632-b546-9b30cb7e843e',
+          },
+        ],
+      },
+    ],
+    page: {
+      size: 6,
+      number: 0,
+      totalElements: 13,
+      totalPages: 3,
+    },
+  },
+};

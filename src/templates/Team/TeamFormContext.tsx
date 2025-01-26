@@ -1,14 +1,8 @@
 import { createContext, useContext } from 'react';
 
-interface TeamFormContextType {
-  teamName: string;
-  teamExplain: string;
-  topic: string;
-  memberLimit: number;
-  image: string;
-}
+import { TeamAdminResponse } from '@/api/team.ts';
 
-export const TeamFormContext = createContext<TeamFormContextType | null>(null);
+export const TeamFormContext = createContext<TeamAdminResponse | null>(null);
 
 export const useTeamOldData = () => {
   const context = useContext(TeamFormContext);
