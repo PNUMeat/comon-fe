@@ -1,5 +1,3 @@
-import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
-
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Container } from '@/components/commons/Container';
@@ -128,13 +126,8 @@ const aims = [
 
 export const Home = () => {
   const navigate = useNavigate();
-  const onClickLogin = () => {
-    if (isLoggedIn() || isDevMode()) {
-      navigate(PATH.TEAMS);
-      return;
-    }
-    navigate(PATH.LOGIN);
-  };
+  const onClickStart = () => navigate(PATH.TEAMS);
+
   const { bottomRef, effectRef } = useBottomBound();
   const { isNanumFFReady } = useNanumFont();
   const width = useWindowWidth();
@@ -168,10 +161,7 @@ export const Home = () => {
             </Suspense>
 
             <Wrap>
-              <StartButton onClick={onClickLogin}>시작하기</StartButton>
-              {/*<StartButtonDescription>*/}
-              {/*  계정 생성 or 로그인하러 가기*/}
-              {/*</StartButtonDescription>*/}
+              <StartButton onClick={onClickStart}>시작하기</StartButton>
             </Wrap>
             <Spacer h={90} />
             <Flex
