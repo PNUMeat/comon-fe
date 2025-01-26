@@ -4,12 +4,14 @@ interface TextProps {
   color?: string;
   fontFamily?: string;
   fontSize?: string;
+  fontStyle?: string;
   fontWeight?: string | number;
   lineHeight?: string;
   letterSpacing?: string;
   whiteSpace?: string;
   wordBreak?: string;
   textAlign?: React.CSSProperties['textAlign'];
+  textDecoration?: string;
   opacity?: string;
   shouldCut?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -28,6 +30,8 @@ export const SText = styled.div<TextProps>`
   word-break: ${(props) => props.wordBreak || 'inherit'};
   opacity: ${(props) => props.opacity || 'inherit'};
   cursor: ${(props) => props.cursor || 'inherit'};
+  font-style: ${(props) => props.fontStyle || 'inherit'};
+  text-decoration: ${(props) => props.textDecoration || 'inherit'};
 
   ${(props) =>
     props.shouldCut

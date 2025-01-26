@@ -6,7 +6,7 @@ export const PATH = {
   MY_PAGE: '/my-dashboard',
   TEAMS: '/team-list',
   TEAM_REGISTRATION: '/team-registration',
-  TEAM_MODIFICATION: '/team-modification',
+  TEAM_SETTING: '/team-setting',
   TEAM_DASHBOARD: '/team-dashboard',
   TEAM_ADMIN: '/team-admin',
   SUBJECT: '/team-subject/:id/:selectedDate',

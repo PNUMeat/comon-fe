@@ -51,6 +51,7 @@ export const LazyImage: React.FC<ILazyImage> = ({
         objectFit: 'cover',
         ...style,
       }}
+      draggable={false}
       loading={'lazy'}
       className={className}
     />

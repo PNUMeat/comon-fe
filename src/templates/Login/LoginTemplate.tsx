@@ -16,12 +16,14 @@ export const LoginTemplate = () => {
   useEffect(() => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
-      const navigatePath = location.state?.redirect
-        ? location.state.redirect === PATH.HOME
-          ? PATH.TEAMS
-          : PATH.HOME
-        : PATH.HOME;
-      navigate(navigatePath, { replace: true });
+      const sessionRedirect = sessionStorage.getItem('redirect');
+      if (sessionRedirect) {
+        sessionStorage.removeItem('redirect');
+      }
+      const redirectDest =
+        sessionRedirect ?? location.state?.redirect ?? PATH.HOME;
+
+      navigate(redirectDest, { replace: true });
     }
   }, []);
 

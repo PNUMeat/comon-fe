@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { SText } from '@/components/commons/SText';
 import { Tag } from '@/components/commons/Tag';
 import { convertToKoreanIfIsKoreanFont } from '@/components/features/Post/constants';
@@ -13,6 +15,7 @@ import { Dispatch, useCallback, useEffect, useState } from 'react';
 
 import imgIcon from '@/assets/Posting/imageIcon.svg';
 import linkIcon from '@/assets/Posting/linkIcon.svg';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -26,8 +29,6 @@ import {
   SELECTION_CHANGE_COMMAND,
   TextFormatType,
 } from 'lexical';
-import { breakpoints } from '@/constants/breakpoints';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 const ToolbarWrap = styled.div`
   height: 44px;
@@ -57,15 +58,14 @@ const HorizontalLine = styled.div`
   width: 100%;
 `;
 
-
 const TAG_LIST: {
   color: string;
   label: string;
 }[] = [
+  { color: '#FF5780', label: '코딩 테스트' },
   { color: '#6E74FA', label: '스터디 복습' },
   { color: '#C2C4FB', label: '스터디 예습' },
   { color: '#FFA379', label: '스터디' },
-  { color: '#FF5780', label: '코딩 테스트' },
 ];
 
 export const ToolbarPlugin: React.FC<{
@@ -82,6 +82,8 @@ export const ToolbarPlugin: React.FC<{
 
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isStrikethrough, setIsStrikethrough] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
 
@@ -89,6 +91,8 @@ export const ToolbarPlugin: React.FC<{
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -164,81 +168,83 @@ export const ToolbarPlugin: React.FC<{
       <ToolbarWrap>
         {setTag ? (
           <>
-        <div
-          style={{
-            display: 'flex',
-            width: '405px',
-            gap: '4px',
-            alignItems: 'center',
-          }}
-        >
-          <SText
-            whiteSpace={'nowrap'}
-            color={'#CCC'}
-            fontSize={'10px'}
-            fontWeight={'600'}
-          >
-            태그 선택:
-          </SText>
-          {TAG_LIST.map((item) => (
-            <Tag
-              key={item.label}
-              bgColor={item.color}
-              label={item.label}
-              onClick={() => {
-                setTag(item.label);
-                selectTag(item.label);
+            <div
+              style={{
+                display: 'flex',
+                width: '405px',
+                gap: '4px',
+                alignItems: 'center',
               }}
-              isSelected={item.label === tag}
-              fontSize={'6px'}
-              padding={'2px 4px'}
-              height="12px"
-            />
-          ))}
-        </div>
-        <HorizontalLine />
-        </>
-      ) : null}
+            >
+              <SText
+                whiteSpace={'nowrap'}
+                color={'#CCC'}
+                fontSize={'10px'}
+                fontWeight={'600'}
+              >
+                태그 선택:
+              </SText>
+              {TAG_LIST.map((item) => (
+                <Tag
+                  key={item.label}
+                  bgColor={item.color}
+                  label={item.label}
+                  onClick={() => {
+                    setTag(item.label);
+                    selectTag(item.label);
+                  }}
+                  isSelected={item.label === tag}
+                  fontSize={'6px'}
+                  padding={'2px 4px'}
+                  height="12px"
+                />
+              ))}
+            </div>
+            <HorizontalLine />
+          </>
+        ) : null}
 
-      <div
-      style={{
-        display: 'flex',
-        width: '100%',
-        justifyContent: 'space-between',
-        gap: '20px',
-        alignItems: 'center',
-        zIndex: 100,
-      }}
-      >
-        <FontDropdown
-          editor={activeEditor}
-          currentFontFamily={fontFamily}
-          currentFontSize={fontSize}
-          currentFontColor={fontColor}
-          dispatchTextFormat={dispatchTextFormat}
-          isBold={isBold}
-        />
         <div
           style={{
             display: 'flex',
-            width: '69px',
+            width: '100%',
             justifyContent: 'space-between',
+            gap: '20px',
+            alignItems: 'center',
+            zIndex: 100,
           }}
         >
-          <button onClick={insertLink}>
-            <InsertIcon
-              src={linkIcon}
-              alt={'insert link button'}
-              isSelected={isLink}
-            />
-          </button>
-          <InsertImageButton
-            insertImage={insertImage}
-            buttonLabel={
-              <InsertIcon src={imgIcon} alt={'insert image button'} />
-            }
+          <FontDropdown
+            editor={activeEditor}
+            currentFontFamily={fontFamily}
+            currentFontSize={fontSize}
+            currentFontColor={fontColor}
+            dispatchTextFormat={dispatchTextFormat}
+            isBold={isBold}
+            isItalic={isItalic}
+            isStrikethrough={isStrikethrough}
           />
-        </div>
+          <div
+            style={{
+              display: 'flex',
+              width: '69px',
+              justifyContent: 'space-between',
+            }}
+          >
+            <button onClick={insertLink}>
+              <InsertIcon
+                src={linkIcon}
+                alt={'insert link button'}
+                isSelected={isLink}
+              />
+            </button>
+            <InsertImageButton
+              insertImage={insertImage}
+              buttonLabel={
+                <InsertIcon src={imgIcon} alt={'insert image button'} />
+              }
+            />
+          </div>
         </div>
         <HorizontalLine />
       </ToolbarWrap>
@@ -254,6 +260,8 @@ export const ToolbarPlugin: React.FC<{
         currentFontColor={fontColor}
         dispatchTextFormat={dispatchTextFormat}
         isBold={isBold}
+        isItalic={isItalic}
+        isStrikethrough={isStrikethrough}
       />
       {setTag ? (
         <div
@@ -261,7 +269,7 @@ export const ToolbarPlugin: React.FC<{
             display: 'flex',
             width: '405px',
             gap: '13px',
-            marginRight: '78px',
+            // marginRight: '78px',
             alignItems: 'center',
           }}
         >

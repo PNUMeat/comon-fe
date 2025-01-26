@@ -1,5 +1,7 @@
 import { LazyImage } from '@/components/commons/LazyImage';
 
+import { Suspense } from 'react';
+
 import styled from '@emotion/styled';
 
 interface ProfileListProps {
@@ -22,13 +24,15 @@ export const ProfileList: React.FC<ProfileListProps> = ({
           overlap={overlap}
           index={index}
         >
-          <LazyImage
-            src={profile}
-            altText={`profile ${index + 1}`}
-            w={size}
-            h={size}
-            maxW={size}
-          />
+          <Suspense>
+            <LazyImage
+              src={profile}
+              altText={`profile ${index + 1}`}
+              w={size}
+              h={size}
+              maxW={size}
+            />
+          </Suspense>
         </LazyImageWrapper>
       ))}
     </ProfileContainer>

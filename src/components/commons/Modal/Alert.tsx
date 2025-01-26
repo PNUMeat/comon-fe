@@ -4,11 +4,12 @@ import { useAtomValue, useSetAtom } from "jotai";
 import styled from "@emotion/styled";
 
 export const Alert: React.FC = () => {
-  const { message, isVisible } = useAtomValue(alertAtom);
+  const { message, isVisible, onConfirm } = useAtomValue(alertAtom);
   const setModal = useSetAtom(alertAtom);
 
   const onClick = () => {
-    setModal({ message: '', isVisible: false });
+    onConfirm();
+    setModal({ message: '', isVisible: false, onConfirm: () => {} });
   }
 
   return (

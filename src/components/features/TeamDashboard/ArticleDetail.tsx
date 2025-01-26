@@ -1,12 +1,14 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IArticle } from '@/api/dashboard';
@@ -21,23 +23,18 @@ interface ArticleDetailProps {
   data: IArticle;
   teamId: number;
   refetchArticles: () => void;
+  shouldBlur?: boolean;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   data,
   teamId,
   refetchArticles,
+  shouldBlur = true,
 }) => {
-  const article = useMemo(
-    () =>
-      data?.imageUrl
-        ? data?.articleBody.replace(
-            /(<img[^>]*src=")\?("[^>]*>)/g,
-            `$1${data?.imageUrl}$2`
-          )
-        : (data?.articleBody ?? ''),
-    [data]
-  );
+  const { result: article } = useRegroupImageAndArticle(data);
+
+  // TODO: 여기서?
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);
 
@@ -48,7 +45,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           refetchArticles();
         })
         .catch(() =>
-          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true })
+          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true, onConfirm: () => {} }),
         );
     }
   };
@@ -59,6 +56,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       description: '삭제된 게시글은 복구되지 않아요',
       isVisible: true,
       onConfirm: deleteArticle,
+      onCancel: () => {},
     });
   };
 
@@ -131,6 +129,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
         </Flex>
         <Spacer h={36} />
         <ArticleViewer
+          shouldBlur={shouldBlur}
           dangerouslySetInnerHTML={{
             __html: article,
           }}
@@ -140,7 +139,18 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   );
 };
 
-const ArticleViewer = styled.div`
+const ArticleViewer = styled.div<{
+  shouldBlur: boolean;
+}>`
   line-height: 1.5;
   ${viewStyle}
+
+  ${(props) =>
+    props.shouldBlur
+      ? `
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+  `
+      : ''}
 `;

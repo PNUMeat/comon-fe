@@ -1,38 +1,54 @@
-import { ChangeEvent, FC, KeyboardEvent } from 'react';
+import { ChangeEvent, FC, KeyboardEvent, useRef } from 'react';
 
 import MagnifierIcon from '@/assets/TeamJoin/search.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
+import { useKeyword } from '@/pages/TeamJoin/KeywordPageControlContext.tsx';
 import styled from '@emotion/styled';
 
 interface SearchBarProps {
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  onSearch: () => void;
 }
 
-export const SearchBar: FC<SearchBarProps> = ({
-  value,
-  onChange,
-  placeholder,
-  onSearch,
-}) => {
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      onSearch();
+export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { keyword, setKeyword, setPage } = useKeyword();
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length === 0) {
+      setKeyword('');
+      setPage(0);
     }
   };
+
+  const forwardKeyword = () => {
+    if (inputRef && inputRef.current) {
+      const input = inputRef.current;
+      if (input.value.trim().length > 0) {
+        setKeyword(input.value);
+        setPage(0);
+      }
+    }
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      forwardKeyword();
+    }
+  };
+
+  const onClickSearch = () => forwardKeyword();
 
   return (
     <SearchBarWrapper>
       <SearchInput
-        value={value}
+        ref={inputRef}
         onChange={onChange}
         placeholder={placeholder}
-        onKeyDown={handleKeyDown}
+        onKeyDown={onKeyDown}
+        defaultValue={keyword}
       />
-      <SearchIcon onClick={onSearch} />
+      <SearchIcon onClick={onClickSearch} />
     </SearchBarWrapper>
   );
 };

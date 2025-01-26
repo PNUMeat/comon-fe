@@ -12,11 +12,12 @@
  */
 
 function compressImage(
+  requestId: string,
   image: ImageBitmap,
   fileType: string,
-  fileName: string,
-  quality?: number
-): Promise<File> {
+  quality: number = 1,
+  maxSizeMb: number = -1
+): Promise<{ requestId: string; compressedImage: File; path: number }> {
   return new Promise((resolve, reject) => {
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
@@ -40,27 +41,73 @@ function compressImage(
 
     ctx.drawImage(image, 0, 0);
 
+    if (maxSizeMb !== -1) {
+      const compressImageRecursively = (
+        currentQuality: number
+      ): Promise<{
+        requestId: string;
+        compressedImage: File;
+        path: number;
+      }> => {
+        return new Promise((resolve, reject) => {
+          canvas
+            .convertToBlob({
+              type: 'image/jpeg',
+              quality: currentQuality,
+            })
+            .then((blob) => {
+              if (
+                blob.size <= maxSizeMb * 1_000_000 ||
+                currentQuality <= 0.01
+              ) {
+                const compressedFile = new File([blob], requestId, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve({
+                  requestId,
+                  compressedImage: compressedFile,
+                  path: currentQuality,
+                });
+              } else {
+                resolve(compressImageRecursively(currentQuality - 0.01));
+              }
+            })
+            .catch(reject);
+        });
+      };
+
+      return compressImageRecursively(quality).then(resolve).catch(reject);
+    }
+
     const compressOptions = {
+      quality: quality,
       type: 'image/jpeg',
-      quality: fileType === 'image/jpeg' ? quality : undefined,
     };
 
     canvas
       .convertToBlob(compressOptions)
       .then((blob) => {
         const fileLastModified = Date.now();
-        const compressedFile = new File([blob], fileName, {
-          type: fileType,
+        const compressedFile = new File([blob], requestId, {
+          type: 'image/jpeg',
           lastModified: fileLastModified,
         });
-        resolve(compressedFile);
+        resolve({
+          requestId: requestId,
+          compressedImage: compressedFile,
+          path: quality,
+        });
       })
       .catch(reject);
   });
 }
 
 self.onmessage = (e) => {
-  const { src, fileType, fileName, quality } = e.data;
+  /*
+    이거 왜 매개변수 5개까지만 넘어가냐
+   */
+  const { requestId, src, fileType, quality, maxSizeMb } = e.data;
   /*
     worker는 Web API에 접근할 수 없어서,
     const image = new Image() <- 이게 안되서 이렇게 해야함
@@ -76,10 +123,22 @@ self.onmessage = (e) => {
 
   imagePromise
     .then((imageBitmap) =>
-      compressImage(imageBitmap, fileType, fileName, quality)
+      compressImage(
+        requestId,
+        imageBitmap,
+        fileType,
+        // fileName,
+        quality,
+        maxSizeMb
+      )
     )
     .then((compressedImage) => {
-      self.postMessage({ compressedImage: compressedImage });
+      self.postMessage({
+        compressedImage: compressedImage.compressedImage,
+        requestId: compressedImage.requestId,
+        maxSizeMb: maxSizeMb,
+        path: compressedImage.path,
+      });
     })
     .catch((error) => {
       self.postMessage({ error: 'Image Compression failed: ' + error });

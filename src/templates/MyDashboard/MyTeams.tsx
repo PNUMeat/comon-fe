@@ -1,5 +1,6 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -115,7 +116,6 @@ const ArticleWrapper = styled.div<{
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
-    // width: 340px;
     height: ${(props) => (props.height ? props.height : '430px')};
     padding: 30px 28px;
     position: relative;
@@ -162,7 +162,7 @@ const ArticlePreview = styled.div<{
   display: flex;
   flex-direction: column;
   gap: 13px;
-  padding: 20px 0px 7px 21px;
+  padding: 20px;
   border-radius: 10px;
   max-height: 108px;
   box-sizing: border-box;
@@ -173,7 +173,6 @@ const ArticlePreview = styled.div<{
     box-shadow: 3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset`
       : `
     box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)`};
-  padding-bottom: 10px;
   cursor: pointer;
   background-color: #fff;
 
@@ -187,7 +186,7 @@ const ArticlePreview = styled.div<{
 
 const ArticlePreviewTitle = styled.div`
   width: 100%;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -580,12 +579,14 @@ const ArticleDetailViewer: React.FC<{
     (article) => article.articleId === selectedId
   ) as MyArticle;
 
-  const selectedArticleBody = selectedArticle?.imageUrl
-    ? selectedArticle?.articleBody.replace(
-        /src="\?"/,
-        `src="${selectedArticle.imageUrl}"`
-      )
-    : selectedArticle?.articleBody;
+  const { result: selectedArticleBody } =
+    useRegroupImageAndArticle(selectedArticle);
+  // const selectedArticleBody = selectedArticle?.imageUrl
+  //   ? selectedArticle?.articleBody.replace(
+  //       /src="\?"/,
+  //       `src="${selectedArticle.imageUrl}"`
+  //     )
+  //   : selectedArticle?.articleBody;
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -634,7 +635,7 @@ const ArticleDetailViewer: React.FC<{
         </ArticleWriter>
       </ArticleDetailHeader>
       <TeamArticleViewer
-        dangerouslySetInnerHTML={{ __html: selectedArticleBody ?? '' }}
+        dangerouslySetInnerHTML={{ __html: selectedArticleBody }}
       />
     </GradationArticleDetail>
   );
@@ -659,7 +660,7 @@ const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
   @media (max-width: ${breakpoints.mobile}px) {
     width: 60px;
     height: 30px;
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
     padding: 8px 8px 4px 8px;
     gap: 2px;
   }
@@ -668,26 +669,19 @@ const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
 const TeamButtonLabel = styled.div`
   width: 100%;
   max-width: 100%;
-  display: flex;
-  justify-content: center;
   color: #fff;
   text-align: center;
   font-family: 'Pretendard';
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
-  line-height: 17px;
+  line-height: 16px;
   white-space: nowrap;
-  text-overflow: ellipsis;
-
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
-    overflow: hidden;
-    display: block;
     line-height: 10px;
   }
 `;
@@ -718,12 +712,14 @@ const TeamButton: React.FC<{
 
 const MoveButtonWrap = styled.div<{ disabled: boolean }>`
   display: flex;
-  width: 30px;
+  justify-content: center;
+  align-items: center;
+  width: 46px;
   height: 45px;
   padding: 7px 18px;
   flex-direction: column;
   box-sizing: border-box;
-  border-radius: 12px 12px 0px 0px;
+  border-radius: 16px 16px 0px 0px;
   background: ${(props) => (props.disabled ? 'transparent' : '#3D3F6A')};
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
@@ -739,6 +735,11 @@ const MoveButtonWrap = styled.div<{ disabled: boolean }>`
 const MoveButtonIcon = styled.img`
   width: 7px;
   height: 14px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 5px;
+    height: 10px;
+  }
 `;
 
 const MoveButton: React.FC<{
@@ -800,29 +801,35 @@ export const MyTeams = () => {
   return (
     <Flex direction={'column'}>
       <ModeSwitcher mode={mode} setMode={setMode} />
-      <Flex padding={'0 0 0 50px'} width={90}>
-        <MoveButton
-          onClick={goPrev}
-          src={leftArrow}
-          disabled={!canGoPrev}
-        ></MoveButton>
-        {data &&
-          visibleTeams.map((team: TeamAbstraction) => (
-            <TeamButton
-              key={team.teamId}
-              isSelected={teamId === team.teamId}
-              onClick={() => {
-                setTeamId(team.teamId);
-                setPage(0);
-              }}
-              teamName={team.teamName}
+      <Flex justify="center" width={100}>
+        <Flex width={85}>
+          {canGoPrev && (
+            <MoveButton
+              onClick={goPrev}
+              src={leftArrow}
+              disabled={!canGoPrev}
             />
-          ))}
-        <MoveButton
-          onClick={goNext}
-          src={rightArrow}
-          disabled={!canGoNext}
-        ></MoveButton>
+          )}
+          {data &&
+            visibleTeams.map((team: TeamAbstraction) => (
+              <TeamButton
+                key={team.teamId}
+                isSelected={teamId === team.teamId}
+                onClick={() => {
+                  setTeamId(team.teamId);
+                  setPage(0);
+                }}
+                teamName={team.teamName}
+              />
+            ))}
+          {canGoNext && (
+            <MoveButton
+              onClick={goNext}
+              src={rightArrow}
+              disabled={!canGoNext}
+            />
+          )}
+        </Flex>
       </Flex>
 
       {mode === 'history' && teamId != null && (

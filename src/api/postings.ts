@@ -1,11 +1,14 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
+import { createPostMock, mutatePostMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  image: File | null;
+  images: File[] | null;
 };
 
 type PostingMutationResp = {
@@ -16,15 +19,26 @@ export const createPost = async ({
   teamId,
   articleTitle,
   articleBody,
-  image,
+  images,
 }: PostingMutationArg) => {
   const formData = new FormData();
 
   formData.append('teamId', teamId.toString());
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  if (image) {
-    formData.append('image', image);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
+    });
+  }
+  // else {
+  // formData.append('images', '');
+  // }
+
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return createPostMock.data;
   }
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
@@ -44,7 +58,7 @@ export const mutatePost = async ({
   teamId,
   articleTitle,
   articleBody,
-  image,
+  images,
   articleId,
 }: PostingMutationArg & {
   articleId: number;
@@ -55,8 +69,19 @@ export const mutatePost = async ({
   formData.append('articleId', articleId.toString());
   formData.append('articleTitle', articleTitle);
   formData.append('articleBody', articleBody);
-  if (image) {
-    formData.append('image', image);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
+    });
+  }
+  // else {
+  //   formData.append('images', '');
+  // }
+
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return mutatePostMock.data;
   }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
