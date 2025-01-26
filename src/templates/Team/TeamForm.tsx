@@ -8,43 +8,41 @@ import { Spacer } from '@/components/commons/Spacer';
 import { HeightInNumber } from '@/components/types';
 
 import { Fragment } from 'react';
-import { useLocation } from 'react-router-dom';
 
-import { ITeamInfo } from '@/api/team.ts';
 import { breakpoints } from '@/constants/breakpoints';
+import { useTeamOldData } from '@/templates/Team/TeamFormContext.tsx';
 import { TeamFormLayout } from '@/templates/Team/TeamFormLayout';
 import { TeamMaxPeopleInput } from '@/templates/Team/segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from '@/templates/Team/segments/TeamPasswordInput.tsx';
 import { TeamSubjectRadio } from '@/templates/Team/segments/TeamSubjectRadio';
 
-export const TeamForm: React.FC<
-  HeightInNumber & {
-    team?: ITeamInfo;
-  }
-> = ({ h, team }) => {
+export const TeamForm: React.FC<HeightInNumber> = ({ h }) => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-  const location = useLocation();
+  // const location = useLocation();
 
-  const currPath = location.pathname.split('/')[1];
+  const { teamName, teamExplain, topic, memberLimit, password, teamIconUrl } =
+    useTeamOldData();
+
+  // const currPath = location.pathname.split('/')[1];
 
   const MobileComponent = () => (
     <>
       <FormFieldLabel>팀 아이콘</FormFieldLabel>
-      <ComonImageInput imageUrl={team?.imageUrl} />
+      <ComonImageInput imageUrl={teamIconUrl} />
       <Spacer h={8} />
       <FormFieldLabel>팀 이름</FormFieldLabel>
       <ComonTextInput
         maxLength={10}
         placeholder={'팀 이름을 입력해주세요'}
-        value={team?.teamName}
+        value={teamName}
       />
 
       <FormFieldLabel>팀 설명</FormFieldLabel>
       <ComonTextarea
         maxLength={50}
         placeholder={'우리 팀에 대해 설명해주세요'}
-        value={team?.teamExplain}
+        value={teamExplain}
       />
     </>
   );
@@ -59,35 +57,35 @@ export const TeamForm: React.FC<
           <ComonTextInput
             maxLength={10}
             placeholder={'팀 이름을 입력해주세요'}
-            value={team?.teamName}
+            value={teamName}
           />
 
           <FormFieldLabel>팀 설명</FormFieldLabel>
           <ComonTextarea
             maxLength={50}
             placeholder={'우리 팀에 대해 설명해주세요'}
-            value={team?.teamExplain}
+            value={teamExplain}
           />
 
           <FormFieldLabel>팀 아이콘</FormFieldLabel>
-          <ComonImageInput imageUrl={team?.imageUrl} />
+          <ComonImageInput imageUrl={teamIconUrl} />
         </>
       )}
 
       <FormFieldLabel>주제</FormFieldLabel>
-      <TeamSubjectRadio defaultValue={team?.topic} />
+      <TeamSubjectRadio defaultValue={topic} />
 
       {isMobile && <Spacer h={8} />}
       <FormFieldLabel>인원 제한</FormFieldLabel>
-      <TeamMaxPeopleInput defaultValue={team?.memberLimit} />
+      <TeamMaxPeopleInput defaultValue={memberLimit} />
 
-      {currPath === 'team-registration' ? (
-        <Fragment>
-          {isMobile && <Spacer h={8} />}
-          <FormFieldLabel>입장 비밀번호</FormFieldLabel>
-          <TeamPasswordInput />
-        </Fragment>
-      ) : null}
+      {/*{currPath === 'team-registration' ? (*/}
+      <Fragment>
+        {isMobile && <Spacer h={8} />}
+        <FormFieldLabel>입장 비밀번호</FormFieldLabel>
+        <TeamPasswordInput defaultValue={password} />
+      </Fragment>
+      {/*) : null}*/}
     </TeamFormLayout>
   );
 };
