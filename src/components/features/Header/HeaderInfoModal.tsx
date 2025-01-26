@@ -39,6 +39,8 @@ const InfoModal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 500px;
+  overflow-y: scroll;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 230px;
