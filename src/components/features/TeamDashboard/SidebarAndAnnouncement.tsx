@@ -259,6 +259,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               });
             } else {
               if (!isLoggedIn()) {
+                // session redirect
+                sessionStorage.setItem('redirect', location.pathname);
                 navigate(PATH.LOGIN, {
                   state: {
                     redirect: location.pathname,
