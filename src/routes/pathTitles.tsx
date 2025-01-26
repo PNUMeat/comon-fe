@@ -19,10 +19,9 @@ export const getTitle = (path: string): ReactNode => {
     return <Title src={calendar} title="마이페이지" />;
   }
 
-  if (path.startsWith('/team-modification')) {
+  if (path.startsWith('/team-setting/team')) {
     return <Title src={crown} title="팀 수정" />;
   }
-
 
   const staticTitles: Record<string, ReactNode> = {
     '/login': <Title src={crown} title="로그인" />,

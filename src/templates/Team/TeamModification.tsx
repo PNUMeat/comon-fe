@@ -14,10 +14,6 @@ import { TeamFormContext } from './TeamFormContext';
 
 const SuspenseTeamForm = () => {
   const location = useLocation();
-  // const { data } = useSuspenseQuery({
-  //   queryKey: ['team-list', 0],
-  //   queryFn: () => getTeamList('recent', 0, 1),
-  // });
   const { teamId } = location.state;
   const teamIdInt = parseInt(teamId ?? '0');
   const { data } = useSuspenseQuery({
