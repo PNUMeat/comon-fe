@@ -162,7 +162,7 @@ const FlipCardContent = ({
   isBack?: boolean;
   isDisabled?: boolean;
 }) => {
-  const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const width = useWindowWidth();
@@ -226,15 +226,16 @@ const FlipCardContent = ({
         <Spacer h={isMobile ? 16 : 20} />
         {isBack ? (
           <>
-            <PasswordInput
-              type="password"
-              placeholder="PASSWORD"
-              disabled
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              maxLength={4}
-              onClick={ignoreClick}
-            />
+            <PasswordBlank />
+            {/*<PasswordInput*/}
+            {/*  type="password"*/}
+            {/*  placeholder="PASSWORD"*/}
+            {/*  disabled*/}
+            {/*  value={password}*/}
+            {/*  onChange={(e) => setPassword(e.target.value)}*/}
+            {/*  maxLength={4}*/}
+            {/*  // onClick={ignoreClick}*/}
+            {/*/>*/}
             <Spacer h={14} />
             <Button
               backgroundColor={colors.buttonPurple}
@@ -290,37 +291,46 @@ const ButtonWrapper = styled.div`
   // gap: 10px;
 `;
 
-const PasswordInput = styled.input`
+const PasswordBlank = styled.div`
   width: 160px;
   height: 24px;
-  border: 1px solid ${colors.borderPurple};
-  border-radius: 28px;
-  outline: none;
-  text-align: center;
-  color: #ccc;
-  background-color: transparent;
-  opacity: 0;
-  user-selection: none;
-  cursor: default;
-
-  u &::placeholder {
-    color: #ccc;
-    font-weight: 400;
-  }
-
-  &:focus {
-    border-color: ${colors.buttonPurple};
-  }
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100px;
     height: 20px;
-
-    &::placeholder {
-      font-size: 10px;
-    }
   }
 `;
+
+// const PasswordInput = styled.input`
+//   width: 160px;
+//   height: 24px;
+//   border: 1px solid ${colors.borderPurple};
+//   border-radius: 28px;
+//   outline: none;
+//   text-align: center;
+//   color: #ccc;
+//   background-color: transparent;
+//   opacity: 0;
+//   cursor: default;
+//
+//   u &::placeholder {
+//     color: #ccc;
+//     font-weight: 400;
+//   }
+//
+//   &:focus {
+//     border-color: ${colors.buttonPurple};
+//   }
+//
+//   @media (max-width: ${breakpoints.mobile}px) {
+//     width: 100px;
+//     height: 20px;
+//
+//     &::placeholder {
+//       font-size: 10px;
+//     }
+//   }
+// `;
 
 const FlipCard = styled.div`
   background-color: transparent;

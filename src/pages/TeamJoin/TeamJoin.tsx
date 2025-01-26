@@ -22,6 +22,7 @@ import { AxiosError } from 'axios';
 import { KeywordPageControlContext } from './KeywordPageControlContext.tsx';
 
 let myTeamCache: ITeamInfo[] = [];
+let prevKeyword = '';
 const totalPagesCacheMap: Map<string, number> = new Map();
 const prevPageCacheMap: Map<string, number> = new Map();
 
@@ -36,7 +37,7 @@ prevPageCacheMap.set(SEARCH_MODE, 0);
 
 const TeamData = () => {
   const [page, setPage] = useState(-1);
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState(prevKeyword);
   const isSearchMode = keyword.trim().length > 0;
 
   const { data: queryData, isPending: queryPending } = useQuery({
@@ -81,6 +82,7 @@ const TeamData = () => {
 
   if (searchData) {
     totalPagesCacheMap.set(SEARCH_MODE, searchData.totalPages);
+    prevKeyword = keyword;
   }
 
   const handlePageChange = (newPage: number) => {
