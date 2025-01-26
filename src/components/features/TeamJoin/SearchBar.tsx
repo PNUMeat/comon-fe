@@ -12,7 +12,7 @@ interface SearchBarProps {
 
 export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { setKeyword, setPage } = useKeyword();
+  const { keyword, setKeyword, setPage } = useKeyword();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length === 0) {
@@ -46,6 +46,7 @@ export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
         onChange={onChange}
         placeholder={placeholder}
         onKeyDown={onKeyDown}
+        defaultValue={keyword}
       />
       <SearchIcon onClick={onClickSearch} />
     </SearchBarWrapper>
