@@ -4,7 +4,7 @@ import { GradientGlassPanel } from '@/components/commons/GradientGlassPanel';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Fragment, useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { PATH } from '@/routes/path';
 import { LoginForm } from '@/templates/Login/LoginForm';
@@ -12,22 +12,17 @@ import { LoginForm } from '@/templates/Login/LoginForm';
 export const LoginTemplate = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { redirected } = useParams<{ redirected: string }>();
 
   useEffect(() => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       const sessionRedirect = sessionStorage.getItem('redirect');
-      console.error(
-        `redirect: ${sessionRedirect}, ${location?.state?.redirect}, ??:${redirected}`
-      );
+      if (sessionRedirect) {
+        sessionStorage.removeItem('redirect');
+      }
       const redirectDest =
         sessionRedirect ?? location.state?.redirect ?? PATH.HOME;
-      // const navigatePath = redirectDest
-      //   ? redirectDest === PATH.HOME
-      //     ? PATH.TEAMS
-      //     : PATH.HOME
-      //   : PATH.HOME;
+
       navigate(redirectDest, { replace: true });
     }
   }, []);
