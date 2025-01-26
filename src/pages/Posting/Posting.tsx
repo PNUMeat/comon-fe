@@ -254,7 +254,17 @@ const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        images: postImages.map((imgObj) => imgObj.img),
+        images:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -268,12 +278,13 @@ const Posting = () => {
               setDashboardView('article');
               setSelectedPostId(articleId);
               setPostImages([]);
-              navigate(`/team-dashboard/${id}`);
               setDisablePrompt(true);
               setAlert({
                 message: '게시글을 수정했어요',
                 isVisible: true,
-                onConfirm: () => {},
+                onConfirm: () => {
+                  navigate(`/team-dashboard/${id}`);
+                },
               });
             })
             .catch(() => {
@@ -291,6 +302,11 @@ const Posting = () => {
             isVisible: true,
             onConfirm: () => {},
           });
+          setAlert({
+            message: '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
           setIsPending(false);
         });
       return;
@@ -301,18 +317,6 @@ const Posting = () => {
       setIsPending(false);
       return;
     }
-
-    postImages
-      .sort((a, b) => {
-        if (a.line !== b.line) {
-          return a.line - b.line;
-        }
-        return a.idx - b.idx;
-      })
-      .forEach((img) => console.log('i', img.img.name));
-
-    console.log('??', postImages, articleBody);
-    postImages.forEach((i) => console.error(i.img));
 
     createPost({
       teamId: parseInt(id),
@@ -341,7 +345,7 @@ const Posting = () => {
             setSelectedPostId(articleId);
             setPostImages([]);
             setDisablePrompt(true);
-            navigate(`/team-dashboard/${id}`);
+            // navigate(`/team-dashboard/${id}`);
             setAlert({
               message: '글쓰기를 완료했어요',
               isVisible: true,

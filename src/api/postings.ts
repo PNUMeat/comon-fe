@@ -1,4 +1,7 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
+import { createPostMock, mutatePostMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
@@ -25,10 +28,17 @@ export const createPost = async ({
   formData.append('articleBody', articleBody);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
+  }
+  // else {
+  // formData.append('images', '');
+  // }
+
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return createPostMock.data;
   }
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
@@ -61,10 +71,17 @@ export const mutatePost = async ({
   formData.append('articleBody', articleBody);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
+  }
+  // else {
+  //   formData.append('images', '');
+  // }
+
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return mutatePostMock.data;
   }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(

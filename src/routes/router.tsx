@@ -20,10 +20,10 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import TeamSetting from '@/templates/Team/TeamSetting';
-import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
-import TeamModification from '@/templates/Team/TeamModification';
 import MemberModification from '@/templates/Team/MemberModification';
+import TeamModification from '@/templates/Team/TeamModification';
+import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
+import TeamSetting from '@/templates/Team/TeamSetting';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -132,7 +132,7 @@ export const router = createBrowserRouter(
           children: [
             {
               path: `${PATH.TEAM_SETTING}/team`,
-              element: < TeamModification />,
+              element: <TeamModification />,
             },
             {
               path: `${PATH.TEAM_SETTING}/members`,

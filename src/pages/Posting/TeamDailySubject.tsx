@@ -40,13 +40,16 @@ const TeamDailySubject = () => {
     articleCategory,
     articleBody,
     articleTitle,
-    articleImageUrls,
+    // TODO: 이미지 하나 허용으로 롤백
+    // articleImageUrls,
+    articleImageUrl,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
-    articleImageUrls: null,
+    // articleImageUrls: null,
+    articleImageUrl: null,
   };
 
   const locationData = {
@@ -54,7 +57,9 @@ const TeamDailySubject = () => {
     articleId: articleId,
     articleTitle: articleTitle,
     articleCategory: articleCategory,
-    imageUrls: articleImageUrls,
+    // TODO: 이미지 하나 허용으로 롤백
+    // imageUrls: articleImageUrls,
+    imageUrl: articleImageUrl,
   } as ITopicResponse;
 
   const { result: regroupedArticleContent } =

@@ -78,7 +78,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
-                    articleImageUrls: data?.imageUrls,
+                    // TODO: 이미지 하나 허용으로 롤백
+                    // articleImageUrls: data?.imageUrls,
+                    articleImageUrl: data?.imageUrl,
                   }}
                 >
                   <LazyImage
