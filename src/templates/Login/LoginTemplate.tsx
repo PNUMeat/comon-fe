@@ -13,8 +13,6 @@ export const LoginTemplate = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log('???', location?.state);
-
   useEffect(() => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
