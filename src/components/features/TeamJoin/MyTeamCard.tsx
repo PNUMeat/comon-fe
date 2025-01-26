@@ -36,6 +36,9 @@ interface CustomArrowProps {
 }
 
 export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   const settings = {
     dots: teams.length > 1,
     infinite: teams.length > 1,
@@ -44,10 +47,44 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
     slidesToScroll: 1,
     prevArrow: <CustomArrow direction="left" />,
     nextArrow: <CustomArrow direction="right" />,
-  };
+    ...(isMobile && {
+      appendDots: (dots: React.ReactNode) => {
+        if (!Array.isArray(dots)) {
+          return <ul>{dots}</ul>;
+        }
 
-  const width = useWindowWidth();
-  const isMobile = width <= breakpoints.mobile;
+        if (teams.length <= 3) {
+          return <ul>{dots}</ul>;
+        }
+
+        const currentSlide = dots.findIndex((dot) =>
+          dot.props.className.includes('slick-active')
+        );
+
+        const displayedDots = [];
+        if (currentSlide === 0) {
+          // 첫 번째 슬라이드일 경우
+          displayedDots.push(dots[0], dots[1], dots[2]);
+        } else if (currentSlide === teams.length - 1) {
+          // 마지막 슬라이드일 경우
+          displayedDots.push(
+            dots[teams.length - 3],
+            dots[teams.length - 2],
+            dots[teams.length - 1]
+          );
+        } else {
+          // 중간 슬라이드일 경우
+          displayedDots.push(
+            dots[currentSlide - 1],
+            dots[currentSlide],
+            dots[currentSlide + 1]
+          );
+        }
+
+        return <ul>{displayedDots}</ul>;
+      },
+    }),
+  };
 
   return (
     <>

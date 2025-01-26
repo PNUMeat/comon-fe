@@ -326,7 +326,7 @@ export const teamCombinedMock = {
     myTeams: [
       {
         teamId: 16,
-        teamName: 'aa',
+        teamName: '첫번째',
         teamExplain: '11',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -340,7 +340,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 15,
-        teamName: 'scroll',
+        teamName: '두번째',
         teamExplain: 'scsc',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -354,7 +354,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 14,
-        teamName: 'asd',
+        teamName: '세번째',
         teamExplain: 'qqqq',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -368,7 +368,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 13,
-        teamName: 'asd',
+        teamName: '네번째',
         teamExplain: 'qqqq',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -382,7 +382,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 10,
-        teamName: 'Team QA',
+        teamName: '다섯번째',
         teamExplain: 'qa',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -396,7 +396,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 3,
-        teamName: '파댕이 밥주기',
+        teamName: '여섯번째',
         teamExplain: '파댕이 밥',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/bae6cb5b-2772-41a7-b56f-808766d0dc50',
@@ -410,7 +410,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 2,
-        teamName: '장진영팀',
+        teamName: '일곱번째',
         teamExplain: '코딩테스트 입니당~~',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
@@ -424,7 +424,7 @@ export const teamCombinedMock = {
       },
       {
         teamId: 1,
-        teamName: '제육돈까스햄버거파티',
+        teamName: '여덟번째',
         teamExplain: '',
         imageUrl:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
