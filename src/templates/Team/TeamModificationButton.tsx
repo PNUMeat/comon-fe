@@ -43,7 +43,7 @@ export const TeamModificationButton = () => {
     const mem = memberLimit ?? currMemberLimit;
     const pas = password ?? currPassword;
 
-    const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}-${pas}`;
+    const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}-${currPassword}`;
     const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}-${pas}`;
 
     setIsDirty(curr !== changed);
@@ -66,7 +66,10 @@ export const TeamModificationButton = () => {
           typeof vMemberLimit === 'number'
             ? vMemberLimit
             : parseInt(vMemberLimit),
-        password: password.trim().length === 0 ? null : password,
+        password:
+          currPassword === password || password.trim().length === 0
+            ? null
+            : password,
       })
         .then(() => {
           //     성공했다고 토스트 띄워달라고 합니다
