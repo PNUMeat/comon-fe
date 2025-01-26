@@ -84,7 +84,7 @@ export const Posts: React.FC<PostsProps> = ({
           </Flex>
           <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
             <RocketIcon src={RocketImg} />
-            주제 확인하기
+            문제 확인하기
           </StyledButton>
         </Flex>
       </Box>

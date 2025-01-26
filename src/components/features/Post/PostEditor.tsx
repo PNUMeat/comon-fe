@@ -591,7 +591,7 @@ const PostEditor: React.FC<{
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
-          placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
+          placeholder={setTag ? '문제를 입력하세요' : '제목을 입력하세요'}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (forwardTitle) {
               forwardTitle(e.target.value);
