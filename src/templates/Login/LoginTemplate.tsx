@@ -17,9 +17,13 @@ export const LoginTemplate = () => {
     handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       const sessionRedirect = sessionStorage.getItem('redirect');
+      alert(`redirect: ${sessionRedirect}, ${location?.state?.redirect}`);
       if (sessionRedirect) {
         sessionStorage.removeItem('redirect');
       }
+      console.error(
+        `redirect: ${sessionRedirect}, ${location?.state?.redirect}`
+      );
       const redirectDest =
         sessionRedirect ?? location.state?.redirect ?? PATH.HOME;
       // const navigatePath = redirectDest
@@ -29,7 +33,7 @@ export const LoginTemplate = () => {
       //   : PATH.HOME;
       navigate(redirectDest, { replace: true });
     }
-  });
+  }, []);
 
   return (
     <Fragment>
