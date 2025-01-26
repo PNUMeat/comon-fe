@@ -40,7 +40,7 @@ const SuspenseTeamForm = () => {
 
   return (
     <TeamFormContext.Provider value={teamData}>
-      <TeamForm h={977} />
+      <TeamForm h={977} teamInfo={teamData} />
     </TeamFormContext.Provider>
   );
 };
