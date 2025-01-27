@@ -100,10 +100,11 @@ export const TeamInfomation = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
   return (
-    <div>
-      <ModeButton>
+    <TeamInfoGrid>
+        <ModeButton>
         <img src={noteIcon} alt="note icon" />
-          팀 정보</ModeButton>
+          팀 정보
+          </ModeButton>
           <ContentWrapper>
           <InfoRow label="팀 이름" content={currentTeam.teamName} />
           <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
@@ -114,9 +115,22 @@ export const TeamInfomation = () => {
           <InfoRow label="비밀번호" content={"1234"} />
           <ModifyButton>수정하기</ModifyButton>
         </ContentWrapper>
-    </div>
+    </TeamInfoGrid>
   );
 }
+
+const TeamInfoGrid = styled.div`
+width: 100%;
+display: grid;
+grid-template-columns: 1fr;
+gap: 31px;
+margin-bottom: 60px;
+justify-items: start;
+
+@media (max-width: ${breakpoints.mobile}px) {
+  grid-template-columns: 1fr;
+}
+`;
 
 
 const ModeButton = styled.button`
@@ -151,6 +165,7 @@ const ContentWrapper = styled.div`
   padding: 56px 46px;
   margin-top: 40px;
   position: relative;
+  box-sizing: border-box;
 `;
 
 const ModifyButton = styled.button`
