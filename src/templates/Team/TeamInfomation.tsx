@@ -160,12 +160,16 @@ const ModeButton = styled.button`
 const ContentWrapper = styled.div`
   border-radius: 20px;
   border: 1px solid #8488EC;
-  width: 700px;
+  width: 100%;
+  min-width: 390px;
   height: 500px;
   padding: 56px 46px;
-  margin-top: 40px;
   position: relative;
   box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 40px 20px;
+  }
 `;
 
 const ModifyButton = styled.button`
@@ -179,4 +183,12 @@ const ModifyButton = styled.button`
   position: absolute;
   bottom: 30px;
   right: 60px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 60px;
+    height: 20px;
+    font-size: 12px;
+    bottom: 20px;
+    right: 40px;
+  }
 `;
