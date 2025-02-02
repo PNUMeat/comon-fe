@@ -26,6 +26,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -47,7 +48,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -198,24 +199,28 @@ const initialConfig = {
           const textNode = node as TextNode;
           const element = document.createElement('span');
           const format = textNode.getFormat();
+          const style = textNode.getStyle();
 
           if (format === 1) {
             element.className = 'editor-text-bold';
-          }
-
-          if (format === 2) {
+          } else if (format === 2) {
             element.className = 'editor-text-italic';
-          }
-
-          if (format === 3) {
+          } else if (format === 3) {
             element.className = 'editor-text-bold editor-text-italic';
-          }
-
-          if (format === 4) {
+          } else if (format === 4) {
             element.className = 'editor-text-strikethrough';
+          } else if (format === 5) {
+            element.className = 'editor-text-bold editor-text-strikethrough';
+          } else if (format === 6) {
+            element.className = 'editor-text-italic editor-text-strikethrough';
+          } else if (format === 7) {
+            element.className =
+              'editor-text-bold editor-text-italic editor-text-strikethrough';
           }
 
           element.textContent = textNode.getTextContent();
+          element.setAttribute('style', style);
+
           return { element };
         },
       ],
@@ -227,7 +232,12 @@ const initialConfig = {
 
 const EditorContainer = styled.div`
   position: relative;
+  min-height: 700px;
   ${viewStyle}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-height: 400px;
+  }
 `;
 
 const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
@@ -289,10 +299,10 @@ const EditorPlaceholder = styled.div`
 const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   return await fetch(blobUrl, {
     mode: 'cors',
-    headers: {
-      'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
-      Origin: 'https://test.codemonster.site/',
-    },
+    // headers: {
+    //   'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
+    //   Origin: 'https://test.codemonster.site/',
+    // },
   })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
@@ -324,8 +334,9 @@ const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
 
 const useDetectImageMutation = () => {
   const [editor] = useLexicalComposerContext();
-  const setImages = useSetAtom(postImagesAtom);
+  const [images, setImages] = useAtom(postImagesAtom);
   const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
+  const firstNodeKey = useRef('');
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -341,6 +352,18 @@ const useDetectImageMutation = () => {
 
               const node = $getNodeByKey(nodeKey);
               if (!node) {
+                return;
+              }
+
+              if (images.length === 0) {
+                firstNodeKey.current = nodeKey;
+              }
+              // 이미지 최대 하나로 제한
+              else if (images.length > 1) {
+                if (nodeKey !== firstNodeKey.current) {
+                  node.remove();
+                  alert('이미지는 최대 하나 까지만 넣을 수 있어요');
+                }
                 return;
               }
 
@@ -429,6 +452,9 @@ const useDetectImageMutation = () => {
             setImages((prev) =>
               prev.filter((imgObj) => imgObj.key !== nodeKey)
             );
+            if (firstNodeKey.current === nodeKey) {
+              firstNodeKey.current = '';
+            }
           }
         });
       }
@@ -437,7 +463,7 @@ const useDetectImageMutation = () => {
     return () => {
       unregisterMutationListener();
     };
-  }, [editor]);
+  }, [editor, images]);
 };
 
 const PostWriteSection = forwardRef<
@@ -470,7 +496,7 @@ const PostWriteSection = forwardRef<
 
   const onClick = useCallback(() => {
     editor.focus();
-  }, []);
+  }, [editor]);
 
   return (
     <EditorContainer
@@ -565,7 +591,7 @@ const PostEditor: React.FC<{
       <PostSectionWrap shouldHighlight={Boolean(setTag)}>
         <TitleInput
           type={'text'}
-          placeholder={setTag ? '주제를 입력하세요' : '제목을 입력하세요'}
+          placeholder={setTag ? '문제를 입력하세요' : '제목을 입력하세요'}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (forwardTitle) {
               forwardTitle(e.target.value);

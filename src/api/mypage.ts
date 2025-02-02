@@ -29,7 +29,9 @@ export type MyArticle = {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrls: string[] | null;
+  // TODO: 이미지 하나 허용으로 롤백
+  // imageUrls: string[] | null;
+  imageUrl: string | null;
   memberName: string;
   memberImage: string;
 };

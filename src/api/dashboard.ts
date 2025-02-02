@@ -1,8 +1,6 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
+// import { isDevMode } from '@/utils/cookie.ts';
 // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
-
+// import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';
@@ -23,30 +21,13 @@ export interface IArticle {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrls: string[] | null;
+  // TODO: 이미지 하나 허용으로 롤백
+  // imageUrls: string[] | null;
+  imageUrl: string | null;
   memberName: string;
   memberImage: string;
   isAuthor: boolean;
 }
-
-export const isIArticle = (obj: unknown): obj is IArticle => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const article = obj as Record<string, unknown>;
-
-  return (
-    typeof article.articleId === 'number' &&
-    typeof article.articleTitle === 'string' &&
-    typeof article.articleBody === 'string' &&
-    typeof article.createdDate === 'string' &&
-    (article.imageUrls === null ||
-      (Array.isArray(article.imageUrls) &&
-        article.imageUrls.every((url) => typeof url === 'string'))) &&
-    typeof article.memberName === 'string' &&
-    typeof article.memberImage === 'string' &&
-    typeof article.isAuthor === 'boolean'
-  );
-};
 
 export interface IArticlesByDateResponse {
   content: IArticle[];
@@ -64,29 +45,12 @@ export interface ITopicResponse {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  imageUrls: string[] | null;
+  // TODO: 이미지 하나 허용으로 롤백
+  // imageUrls: string[] | null;
+  imageUrl: string | null;
   authorName: string;
   authorImageUrl: string;
 }
-
-export const isITopicResponse = (obj: unknown): obj is ITopicResponse => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const topic = obj as Record<string, unknown>;
-
-  return (
-    typeof topic.articleId === 'number' &&
-    typeof topic.articleCategory === 'string' &&
-    typeof topic.articleTitle === 'string' &&
-    typeof topic.articleBody === 'string' &&
-    typeof topic.createdDate === 'string' &&
-    (topic.imageUrls === null ||
-      (Array.isArray(topic.imageUrls) &&
-        topic.imageUrls.every((url) => typeof url === 'string'))) &&
-    typeof topic.authorName === 'string' &&
-    typeof topic.authorImageUrl === 'string'
-  );
-};
 
 export const getTeamInfoAndTags = async (
   teamId: number,
@@ -94,11 +58,11 @@ export const getTeamInfoAndTags = async (
   month: number
 ): Promise<ITeamInfoAndTagsResponse> => {
   // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-  if (isDevMode()) {
-    await new Promise((r) => setTimeout(r, 1000));
-  
-    return teamInfoMock.data;
-  }
+  // if (isDevMode()) {
+  //   await new Promise((r) => setTimeout(r, 1000));
+
+  //   return teamInfoMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<ITeamInfoAndTagsResponse>>(
     `/v1/teams/${teamId}/team-page`,
@@ -113,9 +77,9 @@ export const getArticlesByDate = async (
   date: string,
   page: number
 ): Promise<IArticlesByDateResponse> => {
-  if (isDevMode()) {
-    return teamArticlesMock.data;
-  }
+  // if (isDevMode()) {
+  //   return teamArticlesMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
@@ -130,9 +94,9 @@ export const getTeamTopic = async (
   date: string
 ): Promise<ITopicResponse> => {
   // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-  if (isDevMode()) {
-    return subjectMock.data;
-  }
+  // if (isDevMode()) {
+  //   return subjectMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
     `/v1/articles/teams/${teamId}/subjects`,

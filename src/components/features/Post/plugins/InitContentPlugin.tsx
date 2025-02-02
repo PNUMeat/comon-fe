@@ -15,11 +15,13 @@ import {
   $getSelection,
   $isTextNode,
   LexicalNode,
+  TextNode,
 } from 'lexical';
 
-const createStyledTextNode = (text: string, style: string): LexicalNode => {
+const createStyledTextNode = (text: string, style: string): TextNode => {
   const textNode = $createTextNode(text);
   textNode.setStyle(style);
+
   return textNode;
 };
 
@@ -31,6 +33,29 @@ const mergeStyles = (parentStyle: string, childStyle: string): string => {
     return parentStyle;
   }
   return parentStyle + '; ' + childStyle;
+};
+
+const formatMap: Record<number, string[]> = {
+  1: ['editor-text-bold'],
+  2: ['editor-text-italic'],
+  3: ['editor-text-bold', 'editor-text-italic'],
+  4: ['editor-text-strikethrough'],
+  5: ['editor-text-bold', 'editor-text-strikethrough'],
+  6: ['editor-text-italic', 'editor-text-strikethrough'],
+  7: ['editor-text-bold', 'editor-text-italic', 'editor-text-strikethrough'],
+};
+
+const getFormatFromClasses = (classes: string[]): number => {
+  for (const [format, formatClasses] of Object.entries(formatMap)) {
+    if (
+      formatClasses.every((cls) => classes.includes(cls)) &&
+      formatClasses.length === classes.length
+    ) {
+      return parseInt(format, 10);
+    }
+  }
+
+  return 0;
 };
 
 const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
@@ -49,8 +74,11 @@ const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
       const parentEl = node.parentElement;
       if (parentEl?.tagName === 'SPAN') {
         const style = parentEl.getAttribute('style') ?? '';
-
-        return createStyledTextNode(textContent, style);
+        const styledTextNode = createStyledTextNode(textContent, style);
+        styledTextNode.setFormat(
+          getFormatFromClasses(parentEl.className.split(' ') ?? '')
+        );
+        return styledTextNode;
       } else {
         return $createTextNode(textContent);
       }

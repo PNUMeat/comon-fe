@@ -41,12 +41,12 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     if (data) {
       deleteSubject(teamId, data.articleId)
         .then(() => {
-          alert('주제 삭제 성공');
+          alert('문제 삭제 성공');
           queryClient.refetchQueries({
             queryKey: ['team-topic', teamId, selectedDate],
           });
         })
-        .catch(() => alert('주제 삭제 실패'));
+        .catch(() => alert('문제 삭제 실패'));
     }
   };
 
@@ -78,7 +78,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
-                    articleImageUrls: data?.imageUrls,
+                    // TODO: 이미지 하나 허용으로 롤백
+                    // articleImageUrls: data?.imageUrls,
+                    articleImageUrl: data?.imageUrl,
                   }}
                 >
                   <LazyImage
@@ -134,7 +136,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
   ) : (
     <Box width="100%" padding="30px 40px">
       <SText color="#ccc" fontSize="24px" fontWeight={400}>
-        주제가 등록되지 않았어요
+        문제가 등록되지 않았어요
       </SText>
     </Box>
   );

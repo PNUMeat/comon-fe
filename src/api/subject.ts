@@ -26,11 +26,13 @@ export const createSubject = async ({
   formData.append('selectedDate', selectedDate);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
   }
+  // else {
+  // formData.append('images', '');
+  // }
 
   const res = await apiInstance.post(
     `/v1/articles/teams/${teamId}/subjects`,
@@ -69,11 +71,13 @@ export const mutateSubject = async ({
   formData.append('articleCategory', articleCategory);
   if (images) {
     images.forEach((img) => {
-      formData.append('images', img);
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-  } else {
-    formData.append('images', '');
   }
+  // else {
+  //   formData.append('images', '');
+  // }
 
   const res = await apiInstance.put(
     `/v1/articles/teams/${teamId}/subjects/${articleId}`,

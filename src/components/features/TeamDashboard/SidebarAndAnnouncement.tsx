@@ -1,3 +1,5 @@
+import { isLoggedIn } from '@/utils/cookie.ts';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -256,6 +258,16 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 },
               });
             } else {
+              if (!isLoggedIn()) {
+                // session redirect
+                sessionStorage.setItem('redirect', location.pathname);
+                navigate(PATH.LOGIN, {
+                  state: {
+                    redirect: location.pathname,
+                  },
+                });
+                return;
+              }
               const pwd = prompt('팀 비밀번호');
               if (!pwd || pwd.trim().length > 4) {
                 return;

@@ -40,13 +40,16 @@ const TeamDailySubject = () => {
     articleCategory,
     articleBody,
     articleTitle,
-    articleImageUrls,
+    // TODO: 이미지 하나 허용으로 롤백
+    // articleImageUrls,
+    articleImageUrl,
   } = location?.state ?? {
     articleId: null,
     articleCategory: null,
     articleBody: null,
     articleTitle: null,
-    articleImageUrls: null,
+    // articleImageUrls: null,
+    articleImageUrl: null,
   };
 
   const locationData = {
@@ -54,7 +57,9 @@ const TeamDailySubject = () => {
     articleId: articleId,
     articleTitle: articleTitle,
     articleCategory: articleCategory,
-    imageUrls: articleImageUrls,
+    // TODO: 이미지 하나 허용으로 롤백
+    // imageUrls: articleImageUrls,
+    imageUrl: articleImageUrl,
   } as ITopicResponse;
 
   const { result: regroupedArticleContent } =
@@ -129,7 +134,7 @@ const TeamDailySubject = () => {
             .then(() => {
               setDisablePrompt(true);
               setAlert({
-                message: '주제 수정이 완료되었습니다.',
+                message: '문제 수정이 완료되었습니다.',
                 isVisible: true,
                 onConfirm: () => {
                   navigate(`/team-admin/${id}`);
@@ -143,7 +148,7 @@ const TeamDailySubject = () => {
             });
         })
         .catch((err) => {
-          alert('주제 수정에 실패했습니다.');
+          alert('문제 수정에 실패했습니다.');
           console.error(err);
           setIsPending(false);
         });
@@ -191,7 +196,7 @@ const TeamDailySubject = () => {
             setSelectedPostId(parseInt(articleId));
             setDisablePrompt(true);
             setAlert({
-              message: '주제 작성이 완료되었습니다.',
+              message: '문제 작성이 완료되었습니다.',
               isVisible: true,
               onConfirm: () => {
                 navigate(`/team-admin/${id}`);
@@ -209,7 +214,7 @@ const TeamDailySubject = () => {
     <CommonLayout>
       <Flex direction={'column'} align={'center'} padding={padding}>
         <PageSectionHeader h={40}>
-          <Title src={write} title="주제 작성하기" />
+          <Title src={write} title="문제 작성하기" />
         </PageSectionHeader>
         <Spacer h={spacing} />
         <PostEditor

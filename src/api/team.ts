@@ -1,6 +1,6 @@
-import { isDevMode } from '@/utils/cookie.ts';
+// import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
-import { teamCombinedMock } from '@/api/mocks.ts';
+// import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -71,6 +71,16 @@ export interface ITeamSearchResponse {
     totalElements: number;
     totalPages: number;
   };
+}
+
+export interface TeamAdminResponse {
+  teamId: number;
+  teamName: string;
+  teamExplain: string;
+  topic: string;
+  memberLimit: number;
+  password: string;
+  teamIconUrl: string;
 }
 
 export const createTeam = async ({
@@ -147,9 +157,9 @@ export const getTeamList = async (
   size: number = 6
 ): Promise<ITeamListResponse> => {
   // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-  if (isDevMode()) {
-    return teamCombinedMock.data;
-  }
+  // if (isDevMode()) {
+  //   return teamCombinedMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
@@ -175,12 +185,19 @@ export const joinTeam = async (teamId: number, password: string) => {
 };
 
 export const searchTeams = async (
-  keyword: string
+  keyword: string,
+  sort: string = 'recent',
+  page: number = 0,
+  size: number = 6
 ): Promise<ITeamSearchResponse> => {
+  // if (isDevMode()) {
+  //   return teamSearchMock.data;
+  // }
+
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
-      params: { keyword },
+      params: { keyword, sort, page, size },
     }
   );
 
@@ -193,4 +210,12 @@ export const withdrawTeam = async (teamId: number) => {
   );
 
   return res.data;
+};
+
+export const getTeamInfoAdmin = async (teamId: number) => {
+  const res = await apiInstance.get<ServerResponse<TeamAdminResponse>>(
+    `v1/teams/${teamId}`
+  );
+
+  return res.data.data;
 };

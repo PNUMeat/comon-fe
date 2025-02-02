@@ -3,7 +3,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Fragment, Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
-import { getTeamList } from '@/api/team.ts';
+import { getTeamInfoAdmin } from '@/api/team.ts';
 import { PATH } from '@/routes/path.tsx';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -16,24 +16,17 @@ import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
+import { TeamFormContext } from './TeamFormContext';
+
 const SuspenseTeamForm = () => {
   const location = useLocation();
-  const { data } = useSuspenseQuery({
-    queryKey: ['team-list', 0],
-    queryFn: () => getTeamList('recent', 0, 1),
-  });
-  //TODO : 이거 왜 터짐 ??
   const { teamId } = location.state;
-  console.log('??', teamId);
+  const teamIdInt = parseInt(teamId ?? '0');
+  const { data } = useSuspenseQuery({
+    queryKey: ['team-admin-info'],
+    queryFn: () => getTeamInfoAdmin(teamIdInt),
+  });
   if (!teamId) {
-    return <Navigate to={PATH.TEAMS} />;
-  }
-  const teamIdNum = parseInt(teamId);
-  const modiee = (data?.myTeams ?? []).find(
-    (team) => team.teamId === teamIdNum
-  );
-  if (!modiee) {
-    // 토스트?
     return <Navigate to={PATH.TEAMS} />;
   }
 

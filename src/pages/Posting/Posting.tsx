@@ -146,7 +146,7 @@ const PostSubjectViewer: React.FC<{
             fontWeight={700}
             fontFamily={'Pretendard'}
           >
-            주제
+            문제
           </SText>
         ) : null}
         <SText
@@ -157,7 +157,7 @@ const PostSubjectViewer: React.FC<{
           whiteSpace={'normal'}
           wordBreak={'break-word'}
         >
-          {data?.articleTitle ?? '주제가 등록되지 않았어요'}
+          {data?.articleTitle ?? '문제가 등록되지 않았어요'}
         </SText>
       </GapFlex>
       {show && data ? (
@@ -181,7 +181,7 @@ const PostSubjectViewer: React.FC<{
           fontWeight={400}
           fontFamily={'Pretendard'}
         >
-          {show ? '주제 접기' : '펼쳐서 확인하기'}
+          {show ? '문제 접기' : '펼쳐서 확인하기'}
         </SText>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -254,7 +254,17 @@ const Posting = () => {
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
-        images: postImages.map((imgObj) => imgObj.img),
+        images:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleId: parseInt(articleId),
         articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
@@ -268,9 +278,14 @@ const Posting = () => {
               setDashboardView('article');
               setSelectedPostId(articleId);
               setPostImages([]);
-              navigate(`/team-dashboard/${id}`);
               setDisablePrompt(true);
-              setAlert({ message: '게시글을 수정했어요', isVisible: true, onConfirm: () => {} });
+              setAlert({
+                message: '게시글을 수정했어요',
+                isVisible: true,
+                onConfirm: () => {
+                  navigate(`/team-dashboard/${id}`);
+                },
+              });
             })
             .catch(() => {
               setAlert({
@@ -282,7 +297,16 @@ const Posting = () => {
             });
         })
         .catch(() => {
-          setAlert({ message: '게시글 수정에 실패했어요', isVisible: true, onConfirm: () => {} });
+          setAlert({
+            message: '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
+          setAlert({
+            message: '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
           setIsPending(false);
         });
       return;
@@ -293,18 +317,6 @@ const Posting = () => {
       setIsPending(false);
       return;
     }
-
-    postImages
-      .sort((a, b) => {
-        if (a.line !== b.line) {
-          return a.line - b.line;
-        }
-        return a.idx - b.idx;
-      })
-      .forEach((img) => console.log('i', img.img.name));
-
-    console.log('??', postImages, articleBody);
-    postImages.forEach((i) => console.error(i.img));
 
     createPost({
       teamId: parseInt(id),
@@ -333,8 +345,14 @@ const Posting = () => {
             setSelectedPostId(articleId);
             setPostImages([]);
             setDisablePrompt(true);
-            navigate(`/team-dashboard/${id}`);
-            setAlert({ message: '글쓰기를 완료했어요', isVisible: true, onConfirm: () => {navigate(`/team-dashboard/${id}`)} });
+            // navigate(`/team-dashboard/${id}`);
+            setAlert({
+              message: '글쓰기를 완료했어요',
+              isVisible: true,
+              onConfirm: () => {
+                navigate(`/team-dashboard/${id}`);
+              },
+            });
           })
           .catch(() => {
             setAlert({
@@ -346,7 +364,11 @@ const Posting = () => {
           });
       })
       .catch(() => {
-        setAlert({ message: '글쓰기에 실패했어요', isVisible: true, onConfirm: () => {} });
+        setAlert({
+          message: '글쓰기에 실패했어요',
+          isVisible: true,
+          onConfirm: () => {},
+        });
         setIsPending(false);
       });
   };

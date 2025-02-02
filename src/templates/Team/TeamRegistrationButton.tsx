@@ -29,8 +29,6 @@ export const TeamRegistrationButton = () => {
   const queryClient = useQueryClient();
   const setAlert = useSetAtom(alertAtom);
 
-  console.log(teamName, teamExplain, topic, memberLimit, password);
-
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
     if (isRegistrationFormValid) {
@@ -45,11 +43,19 @@ export const TeamRegistrationButton = () => {
       })
         .then((data) => {
           navigate(`/team-dashboard/${data.teamId}`);
-          setAlert({ message: '팀 생성을 완료했어요', isVisible: true, onConfirm: () => {} });
+          setAlert({
+            message: '팀 생성을 완료했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
           queryClient.invalidateQueries({ queryKey: ['team-list', 0] });
         })
         .catch(() =>
-          setAlert({ message: '팀 생성에 실패했습니다.', isVisible: true, onConfirm: () => {} }),
+          setAlert({
+            message: '팀 생성에 실패했습니다.',
+            isVisible: true,
+            onConfirm: () => {},
+          })
         );
     }
   };

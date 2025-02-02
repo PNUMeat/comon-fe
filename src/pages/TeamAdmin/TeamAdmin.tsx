@@ -160,7 +160,9 @@ const SubjectControlButton: React.FC<{
             articleId: data?.articleId ?? null,
             articleTitle: data?.articleTitle ?? null,
             articleCategory: data?.articleCategory ?? null,
-            articleImageUrls: data?.imageUrls ?? null,
+            // TODO: 이미지 하나로 롤백
+            // articleImageUrls: data?.imageUrls ?? null,
+            articleImageUrl: data?.imageUrl ?? null,
           },
         })
       }
@@ -172,7 +174,7 @@ const SubjectControlButton: React.FC<{
         fontWeight={700}
         whiteSpace={'nowrap'}
       >
-        {!isSuccess ? '요청 대기' : data?.articleId ? '주제 수정' : '주제 작성'}
+        {!isSuccess ? '요청 대기' : data?.articleId ? '문제 수정' : '문제 작성'}
       </SText>
     </SubjectControlButtonWrap>
   );
@@ -329,13 +331,11 @@ const TeamAdmin = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  // const announcementRef = useRef<HTMLDivElement | null>(null);
-  // const modalRef = useRef<HTMLDivElement | null>(null);
-  // const [show, setShow] = useState<boolean>(false);
-
   const { id } = useParams<{ id: string }>();
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA', {
+    timeZone: 'Asia/Seoul',
+  });
   const [selectedDate, setSelectedDate] = useState<string>(today);
   const [year, month] = selectedDate.split('-').map(Number);
 
@@ -480,7 +480,7 @@ const TeamAdmin = () => {
                     fontWeight={500}
                     lineHeight="24px"
                   >
-                    오늘의 주제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의
+                    오늘의 문제 작성, 공지 등록, 캘린더를 클릭해 해당 날짜의
                     게시글 및 태그를 수정, 변경할 수 있습니다.
                   </SText>
                   <Spacer h={32} />

@@ -20,7 +20,7 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import TeamSetting from '@/templates/Team/TeamSetting';
+import TeamModification from '@/templates/Team/TeamModification.tsx';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import MemberModification from '@/templates/Team/MemberModification';
 import { TeamInfomation } from '@/templates/Team/TeamInfomation';
@@ -140,6 +140,23 @@ export const router = createBrowserRouter(
             },
           ],
         },
+        // {
+        //   element: (
+        //     <PrivateRoute>
+        //       <TeamSetting />
+        //     </PrivateRoute>
+        //   ),
+        //   children: [
+        //     {
+        //       path: `${PATH.TEAM_SETTING}/team`,
+        //       element: <TeamModification />,
+        //     },
+        //     {
+        //       path: `${PATH.TEAM_SETTING}/members`,
+        //       element: <MemberModification />,
+        //     },
+        //   ],
+        // },
         {
           element: (
             <PrivateRoute>

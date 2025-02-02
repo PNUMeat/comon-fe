@@ -7,7 +7,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { MyTeamCard } from '@/components/features/TeamJoin/MyTeamCard';
 import { TeamList } from '@/components/features/TeamJoin/TeamList';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ITeamInfo, getTeamList, searchTeams } from '@/api/team';
@@ -19,16 +19,38 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-const TeamData = () => {
-  const [page, setPage] = useState(0);
-  const [keyword, setKeyword] = useState('');
-  const [myTeam, setMyTeam] = useState<ITeamInfo[]>([]);
-  const [otherTeams, setOtherTeams] = useState<ITeamInfo[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
+import { KeywordPageControlContext } from './KeywordPageControlContext.tsx';
 
-  const { data: initialData } = useQuery({
-    queryKey: ['team-list', page],
-    queryFn: () => getTeamList('recent', page, 6),
+let myTeamCache: ITeamInfo[] = [];
+let prevKeyword = '';
+const totalPagesCacheMap: Map<string, number> = new Map();
+const prevPageCacheMap: Map<string, number> = new Map();
+
+const QUERY_MODE = 'query';
+const SEARCH_MODE = 'search';
+
+totalPagesCacheMap.set(QUERY_MODE, 1);
+totalPagesCacheMap.set(SEARCH_MODE, 1);
+
+prevPageCacheMap.set(QUERY_MODE, 0);
+prevPageCacheMap.set(SEARCH_MODE, 0);
+
+const TeamData = () => {
+  const [page, setPage] = useState(-1);
+  const [keyword, setKeyword] = useState(prevKeyword);
+  const isSearchMode = keyword.trim().length > 0;
+
+  const { data: queryData, isPending: queryPending } = useQuery({
+    queryKey: ['team-list', page === -1 ? 0 : page],
+    queryFn: () => getTeamList('recent', page === -1 ? 0 : page, 6),
+    //placeholdreData에서 prevData ?? queryclient.getQueryData(['team-list', 이전 페이지`])
+    // 위의 코드는 사용시 플로우를 완전히 제어 못할 거 같음
+    // placeholderData: (prevData) => ({ prevData })},
+    select: (data) => ({
+      myTeams: data.myTeams,
+      otherTeams: data.allTeams.content,
+      totalPages: data.allTeams.page.totalPages,
+    }),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
@@ -43,61 +65,63 @@ const TeamData = () => {
     },
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setMyTeam(initialData.myTeams || []);
-      setOtherTeams(initialData.allTeams.content || []);
-      setTotalPages(initialData.allTeams.page.totalPages || 1);
-    }
-  }, [initialData]);
+  if (queryData) {
+    myTeamCache = queryData.myTeams;
+    totalPagesCacheMap.set(QUERY_MODE, queryData.totalPages);
+  }
 
-  const handleSearch = async (searchKeyword: string) => {
-    setKeyword(searchKeyword);
+  const { data: searchData, isPending: searchPending } = useQuery({
+    queryKey: ['team-search', keyword, page === -1 ? 0 : page],
+    queryFn: () => searchTeams(keyword, 'recent', page === -1 ? 0 : page, 6),
+    select: (data) => ({
+      otherTeams: data.content,
+      totalPages: data?.page?.totalPages,
+    }),
+    enabled: isSearchMode,
+  });
 
-    if (!searchKeyword.trim()) {
-      setMyTeam(initialData?.myTeams || []);
-      setOtherTeams(initialData?.allTeams.content || []);
-      setTotalPages(initialData?.allTeams.page.totalPages || 1);
-      return;
-    }
-
-    const res = await searchTeams(searchKeyword);
-    setOtherTeams(res.content || []);
-    setTotalPages(res.page.totalPages || 1);
-  };
+  if (searchData) {
+    totalPagesCacheMap.set(SEARCH_MODE, searchData.totalPages);
+    prevKeyword = keyword;
+  }
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-
-    if (!keyword.trim()) {
-      // 검색어가 없을 때
-      getTeamList('recent', newPage, 6).then((data) => {
-        setMyTeam(data.myTeams || []);
-        setOtherTeams(data.allTeams.content || []);
-        setTotalPages(data.allTeams.page.totalPages || 1);
-      });
-    } else {
-      // 검색어가 있을 때
-      searchTeams(keyword).then((result) => {
-        setOtherTeams(result.content || []);
-        setTotalPages(result.page.totalPages || 1);
-      });
-    }
+    const currMode = isSearchMode ? SEARCH_MODE : QUERY_MODE;
+    prevPageCacheMap.set(currMode, newPage);
   };
 
+  const myTeam = queryData?.myTeams ?? myTeamCache;
+  const otherTeams = isSearchMode
+    ? (searchData?.otherTeams ?? [])
+    : (queryData?.otherTeams ?? []);
+  const totalPages = isSearchMode
+    ? (searchData?.totalPages ??
+      (totalPagesCacheMap.get(SEARCH_MODE) as number))
+    : (queryData?.totalPages ?? (totalPagesCacheMap.get(QUERY_MODE) as number));
+  const currPage =
+    page === -1
+      ? (prevPageCacheMap.get(
+          isSearchMode ? SEARCH_MODE : QUERY_MODE
+        ) as number)
+      : page;
+  const isPending = isSearchMode ? searchPending : queryPending;
+
   return (
-    <>
+    <KeywordPageControlContext.Provider
+      value={{ keyword, setKeyword, setPage }}
+    >
       {/* 나의 팀 */}
-      {myTeam.length > 0 && <MyTeamCard teams={myTeam || []} />}
+      {myTeam.length > 0 && <MyTeamCard teams={myTeam} />}
       {/* 활동 팀 찾기 */}
-      <TeamList teams={otherTeams} myTeam={myTeam} onSearch={handleSearch} />
+      <TeamList teams={otherTeams} myTeam={myTeam} isPending={isPending} />
       <Pagination
         totalPages={totalPages}
         onPageChange={handlePageChange}
-        currentPageProp={page}
+        currentPageProp={currPage}
       />
       <Spacer h={34} />
-    </>
+    </KeywordPageControlContext.Provider>
   );
 };
 

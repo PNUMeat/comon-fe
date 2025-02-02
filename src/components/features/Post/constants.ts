@@ -22,3 +22,10 @@ export const convertToKoreanIfIsKoreanFont = (fontName: string): string => {
 
   return font ? font[1] : fontName;
 };
+
+export const convertToEnglishIfIsKoreanFont = (fontName: string): string => {
+  const font = FONT_FAMILY_KOREAN.find(
+    ([, koreanName]) => koreanName === fontName
+  );
+  return font ? font[0] : fontName;
+};

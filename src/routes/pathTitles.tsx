@@ -23,7 +23,6 @@ export const getTitle = (path: string): ReactNode => {
     return <Title src={crown} title="팀 설정" />;
   }
 
-
   const staticTitles: Record<string, ReactNode> = {
     '/login': <Title src={crown} title="로그인" />,
     '/enroll': <Title src={crown} title="프로필 생성" />,
