@@ -8,7 +8,7 @@ import { currentPathAtom, formTextareaAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
-const ContentContainer = styled.div`
+const ContentContainer = styled.div<{minWidth: string}>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,6 +22,8 @@ const ContentContainer = styled.div`
   line-height: 19px;
   letter-spacing: -0.32px;
   color: #333;
+  min-width: ${({ minWidth }) => minWidth};
+  box-sizing: border-box;
 `;
 
 const MAX_LENGTH = 50;
@@ -33,7 +35,8 @@ export const ComonTextarea: React.FC<{
   placeholder: string;
   value?: string;
   isDisabled?: boolean;
-}> = ({ maxLength, placeholder, value, isDisabled }) => {
+  minWidth?: string;
+}> = ({ maxLength, placeholder, value, isDisabled, minWidth = '100%' }) => {
   // TODO: 현재 해당 컴포넌트가 여러번 필요한 디자인이 없으므로 상태를 매핑 했다. 혹시 생긴다면 수정 필요.
   //  상태를 매핑했기 때문에 하나의 페이지에서 여러번 재사용 불가함.
   //   클린업 함수는 submit 후동작으로 넣을 것임. useEffect의 return 부분에 넣어야하는지?
@@ -115,7 +118,9 @@ export const ComonTextarea: React.FC<{
 
   return (
     <Wrap>
-      <ContentContainer>
+      <ContentContainer
+        minWidth={minWidth}
+      >
         <EditableDiv
           ref={editableRef}
           contentEditable="plaintext-only"

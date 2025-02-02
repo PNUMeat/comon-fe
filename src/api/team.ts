@@ -1,6 +1,7 @@
 // import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
+//import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
