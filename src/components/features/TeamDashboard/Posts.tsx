@@ -73,7 +73,7 @@ export const Posts: React.FC<PostsProps> = ({
     <ContentDiv height={isMobile ? '391px' : ''} >
       <Box width="100%" padding={padding} style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
-          <Flex width={flexWidth} justify="space-between" align="center">
+          <Flex width={flexWidth} justify="space-between" align="center" gap='10px'>
             <SText color="#333" fontSize={fontSize} fontWeight={700}>
               {selectedDate}
             </SText>
@@ -101,7 +101,7 @@ export const Posts: React.FC<PostsProps> = ({
               align="center"
               style={{ minHeight: '216px' }}
             >
-              <SText color="#ccc" fontSize="24px" fontWeight={400}>
+              <SText color="#ccc" fontSize={isMobile ? '20px' : '24px'} fontWeight={400}>
                 게시글이 존재하지 않아요
               </SText>
             </Flex>
@@ -217,7 +217,7 @@ const StyledButton = styled.button<{ isClicked: boolean }>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
-    padding: 8px 16px;
+    padding: 7px 11px;
   }
 `;
 
@@ -231,15 +231,14 @@ const RocketIcon = styled.img`
   }
 `;
 const NoArticleDiv = styled.div`
-  position: absolute;
   top: 0px;
   left: 50%;
   padding: 90px 40px;
   height: 216px;
-  transform: translateX(-50%);
   width: calc(100% - 80px);
   z-index: 1;
   border-radius: 20px;
+  margin-top: -50px;
   background: #fff;
 `;
 
