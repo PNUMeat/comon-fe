@@ -100,6 +100,7 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
 const ArticleWrapper = styled.div<{
   height?: string;
 }>`
+  color: #777;
   margin-bottom: 20px;
   display: flex;
   width: 700px;
