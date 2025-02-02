@@ -78,14 +78,14 @@ const InfoText = styled.p<{ fontSize: string }>`
   }
 `;
 
-const AttachImageButton = styled.label`
+const AttachImageButton = styled.label<{padding: string}>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 111px;
   height: 30px;
-  padding: 5px 14px;
+  padding: ${(props) => props.padding};
   border-radius: 5px;
   background: #8488ec;
   color: white;
@@ -133,7 +133,8 @@ export const ComonImageInput: React.FC<{
   imageUrl?: string;
   isDisabled?: boolean;
   h?: number;
-}> = ({ imageUrl, isDisabled, h = 200 }) => {
+  padding?: string;
+}> = ({ imageUrl, isDisabled, h = 200, padding = '5px 14px' }) => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
   const workerRef = useRef<Worker | null>(null);
@@ -201,7 +202,7 @@ export const ComonImageInput: React.FC<{
 
   const fontSize = h === 80 ? '12px' : '14px';
   return (
-    <Flex gap={'17px'}>
+    <Flex gap={'17px'} width={'auto'}>
       <ImageContainer h={h} onDragOver={handleDragOver} onDrop={handleDrop}>
         {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
         {!imageStr && image && <SimpleLoader />}
@@ -211,7 +212,9 @@ export const ComonImageInput: React.FC<{
       </ImageContainer>
       <SideContainer h={h}>
         <ImageRestrictionNotice fontSize={fontSize} />
-        <AttachImageButton>
+        <AttachImageButton
+          padding={padding}
+        >
           <SText fontSize={fontSize}>이미지 업로드</SText>
           <input
             type="file"

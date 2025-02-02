@@ -5,6 +5,8 @@ import { getTeamList } from "@/api/team";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Navigate, useLocation } from "react-router-dom";
 import { PATH } from "@/routes/path";
+import { useState } from "react";
+import TeamModification from "./TeamModification";
 
 interface InfoRowProps {
   label: string;
@@ -62,6 +64,8 @@ const ImgContent = styled.img`
   height: 140px;
   border : 1px solid #C2C5FB;
   border-radius: 20px;
+  box-sizing: border-box;
+  padding: 10px;
 `;
 
 const TeamSubjectButton = styled.button`
@@ -80,6 +84,7 @@ const TeamSubjectButton = styled.button`
 `;
 
 export const TeamInfomation = () => {
+  const [isEditMode, setIsEditMode] = useState(false);
   const location = useLocation();
   const { data } = useSuspenseQuery({
     queryKey: ['team-list', 0],
@@ -99,6 +104,29 @@ export const TeamInfomation = () => {
     // 토스트?
     return <Navigate to={PATH.TEAMS} />;
   }
+
+  const Infomation = () => {
+    return (
+      <InfoGrid>
+        <InfoRow label="팀 이름" content={currentTeam.teamName} />
+        <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
+        <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
+        <InfoRow label="주제" content={currentTeam.topic} />
+        <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
+          {/* 임시 데이터 넣어둠 */}
+        <InfoRow label="입장 비밀번호" content={"1234"} />
+      </InfoGrid>
+    )
+  };
+
+  const Modification = () => {
+    return (
+      <>
+        <TeamModification />
+      </>
+    );
+  };
+
   return (
     <TeamInfoGrid>
         <ModeButton>
@@ -106,14 +134,8 @@ export const TeamInfomation = () => {
           팀 정보
           </ModeButton>
           <ContentWrapper>
-          <InfoRow label="팀 이름" content={currentTeam.teamName} />
-          <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
-          <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
-          <InfoRow label="주제" content={currentTeam.topic} />
-          <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
-           {/* 임시 데이터 넣어둠 */}
-          <InfoRow label="비밀번호" content={"1234"} />
-          <ModifyButton>수정하기</ModifyButton>
+            {isEditMode ? <Modification /> : <Infomation />}
+          {isEditMode ? <ModifyButton onClick={() => setIsEditMode(false)}>저장하기</ModifyButton> : <ModifyButton onClick={() => setIsEditMode(true)}>수정하기</ModifyButton>}
         </ContentWrapper>
     </TeamInfoGrid>
   );
@@ -130,6 +152,14 @@ justify-items: start;
 @media (max-width: ${breakpoints.mobile}px) {
   grid-template-columns: 1fr;
 }
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 63px 63px 150px 63px 63px 63px;
+  gap: 10px;
+  width: 100%;
 `;
 
 
@@ -162,7 +192,7 @@ const ContentWrapper = styled.div`
   border: 1px solid #8488EC;
   width: 100%;
   min-width: 390px;
-  height: 500px;
+  height: 600px;
   padding: 56px 46px;
   position: relative;
   box-sizing: border-box;
