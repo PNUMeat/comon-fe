@@ -18,6 +18,8 @@ import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+import { breakpoints } from '@/constants/breakpoints';
 
 interface TopicDetailProps {
   teamId: number;
@@ -36,6 +38,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     enabled: !!teamId && !!selectedDate,
   });
   const queryClient = useQueryClient();
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   const onClickDelete = () => {
     if (data) {
@@ -60,7 +65,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             <Icon src={AnnouncementIcon} />
             <SText
               color="#333"
-              fontSize="24px"
+              fontSize={isMobile ? '18px' : '24px'}
               fontWeight={700}
               whiteSpace={'normal'}
               wordBreak={'break-word'}

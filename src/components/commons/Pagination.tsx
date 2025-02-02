@@ -70,10 +70,12 @@ const PaginationContainer = styled.div<{ hideShadow?: boolean }>`
     props.hideShadow ? '' : '5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)'};
   max-width: 270px;
   z-index: 999;
+  margin-top: -70px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     max-width: 220px;
     height: 20px;
+    margin-top: -30px;
   }
 `;
 
