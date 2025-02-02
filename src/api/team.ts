@@ -1,7 +1,7 @@
-import { isDevMode } from '@/utils/cookie.ts';
+// import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
-import { teamCombinedMock } from '@/api/mocks.ts';
+//import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -158,9 +158,9 @@ export const getTeamList = async (
   size: number = 6
 ): Promise<ITeamListResponse> => {
   // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-  if (isDevMode()) {
-    return teamCombinedMock.data;
-  }
+  // if (isDevMode()) {
+  //   return teamCombinedMock.data;
+  // }
 
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
