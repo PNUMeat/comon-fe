@@ -1,14 +1,16 @@
-import { breakpoints } from "@/constants/breakpoints";
-import styled from "@emotion/styled";
-import noteIcon from "@/assets/TeamDashboard/note.png";
-import searchIcon from "@/assets/TeamDashboard/search.png";
-import { BackgroundGradient } from "@/components/commons/BackgroundGradient";
-import crown from "@/assets/TeamJoin/crown.png";
-import check from "@/assets/TeamInfo/check.svg";
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 import React, { Fragment, useEffect, useState } from 'react';
-import MemberStatusDropdown from "./MemberStatusDropdown";
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
+import noteIcon from '@/assets/TeamDashboard/note.png';
+import searchIcon from '@/assets/TeamDashboard/search.png';
+import check from '@/assets/TeamInfo/check.svg';
+import crown from '@/assets/TeamJoin/crown.png';
+import { breakpoints } from '@/constants/breakpoints';
+import styled from '@emotion/styled';
+
+import MemberStatusDropdown from './MemberStatusDropdown';
 
 const data = [
   { name: '나는진영', status: '방장', joinDate: '2025.01.13' },
@@ -20,12 +22,15 @@ const data = [
 const MemberTableGrid = () => {
   const location = useLocation();
 
-  const {teamId} = location.state;
+  const { teamId } = location.state;
   console.log('??', teamId);
 
-
-  const [checkedItems, setCheckedItems] = useState<boolean[]>(new Array(data.length).fill(false));
-  const [statuses, setStatuses] = useState<string[]>(data.map((row) => row.status));
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
+    new Array(data.length).fill(false)
+  );
+  const [statuses, setStatuses] = useState<string[]>(
+    data.map((row) => row.status)
+  );
   const [isModifying, setIsModifying] = useState(false);
 
   const toggleCheck = (index: number) => {
@@ -42,7 +47,9 @@ const MemberTableGrid = () => {
 
   useEffect(() => {
     const hasCheckedItems = checkedItems.some((item) => item);
-    const hasModifiedStatuses = statuses.some((status, idx) => status !== data[idx].status);
+    const hasModifiedStatuses = statuses.some(
+      (status, idx) => status !== data[idx].status
+    );
 
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
   }, [checkedItems, statuses]);
@@ -54,15 +61,11 @@ const MemberTableGrid = () => {
           {role}
           <LeaderIcon src={crown} />
         </StatusWrapper>
-      )
+      );
     } else {
-      return (
-        <div>
-          {role}
-        </div>
-      )
+      return <div>{role}</div>;
     }
-  }
+  };
 
   return (
     <Table>
@@ -75,59 +78,63 @@ const MemberTableGrid = () => {
       </Header>
 
       <GridContainer>
-      {data.map((row, index) => (
-        <React.Fragment key={index}>
-          <RowCell>
-            <Avatar>
-              <AvatarImage />
-              <NicknameContainer>
-                {row.name}
-                <SearchIcon src={searchIcon} alt="search icon" />
-              </NicknameContainer>
-            </Avatar>
-          </RowCell>
-          <RowCell>{roleString(row.status)}</RowCell>
-          <RowCell>{row.joinDate}</RowCell>
-          <RowCell>
-            {row.status !== '방장' && (
-              <MemberStatusDropdown 
-                onChange={(value) => handleStatusChange(index, value)}
-              />
-            )}
-          </RowCell>
-          <RowCell>
-            {row.status !== '방장' && (
-              <Checkbox checked={checkedItems[index]} check={check} onClick={() => {toggleCheck(index)}} />
-            )}
-          </RowCell>
-        </React.Fragment>
-      ))}
+        {data.map((row, index) => (
+          <React.Fragment key={index}>
+            <RowCell>
+              <Avatar>
+                <AvatarImage />
+                <NicknameContainer>
+                  {row.name}
+                  <SearchIcon src={searchIcon} alt="search icon" />
+                </NicknameContainer>
+              </Avatar>
+            </RowCell>
+            <RowCell>{roleString(row.status)}</RowCell>
+            <RowCell>{row.joinDate}</RowCell>
+            <RowCell>
+              {row.status !== '방장' && (
+                <MemberStatusDropdown
+                  onChange={(value) => handleStatusChange(index, value)}
+                />
+              )}
+            </RowCell>
+            <RowCell>
+              {row.status !== '방장' && (
+                <Checkbox
+                  checked={checkedItems[index]}
+                  check={check}
+                  onClick={() => {
+                    toggleCheck(index);
+                  }}
+                />
+              )}
+            </RowCell>
+          </React.Fragment>
+        ))}
       </GridContainer>
       <SaveButton isModifying={isModifying}>적용하기</SaveButton>
     </Table>
   );
 };
 
-
 const MemberModification = () => {
-
   return (
     <Fragment>
       <BackgroundGradient
         count={1}
-        positions={[{ top: '90px'}]}
+        positions={[{ top: '90px' }]}
         height="470px"
       />
       <MemberModGrid>
         <ModeButton>
           <img src={noteIcon} alt="note icon" />
-            멤버 관리
-          </ModeButton>
+          멤버 관리
+        </ModeButton>
         <MemberTableGrid />
       </MemberModGrid>
     </Fragment>
   );
-}
+};
 
 const GridContainer = styled.div`
   display: grid;
@@ -184,9 +191,9 @@ const HeaderCell = styled.div`
   }
 
   &:last-child::after {
-    content: none; 
+    content: none;
+  }
 `;
-
 
 const RowCell = styled.div`
   padding: 7px 16px;
@@ -227,9 +234,9 @@ const SearchIcon = styled.img`
 
 const Checkbox = styled.div<{ checked: boolean; check: string }>`
   border: 0.5px solid #777777;
-  background: ${({ checked }) => (checked ? "#EF2528" : "#ffffff")};
+  background: ${({ checked }) => (checked ? '#EF2528' : '#ffffff')};
   background-image: ${({ checked, check }) =>
-    checked ? `url(${check})` : "none"};
+    checked ? `url(${check})` : 'none'};
   background-size: cover;
   background-size: contain;
   background-repeat: no-repeat;
@@ -248,7 +255,6 @@ const Checkbox = styled.div<{ checked: boolean; check: string }>`
     color: #ffffff;
   }
 `;
-
 
 const MemberModGrid = styled.div`
   display: grid;
@@ -294,12 +300,13 @@ const LeaderIcon = styled.img`
   height: 24px;
 `;
 
-const SaveButton = styled.button<{isModifying: boolean}>`
+const SaveButton = styled.button<{ isModifying: boolean }>`
   position: absolute;
   right: 0;
   bottom: -30px;
-  background-color: ${({isModifying}) => (isModifying ? "#6e74fa" : "#777777")};
-  disabled: ${({isModifying}) => (isModifying ? "false" : "true")};
+  background-color: ${({ isModifying }) =>
+    isModifying ? '#6e74fa' : '#777777'};
+  disabled: ${({ isModifying }) => (isModifying ? 'false' : 'true')};
   transition: background-color 0.3s;
   color: white;
   width: 90px;

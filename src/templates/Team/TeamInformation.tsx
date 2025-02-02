@@ -1,12 +1,17 @@
-import { breakpoints } from "@/constants/breakpoints";
-import styled from "@emotion/styled";
-import noteIcon from "@/assets/TeamDashboard/note.png";
-import { getTeamList } from "@/api/team";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Navigate, useLocation } from "react-router-dom";
-import { PATH } from "@/routes/path";
-import { useState } from "react";
-import TeamModification from "./TeamModification";
+import { Flex } from '@/components/commons/Flex';
+import { SText } from '@/components/commons/SText';
+
+import { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+
+import { deleteTeam, getTeamList } from '@/api/team';
+import noteIcon from '@/assets/TeamDashboard/note.png';
+import { breakpoints } from '@/constants/breakpoints';
+import { PATH } from '@/routes/path';
+import styled from '@emotion/styled';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+import TeamModification from './TeamModification';
 
 interface InfoRowProps {
   label: string;
@@ -14,12 +19,13 @@ interface InfoRowProps {
 }
 
 const InfoRow: React.FC<InfoRowProps> = ({ label, content }) => {
-  
   if (label === '팀 아이콘') {
     return (
       <Row>
         <Label>{label}</Label>
-        <Content><ImgContent src={String(content)} alt="team icon" /></Content>
+        <Content>
+          <ImgContent src={String(content)} alt="team icon" />
+        </Content>
       </Row>
     );
   }
@@ -28,7 +34,9 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, content }) => {
     return (
       <Row>
         <Label>{label}</Label>
-        <Content><TeamSubjectButton>{content}</TeamSubjectButton></Content>
+        <Content>
+          <TeamSubjectButton>{content}</TeamSubjectButton>
+        </Content>
       </Row>
     );
   }
@@ -62,7 +70,7 @@ const Content = styled.div`
 const ImgContent = styled.img`
   width: 140px;
   height: 140px;
-  border : 1px solid #C2C5FB;
+  border: 1px solid #c2c5fb;
   border-radius: 20px;
   box-sizing: border-box;
   padding: 10px;
@@ -83,7 +91,7 @@ const TeamSubjectButton = styled.button`
   transition: all 0.2s;
 `;
 
-export const TeamInfomation = () => {
+export const TeamInformation = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const location = useLocation();
   const { data } = useSuspenseQuery({
@@ -105,7 +113,7 @@ export const TeamInfomation = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const Infomation = () => {
+  const Information = () => {
     return (
       <InfoGrid>
         <InfoRow label="팀 이름" content={currentTeam.teamName} />
@@ -113,10 +121,10 @@ export const TeamInfomation = () => {
         <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
         <InfoRow label="주제" content={currentTeam.topic} />
         <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
-          {/* 임시 데이터 넣어둠 */}
-        <InfoRow label="입장 비밀번호" content={"1234"} />
+        {/* 임시 데이터 넣어둠 */}
+        <InfoRow label="입장 비밀번호" content={'1234'} />
       </InfoGrid>
-    )
+    );
   };
 
   const Modification = () => {
@@ -127,31 +135,61 @@ export const TeamInfomation = () => {
     );
   };
 
+  const handleDeleteTeam = () => {
+    const isConfirmed = confirm('팀을 정말 삭제하시겠습니까?');
+    if (isConfirmed) {
+      deleteTeam(teamId)
+        .then((res) => {
+          alert(res.message);
+        })
+        .catch((res) => alert(res.message));
+    }
+  };
+
   return (
     <TeamInfoGrid>
-        <ModeButton>
-        <img src={noteIcon} alt="note icon" />
-          팀 정보
-          </ModeButton>
-          <ContentWrapper>
-            {isEditMode ? <Modification /> : <Infomation />}
-          {isEditMode ? <ModifyButton onClick={() => setIsEditMode(false)}>저장하기</ModifyButton> : <ModifyButton onClick={() => setIsEditMode(true)}>수정하기</ModifyButton>}
-        </ContentWrapper>
+      <ModeButton>
+        <img src={noteIcon} alt="note icon" />팀 정보
+      </ModeButton>
+      <ContentWrapper>
+        {isEditMode ? <Modification /> : <Information />}
+        {isEditMode ? (
+          <ModifyButton onClick={() => setIsEditMode(false)}>
+            저장하기
+          </ModifyButton>
+        ) : (
+          <ModifyButton onClick={() => setIsEditMode(true)}>
+            수정하기
+          </ModifyButton>
+        )}
+      </ContentWrapper>
+      <Flex justify="flex-end" padding="0px 14px">
+        <SText
+          color={'#777'}
+          fontFamily={'Pretendard'}
+          fontSize={'14px'}
+          fontWeight={500}
+          cursor="pointer"
+          onClick={handleDeleteTeam}
+        >
+          팀 삭제하기 {'>'}
+        </SText>
+      </Flex>
     </TeamInfoGrid>
   );
-}
+};
 
 const TeamInfoGrid = styled.div`
-width: 100%;
-display: grid;
-grid-template-columns: 1fr;
-gap: 31px;
-margin-bottom: 60px;
-justify-items: start;
-
-@media (max-width: ${breakpoints.mobile}px) {
+  width: 100%;
+  display: grid;
   grid-template-columns: 1fr;
-}
+  gap: 31px;
+  margin-bottom: 60px;
+  justify-items: start;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const InfoGrid = styled.div`
@@ -161,7 +199,6 @@ const InfoGrid = styled.div`
   gap: 10px;
   width: 100%;
 `;
-
 
 const ModeButton = styled.button`
   white-space: nowrap;
@@ -189,7 +226,7 @@ const ModeButton = styled.button`
 
 const ContentWrapper = styled.div`
   border-radius: 20px;
-  border: 1px solid #8488EC;
+  border: 1px solid #8488ec;
   width: 100%;
   min-width: 390px;
   height: 600px;
@@ -205,7 +242,7 @@ const ContentWrapper = styled.div`
 const ModifyButton = styled.button`
   width: 90px;
   height: 30px;
-  background-color: #8488EC;
+  background-color: #8488ec;
   color: white;
   border-radius: 20px;
   border: none;

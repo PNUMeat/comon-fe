@@ -20,9 +20,9 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import MemberModification from '@/templates/Team/MemberModification';
-import { TeamInfomation } from '@/templates/Team/TeamInfomation';
+import { TeamInformation } from '@/templates/Team/TeamInformation';
+import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import TeamSetting from '@/templates/Team/TeamSetting';
 
 const useAuth = () => {
@@ -132,7 +132,7 @@ export const router = createBrowserRouter(
           children: [
             {
               path: `${PATH.TEAM_SETTING}/team`,
-              element: < TeamInfomation />,
+              element: <TeamInformation />,
             },
             {
               path: `${PATH.TEAM_SETTING}/members`,
