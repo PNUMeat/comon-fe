@@ -28,6 +28,21 @@ const formatDate = (date: Date): string =>
     .replace(/[./]/g, '-')
     .replace(/-$/, '');
 
+const categoryColors: Record<string, string> = {
+  '스터디 복습': '#6E74FA',
+  '스터디 예습': '#C2C4FB',
+  스터디: '#FFA379',
+  '코딩 테스트': '#FF5780',
+};
+
+const getCategoryForDate = (tags: ICalendarTag[], date: Date) => {
+  const formattedDate = formatDate(date);
+  return (
+    tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
+    null
+  );
+};
+
 export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   tags,
   onDateSelect,
@@ -37,19 +52,10 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
     new Date(selectedDate)
   );
 
-  const getCategoryForDate = (date: Date) => {
+  const onChangeDate = (date: Date) => {
     const formattedDate = formatDate(date);
-    return (
-      tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
-      null
-    );
-  };
-
-  const categoryColors: Record<string, string> = {
-    '스터디 복습': '#6E74FA',
-    '스터디 예습': '#C2C4FB',
-    스터디: '#FFA379',
-    '코딩 테스트': '#FF5780',
+    onDateSelect(formattedDate);
+    setActiveStartDate(date);
   };
 
   const handleTodayClick = () => {
@@ -74,7 +80,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
         next2Label={null}
         prev2Label={null}
         tileContent={({ date }) => {
-          const category = getCategoryForDate(date);
+          const category = getCategoryForDate(tags, date);
           return category ? (
             isMobile ? (
               <Dot bgColor={categoryColors[category]} />
@@ -83,12 +89,15 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
             )
           ) : null;
         }}
-        onClickDay={(value: Date) => {
-          const formattedDate = formatDate(value);
-          onDateSelect(formattedDate);
-        }}
+        // onClickDay={(value: Date) => onChangeDate(value)}
+        // onClickMonth={(date) => onChangeDate(date)}
         onActiveStartDateChange={({ activeStartDate }) => {
-          setActiveStartDate(activeStartDate || new Date());
+          // if (view === 'month') {
+          //   const formattedDate = formatDate(activeStartDate as Date);
+          //   onDateSelect(formattedDate);
+          // }
+          onChangeDate(activeStartDate ?? new Date());
+          // setActiveStartDate(activeStartDate || new Date());
         }}
         value={new Date(selectedDate)}
         activeStartDate={activeStartDate}
