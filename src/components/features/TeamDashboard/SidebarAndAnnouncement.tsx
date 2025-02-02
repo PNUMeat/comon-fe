@@ -278,7 +278,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                   window.location.reload();
                 })
                 .catch((err) => {
-                  alert('팀 가입 요청에 실패했습니다.');
+                  alert(err.message ?? '팀 가입 요청에 실패했습니다.');
                   console.error(err);
                 });
             }
