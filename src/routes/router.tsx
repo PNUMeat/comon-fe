@@ -20,10 +20,10 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import TeamModification from '@/templates/Team/TeamModification.tsx';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import MemberModification from '@/templates/Team/MemberModification';
 import { TeamInfomation } from '@/templates/Team/TeamInfomation';
+import TeamSetting from '@/templates/Team/TeamSetting';
 
 const useAuth = () => {
   if (isDevMode()) {

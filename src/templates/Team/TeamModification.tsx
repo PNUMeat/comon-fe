@@ -3,7 +3,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Fragment, Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
-import { getTeamInfoAdmin } from '@/api/team.ts';
+import { getTeamList } from '@/api/team.ts';
 import { PATH } from '@/routes/path.tsx';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -16,19 +16,22 @@ import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
-import { TeamFormContext } from './TeamFormContext';
+//import { TeamFormContext } from './TeamFormContext';
 
 const SuspenseTeamForm = () => {
   const location = useLocation();
   const { teamId } = location.state;
-  const teamIdInt = parseInt(teamId ?? '0');
+  const teamIdNum = parseInt(teamId);
   const { data } = useSuspenseQuery({
-    queryKey: ['team-admin-info'],
-    queryFn: () => getTeamInfoAdmin(teamIdInt),
+    queryKey: ['team-list', 0],
+    queryFn: () => getTeamList('recent', 0, 1),
   });
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
+  const modiee = (data?.myTeams ?? []).find(
+    (team) => team.teamId === teamIdNum
+  );
 
   return (
     <TeamModificationContainer>
