@@ -219,3 +219,11 @@ export const getTeamInfoAdmin = async (teamId: number) => {
 
   return res.data.data;
 };
+
+export const deleteTeam = async (teamId: number) => {
+  const res = await apiInstance.delete<ServerResponse<null>>(
+    `/v1/teams/${teamId}`
+  );
+
+  return res.data;
+};
