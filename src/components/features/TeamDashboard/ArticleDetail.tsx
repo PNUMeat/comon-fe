@@ -1,5 +1,3 @@
-import { viewStyle } from '@/utils/viewStyle';
-
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 
 import { Box } from '@/components/commons/Box';
@@ -7,6 +5,7 @@ import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { PostBlurredViewer } from '@/components/features/Post/PostBlurredViewer.tsx';
 
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,6 @@ import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 import { alertAtom, confirmAtom } from '@/store/modal';
-import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
 
 interface ArticleDetailProps {
@@ -45,7 +43,11 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           refetchArticles();
         })
         .catch(() =>
-          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true, onConfirm: () => {} }),
+          setAlert({
+            message: '게시글 삭제를 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          })
         );
     }
   };
@@ -128,29 +130,23 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        <ArticleViewer
-          shouldBlur={shouldBlur}
-          dangerouslySetInnerHTML={{
-            __html: article,
-          }}
-        />
+        <PostBlurredViewer shouldBlur={shouldBlur} article={article} />
+        {/*<ArticleBlurWrap>*/}
+        {/*  <ArticleViewer*/}
+        {/*    shouldBlur={shouldBlur}*/}
+        {/*    dangerouslySetInnerHTML={{*/}
+        {/*      __html: article,*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*  {shouldBlur && (*/}
+        {/*    <OverlayText>*/}
+        {/*      팀에 참가하고*/}
+        {/*      <br />*/}
+        {/*      함께 코테 풀이를 공유하세요!*/}
+        {/*    </OverlayText>*/}
+        {/*  )}*/}
+        {/*</ArticleBlurWrap>*/}
       </Flex>
     </Box>
   );
 };
-
-const ArticleViewer = styled.div<{
-  shouldBlur: boolean;
-}>`
-  line-height: 1.5;
-  ${viewStyle}
-
-  ${(props) =>
-    props.shouldBlur
-      ? `
-  filter: blur(5px);
-  pointer-events: none;
-  user-select: none;
-  `
-      : ''}
-`;
