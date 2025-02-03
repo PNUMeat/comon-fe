@@ -22,6 +22,7 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 
 interface ISidebarAndAnnouncementProps {
@@ -37,6 +38,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
+  const queryClient = useQueryClient();
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -275,6 +277,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
 
               joinTeam(parseInt(teamId as string), pwd)
                 .then(() => {
+                  queryClient.refetchQueries({ queryKey: ['membersInfo'] });
                   window.location.reload();
                 })
                 .catch((err) => {

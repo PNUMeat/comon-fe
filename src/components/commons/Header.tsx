@@ -217,6 +217,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             </button>
             <HeaderInfoModal
               isLoggedIn={isLoggedIn}
+              isModalOpen={modalControlRef.current?.isClicked ?? false}
               setModalRef={setModalRef}
               onClickLogout={onClickLogout}
             />
