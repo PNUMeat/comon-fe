@@ -1,6 +1,6 @@
 // import { isDevMode } from '@/utils/cookie.ts';
 // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-// import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
+//import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';

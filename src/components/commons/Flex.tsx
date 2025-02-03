@@ -12,7 +12,7 @@ export const Flex = styled.div<{
     | 'space-around'
     | 'space-evenly';
   gap?: string;
-  width?: number;
+  width?: number | string;
   padding?: string;
   height?: number;
 }>`

@@ -108,6 +108,10 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
 
 const CalendarWrapper = styled.div`
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 10px 24px;
+  }
 `;
 
 const StyledDate = styled.div`
@@ -121,7 +125,7 @@ const StyledDate = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
-    right: 8px;
+    right: 24px;
   }
 `;
 

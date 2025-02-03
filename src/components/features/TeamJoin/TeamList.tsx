@@ -9,7 +9,7 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { HeightInNumber } from '@/components/types.ts';
+import { HeightInString } from '@/components/types.ts';
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -57,7 +57,7 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
       <Spacer h={34} />
       <List
         itemCount={teams.length}
-        h={isPending ? 440 : teams.length === 0 ? 210 : 440}
+        h={isPending ? 'auto' : teams.length === 0 ? '210px' : 'auto'}
       >
         {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
@@ -265,9 +265,9 @@ const FlipCardContent = ({
   );
 };
 
-const List = styled.div<{ itemCount: number } & HeightInNumber>`
+const List = styled.div<{ itemCount: number } & HeightInString>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
-  height: ${({ h }) => h}px;
+  height: ${({ h }) => (h ? h : 'auto')};
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
@@ -280,8 +280,6 @@ const List = styled.div<{ itemCount: number } & HeightInNumber>`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  // justify-content: space-between;
-  // gap: 10px;
 `;
 
 const BackButtonLabel = styled.div`
@@ -304,37 +302,6 @@ const BackButtonLabel = styled.div`
     height: 20px;
   }
 `;
-
-// const PasswordInput = styled.input`
-//   width: 160px;
-//   height: 24px;
-//   border: 1px solid ${colors.borderPurple};
-//   border-radius: 28px;
-//   outline: none;
-//   text-align: center;
-//   color: #ccc;
-//   background-color: transparent;
-//   opacity: 0;
-//   cursor: default;
-//
-//   u &::placeholder {
-//     color: #ccc;
-//     font-weight: 400;
-//   }
-//
-//   &:focus {
-//     border-color: ${colors.buttonPurple};
-//   }
-//
-//   @media (max-width: ${breakpoints.mobile}px) {
-//     width: 100px;
-//     height: 20px;
-//
-//     &::placeholder {
-//       font-size: 10px;
-//     }
-//   }
-// `;
 
 const FlipCard = styled.div`
   background-color: transparent;
