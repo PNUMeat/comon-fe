@@ -28,7 +28,11 @@ export const useTeamInfoManager = ({
     new Map()
   );
 
-  const { data: teamInfoData, isSuccess } = useQuery({
+  const {
+    data: teamInfoData,
+    isSuccess,
+    isPending,
+  } = useQuery({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
@@ -76,5 +80,6 @@ export const useTeamInfoManager = ({
     tagsMap: tagsMap,
     myTeamResponse: teamInfoData?.myTeamResponse ?? teamCache?.teamInfo ?? null,
     isTeamManager: teamInfoData?.teamManager ?? teamCache?.isManager ?? false,
+    isPending: isPending,
   };
 };

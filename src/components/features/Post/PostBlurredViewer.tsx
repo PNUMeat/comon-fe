@@ -1,34 +1,91 @@
 import { viewStyle } from '@/utils/viewStyle.ts';
 
-import { useRef } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import styled from '@emotion/styled';
 
 const ArticleBlurWrap = styled.div`
   width: 100%;
   position: relative;
-  overflow-x: hidden;
+  overflow: visible;
 `;
 
-// const OverlayText = styled.div<{ isVisible: boolean }>`
-//   position: absolute;
-//   white-space: pre;
-//   // top: 0;
-//   top: 500px;
-//   left: 10%;
-//   transform: translate(0, ${({ isVisible }) => (isVisible ? '-400px' : '0')});
-//   transition:
-//     transform 0.4s ease,
-//     opacity 0.5s ease;
-//   background: rgba(0, 0, 0, 0.6);
-//   color: white;
-//   padding: 10px 20px;
-//   border-radius: 8px;
-//   font-size: 20px;
-//   font-weight: bold;
-//   // opacity: 1;
-//   // opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-// `;
+const BlurSticky = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 300px;
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  text-align: center;
+  z-index: 999;
+  transform: translateY(min(100%, 400px));
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+  opacity: 0;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const BlurStickyText = styled.div`
+  color: #333;
+  text-align: center;
+  text-shadow: 5px 7px 11.6px rgba(63, 63, 77, 0.07);
+  font-family: Pretendard;
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 50px;
+  letter-spacing: -0.32px;
+`;
+
+const BlurTeamJoinButton = styled.button`
+  display: flex;
+  width: 261px;
+  height: 72px;
+  padding: 20px 44px 20px 62px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+
+  border-radius: 20px;
+  background: linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%);
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+`;
+
+const BlurTeamJoinButtonText = styled.div`
+  color: #fff;
+  text-align: center;
+  font-family: 'Pretendard';
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const BlurredLayerAndSticky = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <BlurSticky ref={ref} className={className} {...props}>
+    <BlurStickyText>
+      지금 팀에 참가하고 <br /> 함께 코테 풀이를 공유하세요!
+    </BlurStickyText>
+    <BlurTeamJoinButton>
+      <BlurTeamJoinButtonText>팀 참가하기 {'->'}</BlurTeamJoinButtonText>
+    </BlurTeamJoinButton>
+  </BlurSticky>
+));
+
+BlurredLayerAndSticky.displayName = 'BlurredLayerAndSticky';
 
 const ArticleViewer = styled.div<{
   shouldBlur: boolean;
@@ -43,6 +100,7 @@ const ArticleViewer = styled.div<{
   pointer-events: none;
   user-select: none;
   position: relative;
+  transform: translateY(-200px);
   `
       : ''}
 `;
@@ -51,92 +109,44 @@ export const PostBlurredViewer: React.FC<{
   shouldBlur: boolean;
   article: string;
 }> = ({ shouldBlur, article }) => {
-  // const overlayRef = useRef<HTMLDivElement | null>(null);
-  const viewerRef = useRef<HTMLDivElement | null>(null);
-  // const overlayBoundRef = useRef<number | null>(null);
-  // const [isVisible, setIsVisible] = useState(false);
+  const stickyRef = useRef<HTMLDivElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => {
-  //       if (entry.isIntersecting) {
-  //         setIsVisible(true);
-  //
-  //         setTimeout(() => {
-  //           if (overlayRef?.current !== null && viewerRef?.current !== null) {
-  //             const overlay = overlayRef.current;
-  //             const { x, y } = overlay.getBoundingClientRect();
-  //             // const { y: viewerY } = viewerRef.current.getBoundingClientRect();
-  //             overlay.style.opacity = '0';
-  //             overlay.style.transition = 'none';
-  //             overlay.style.position = 'fixed';
-  //             overlay.style.left = '0';
-  //             overlay.style.top = '0';
-  //             overlay.style.transform = `translate(${x}px, ${y}px)`;
-  //             overlay.style.opacity = '1';
-  //
-  //             overlayBoundRef.current = y;
-  //
-  //             const onScroll = () => {
-  //               if (
-  //                 viewerRef?.current !== null &&
-  //                 overlayRef.current !== null &&
-  //                 overlayBoundRef?.current !== null
-  //               ) {
-  //                 const viewer = viewerRef.current;
-  //                 const overlayBound = overlayBoundRef.current;
-  //                 const { y } = viewer.getBoundingClientRect();
-  //                 if (overlayBound <= y) {
-  //                   overlayBoundRef.current = -1;
-  //                   document.removeEventListener('scroll', onScroll);
-  //                   setIsVisible(false);
-  //                   // overlay.style.opacity = '0';
-  //                   overlay.style.position = 'absolute';
-  //                   overlay.style.left = '10%';
-  //                   overlay.style.top = '500px';
-  //                   overlay.style.transform = '';
-  //                   overlay.style.transition =
-  //                     'transform 0.4s ease, opacity 0.5s ease';
-  //                 }
-  //               }
-  //             };
-  //
-  //             document.addEventListener('scroll', onScroll);
-  //           }
-  //         }, 500);
-  //       } else {
-  //         setIsVisible(false);
-  //       }
-  //     },
-  //     { threshold: 0.9 }
-  //   );
-  //
-  //   if (overlayRef.current) {
-  //     observer.observe(overlayRef.current);
-  //   }
-  //
-  //   return () => {
-  //     if (overlayRef.current) {
-  //       observer.unobserve(overlayRef.current);
-  //     }
-  //   };
-  // }, []);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (stickyRef.current) {
+      observer.observe(stickyRef.current);
+    }
+
+    return () => {
+      if (stickyRef.current) {
+        observer.unobserve(stickyRef.current);
+      }
+    };
+  }, []);
 
   return (
-    <ArticleBlurWrap ref={viewerRef}>
+    <ArticleBlurWrap>
+      {shouldBlur && (
+        <BlurredLayerAndSticky
+          ref={stickyRef}
+          className={isVisible ? 'visible' : ''}
+        />
+      )}
       <ArticleViewer
         shouldBlur={shouldBlur}
         dangerouslySetInnerHTML={{
           __html: article,
         }}
       />
-      {/*{shouldBlur && (*/}
-      {/*  <OverlayText ref={overlayRef} isVisible={isVisible}>*/}
-      {/*    팀에 참가하고*/}
-      {/*    <br />*/}
-      {/*    함께 코테 풀이를 공유하세요!*/}
-      {/*  </OverlayText>*/}
-      {/*)}*/}
     </ArticleBlurWrap>
   );
 };
