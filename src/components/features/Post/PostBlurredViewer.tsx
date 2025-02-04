@@ -109,20 +109,10 @@ export const PostBlurredViewer: React.FC<{
   shouldBlur: boolean;
   article: string;
 }> = ({ shouldBlur, article }) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const stickyRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // if (containerRef.current !== null && stickyRef.current !== null) {
-    //   const element = stickyRef.current;
-    //   const container = containerRef.current;
-    //   const containerHeight = Math.round(
-    //     container.getBoundingClientRect().height
-    //   );
-    //   const fittestHeight = Math.min(400, containerHeight);
-    //   element.style.transform = `translateY(${fittestHeight}px)`;
-    // }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -144,7 +134,7 @@ export const PostBlurredViewer: React.FC<{
   }, []);
 
   return (
-    <ArticleBlurWrap ref={containerRef}>
+    <ArticleBlurWrap>
       {shouldBlur && (
         <BlurredLayerAndSticky
           ref={stickyRef}
