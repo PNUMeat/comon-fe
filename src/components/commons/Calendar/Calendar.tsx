@@ -1,6 +1,6 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -53,6 +53,18 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   const [activeStartDate, setActiveStartDate] = useState(
     new Date(selectedDate)
   );
+  const [showPending, setShowPending] = useState(false);
+
+  useEffect(() => {
+    if (isPending) {
+      setShowPending(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShowPending(false);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isPending]);
 
   const onChangeDate = (date: Date) => {
     const formattedDate = formatDate(date);
@@ -76,7 +88,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
       {/* 오늘 버튼 */}
       <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
 
-      {isPending && <PendingState>정보를 가져오는 중…</PendingState>}
+      {showPending && <PendingState>정보를 가져오는 중…</PendingState>}
 
       <StyledCalendar
         calendarType="gregory"
