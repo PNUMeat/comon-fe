@@ -54,7 +54,6 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
 
   const onChangeDate = (date: Date) => {
     const formattedDate = formatDate(date);
-    console.log('???', date, formattedDate);
     onDateSelect(formattedDate);
     setActiveStartDate(date);
   };
@@ -94,24 +93,16 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
           const formattedDate = formatDate(value);
           onDateSelect(formattedDate);
         }}
-        onActiveStartDateChange={({ activeStartDate, view }) => {
+        onActiveStartDateChange={({ activeStartDate, view, value }) => {
           if (activeStartDate) {
-            if (view === 'month') {
-              const formattedDate = formatDate(activeStartDate);
+            if (view === 'month' && value !== null) {
+              const formattedDate = formatDate(value as Date);
               onDateSelect(formattedDate);
             }
             setActiveStartDate(activeStartDate);
           }
         }}
         onClickMonth={(date) => onChangeDate(date)}
-        // onActiveStartDateChange={({ activeStartDate, view }) => {
-        //   if (view === 'month' && activeStartDate) {
-        //     console.log('tq');
-        //     onChangeDate(activeStartDate);
-        //     return;
-        //   }
-        //   // setActiveStartDate(activeStartDate || new Date());
-        // }}
         value={new Date(selectedDate)}
         activeStartDate={activeStartDate}
       />
