@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { SimpleLoader } from '@/components/commons/SimpleLoader';
@@ -11,8 +13,6 @@ import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
 
 const ImageContainer = styled.div<HeightInNumber>`
-  height: ${(props) => props.h}px;
-  width: ${(props) => props.h}px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -22,11 +22,9 @@ const ImageContainer = styled.div<HeightInNumber>`
   background: #fff;
   box-sizing: border-box;
   justify-content: center;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 120px;
-    height: 120px;
-  }
+  height: ${(props) => props.h}px;
+  width: ${(props) => props.h}px;
+  // (모바일 화면) width와 height는 여기에 미디어쿼리 추가하지 말고 props로 전달해야 다른 화면에 영향이 안 감
 `;
 
 const PreviewImage = styled.img`
@@ -48,6 +46,7 @@ const PlaceholderText = styled.span`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
+    text-align: center;
   }
 `;
 
@@ -63,7 +62,6 @@ const SideContainer = styled.div<HeightInNumber>`
 `;
 
 const InfoText = styled.p<{ fontSize: string }>`
-  // font-size: 14px;
   font-size: ${(props) => props.fontSize};
   font-style: normal;
   font-weight: 400;
@@ -78,7 +76,7 @@ const InfoText = styled.p<{ fontSize: string }>`
   }
 `;
 
-const AttachImageButton = styled.label<{padding: string}>`
+const AttachImageButton = styled.label<{ padding: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,20 +199,25 @@ export const ComonImageInput: React.FC<{
   }, [image]);
 
   const fontSize = h === 80 ? '12px' : '14px';
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
   return (
-    <Flex gap={'17px'} width={'auto'}>
+    <Flex gap={isMobile ? '12px' : '17px'} width="auto">
       <ImageContainer h={h} onDragOver={handleDragOver} onDrop={handleDrop}>
         {imageStr && <PreviewImage src={imageStr} alt="Uploaded preview" />}
         {!imageStr && image && <SimpleLoader />}
         {!imageStr && !image && (
-          <PlaceholderText>이미지를 드래그하세요</PlaceholderText>
+          <PlaceholderText>
+            이미지를 {isMobile && <br />}
+            드래그하세요
+          </PlaceholderText>
         )}
       </ImageContainer>
       <SideContainer h={h}>
         <ImageRestrictionNotice fontSize={fontSize} />
-        <AttachImageButton
-          padding={padding}
-        >
+        <AttachImageButton padding={padding}>
           <SText fontSize={fontSize}>이미지 업로드</SText>
           <input
             type="file"

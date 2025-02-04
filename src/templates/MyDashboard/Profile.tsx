@@ -307,9 +307,7 @@ const ProfileViewer = () => {
   return (
     <ProfileInfoGrid>
       <PInfoLabel>이미지</PInfoLabel>
-      {/*  이거 프로필 수정하기에서 사진 안넣고 저장하면 fallback이 나옴*/}
       {imageUrl ? (
-        // <img src={imageUrl} style={{ width: '80px', height: '80px', objectFit: 'contain'}} alt />
         <Suspense fallback={<FallbackImg />}>
           <LazyImage
             altText={'profile image'}
