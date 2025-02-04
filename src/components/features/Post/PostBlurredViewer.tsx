@@ -1,5 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle.ts';
 
+import { forwardRef, useEffect, useRef, useState } from 'react';
+
 import styled from '@emotion/styled';
 
 const ArticleBlurWrap = styled.div`
@@ -20,6 +22,16 @@ const BlurSticky = styled.div`
   gap: 30px;
   text-align: center;
   z-index: 999;
+  transform: translateY(min(100%, 400px));
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+  opacity: 0;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 `;
 
 const BlurStickyText = styled.div`
@@ -59,6 +71,22 @@ const BlurTeamJoinButtonText = styled.div`
   line-height: normal;
 `;
 
+const BlurredLayerAndSticky = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <BlurSticky ref={ref} className={className} {...props}>
+    <BlurStickyText>
+      지금 팀에 참가하고 <br /> 함께 코테 풀이를 공유하세요!
+    </BlurStickyText>
+    <BlurTeamJoinButton>
+      <BlurTeamJoinButtonText>팀 참가하기 {'->'}</BlurTeamJoinButtonText>
+    </BlurTeamJoinButton>
+  </BlurSticky>
+));
+
+BlurredLayerAndSticky.displayName = 'BlurredLayerAndSticky';
+
 const ArticleViewer = styled.div<{
   shouldBlur: boolean;
 }>`
@@ -81,17 +109,47 @@ export const PostBlurredViewer: React.FC<{
   shouldBlur: boolean;
   article: string;
 }> = ({ shouldBlur, article }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const stickyRef = useRef<HTMLDivElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // if (containerRef.current !== null && stickyRef.current !== null) {
+    //   const element = stickyRef.current;
+    //   const container = containerRef.current;
+    //   const containerHeight = Math.round(
+    //     container.getBoundingClientRect().height
+    //   );
+    //   const fittestHeight = Math.min(400, containerHeight);
+    //   element.style.transform = `translateY(${fittestHeight}px)`;
+    // }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (stickyRef.current) {
+      observer.observe(stickyRef.current);
+    }
+
+    return () => {
+      if (stickyRef.current) {
+        observer.unobserve(stickyRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <ArticleBlurWrap>
+    <ArticleBlurWrap ref={containerRef}>
       {shouldBlur && (
-        <BlurSticky>
-          <BlurStickyText>
-            지금 팀에 참가하고 <br /> 함께 코테 풀이를 공유하세요!
-          </BlurStickyText>
-          <BlurTeamJoinButton>
-            <BlurTeamJoinButtonText>팀 참가하기 {'->'}</BlurTeamJoinButtonText>
-          </BlurTeamJoinButton>
-        </BlurSticky>
+        <BlurredLayerAndSticky
+          ref={stickyRef}
+          className={isVisible ? 'visible' : ''}
+        />
       )}
       <ArticleViewer
         shouldBlur={shouldBlur}
