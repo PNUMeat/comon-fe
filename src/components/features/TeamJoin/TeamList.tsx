@@ -203,7 +203,7 @@ const FlipCardContent = ({
         >
           {team.teamName}
         </SText>
-        <Spacer h={isMobile ? 4 : 8} />
+        <Spacer h={isMobile ? 4 : 6} />
         <SText
           fontSize={isMobile ? '10px' : '16px'}
           color="#777"
@@ -224,7 +224,7 @@ const FlipCardContent = ({
             {team.topic}
           </SText>
         </Label>
-        <Spacer h={isMobile ? 12 : 24} />
+        <Spacer h={isMobile ? 12 : 20} />
         {isBack ? (
           <>
             <Spacer h={4} />
@@ -244,20 +244,14 @@ const FlipCardContent = ({
           <>
             <ProfileList profiles={profiles || []} size={isMobile ? 20 : 24} />
             <Spacer h={isMobile ? 12 : 14} />
-            <ButtonWrapper>
-              <Button
-                backgroundColor={colors.buttonPurple}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                cursor={'text'}
-              >
-                {team.memberCount} members
-              </Button>
-              {/* <Button backgroundColor={colors.buttonPink}>
-                {team.streakDays}일차 코몬
-              </Button> */}
-            </ButtonWrapper>
+            <SText
+              color={colors.buttonPurple}
+              fontSize={isMobile ? '12px' : '16px'}
+              fontWeight={400}
+              fontFamily="Pretendard"
+            >
+              {team.memberCount} members
+            </SText>
           </>
         )}
       </Flex>
@@ -277,26 +271,18 @@ const List = styled.div<{ itemCount: number } & HeightInString>`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 const BackButtonLabel = styled.div`
   width: 160px;
   height: 24px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-
-  font-family: Pretendard;
+  font-family: 'Pretendard';
   font-size: 12px;
   color: #6c6a6a;
   white-space: nowrap;
-  // background-color: blue;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    // width: 100px;
     font-size: 10px;
     width: 100%;
     height: 20px;
