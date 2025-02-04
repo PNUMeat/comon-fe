@@ -349,11 +349,12 @@ const TeamAdmin = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
-    teamId: id,
-    year,
-    month,
-  });
+  const { tagsMap, myTeamResponse, isTeamManager, isPending } =
+    useTeamInfoManager({
+      teamId: id,
+      year,
+      month,
+    });
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -511,6 +512,7 @@ const TeamAdmin = () => {
             tags={tagsMap.get(id) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
+            isPending={isPending}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
