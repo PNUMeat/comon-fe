@@ -108,7 +108,8 @@ const FlipCardItem = ({
   });
 
   return (
-    <FlipCard onMouseLeave={() => setIsFlipped(false)}>
+    // <FlipCard onMouseLeave={() => setIsFlipped(false)}>
+    <FlipCard>
       <FlipCardInner isFlipped={isFlipped}>
         {/* 앞면 */}
         <FlipCardFront
@@ -223,11 +224,12 @@ const FlipCardContent = ({
             {team.topic}
           </SText>
         </Label>
-        <Spacer h={isMobile ? 16 : 20} />
+        <Spacer h={isMobile ? 12 : 24} />
         {isBack ? (
           <>
-            <PasswordBlank />
-            <Spacer h={14} />
+            <Spacer h={4} />
+            <BackButtonLabel>활동 중인 팀을 편하게 둘러보세요</BackButtonLabel>
+            <Spacer h={6} />
             <Button
               backgroundColor={colors.buttonPurple}
               onClick={(e) => {
@@ -280,12 +282,23 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
-const PasswordBlank = styled.div`
+const BackButtonLabel = styled.div`
   width: 160px;
   height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+
+  font-family: Pretendard;
+  font-size: 12px;
+  color: #6c6a6a;
+  white-space: nowrap;
+  // background-color: blue;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 100px;
+    // width: 100px;
+    font-size: 10px;
+    width: 100%;
     height: 20px;
   }
 `;

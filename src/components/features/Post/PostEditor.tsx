@@ -380,10 +380,6 @@ const useDetectImageMutation = () => {
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
 
-              /**
-               * 진짜 건들이면 안되는 코드
-               * 건들이는 순간 비동기 흐름다 깨져서 Promise.all이 resolve가 안됨
-               */
               Promise.all(
                 [...imgs].map((img) =>
                   findImgElement(img as HTMLElement).then((foundImg) => {
