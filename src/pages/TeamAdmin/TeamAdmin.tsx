@@ -322,6 +322,11 @@ const CalendarSection = styled.section`
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 8px 2px 16px 2px;
+    border-radius: 10px;
+  }
 `;
 
 let totalPageCache = 0;

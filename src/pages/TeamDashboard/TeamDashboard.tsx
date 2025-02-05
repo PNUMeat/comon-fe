@@ -188,7 +188,7 @@ const CalendarSection = styled.section`
   position: relative;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 8px 0 16px 0;
+    padding: 8px 2px 16px 2px;
     border-radius: 10px;
   }
 `;
