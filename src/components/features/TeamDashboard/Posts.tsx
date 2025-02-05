@@ -108,7 +108,7 @@ export const Posts: React.FC<PostsProps> = ({
             >
               <SText
                 color="#ccc"
-                fontSize={isMobile ? '20px' : '24px'}
+                fontSize={isMobile ? '16px' : '24px'}
                 fontWeight={400}
               >
                 게시글이 존재하지 않아요
