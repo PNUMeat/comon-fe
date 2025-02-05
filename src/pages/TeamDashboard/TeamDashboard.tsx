@@ -139,6 +139,7 @@ const TeamDashboardPage = () => {
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}
+            marginTop="-70px"
           />
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
@@ -187,7 +188,7 @@ const CalendarSection = styled.section`
   position: relative;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 8px 0 16px 0;
+    padding: 8px 2px 16px 2px;
     border-radius: 10px;
   }
 `;
