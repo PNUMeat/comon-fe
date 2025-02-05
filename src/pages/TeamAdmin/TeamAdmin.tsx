@@ -527,6 +527,7 @@ const TeamAdmin = () => {
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}
+            marginTop="-70px"
           />
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
