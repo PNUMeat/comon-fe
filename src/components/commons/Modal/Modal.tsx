@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
+
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 interface ModalProps {
@@ -7,9 +9,16 @@ interface ModalProps {
   height?: number;
   children: React.ReactNode;
   open?: boolean;
+  overlayBackground?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose, children, open = false, height = 144}) => {
+const Modal: React.FC<ModalProps> = ({
+  onClose,
+  children,
+  open = false,
+  height = 144,
+  overlayBackground,
+}) => {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -42,8 +51,13 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, open = false, height =
   const modalRoot = document.getElementById('modal-root') || document.body;
 
   return ReactDOM.createPortal(
-    <ModalOverlay onClick={handleOverlayClick}>
-      <ModalContainer onClick={handleModalClick} height={height}>{children}</ModalContainer>
+    <ModalOverlay
+      onClick={handleOverlayClick}
+      overlayBackground={overlayBackground}
+    >
+      <ModalContainer onClick={handleModalClick} height={height}>
+        {children}
+      </ModalContainer>
     </ModalOverlay>,
     modalRoot
   );
@@ -51,17 +65,18 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, open = false, height =
 
 export default Modal;
 
-const ModalOverlay = styled.div`
+const ModalOverlay = styled.div<{ overlayBackground?: string }>`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 999;
-  background-color: rgba(215, 215, 215, 0.5);
+  background-color: ${({ overlayBackground }) =>
+    overlayBackground || ' rgba(215, 215, 215, 0.5)'};
 `;
 
-const ModalContainer = styled.div<{ height: number}>`
+const ModalContainer = styled.div<{ height: number }>`
   position: fixed;
   display: flex;
   width: 316px;
@@ -75,5 +90,10 @@ const ModalContainer = styled.div<{ height: number}>`
   background-color: #fff;
   border: 1px solid #cdcfff;
   justify-content: center;
-  box-shadow: 5px 7px 11.6px 0px #3F3F4D12;
+  box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 200px;
+    top: 40%;
+  }
 `;
