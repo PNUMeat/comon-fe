@@ -103,11 +103,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
         <Slider {...settings}>
           {teams.map((team) => (
             <div key={team.teamId}>
-              <Box
-                width={isMobile ? '90%' : '100%'}
-                height={isMobile ? '116px' : 'auto'}
-                borderRadius="12px"
-              >
+              <Box width={isMobile ? '90%' : '100%'} borderRadius="12px">
                 <Flex justify="space-between">
                   {!isMobile && (
                     <Box width="260px" height="260px">
@@ -158,7 +154,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                     <Spacer h={8} />
                     <Label>
                       <SText
-                        fontSize={isMobile ? '6px' : '10px'}
+                        fontSize={isMobile ? '8px' : '10px'}
                         fontWeight={600}
                         fontFamily={'Pretendard'}
                       >
@@ -201,7 +197,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
                             color="#333"
                             fontFamily={'Pretendard'}
                           >
-                            팀 페이지로 이동{!isMobile && '하기'}
+                            팀 페이지로 이동하기
                           </SText>
                         </ActionText>
                       </Box>
@@ -213,7 +209,7 @@ export const MyTeamCard = ({ teams }: MyTeamCardProps) => {
           ))}
         </Slider>
       </SliderWrapper>
-      <Spacer h={isMobile ? 50 : 84} />
+      <Spacer h={84} />
     </>
   );
 };
@@ -290,12 +286,12 @@ const ArrowButton = styled.div<{ direction: string }>`
     direction === 'right' ? 'right: -90px;' : 'left: -90px;'}
 
   @media(max-width: ${breakpoints.mobile}px) {
-    width: 28px;
+    width: 30px;
     height: 60px;
-    border-radius: 6px;
+    border-radius: 10px;
 
     ${({ direction }) =>
-      direction === 'right' ? 'right: -20px;' : 'left: -20px;'}
+      direction === 'right' ? 'right: -24px;' : 'left: -24px;'}
   }
 `;
 
