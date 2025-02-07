@@ -134,7 +134,7 @@ export type MultilineElementTransformer = {
    */
   export?: (
     node: LexicalNode,
-     
+    // eslint-disable-next-line no-shadow
     traverseChildren: (node: ElementNode) => string
   ) => string | null;
   /**

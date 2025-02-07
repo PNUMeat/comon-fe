@@ -15,6 +15,5 @@ export const ComonFormGrid = styled.div<HeightInNumber>`
     flex-direction: column;
     grid-gap: 10px;
     height: auto;
-    width: 90%;
   }
 `;

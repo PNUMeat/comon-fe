@@ -1,4 +1,4 @@
-import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
+import { isLoggedIn } from '@/utils/cookie.ts';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -12,7 +12,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Suspense, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { ITeamInfo } from '@/api/team';
+import { ITeamInfo, joinTeam } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
@@ -28,14 +28,12 @@ interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
   isTeamManager: boolean;
   isMyTeam: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
   isMyTeam,
-  setIsModalOpen,
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
@@ -98,7 +96,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               >
                 {teamInfo.teamName}
               </SText>
-              <Spacer h={4} />
+              <Spacer h={isMobile ? 4 : 6} />
               <SText
                 fontSize={isMobile ? '10px' : '16px'}
                 color="#777"
@@ -249,7 +247,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             </SText>
           </Flex>
         </Box>
-
         <NewPostButton
           onClick={() => {
             if (isMyTeam) {
@@ -261,7 +258,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 },
               });
             } else {
-              if (!isLoggedIn() && !isDevMode()) {
+              if (!isLoggedIn()) {
+                // session redirect
                 sessionStorage.setItem('redirect', location.pathname);
                 navigate(PATH.LOGIN, {
                   state: {
@@ -270,7 +268,19 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 });
                 return;
               }
-              setIsModalOpen(true);
+              const pwd = prompt('팀 비밀번호');
+              if (!pwd || pwd.trim().length > 4) {
+                return;
+              }
+
+              joinTeam(parseInt(teamId as string), pwd)
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => {
+                  alert('팀 가입 요청에 실패했습니다.');
+                  console.error(err);
+                });
             }
           }}
         >
