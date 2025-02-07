@@ -71,15 +71,19 @@ const BlurTeamJoinButtonText = styled.div`
   line-height: normal;
 `;
 
+type BlurredLayerAndStickyProps = {
+  onClickOpenModal: () => void;
+} & React.HTMLAttributes<HTMLDivElement>;
+
 const BlurredLayerAndSticky = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  BlurredLayerAndStickyProps
+>(({ onClickOpenModal, className, ...props }, ref) => (
   <BlurSticky ref={ref} className={className} {...props}>
     <BlurStickyText>
       지금 팀에 참가하고 <br /> 함께 코테 풀이를 공유하세요!
     </BlurStickyText>
-    <BlurTeamJoinButton>
+    <BlurTeamJoinButton onClick={onClickOpenModal}>
       <BlurTeamJoinButtonText>팀 참가하기 {'->'}</BlurTeamJoinButtonText>
     </BlurTeamJoinButton>
   </BlurSticky>
@@ -108,7 +112,8 @@ const ArticleViewer = styled.div<{
 export const PostBlurredViewer: React.FC<{
   shouldBlur: boolean;
   article: string;
-}> = ({ shouldBlur, article }) => {
+  setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ shouldBlur, article, setIsModalOpen }) => {
   const stickyRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -135,12 +140,19 @@ export const PostBlurredViewer: React.FC<{
     };
   }, []);
 
+  const onClickOpenModal = () => {
+    if (setIsModalOpen) {
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <ArticleBlurWrap>
       {shouldBlur && (
         <BlurredLayerAndSticky
           ref={stickyRef}
           className={isVisible ? 'visible' : ''}
+          onClickOpenModal={onClickOpenModal}
         />
       )}
       <ArticleViewer

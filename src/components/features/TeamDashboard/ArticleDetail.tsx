@@ -25,6 +25,7 @@ interface ArticleDetailProps {
   teamId: number;
   refetchArticles: () => void;
   shouldBlur?: boolean;
+  setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
@@ -32,6 +33,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   teamId,
   refetchArticles,
   shouldBlur = true,
+  setIsModalOpen,
 }) => {
   const { result: article } = useRegroupImageAndArticle(data);
 
@@ -140,6 +142,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           key={data?.articleId ?? '-999'}
           shouldBlur={shouldBlur}
           article={article}
+          setIsModalOpen={setIsModalOpen}
         />
       </Flex>
     </Box>
