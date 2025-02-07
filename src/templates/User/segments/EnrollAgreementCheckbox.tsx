@@ -1,3 +1,4 @@
+import { breakpoints } from '@/constants/breakpoints';
 import { isEnrollAgreementCheckedAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
@@ -7,6 +8,10 @@ const CheckboxContainer = styled.label`
   align-items: center;
   gap: 10px;
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 250px;
+  }
 `;
 
 const Checkbox = styled.div<{ checked: boolean }>`
@@ -24,6 +29,11 @@ const Checkbox = styled.div<{ checked: boolean }>`
     content: ${({ checked }) => (checked ? "'✔'" : "''")};
     font-size: 20px;
     color: #ffffff;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 20px;
+    height: 20px;
   }
 `;
 
