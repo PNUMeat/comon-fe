@@ -39,10 +39,10 @@ const BlurStickyText = styled.div`
   text-align: center;
   text-shadow: 5px 7px 11.6px rgba(63, 63, 77, 0.07);
   font-family: Pretendard;
-  font-size: 34px;
+  font-size: 24px;
   font-style: normal;
-  font-weight: 700;
-  line-height: 50px;
+  font-weight: 800;
+  line-height: 32px;
   letter-spacing: -0.32px;
 `;
 
@@ -65,7 +65,7 @@ const BlurTeamJoinButtonText = styled.div`
   color: #fff;
   text-align: center;
   font-family: 'Pretendard';
-  font-size: 24px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -117,6 +117,8 @@ export const PostBlurredViewer: React.FC<{
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+        } else {
+          setIsVisible(false);
         }
       },
       { threshold: 1 }
