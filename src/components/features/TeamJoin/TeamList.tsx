@@ -57,7 +57,17 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
       <Spacer h={34} />
       <List
         itemCount={teams.length}
-        h={isPending ? 'auto' : teams.length === 0 ? '210px' : 'auto'}
+        h={
+          isPending
+            ? isMobile
+              ? '344px'
+              : '440px'
+            : teams.length === 0
+              ? '210px'
+              : isMobile
+                ? '344px'
+                : '440px'
+        }
       >
         {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
