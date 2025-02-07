@@ -1,6 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
@@ -16,6 +17,7 @@ import { deleteSubject } from '@/api/subject';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement.png';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -36,6 +38,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     enabled: !!teamId && !!selectedDate,
   });
   const queryClient = useQueryClient();
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   const onClickDelete = () => {
     if (data) {
@@ -60,7 +65,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
             <Icon src={AnnouncementIcon} />
             <SText
               color="#333"
-              fontSize="24px"
+              fontSize={isMobile ? '18px' : '24px'}
               fontWeight={700}
               whiteSpace={'normal'}
               wordBreak={'break-word'}
@@ -78,8 +83,6 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
-                    // TODO: 이미지 하나 허용으로 롤백
-                    // articleImageUrls: data?.imageUrls,
                     articleImageUrl: data?.imageUrl,
                   }}
                 >
@@ -135,7 +138,11 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     </Box>
   ) : (
     <Box width="100%" padding="30px 40px">
-      <SText color="#ccc" fontSize="24px" fontWeight={400}>
+      <SText
+        color="#ccc"
+        fontSize={isMobile ? '16px' : '24px'}
+        fontWeight={400}
+      >
         문제가 등록되지 않았어요
       </SText>
     </Box>

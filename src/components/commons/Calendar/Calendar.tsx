@@ -1,6 +1,6 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -15,6 +15,7 @@ interface ICustomCalendarProps {
   tags: ICalendarTag[];
   onDateSelect: (date: string) => void;
   selectedDate: string;
+  isPending: boolean;
 }
 
 const formatDate = (date: Date): string =>
@@ -28,28 +29,47 @@ const formatDate = (date: Date): string =>
     .replace(/[./]/g, '-')
     .replace(/-$/, '');
 
+const categoryColors: Record<string, string> = {
+  '스터디 복습': '#6E74FA',
+  '스터디 예습': '#C2C4FB',
+  스터디: '#FFA379',
+  '코딩 테스트': '#FF5780',
+};
+
+const getCategoryForDate = (tags: ICalendarTag[], date: Date) => {
+  const formattedDate = formatDate(date);
+  return (
+    tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
+    null
+  );
+};
+
 export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   tags,
   onDateSelect,
   selectedDate,
+  isPending = false,
 }) => {
   const [activeStartDate, setActiveStartDate] = useState(
     new Date(selectedDate)
   );
+  const [showPending, setShowPending] = useState(false);
 
-  const getCategoryForDate = (date: Date) => {
+  useEffect(() => {
+    if (isPending) {
+      setShowPending(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShowPending(false);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isPending]);
+
+  const onChangeDate = (date: Date) => {
     const formattedDate = formatDate(date);
-    return (
-      tags.find((tag) => tag.subjectDate === formattedDate)?.articleCategory ||
-      null
-    );
-  };
-
-  const categoryColors: Record<string, string> = {
-    '스터디 복습': '#6E74FA',
-    '스터디 예습': '#C2C4FB',
-    스터디: '#FFA379',
-    '코딩 테스트': '#FF5780',
+    onDateSelect(formattedDate);
+    setActiveStartDate(date);
   };
 
   const handleTodayClick = () => {
@@ -68,13 +88,15 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
       {/* 오늘 버튼 */}
       <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
 
+      {showPending && <PendingState>정보를 가져오는 중…</PendingState>}
+
       <StyledCalendar
         calendarType="gregory"
         formatDay={(_locale, date) => date.getDate().toString()}
         next2Label={null}
         prev2Label={null}
         tileContent={({ date }) => {
-          const category = getCategoryForDate(date);
+          const category = getCategoryForDate(tags, date);
           return category ? (
             isMobile ? (
               <Dot bgColor={categoryColors[category]} />
@@ -87,10 +109,17 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
           const formattedDate = formatDate(value);
           onDateSelect(formattedDate);
         }}
-        onActiveStartDateChange={({ activeStartDate }) => {
-          setActiveStartDate(activeStartDate || new Date());
+        onActiveStartDateChange={({ activeStartDate, view }) => {
+          if (activeStartDate) {
+            if (view === 'month') {
+              const formattedDate = formatDate(activeStartDate);
+              onDateSelect(formattedDate);
+            }
+            setActiveStartDate(activeStartDate);
+          }
         }}
-        value={new Date(selectedDate)}
+        onClickMonth={(date) => onChangeDate(date)}
+        defaultValue={new Date(selectedDate)}
         activeStartDate={activeStartDate}
       />
     </CalendarWrapper>
@@ -99,6 +128,10 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
 
 const CalendarWrapper = styled.div`
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 10px 24px;
+  }
 `;
 
 const StyledDate = styled.div`
@@ -112,7 +145,21 @@ const StyledDate = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
-    right: 8px;
+    right: 24px;
+  }
+`;
+
+const PendingState = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: ${colors.buttonPurple};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+    top: 26px;
   }
 `;
 

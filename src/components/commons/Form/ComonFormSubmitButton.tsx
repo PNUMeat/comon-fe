@@ -42,6 +42,6 @@ export const ComonFormSubmitButton = styled.button<{ disabled: boolean }>`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 100%;
+    width: 90%;
   }
 `;

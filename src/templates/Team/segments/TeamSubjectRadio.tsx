@@ -35,7 +35,7 @@ export const TeamSubjectRadio: React.FC<{
   }, []);
 
   return (
-    <Flex gap={'6px'}>
+    <Flex gap={'6px'} width={'auto'}>
       {options.map((option) => (
         <TeamSubjectButton
           isSelected={subject === option}

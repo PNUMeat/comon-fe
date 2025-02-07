@@ -60,7 +60,7 @@ export const useNanumFont = () => {
       if (isSuccess) {
         setIsNanumFFReady(true);
       }
-    }, 200);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [isNanumFFReady]);
