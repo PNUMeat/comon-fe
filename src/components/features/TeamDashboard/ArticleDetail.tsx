@@ -1,12 +1,12 @@
+import { viewStyle } from '@/utils/viewStyle';
+
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { PostBlurredViewer } from '@/components/features/Post/PostBlurredViewer.tsx';
 
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,6 @@ import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
-import { breakpoints } from '@/constants/breakpoints';
 import { alertAtom, confirmAtom } from '@/store/modal';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
@@ -25,7 +24,6 @@ interface ArticleDetailProps {
   teamId: number;
   refetchArticles: () => void;
   shouldBlur?: boolean;
-  setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
@@ -33,16 +31,12 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   teamId,
   refetchArticles,
   shouldBlur = true,
-  setIsModalOpen,
 }) => {
   const { result: article } = useRegroupImageAndArticle(data);
 
   // TODO: 여기서?
   const setConfirm = useSetAtom(confirmAtom);
   const setAlert = useSetAtom(alertAtom);
-
-  const width = useWindowWidth();
-  const isMobile = width <= breakpoints.mobile;
 
   const deleteArticle = () => {
     if (data?.articleId) {
@@ -51,11 +45,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           refetchArticles();
         })
         .catch(() =>
-          setAlert({
-            message: '게시글 삭제를 실패했어요',
-            isVisible: true,
-            onConfirm: () => {},
-          })
+          setAlert({ message: '게시글 삭제를 실패했어요', isVisible: true, onConfirm: () => {} }),
         );
     }
   };
@@ -71,12 +61,12 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   };
 
   return (
-    <Box width="100%" padding={isMobile ? '30px 20px' : '30px 40px'}>
+    <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
-        <ArticleFlex>
+        <Flex justify="space-between">
           <SText
             color="#333"
-            fontSize={isMobile ? '18px' : '24px'}
+            fontSize="24px"
             fontWeight={700}
             whiteSpace={'normal'}
             wordBreak={'break-word'}
@@ -114,7 +104,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
               </Flex>
             </Suspense>
           )}
-        </ArticleFlex>
+        </Flex>
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
           {data?.createdDate.slice(0, -3)}
@@ -138,22 +128,29 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        <PostBlurredViewer
-          key={data?.articleId ?? '-999'}
+        <ArticleViewer
           shouldBlur={shouldBlur}
-          article={article}
-          setIsModalOpen={setIsModalOpen}
+          dangerouslySetInnerHTML={{
+            __html: article,
+          }}
         />
       </Flex>
     </Box>
   );
 };
 
-const ArticleFlex = styled(Flex)`
-  justify-content: space-between;
-  width: 100%;
+const ArticleViewer = styled.div<{
+  shouldBlur: boolean;
+}>`
+  line-height: 1.5;
+  ${viewStyle}
 
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: calc(100% - 40px);
-  }
+  ${(props) =>
+    props.shouldBlur
+      ? `
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+  `
+      : ''}
 `;

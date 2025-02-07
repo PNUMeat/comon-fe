@@ -9,7 +9,7 @@ import { Label } from '@/components/commons/Label';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { HeightInString } from '@/components/types.ts';
+import { HeightInNumber } from '@/components/types.ts';
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -57,17 +57,7 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
       <Spacer h={34} />
       <List
         itemCount={teams.length}
-        h={
-          isPending
-            ? isMobile
-              ? '518px'
-              : '440px'
-            : teams.length === 0
-              ? '210px'
-              : isMobile
-                ? '518px'
-                : '440px'
-        }
+        h={isPending ? 440 : teams.length === 0 ? 210 : 440}
       >
         {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
@@ -118,8 +108,7 @@ const FlipCardItem = ({
   });
 
   return (
-    // <FlipCard onMouseLeave={() => setIsFlipped(false)}>
-    <FlipCard>
+    <FlipCard onMouseLeave={() => setIsFlipped(false)}>
       <FlipCardInner isFlipped={isFlipped}>
         {/* 앞면 */}
         <FlipCardFront
@@ -213,7 +202,7 @@ const FlipCardContent = ({
         >
           {team.teamName}
         </SText>
-        <Spacer h={isMobile ? 4 : 6} />
+        <Spacer h={isMobile ? 4 : 8} />
         <SText
           fontSize={isMobile ? '10px' : '16px'}
           color="#777"
@@ -234,12 +223,20 @@ const FlipCardContent = ({
             {team.topic}
           </SText>
         </Label>
-        <Spacer h={isMobile ? 12 : 20} />
+        <Spacer h={isMobile ? 16 : 20} />
         {isBack ? (
           <>
-            <Spacer h={4} />
-            <BackButtonLabel>활동 중인 팀을 편하게 둘러보세요</BackButtonLabel>
-            <Spacer h={6} />
+            <PasswordBlank />
+            {/*<PasswordInput*/}
+            {/*  type="password"*/}
+            {/*  placeholder="PASSWORD"*/}
+            {/*  disabled*/}
+            {/*  value={password}*/}
+            {/*  onChange={(e) => setPassword(e.target.value)}*/}
+            {/*  maxLength={4}*/}
+            {/*  // onClick={ignoreClick}*/}
+            {/*/>*/}
+            <Spacer h={14} />
             <Button
               backgroundColor={colors.buttonPurple}
               onClick={(e) => {
@@ -254,14 +251,20 @@ const FlipCardContent = ({
           <>
             <ProfileList profiles={profiles || []} size={isMobile ? 20 : 24} />
             <Spacer h={isMobile ? 12 : 14} />
-            <SText
-              color={colors.buttonPurple}
-              fontSize={isMobile ? '12px' : '16px'}
-              fontWeight={400}
-              fontFamily="Pretendard"
-            >
-              {team.memberCount} members
-            </SText>
+            <ButtonWrapper>
+              <Button
+                backgroundColor={colors.buttonPurple}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                cursor={'text'}
+              >
+                {team.memberCount} members
+              </Button>
+              {/* <Button backgroundColor={colors.buttonPink}>
+                {team.streakDays}일차 코몬
+              </Button> */}
+            </ButtonWrapper>
           </>
         )}
       </Flex>
@@ -269,9 +272,9 @@ const FlipCardContent = ({
   );
 };
 
-const List = styled.div<{ itemCount: number } & HeightInString>`
+const List = styled.div<{ itemCount: number } & HeightInNumber>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
-  height: ${({ h }) => (h ? h : 'auto')};
+  height: ${({ h }) => h}px;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 
@@ -281,23 +284,53 @@ const List = styled.div<{ itemCount: number } & HeightInString>`
   }
 `;
 
-const BackButtonLabel = styled.div`
-  width: 160px;
-  height: 24px;
+const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  font-family: 'Pretendard';
-  font-size: 12px;
-  color: #6c6a6a;
-  white-space: nowrap;
+  // justify-content: space-between;
+  // gap: 10px;
+`;
+
+const PasswordBlank = styled.div`
+  width: 160px;
+  height: 24px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 10px;
-    width: 100%;
+    width: 100px;
     height: 20px;
   }
 `;
+
+// const PasswordInput = styled.input`
+//   width: 160px;
+//   height: 24px;
+//   border: 1px solid ${colors.borderPurple};
+//   border-radius: 28px;
+//   outline: none;
+//   text-align: center;
+//   color: #ccc;
+//   background-color: transparent;
+//   opacity: 0;
+//   cursor: default;
+//
+//   u &::placeholder {
+//     color: #ccc;
+//     font-weight: 400;
+//   }
+//
+//   &:focus {
+//     border-color: ${colors.buttonPurple};
+//   }
+//
+//   @media (max-width: ${breakpoints.mobile}px) {
+//     width: 100px;
+//     height: 20px;
+//
+//     &::placeholder {
+//       font-size: 10px;
+//     }
+//   }
+// `;
 
 const FlipCard = styled.div`
   background-color: transparent;

@@ -67,17 +67,17 @@ const MyPageImage = styled.img`
 `;
 
 export const HeaderInfoModal: React.FC<{
-  isModalOpen: boolean;
   isLoggedIn: boolean;
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
-}> = ({ isModalOpen, isLoggedIn, setModalRef, onClickLogout }) => {
+}> = ({ isLoggedIn, setModalRef, onClickLogout }) => {
   const navigate = useNavigate();
   const { data } = useQuery({
     queryFn: getMemberInfo,
     queryKey: ['membersInfo'],
-    staleTime: 1000 * 60 * 60,
-    enabled: isModalOpen,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn,
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
@@ -114,7 +114,7 @@ export const HeaderInfoModal: React.FC<{
               fontSize={isMobile ? '8px' : '12px'}
               fontWeight={500}
             >
-              마이페이지
+              마이페이지 &nbsp;&nbsp;&gt;
             </SText>
           </Flex>
         </MyPageButton>

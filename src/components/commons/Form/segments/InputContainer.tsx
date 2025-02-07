@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const InputContainer = styled.div<{minWidth : string}>`
+export const InputContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 10px 19px;
@@ -10,7 +10,5 @@ export const InputContainer = styled.div<{minWidth : string}>`
   border-radius: 20px;
   border: 1px solid #cdcfff;
   background: #ffffff;
-  box-sizing: border-box;
-  min-width: ${(props) => props.minWidth};
   box-sizing: border-box;
 `;

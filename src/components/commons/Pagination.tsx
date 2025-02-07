@@ -11,7 +11,6 @@ interface IPaginationProps {
   onPageChange: (page: number) => void;
   currentPageProp: number;
   hideShadow?: boolean;
-  marginTop?: string;
 }
 
 export const Pagination = ({
@@ -19,7 +18,6 @@ export const Pagination = ({
   onPageChange,
   currentPageProp,
   hideShadow,
-  marginTop,
 }: IPaginationProps) => {
   const handlePageChange = (page: number) => {
     onPageChange(page);
@@ -39,7 +37,7 @@ export const Pagination = ({
 
   return (
     <Flex justify="center">
-      <PaginationContainer hideShadow={hideShadow} marginTop={marginTop}>
+      <PaginationContainer hideShadow={hideShadow}>
         <LeftArrow src={ArrowButton} onClick={handlePrev} />
         <Spacer width={12} h={0} />
         <PageList>
@@ -60,10 +58,7 @@ export const Pagination = ({
   );
 };
 
-const PaginationContainer = styled.div<{
-  hideShadow?: boolean;
-  marginTop?: string;
-}>`
+const PaginationContainer = styled.div<{ hideShadow?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,13 +70,10 @@ const PaginationContainer = styled.div<{
     props.hideShadow ? '' : '5px 7px 11.6px 0px rgba(63, 63, 77, 0.07)'};
   max-width: 270px;
   z-index: 999;
-  margin-top: ${(props) => props.marginTop || '0px'};
 
   @media (max-width: ${breakpoints.mobile}px) {
     max-width: 220px;
     height: 20px;
-    margin-top: ${({ marginTop }) =>
-      marginTop ? `calc(${marginTop} + 30px)` : '0px'};
   }
 `;
 

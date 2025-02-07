@@ -1,7 +1,6 @@
 // import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
-//import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -219,12 +218,4 @@ export const getTeamInfoAdmin = async (teamId: number) => {
   );
 
   return res.data.data;
-};
-
-export const deleteTeam = async (teamId: number) => {
-  const res = await apiInstance.delete<ServerResponse<null>>(
-    `/v1/teams/${teamId}`
-  );
-
-  return res.data;
 };
