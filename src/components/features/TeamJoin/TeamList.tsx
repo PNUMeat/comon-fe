@@ -60,12 +60,12 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
         h={
           isPending
             ? isMobile
-              ? '344px'
+              ? '518px'
               : '440px'
             : teams.length === 0
               ? '210px'
               : isMobile
-                ? '344px'
+                ? '518px'
                 : '440px'
         }
       >
