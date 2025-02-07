@@ -1,20 +1,18 @@
-import { isLoggedIn } from '@/utils/cookie.ts';
+import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
-import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { LazyImage } from '@/components/commons/LazyImage';
-import Modal from '@/components/commons/Modal/Modal';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Suspense, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { ITeamInfo, joinTeam } from '@/api/team';
+import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
@@ -24,50 +22,29 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
   isTeamManager: boolean;
   isMyTeam: boolean;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
   isMyTeam,
+  setIsModalOpen,
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
-  const queryClient = useQueryClient();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [password, setPassword] = useState('');
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
-
-  const handleJoinTeam = () => {
-    if (password.trim().length !== 4) {
-      alert('비밀번호 4자리를 입력해 주세요.');
-      return;
-    }
-
-    joinTeam(parseInt(teamId as string), password)
-      .then(() => {
-        queryClient.refetchQueries({ queryKey: ['membersInfo'] });
-        setIsModalOpen(false);
-        setPassword('');
-        window.location.reload();
-      })
-      .catch((err) => {
-        alert(err.message ?? '팀 가입 요청에 실패했습니다.');
-        console.error(err);
-      });
-  };
 
   return (
     <>
@@ -273,63 +250,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           </Flex>
         </Box>
 
-        <Modal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          height={isMobile ? 160 : 220}
-          overlayBackground="#00000066"
-        >
-          <Flex direction="column" justify="center" align="center" width={100}>
-            <SText
-              color="#333"
-              fontSize={isMobile ? '10px' : '12px'}
-              fontWeight={600}
-              cursor={'text'}
-            >
-              TEAM
-            </SText>
-            <Spacer h={4} />
-            <SText
-              fontSize={isMobile ? '16px' : '24px'}
-              color="#333"
-              fontWeight={700}
-              cursor={'text'}
-            >
-              {teamInfo.teamName}
-            </SText>
-            <Spacer h={4} />
-            <SText
-              fontSize={isMobile ? '10px' : '16px'}
-              color="#777"
-              fontWeight={400}
-              cursor={'text'}
-            >
-              since {teamInfo.createdAt}
-            </SText>
-            <Spacer h={isMobile ? 4 : 8} />
-            <Label>
-              <SText fontSize="10px" fontWeight={600}>
-                {teamInfo.topic}
-              </SText>
-            </Label>
-            <Spacer h={isMobile ? 12 : 20} />
-            <PasswordInput
-              type="password"
-              placeholder="PASSWORD"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Spacer h={isMobile ? 6 : 10} />
-            <Button
-              backgroundColor={colors.buttonPurple}
-              onClick={handleJoinTeam}
-              padding={isMobile ? '' : '7px 14px'}
-            >
-              팀 참가하기 →
-            </Button>
-          </Flex>
-        </Modal>
-
         <NewPostButton
           onClick={() => {
             if (isMyTeam) {
@@ -341,7 +261,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 },
               });
             } else {
-              if (!isLoggedIn()) {
+              if (!isLoggedIn() && !isDevMode()) {
                 sessionStorage.setItem('redirect', location.pathname);
                 navigate(PATH.LOGIN, {
                   state: {
@@ -433,33 +353,6 @@ const AnnouncementImage = styled.img`
     width: 12px;
     height: 12px;
     margin-right: 6px;
-  }
-`;
-
-const PasswordInput = styled.input`
-  width: 160px;
-  height: 28px;
-  padding: 4px 40px;
-  border-radius: 27px;
-  border: 1px solid ${colors.borderPurple};
-  box-sizing: border-box;
-  text-align: center;
-  color: #ccc;
-  font-weight: 400;
-
-  &:focus {
-    outline: none;
-    border: 1px solid ${colors.buttonPurple};
-  }
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 140px;
-    height: 20px;
-    font-size: 10px;
-
-    &::placeholder {
-      font-size: 10px;
-    }
   }
 `;
 

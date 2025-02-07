@@ -8,10 +8,11 @@ import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
+import { TeamJoinModal } from '@/components/features/TeamDashboard/TeamJoinModal.tsx';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
@@ -40,11 +41,7 @@ const TeamDashboardPage = () => {
   const [page, setPage] = useAtom(pageAtom);
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
-
-  const onClickCalendarDate = (newDate: string) => {
-    setSelectedDate(newDate);
-    setPage(0);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -69,6 +66,11 @@ const TeamDashboardPage = () => {
     totalPageCache = articlesData.page.totalPages;
   }
 
+  const onClickCalendarDate = (newDate: string) => {
+    setSelectedDate(newDate);
+    setPage(0);
+  };
+
   const handleShowTopicDetail = () => {
     setCurrentView('topic');
     setSelectedArticleId(null);
@@ -82,8 +84,6 @@ const TeamDashboardPage = () => {
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
-
-  // const teamInfo = teamInfoData?.myTeamResponse || ({} as ITeamInfo);
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -118,6 +118,7 @@ const TeamDashboardPage = () => {
           teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
           isTeamManager={isTeamManager}
           isMyTeam={isMyTeam}
+          setIsModalOpen={setIsModalOpen}
         />
         <CalendarSection>
           <CustomCalendar
@@ -155,11 +156,19 @@ const TeamDashboardPage = () => {
               shouldBlur={!isMyTeam}
               refetchArticles={refetch}
               teamId={Number(teamId)}
+              setIsModalOpen={setIsModalOpen}
             />
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
       </Grid>
+      {isModalOpen && (
+        <TeamJoinModal
+          teamId={teamId as string}
+          teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
     </Fragment>
   );
 };
