@@ -4,67 +4,104 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import noteIcon from '@/assets/TeamDashboard/note.png';
-import searchIcon from '@/assets/TeamDashboard/search.png';
 import check from '@/assets/TeamInfo/check.svg';
 import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 import MemberStatusDropdown from './MemberStatusDropdown';
-
-const data = [
-  { name: '나는진영', status: '방장', joinDate: '2025.01.13' },
-  { name: '코몬접수하러왔다', status: '일반 회원', joinDate: '2025.01.13' },
-  { name: '개나리꽃닉네임', status: '일반 회원', joinDate: '2025.01.19' },
-  { name: 'alpha', status: '일반 회원', joinDate: '2025.01.23' },
-];
+import { getTeamMembers } from '@/api/member';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { MemberExplainModal } from './segments/MemberExplainModal';
+import ManagerStatusDropdown from './ManagerStatusDropdown';
+import { getMemberInfo } from '@/api/user';
+import { AxiosError } from 'axios';
+import { ServerResponse } from '@/api/types';
 
 const MemberTableGrid = () => {
   const location = useLocation();
 
   const { teamId } = location.state;
-  console.log('??', teamId);
+  const { data: teamMembers } = useSuspenseQuery({
+    queryKey: ["team-members", teamId],
+    queryFn: () => getTeamMembers(teamId),
+  });
 
-  const [checkedItems, setCheckedItems] = useState<boolean[]>(
-    new Array(data.length).fill(false)
-  );
-  const [statuses, setStatuses] = useState<string[]>(
-    data.map((row) => row.status)
-  );
+  const { data: memberInfo } = useQuery({
+    queryKey: ["membersInfo"],
+    queryFn: getMemberInfo,
+    staleTime: 1000 * 60 * 60,
+    enabled: !!teamMembers,
+    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.code === 100
+      ) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
+
+  console.log("팀 멤버:", teamMembers);
+  console.log("내 정보:", memberInfo);
+
+
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [statuses, setStatuses] = useState<string[]>(Array(teamMembers.length).fill(""));
   const [isModifying, setIsModifying] = useState(false);
 
   const toggleCheck = (index: number) => {
-    setCheckedItems((prev) =>
-      prev.map((item, idx) => (idx === index ? !item : item))
-    );
+    setSelectedIndex(prev => (prev === index ? null : index));
   };
 
-  const handleStatusChange = (index: number, newStatus: string) => {
-    setStatuses((prev) =>
-      prev.map((status, idx) => (idx === index ? newStatus : status))
-    );
+  const handleStatusChange = (index: number, value: string) => {
+    setStatuses((prev) => {
+      const newStatuses = [...prev];
+      newStatuses[index] = value
+      return newStatuses;
+    });
   };
+  
+  
+
+  const sortedTeamMembers = [...teamMembers].sort((a, b) => {
+    if (a.isTeamManager && !b.isTeamManager) return -1;
+    if (!a.isTeamManager && b.isTeamManager) return 1;
+  
+    return new Date(a.registerDate).getTime() - new Date(b.registerDate).getTime();
+  });
+
+  console.log(sortedTeamMembers);
 
   useEffect(() => {
-    const hasCheckedItems = checkedItems.some((item) => item);
-    const hasModifiedStatuses = statuses.some(
-      (status, idx) => status !== data[idx].status
-    );
-
+    if (!teamMembers) return;
+  
+    const hasCheckedItems = selectedIndex !== null;
+    const hasModifiedStatuses = statuses.some(status => status !== "");
+  
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
-  }, [checkedItems, statuses]);
+  }, [selectedIndex, statuses, teamMembers]);
+  
+  
+  
 
-  const roleString = (role: string) => {
-    if (role === '방장') {
+  const roleString = (isTeamManager: boolean) => {
+    if (isTeamManager) {
       return (
         <StatusWrapper>
-          {role}
+          방장
           <LeaderIcon src={crown} />
         </StatusWrapper>
       );
     } else {
-      return <div>{role}</div>;
+      return <div>일반 회원</div>;
     }
+  };
+
+  const formatDate = (dateString: string): string => {
+    return dateString.replace(/-/g, ".");
   };
 
   return (
@@ -78,41 +115,44 @@ const MemberTableGrid = () => {
       </Header>
 
       <GridContainer>
-        {data.map((row, index) => (
+        {sortedTeamMembers.map((row, index) => (
           <React.Fragment key={index}>
             <RowCell>
               <Avatar>
-                <AvatarImage />
+                <AvatarImage src={row.imageUrl} />
                 <NicknameContainer>
-                  {row.name}
-                  <SearchIcon src={searchIcon} alt="search icon" />
+                  {row.memberName}
+                  <MemberExplainModal memberExplain={row.memberExplain} />
                 </NicknameContainer>
               </Avatar>
             </RowCell>
-            <RowCell>{roleString(row.status)}</RowCell>
-            <RowCell>{row.joinDate}</RowCell>
+            <RowCell>{roleString(row.isTeamManager)}</RowCell>
+            <RowCell>{formatDate(row.registerDate)}</RowCell>
             <RowCell>
-              {row.status !== '방장' && (
+              {row.isTeamManager ? (
+                <ManagerStatusDropdown
+                  onChange={(value) => handleStatusChange(index, value)}
+                /> ) : (
                 <MemberStatusDropdown
                   onChange={(value) => handleStatusChange(index, value)}
                 />
               )}
             </RowCell>
             <RowCell>
-              {row.status !== '방장' && (
-                <Checkbox
-                  checked={checkedItems[index]}
-                  check={check}
-                  onClick={() => {
-                    toggleCheck(index);
-                  }}
-                />
-              )}
+              <Checkbox
+                checked={selectedIndex === index}
+                check={check}
+                onClick={() => {
+                  toggleCheck(index);
+                }}
+              />
             </RowCell>
           </React.Fragment>
         ))}
       </GridContainer>
-      <SaveButton isModifying={isModifying}>적용하기</SaveButton>
+      <SaveButton isModifying={isModifying} disabled={!isModifying}>
+        적용하기
+      </SaveButton>
     </Table>
   );
 };
@@ -213,7 +253,6 @@ const AvatarImage = styled.img`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #ccc;
   min-width: 24px;
   min-height: 24px;
 `;
@@ -224,12 +263,7 @@ const NicknameContainer = styled.div`
   gap: 4px;
   font-size: 16px;
   font-weight: 600;
-`;
-
-const SearchIcon = styled.img`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  position: relative;
 `;
 
 const Checkbox = styled.div<{ checked: boolean; check: string }>`
@@ -304,17 +338,20 @@ const SaveButton = styled.button<{ isModifying: boolean }>`
   position: absolute;
   right: 0;
   bottom: -30px;
-  background-color: ${({ isModifying }) =>
-    isModifying ? '#6e74fa' : '#777777'};
-  disabled: ${({ isModifying }) => (isModifying ? 'false' : 'true')};
-  transition: background-color 0.3s;
+  background-color: ${({ isModifying }) => (isModifying ? '#6e74fa' : '#777777')};
   color: white;
   width: 90px;
   height: 30px;
   border-radius: 40px;
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: ${({ isModifying }) => (isModifying ? 'pointer' : 'not-allowed')};
+  transition: background-color 0.3s;
+
+  &:disabled {
+    background-color: #777777;
+    cursor: not-allowed;
+  }
 `;
 
 export default MemberModification;
