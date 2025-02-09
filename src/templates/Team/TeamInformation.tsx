@@ -4,7 +4,7 @@ import { SText } from '@/components/commons/SText';
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { deleteTeam, getTeamList, ITeamInfo, modifyTeam } from '@/api/team';
+import { deleteTeam, getTeamInfoAdmin, modifyTeam, TeamAdminResponse } from '@/api/team';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
@@ -94,14 +94,14 @@ const TeamSubjectButton = styled.button`
 `;
 
 interface InformationProps {
-  currentTeam: ITeamInfo;
+  currentTeam: TeamAdminResponse;
 }
 
 const Information: React.FC<InformationProps> = ({ currentTeam }) => (
   <InfoGrid>
     <InfoRow label="팀 이름" content={currentTeam.teamName} />
     <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
-    <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
+    <InfoRow label="팀 아이콘" content={currentTeam.teamIconUrl} />
     <InfoRow label="주제" content={currentTeam.topic} />
     <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
     <InfoRow label="입장 비밀번호" content={currentTeam.password} />
@@ -121,19 +121,17 @@ export const TeamInformation = () => {
   const [isDirty, setIsDirty] = useState(false);
   const { teamId } = useParams();
   const navigate = useNavigate();
-  const { data } = useSuspenseQuery({
-    queryKey: ['team-list', 0],
-    queryFn: () => getTeamList('recent', 0, 1),
-  });
-
+  
   console.log(teamName);
-
-
+  
+  
   
   const teamIdNum = teamId ? parseInt(teamId) : null;
-  const currentTeam = (data?.myTeams ?? []).find(
-    (team) => team.teamId === teamIdNum
-  );
+  const { data } = useSuspenseQuery({
+    queryKey: ['team-list', 0],
+    queryFn: () => getTeamInfoAdmin(teamIdNum as number),
+  });
+  const currentTeam = data;
   
   
   useEffect(() => {
@@ -314,3 +312,4 @@ const ModifyButton = styled.button`
     right: 40px;
   }
 `;
+

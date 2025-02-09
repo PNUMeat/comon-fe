@@ -12,10 +12,10 @@ import styled from '@emotion/styled';
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
-import { ITeamInfo } from '@/api/team';
+import { TeamAdminResponse } from '@/api/team';
 
 interface ModificationProps {
-  currentTeam: ITeamInfo;
+  currentTeam: TeamAdminResponse;
 }
 
 const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
@@ -42,7 +42,7 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
       </Row>
       <Row>
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
-        <ComonImageInput imageUrl={currentTeam.imageUrl} h={140} padding="0" />
+        <ComonImageInput imageUrl={currentTeam.teamIconUrl} h={140} padding="0" />
       </Row>
       <Row>
         <FormFieldLabel>주제</FormFieldLabel>
