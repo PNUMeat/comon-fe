@@ -106,7 +106,7 @@ const MemberTableGrid = () => {
         alert("강퇴하는데 실패했습니다.");
       })
       .finally(() => {
-        navigate(0);
+        // navigate(0);
       });
     }
   }
@@ -144,7 +144,7 @@ const MemberTableGrid = () => {
           alert("공동 방장으로 지정하는데 실패했습니다.");
         })
         .finally(() => {
-          navigate(0);
+          // navigate(0);
         });
       }
       }
@@ -159,7 +159,7 @@ const MemberTableGrid = () => {
           alert("일반 회원으로 변경하는데 실패했습니다.");
         })
         .finally(() => {
-          navigate(0);
+          // navigate(0);
         });
       }
       }

@@ -27,6 +27,7 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
         <ComonTextInput
           maxLength={10}
           placeholder={'팀 이름을 입력해주세요'}
+          value={currentTeam.teamName}
           minWidth="400px"
         />
       </Row>

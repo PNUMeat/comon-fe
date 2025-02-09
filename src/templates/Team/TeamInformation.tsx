@@ -104,7 +104,7 @@ const Information: React.FC<InformationProps> = ({ currentTeam }) => (
     <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
     <InfoRow label="주제" content={currentTeam.topic} />
     <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
-    <InfoRow label="입장 비밀번호" content={''} />
+    <InfoRow label="입장 비밀번호" content={currentTeam.password} />
   </InfoGrid>
 );
 
@@ -125,6 +125,8 @@ export const TeamInformation = () => {
     queryKey: ['team-list', 0],
     queryFn: () => getTeamList('recent', 0, 1),
   });
+
+  console.log(teamName);
 
 
   
