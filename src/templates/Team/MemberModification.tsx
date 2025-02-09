@@ -17,6 +17,7 @@ import { getMemberInfo } from '@/api/user';
 import { AxiosError } from 'axios';
 import MemberStatusDropdown from './MemberStatusDropdown';
 import { ServerResponse } from '@/api/types';
+import { PATH } from '@/routes/path';
 
 const MemberTableGrid = () => {
   const { teamId } = useParams();
@@ -122,13 +123,11 @@ const MemberTableGrid = () => {
         addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
         .then(() => {
           alert("방장으로 위임되었습니다.");
+          navigate(PATH.TEAM_DASHBOARD);
         })
         .catch(() => {
           alert("방장으로 위임하는데 실패했습니다.");
         })
-        .finally(() => {
-          navigate(0);
-        });
       }
       }
       if (status === "공동 방장으로 지정") {
