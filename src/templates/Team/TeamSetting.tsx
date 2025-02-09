@@ -10,22 +10,18 @@ type DashboardCategories = {
   path: string;
 };
 
+const categories: DashboardCategories[] = [
+  { label: '팀 관리', path: 'team' },
+  { label: '멤버 관리', path: 'members' },
+];
+
 const TeamSetting = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const categories: DashboardCategories[] = [
-    { label: '팀 관리', path: 'team' },
-    { label: '멤버 관리', path: 'members' },
-  ];
-
   const category = location.pathname.split('/')[2];
 
-  const teamId = location.state.teamId;
-
-  const handleNavigation = (path: string) => {
-    navigate(path, { state: { teamId } });
-  };
+  const teamId = location.state?.teamId;
 
   return (
     <DashboardGird>
@@ -34,14 +30,20 @@ const TeamSetting = () => {
           <Category
             key={c.path}
             isSelected={c.path === category}
-            onClick={() => handleNavigation(`/team-setting/${c.path}`)}
+            onClick={() =>
+              navigate(`/team-setting/${c.path}`, {
+                state: {
+                  teamId: teamId,
+                },
+              })
+            }
           >
             {c.label}
           </Category>
         ))}
       </DSidebar>
       <DContent>
-      <Outlet />
+        <Outlet />
         <Spacer h={312} />
       </DContent>
     </DashboardGird>
@@ -137,6 +139,5 @@ const Category = styled.div<{ isSelected?: boolean }>`
         : ''}
   }
 `;
-
 
 export default TeamSetting;
