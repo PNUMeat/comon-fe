@@ -100,7 +100,6 @@ export const TeamInformation = () => {
   });
 
   const { teamId } = location.state;
-  console.log('??', teamId);
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }

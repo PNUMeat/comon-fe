@@ -1,35 +1,35 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, Suspense, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { getTeamMembers } from '@/api/member';
+import { ServerResponse } from '@/api/types';
+import { getMemberInfo } from '@/api/user';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import check from '@/assets/TeamInfo/check.svg';
 import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
-
-import MemberStatusDropdown from './MemberStatusDropdown';
-import { getTeamMembers } from '@/api/member';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { MemberExplainModal } from './segments/MemberExplainModal';
-import ManagerStatusDropdown from './ManagerStatusDropdown';
-import { getMemberInfo } from '@/api/user';
 import { AxiosError } from 'axios';
-import { ServerResponse } from '@/api/types';
+
+import ManagerStatusDropdown from './ManagerStatusDropdown';
+import MemberStatusDropdown from './MemberStatusDropdown';
+import { MemberExplainModal } from './segments/MemberExplainModal';
 
 const MemberTableGrid = () => {
   const location = useLocation();
 
   const { teamId } = location.state;
-  console.log("팀 아이디:", teamId);
+  console.log('팀 아이디:', teamId);
   const { data: teamMembers } = useSuspenseQuery({
-    queryKey: ["team-members", 0],
+    queryKey: ['team-members', 0],
     queryFn: () => getTeamMembers(teamId),
   });
 
   const { data: memberInfo } = useQuery({
-    queryKey: ["membersInfo"],
+    queryKey: ['membersInfo'],
     queryFn: getMemberInfo,
     staleTime: 1000 * 60 * 60,
     enabled: !!teamMembers,
@@ -45,48 +45,46 @@ const MemberTableGrid = () => {
     },
   });
 
-  console.log("팀 멤버:", teamMembers);
-  console.log("내 정보:", memberInfo);
-
+  console.log('팀 멤버:', teamMembers);
+  console.log('내 정보:', memberInfo);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [statuses, setStatuses] = useState<string[]>(Array(teamMembers.length).fill(""));
+  const [statuses, setStatuses] = useState<string[]>(
+    Array(teamMembers.length).fill('')
+  );
   const [isModifying, setIsModifying] = useState(false);
 
   const toggleCheck = (index: number) => {
-    setSelectedIndex(prev => (prev === index ? null : index));
+    setSelectedIndex((prev) => (prev === index ? null : index));
   };
 
   const handleStatusChange = (index: number, value: string) => {
     setStatuses((prev) => {
       const newStatuses = [...prev];
-      newStatuses[index] = value
+      newStatuses[index] = value;
       return newStatuses;
     });
   };
-  
-  
 
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
     if (!a.isTeamManager && b.isTeamManager) return 1;
-  
-    return new Date(a.registerDate).getTime() - new Date(b.registerDate).getTime();
+
+    return (
+      new Date(a.registerDate).getTime() - new Date(b.registerDate).getTime()
+    );
   });
 
   console.log(sortedTeamMembers);
 
   useEffect(() => {
     if (!teamMembers) return;
-  
+
     const hasCheckedItems = selectedIndex !== null;
-    const hasModifiedStatuses = statuses.some(status => status !== "");
-  
+    const hasModifiedStatuses = statuses.some((status) => status !== '');
+
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
   }, [selectedIndex, statuses, teamMembers]);
-  
-  
-  
 
   const roleString = (isTeamManager: boolean) => {
     if (isTeamManager) {
@@ -102,7 +100,7 @@ const MemberTableGrid = () => {
   };
 
   const formatDate = (dateString: string): string => {
-    return dateString.replace(/-/g, ".");
+    return dateString.replace(/-/g, '.');
   };
 
   return (
@@ -133,7 +131,8 @@ const MemberTableGrid = () => {
               {row.isTeamManager ? (
                 <ManagerStatusDropdown
                   onChange={(value) => handleStatusChange(index, value)}
-                /> ) : (
+                />
+              ) : (
                 <MemberStatusDropdown
                   onChange={(value) => handleStatusChange(index, value)}
                 />
@@ -171,7 +170,9 @@ const MemberModification = () => {
           <img src={noteIcon} alt="note icon" />
           멤버 관리
         </ModeButton>
-        <MemberTableGrid />
+        <Suspense fallback={<div>teamId??</div>}>
+          <MemberTableGrid />
+        </Suspense>
       </MemberModGrid>
     </Fragment>
   );
@@ -339,7 +340,8 @@ const SaveButton = styled.button<{ isModifying: boolean }>`
   position: absolute;
   right: 0;
   bottom: -30px;
-  background-color: ${({ isModifying }) => (isModifying ? '#6e74fa' : '#777777')};
+  background-color: ${({ isModifying }) =>
+    isModifying ? '#6e74fa' : '#777777'};
   color: white;
   width: 90px;
   height: 30px;
