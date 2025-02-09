@@ -4,34 +4,21 @@ import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Fragment, Suspense } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
 
-import { getTeamList } from '@/api/team.ts';
 import { breakpoints } from '@/constants/breakpoints';
-import { PATH } from '@/routes/path.tsx';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
+import { ITeamInfo } from '@/api/team';
 
-//import { TeamFormContext } from './TeamFormContext';
+interface ModificationProps {
+  currentTeam: ITeamInfo;
+}
 
-const SuspenseTeamForm = () => {
-  const { teamId } = useParams();
-  const teamIdNum = parseInt(teamId!);
-  const { data } = useSuspenseQuery({
-    queryKey: ['team-list', 0],
-    queryFn: () => getTeamList('recent', 0, 1),
-  });
-  if (!teamId) {
-    return <Navigate to={PATH.TEAMS} />;
-  }
-  const modiee = (data?.myTeams ?? []).find(
-    (team) => team.teamId === teamIdNum
-  );
+const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
 
   return (
     <TeamModificationContainer>
@@ -40,7 +27,6 @@ const SuspenseTeamForm = () => {
         <ComonTextInput
           maxLength={10}
           placeholder={'팀 이름을 입력해주세요'}
-          value={modiee?.teamName}
           minWidth="400px"
         />
       </Row>
@@ -49,21 +35,21 @@ const SuspenseTeamForm = () => {
         <ComonTextarea
           maxLength={50}
           placeholder={'우리 팀에 대해 설명해주세요'}
-          value={modiee?.teamExplain}
+          value={currentTeam.teamExplain}
           minWidth="400px"
         />
       </Row>
       <Row>
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
-        <ComonImageInput imageUrl={modiee?.imageUrl} h={140} padding="0" />
+        <ComonImageInput imageUrl={currentTeam.imageUrl} h={140} padding="0" />
       </Row>
       <Row>
         <FormFieldLabel>주제</FormFieldLabel>
-        <TeamSubjectRadio defaultValue={modiee?.topic} />
+        <TeamSubjectRadio defaultValue={currentTeam.topic} />
       </Row>
       <Row>
         <FormFieldLabel>인원 제한</FormFieldLabel>
-        <TeamMaxPeopleInput defaultValue={modiee?.memberLimit} />
+        <TeamMaxPeopleInput defaultValue={currentTeam.memberLimit} />
       </Row>
       <Row>
         <FormFieldLabel>입장 비밀번호</FormFieldLabel>
@@ -75,14 +61,14 @@ const SuspenseTeamForm = () => {
   //return <TeamForm h={977} team={modiee} />;
 };
 
-const TeamModification = () => {
+const TeamModification: React.FC<ModificationProps> = ({ currentTeam }) => {
   return (
-    <Fragment>
-      <Suspense fallback={<TeamSkeleton h={977} />}>
-        <SuspenseTeamForm />
-      </Suspense>
-      <Spacer h={312} />
-    </Fragment>
+      <Fragment>
+        <Suspense fallback={<TeamSkeleton h={977} />}>
+          <SuspenseTeamForm currentTeam={currentTeam}/>
+        </Suspense>
+        <Spacer h={312} />
+      </Fragment>
   );
 };
 
