@@ -45,6 +45,7 @@ export interface ITeamInfo extends ITeamCommon {
   teamAnnouncement: string;
   createdAt: string;
 
+  password: string;
   members: ITeamMember[];
   // TODO: 서버에서 실제로 주는 데이터 속성
   memberLimit: number;
