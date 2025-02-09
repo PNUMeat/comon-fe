@@ -95,11 +95,6 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
             )
           ) : null;
         }}
-        // onClickDay={(value: Date) => {
-        //   const formattedDate = formatDate(value);
-        //   onDateSelect(formattedDate);
-        // }}
-        // onClickMonth={(date) => onChangeDate(date)}
         defaultValue={new Date(selectedDate)}
         onChange={(date) => {
           if (date !== null && date instanceof Date) {
