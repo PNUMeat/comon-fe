@@ -1,27 +1,27 @@
+import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
+import { ComonTextInput } from '@/components/commons/Form/ComonTextInput';
+import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Fragment, Suspense } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { getTeamList } from '@/api/team.ts';
+import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path.tsx';
 import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
+import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ComonImageInput } from '@/components/commons/Form/ComonImageInput';
-import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
-import { ComonTextInput } from '@/components/commons/Form/ComonTextInput';
+
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
-import { breakpoints } from '@/constants/breakpoints';
-import styled from '@emotion/styled';
 
 //import { TeamFormContext } from './TeamFormContext';
 
 const SuspenseTeamForm = () => {
-  const location = useLocation();
-  const { teamId } = location.state;
-  const teamIdNum = parseInt(teamId);
+  const { teamId } = useParams();
+  const teamIdNum = parseInt(teamId!);
   const { data } = useSuspenseQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamList('recent', 0, 1),
@@ -41,8 +41,8 @@ const SuspenseTeamForm = () => {
           maxLength={10}
           placeholder={'팀 이름을 입력해주세요'}
           value={modiee?.teamName}
-          minWidth='400px'
-          />
+          minWidth="400px"
+        />
       </Row>
       <Row>
         <FormFieldLabel>팀 설명</FormFieldLabel>
@@ -50,16 +50,12 @@ const SuspenseTeamForm = () => {
           maxLength={50}
           placeholder={'우리 팀에 대해 설명해주세요'}
           value={modiee?.teamExplain}
-          minWidth='400px'
-          />
+          minWidth="400px"
+        />
       </Row>
       <Row>
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
-        <ComonImageInput 
-        imageUrl={modiee?.imageUrl}
-        h={140}
-        padding='0'
-        />
+        <ComonImageInput imageUrl={modiee?.imageUrl} h={140} padding="0" />
       </Row>
       <Row>
         <FormFieldLabel>주제</FormFieldLabel>
@@ -82,9 +78,9 @@ const SuspenseTeamForm = () => {
 const TeamModification = () => {
   return (
     <Fragment>
-        <Suspense fallback={<TeamSkeleton h={977} />}>
-          <SuspenseTeamForm />
-        </Suspense>
+      <Suspense fallback={<TeamSkeleton h={977} />}>
+        <SuspenseTeamForm />
+      </Suspense>
       <Spacer h={312} />
     </Fragment>
   );
