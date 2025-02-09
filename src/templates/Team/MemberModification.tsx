@@ -22,14 +22,9 @@ const MemberTableGrid = () => {
   const location = useLocation();
 
   const { teamId } = location.state;
-<<<<<<< HEAD
-  const { data: teamMembers } = useSuspenseQuery({
-    queryKey: ["team-members", teamId],
-=======
   console.log("팀 아이디:", teamId);
   const { data: teamMembers } = useSuspenseQuery({
     queryKey: ["team-members", 0],
->>>>>>> test
     queryFn: () => getTeamMembers(teamId),
   });
 
