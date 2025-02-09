@@ -1,7 +1,7 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 import React, { Fragment, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import check from '@/assets/TeamInfo/check.svg';
@@ -9,27 +9,28 @@ import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
-import MemberStatusDropdown from './MemberStatusDropdown';
 import { addTeamManager, delegationManager, demotionManager, getTeamMembers, removeTeamMember } from '@/api/member';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { MemberExplainModal } from './segments/MemberExplainModal';
 import ManagerStatusDropdown from './ManagerStatusDropdown';
 import { getMemberInfo } from '@/api/user';
 import { AxiosError } from 'axios';
+import MemberStatusDropdown from './MemberStatusDropdown';
 import { ServerResponse } from '@/api/types';
 
 const MemberTableGrid = () => {
-  const location = useLocation();
+  const { teamId } = useParams();
   const navigate = useNavigate();
-
-  const { teamId } = location.state;
-  const { data: teamMembers } = useSuspenseQuery({
-    queryKey: ["team-members", teamId],
-    queryFn: () => getTeamMembers(teamId),
+  if (!teamId) return null;
+  
+  const { data: teamMembers = [] } = useQuery({
+    queryKey: ['team-members', 0],
+    queryFn: () => getTeamMembers(teamId!),
+    enabled: !!teamId,
   });
 
   const { data: memberInfo } = useQuery({
-    queryKey: ["membersInfo"],
+    queryKey: ['membersInfo'],
     queryFn: getMemberInfo,
     staleTime: 1000 * 60 * 60,
     enabled: !!teamMembers,
@@ -45,13 +46,14 @@ const MemberTableGrid = () => {
     },
   });
 
-
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [statuses, setStatuses] = useState<string[]>(Array(teamMembers.length).fill(""));
+  const [statuses, setStatuses] = useState<string[]>(
+    Array(teamMembers.length).fill('')
+  );
   const [isModifying, setIsModifying] = useState(false);
 
   const toggleCheck = (index: number) => {
-    setSelectedIndex(prev => (prev === index ? null : index));
+    setSelectedIndex((prev) => (prev === index ? null : index));
   };
 
   const handleStatusChange = (index: number, value: string) => {
@@ -65,18 +67,20 @@ const MemberTableGrid = () => {
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
     if (!a.isTeamManager && b.isTeamManager) return 1;
-  
-    return new Date(a.registerDate).getTime() - new Date(b.registerDate).getTime();
+
+    return (
+      new Date(a.registerDate).getTime() - new Date(b.registerDate).getTime()
+    );
   });
 
   console.log(sortedTeamMembers);
 
   useEffect(() => {
     if (!teamMembers) return;
-  
+
     const hasCheckedItems = selectedIndex !== null;
-    const hasModifiedStatuses = statuses.some(status => status !== "");
-  
+    const hasModifiedStatuses = statuses.some((status) => status !== '');
+
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
   }, [selectedIndex, statuses, teamMembers]);
 
@@ -180,7 +184,7 @@ const MemberTableGrid = () => {
   };
 
   const formatDate = (dateString: string): string => {
-    return dateString.replace(/-/g, ".");
+    return dateString.replace(/-/g, '.');
   };
 
   return (
@@ -424,7 +428,8 @@ const SaveButton = styled.button<{ isModifying: boolean }>`
   position: absolute;
   right: 0;
   bottom: -30px;
-  background-color: ${({ isModifying }) => (isModifying ? '#6e74fa' : '#777777')};
+  background-color: ${({ isModifying }) =>
+    isModifying ? '#6e74fa' : '#777777'};
   color: white;
   width: 90px;
   height: 30px;
