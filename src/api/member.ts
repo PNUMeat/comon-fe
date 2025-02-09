@@ -3,7 +3,7 @@ import apiInstance from '@/api/apiInstance';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
 //import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
-import { teamMemberMock } from '@/api/mocks';
+// import { teamMemberMock } from '@/api/mocks';
 
 interface IMemberCommon {
   uuid: string;
@@ -27,9 +27,9 @@ export const getTeamMembers = async ({
   teamId,
 }: IGetMemberRequest): Promise<IMemberCommon[]> => {
 
-  if (isDevMode()) {
-    return teamMemberMock.data;
-  }
+  // if (isDevMode()) {
+  //   return teamMemberMock.data;
+  // }
   const res = await apiInstance.get<ServerResponse<IMemberCommon[]>>(
     `v1/teams/${teamId}/members`
   );
@@ -51,7 +51,7 @@ export const removeTeamMember = async ({
   });
 }
 
-export const addTeamLeader = async ({
+export const addTeamManager = async ({
   teamId,
   memberInfo,
 }: IPostMemberRequest): Promise<void> => {
@@ -59,4 +59,24 @@ export const addTeamLeader = async ({
     return;
   }
   await apiInstance.post(`v1/teams/${teamId}/add/team-leader`, memberInfo);
+}
+
+export const demotionManager = async ({
+  teamId,
+  memberInfo,
+}: IPostMemberRequest): Promise<void> => {
+  if (isDevMode()) {
+    return;
+  }
+  await apiInstance.post(`v1/teams/${teamId}/team-manager/demotion`, memberInfo);
+}
+
+export const delegationManager = async ({
+  teamId,
+  memberInfo,
+}: IPostMemberRequest): Promise<void> => {
+  if (isDevMode()) {
+    return;
+  }
+  await apiInstance.post(`v1/teams/${teamId}/team-manager/delegation`, memberInfo);
 }
