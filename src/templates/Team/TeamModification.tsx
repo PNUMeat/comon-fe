@@ -54,7 +54,7 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
       </Row>
       <Row>
         <FormFieldLabel>입장 비밀번호</FormFieldLabel>
-        <TeamPasswordInput />
+        <TeamPasswordInput defaultValue={currentTeam.password} />
       </Row>
     </TeamModificationContainer>
   );
