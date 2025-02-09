@@ -861,7 +861,7 @@ export const teamMemberMock = {
   data: [
     {
       uuid: "048f6e88-d6ef-4112-bac2-1242fff3f584",
-      memberName: "껄낄깔꼴",
+      memberName: "하내안",
       memberExplain: "껄껄껄껄",
       imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/bc29d0d7-134b-4a71-bcdb-023be71422b7",
       registerDate: "2025-02-02",

@@ -1,7 +1,7 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 import React, { Fragment, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import check from '@/assets/TeamInfo/check.svg';
@@ -10,7 +10,7 @@ import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 import MemberStatusDropdown from './MemberStatusDropdown';
-import { getTeamMembers } from '@/api/member';
+import { addTeamManager, delegationManager, demotionManager, getTeamMembers, removeTeamMember } from '@/api/member';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { MemberExplainModal } from './segments/MemberExplainModal';
 import ManagerStatusDropdown from './ManagerStatusDropdown';
@@ -20,9 +20,9 @@ import { ServerResponse } from '@/api/types';
 
 const MemberTableGrid = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { teamId } = location.state;
-  console.log("팀 아이디:", teamId);
   const { data: teamMembers } = useSuspenseQuery({
     queryKey: ["team-members", teamId],
     queryFn: () => getTeamMembers(teamId),
@@ -45,9 +45,6 @@ const MemberTableGrid = () => {
     },
   });
 
-  console.log("팀 멤버:", teamMembers);
-  console.log("내 정보:", memberInfo);
-
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [statuses, setStatuses] = useState<string[]>(Array(teamMembers.length).fill(""));
@@ -59,13 +56,11 @@ const MemberTableGrid = () => {
 
   const handleStatusChange = (index: number, value: string) => {
     setStatuses((prev) => {
-      const newStatuses = [...prev];
-      newStatuses[index] = value
+      const newStatuses = Array(prev.length).fill("");
+      newStatuses[index] = value;
       return newStatuses;
     });
   };
-  
-  
 
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
@@ -84,6 +79,89 @@ const MemberTableGrid = () => {
   
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
   }, [selectedIndex, statuses, teamMembers]);
+
+  
+  const clickSaveButton = () => {
+    const selectedStatuses = statuses
+      .map((status, index) => (status !== "" ? { index, status } : null))
+      .filter((item): item is { index: number; status: string } => item !== null);
+
+    if (selectedIndex && selectedStatuses[0]?.index) {
+      alert("강퇴와 상태 변경을 동시에 수행할 수 없습니다.");
+      return;
+    }
+    if (selectedIndex !== null) {
+      const uuid = sortedTeamMembers[selectedIndex].uuid;
+      if (confirm("해당 팀원을 강퇴하시겠어요?") ) {
+      removeTeamMember({ teamId, memberInfo: uuid })
+      .then(() => {
+        alert("강퇴되었습니다.");
+      })
+      .catch(() => {
+        alert("강퇴하는데 실패했습니다.");
+      })
+      .finally(() => {
+        navigate(0);
+      });
+    }
+  }
+
+    const managerCount = sortedTeamMembers.filter((member) => member.isTeamManager).length;
+
+    selectedStatuses.forEach(({ index, status }) => {
+      if (status === "방장으로 위임") {
+        if (managerCount === 1) {
+          alert("방장은 최소 1명 이상이어야 합니다.");
+          return;
+        }
+        if (confirm("방장을 위임하시겠어요?") ) {
+        addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+        .then(() => {
+          alert("방장으로 위임되었습니다.");
+        })
+        .catch(() => {
+          alert("방장으로 위임하는데 실패했습니다.");
+        })
+        .finally(() => {
+          navigate(0);
+        });
+      }
+      }
+      if (status === "공동 방장으로 지정") {
+        if (managerCount >= 3) {
+          alert("방장은 최대 3명까지만 지정할 수 있습니다.");
+          return;
+        }
+        if (confirm("공동 방장으로 지정하시겠어요?") ) {
+        delegationManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+        .then(() => {
+          alert("공동 방장으로 지정되었습니다.");
+        })
+        .catch(() => {
+          alert("공동 방장으로 지정하는데 실패했습니다.");
+        })
+        .finally(() => {
+          navigate(0);
+        });
+      }
+      }
+      if (status === "일반 회원으로 변경") {
+
+        if (confirm("일반 회원으로 변경하시겠어요?")) {
+        demotionManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+        .then(() => {
+          alert("일반 회원으로 변경되었습니다.");
+        })
+        .catch(() => {
+          alert("일반 회원으로 변경하는데 실패했습니다.");
+        })
+        .finally(() => {
+          navigate(0);
+        });
+      }
+      }
+    });
+};
   
   
   
@@ -130,28 +208,35 @@ const MemberTableGrid = () => {
             <RowCell>{roleString(row.isTeamManager)}</RowCell>
             <RowCell>{formatDate(row.registerDate)}</RowCell>
             <RowCell>
-              {row.isTeamManager ? (
+            {row.memberName !== memberInfo?.memberName && (
+              row.isTeamManager ? (
                 <ManagerStatusDropdown
-                  onChange={(value) => handleStatusChange(index, value)}
-                /> ) : (
-                <MemberStatusDropdown
+                  selected={statuses[index]}
                   onChange={(value) => handleStatusChange(index, value)}
                 />
-              )}
+              ) : (
+                <MemberStatusDropdown
+                  selected={statuses[index]}
+                  onChange={(value) => handleStatusChange(index, value)}
+                />
+              )
+            )}
             </RowCell>
             <RowCell>
-              <Checkbox
-                checked={selectedIndex === index}
-                check={check}
-                onClick={() => {
-                  toggleCheck(index);
-                }}
-              />
+              {row.memberName !== memberInfo?.memberName && (
+                <Checkbox
+                  checked={selectedIndex === index}
+                  check={check}
+                  onClick={() => {
+                    toggleCheck(index);
+                  }}
+                />
+              )}
             </RowCell>
           </React.Fragment>
         ))}
       </GridContainer>
-      <SaveButton isModifying={isModifying} disabled={!isModifying}>
+      <SaveButton isModifying={isModifying} disabled={!isModifying} onClick={clickSaveButton}>
         적용하기
       </SaveButton>
     </Table>

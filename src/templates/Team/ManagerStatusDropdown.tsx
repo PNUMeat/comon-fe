@@ -3,17 +3,16 @@ import styled from "@emotion/styled";
 import downArrow from "@/assets/TeamInfo/down_arrow.svg";
 
 interface ManagerStatusDropdownProps {
+  selected: string;
   onChange: (value: string) => void;
 }
 
-const ManagerStatusDropdown = ({ onChange }: ManagerStatusDropdownProps) => {
+const ManagerStatusDropdown = ({ selected, onChange }: ManagerStatusDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const handleSelect = (value: string) => {
     onChange(value);
-    setSelected(value);
     setIsOpen(false);
   };
 
