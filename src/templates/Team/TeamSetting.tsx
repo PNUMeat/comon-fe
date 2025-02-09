@@ -1,6 +1,6 @@
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
@@ -21,7 +21,7 @@ const TeamSetting = () => {
 
   const category = location.pathname.split('/')[2];
 
-  const teamId = location.state.teamId;
+  const { teamId } = useParams();
 
   const handleNavigation = (path: string) => {
     navigate(path, { state: { teamId } });
@@ -34,14 +34,16 @@ const TeamSetting = () => {
           <Category
             key={c.path}
             isSelected={c.path === category}
-            onClick={() => handleNavigation(`/team-setting/${c.path}`)}
+            onClick={() =>
+              handleNavigation(`/team-setting/${c.path}/${teamId}`)
+            }
           >
             {c.label}
           </Category>
         ))}
       </DSidebar>
       <DContent>
-      <Outlet />
+        <Outlet />
         <Spacer h={312} />
       </DContent>
     </DashboardGird>
@@ -137,6 +139,5 @@ const Category = styled.div<{ isSelected?: boolean }>`
         : ''}
   }
 `;
-
 
 export default TeamSetting;

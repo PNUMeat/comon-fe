@@ -131,11 +131,11 @@ export const router = createBrowserRouter(
           ),
           children: [
             {
-              path: `${PATH.TEAM_SETTING}/team`,
+              path: `${PATH.TEAM_SETTING}/team/:teamId`,
               element: <TeamInformation />,
             },
             {
-              path: `${PATH.TEAM_SETTING}/members`,
+              path: `${PATH.TEAM_SETTING}/members/:teamId`,
               element: <MemberModification />,
             },
           ],
