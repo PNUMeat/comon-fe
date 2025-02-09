@@ -2,7 +2,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 
 import { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { deleteTeam, getTeamList } from '@/api/team';
 import noteIcon from '@/assets/TeamDashboard/note.png';
@@ -93,14 +93,12 @@ const TeamSubjectButton = styled.button`
 
 export const TeamInformation = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const location = useLocation();
+  const { teamId } = useParams();
   const { data } = useSuspenseQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamList('recent', 0, 1),
   });
 
-  const { teamId } = location.state;
-  console.log('??', teamId);
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }

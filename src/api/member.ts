@@ -1,9 +1,10 @@
 import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
+import { teamMemberMock } from '@/api/mocks';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
 //import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
-import { teamMemberMock } from '@/api/mocks';
 
 interface IMemberCommon {
   uuid: string;
@@ -14,19 +15,14 @@ interface IMemberCommon {
   isTeamManager: boolean;
 }
 
-interface IGetMemberRequest {
-  teamId: number;
-}
-
 interface IPostMemberRequest {
   teamId: number;
   memberInfo: string;
 }
 
-export const getTeamMembers = async ({
-  teamId,
-}: IGetMemberRequest): Promise<IMemberCommon[]> => {
-
+export const getTeamMembers = async (
+  teamId: string
+): Promise<IMemberCommon[]> => {
   if (isDevMode()) {
     return teamMemberMock.data;
   }
@@ -49,7 +45,7 @@ export const removeTeamMember = async ({
       'Content-Type': 'application/json',
     },
   });
-}
+};
 
 export const addTeamLeader = async ({
   teamId,
@@ -59,4 +55,4 @@ export const addTeamLeader = async ({
     return;
   }
   await apiInstance.post(`v1/teams/${teamId}/add/team-leader`, memberInfo);
-}
+};
