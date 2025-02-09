@@ -175,8 +175,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                   </Link>
                   <Spacer h={2} />
                   <Link
-                    to={`${PATH.TEAM_SETTING}/team`}
-                    state={{ teamId: teamId }}
+                    to={`${PATH.TEAM_SETTING}/team/${teamId}`}
                     style={{ textDecoration: 'none' }}
                   >
                     <Flex

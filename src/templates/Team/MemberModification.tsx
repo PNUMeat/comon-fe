@@ -1,7 +1,7 @@
 import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
-import React, { Fragment, Suspense, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { getTeamMembers } from '@/api/member';
 import { ServerResponse } from '@/api/types';
@@ -11,7 +11,7 @@ import check from '@/assets/TeamInfo/check.svg';
 import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 import ManagerStatusDropdown from './ManagerStatusDropdown';
@@ -19,13 +19,12 @@ import MemberStatusDropdown from './MemberStatusDropdown';
 import { MemberExplainModal } from './segments/MemberExplainModal';
 
 const MemberTableGrid = () => {
-  const location = useLocation();
+  const { teamId } = useParams();
 
-  const { teamId } = location.state;
-  console.log('팀 아이디:', teamId);
-  const { data: teamMembers } = useSuspenseQuery({
+  const { data: teamMembers = [] } = useQuery({
     queryKey: ['team-members', 0],
-    queryFn: () => getTeamMembers(teamId),
+    queryFn: () => getTeamMembers(teamId!),
+    enabled: !!teamId,
   });
 
   const { data: memberInfo } = useQuery({
@@ -65,6 +64,8 @@ const MemberTableGrid = () => {
       return newStatuses;
     });
   };
+  
+  
 
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
@@ -170,9 +171,7 @@ const MemberModification = () => {
           <img src={noteIcon} alt="note icon" />
           멤버 관리
         </ModeButton>
-        <Suspense fallback={<div>teamId??</div>}>
-          <MemberTableGrid />
-        </Suspense>
+        <MemberTableGrid />
       </MemberModGrid>
     </Fragment>
   );

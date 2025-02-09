@@ -1,6 +1,6 @@
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
@@ -21,7 +21,11 @@ const TeamSetting = () => {
 
   const category = location.pathname.split('/')[2];
 
-  const teamId = location.state?.teamId;
+  const { teamId } = useParams();
+
+  const handleNavigation = (path: string) => {
+    navigate(path, { state: { teamId } });
+  };
 
   return (
     <DashboardGird>
@@ -31,11 +35,7 @@ const TeamSetting = () => {
             key={c.path}
             isSelected={c.path === category}
             onClick={() =>
-              navigate(`/team-setting/${c.path}`, {
-                state: {
-                  teamId: teamId,
-                },
-              })
+              handleNavigation(`/team-setting/${c.path}/${teamId}`)
             }
           >
             {c.label}
