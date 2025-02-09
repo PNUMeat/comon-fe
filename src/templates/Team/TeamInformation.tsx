@@ -122,7 +122,7 @@ export const TeamInformation = () => {
         <InfoRow label="주제" content={currentTeam.topic} />
         <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
         {/* 임시 데이터 넣어둠 */}
-        <InfoRow label="입장 비밀번호" content={'1234'} />
+        <InfoRow label="입장 비밀번호" content={''} />
       </InfoGrid>
     );
   };

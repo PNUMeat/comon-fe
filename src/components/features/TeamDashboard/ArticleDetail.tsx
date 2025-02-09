@@ -1,4 +1,5 @@
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
@@ -14,17 +15,17 @@ import { IArticle } from '@/api/dashboard';
 import { deletePost } from '@/api/postings';
 import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
 import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
-import { alertAtom, confirmAtom } from '@/store/modal';
-import { useSetAtom } from 'jotai';
 import { breakpoints } from '@/constants/breakpoints';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
-import styled from "@emotion/styled";
+import { alertAtom, confirmAtom } from '@/store/modal';
+import styled from '@emotion/styled';
+import { useSetAtom } from 'jotai';
 
 interface ArticleDetailProps {
   data: IArticle;
   teamId: number;
   refetchArticles: () => void;
   shouldBlur?: boolean;
+  setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
@@ -32,6 +33,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   teamId,
   refetchArticles,
   shouldBlur = true,
+  setIsModalOpen,
 }) => {
   const { result: article } = useRegroupImageAndArticle(data);
 
@@ -69,7 +71,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   };
 
   return (
-    <Box width="100%" padding={isMobile ? "30px 20px" : "30px 40px"}>
+    <Box width="100%" padding={isMobile ? '30px 20px' : '30px 40px'}>
       <Flex direction="column" justify="center" align="flex-start">
         <ArticleFlex>
           <SText
@@ -136,29 +138,18 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           </SText>
         </Flex>
         <Spacer h={36} />
-        <PostBlurredViewer shouldBlur={shouldBlur} article={article} />
-        {/*<ArticleBlurWrap>*/}
-        {/*  <ArticleViewer*/}
-        {/*    shouldBlur={shouldBlur}*/}
-        {/*    dangerouslySetInnerHTML={{*/}
-        {/*      __html: article,*/}
-        {/*    }}*/}
-        {/*  />*/}
-        {/*  {shouldBlur && (*/}
-        {/*    <OverlayText>*/}
-        {/*      팀에 참가하고*/}
-        {/*      <br />*/}
-        {/*      함께 코테 풀이를 공유하세요!*/}
-        {/*    </OverlayText>*/}
-        {/*  )}*/}
-        {/*</ArticleBlurWrap>*/}
+        <PostBlurredViewer
+          key={data?.articleId ?? '-999'}
+          shouldBlur={shouldBlur}
+          article={article}
+          setIsModalOpen={setIsModalOpen}
+        />
       </Flex>
     </Box>
   );
 };
 
 const ArticleFlex = styled(Flex)`
-
   justify-content: space-between;
   width: 100%;
 

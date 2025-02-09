@@ -1,6 +1,6 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -15,6 +15,7 @@ interface ICustomCalendarProps {
   tags: ICalendarTag[];
   onDateSelect: (date: string) => void;
   selectedDate: string;
+  isPending: boolean;
 }
 
 const formatDate = (date: Date): string =>
@@ -47,10 +48,23 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   tags,
   onDateSelect,
   selectedDate,
+  isPending = false,
 }) => {
   const [activeStartDate, setActiveStartDate] = useState(
     new Date(selectedDate)
   );
+  const [showPending, setShowPending] = useState(false);
+
+  useEffect(() => {
+    if (isPending) {
+      setShowPending(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShowPending(false);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isPending]);
 
   const onChangeDate = (date: Date) => {
     const formattedDate = formatDate(date);
@@ -74,6 +88,8 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
       {/* 오늘 버튼 */}
       <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
 
+      {showPending && <PendingState>정보를 가져오는 중…</PendingState>}
+
       <StyledCalendar
         calendarType="gregory"
         formatDay={(_locale, date) => date.getDate().toString()}
@@ -89,17 +105,21 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
             )
           ) : null;
         }}
-        // onClickDay={(value: Date) => onChangeDate(value)}
-        // onClickMonth={(date) => onChangeDate(date)}
-        onActiveStartDateChange={({ activeStartDate }) => {
-          // if (view === 'month') {
-          //   const formattedDate = formatDate(activeStartDate as Date);
-          //   onDateSelect(formattedDate);
-          // }
-          onChangeDate(activeStartDate ?? new Date());
-          // setActiveStartDate(activeStartDate || new Date());
+        onClickDay={(value: Date) => {
+          const formattedDate = formatDate(value);
+          onDateSelect(formattedDate);
         }}
-        value={new Date(selectedDate)}
+        onActiveStartDateChange={({ activeStartDate, view }) => {
+          if (activeStartDate) {
+            if (view === 'month') {
+              const formattedDate = formatDate(activeStartDate);
+              onDateSelect(formattedDate);
+            }
+            setActiveStartDate(activeStartDate);
+          }
+        }}
+        onClickMonth={(date) => onChangeDate(date)}
+        defaultValue={new Date(selectedDate)}
         activeStartDate={activeStartDate}
       />
     </CalendarWrapper>
@@ -126,6 +146,20 @@ const StyledDate = styled.div`
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
     right: 24px;
+  }
+`;
+
+const PendingState = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: ${colors.buttonPurple};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+    top: 26px;
   }
 `;
 

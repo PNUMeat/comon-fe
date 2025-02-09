@@ -70,10 +70,15 @@ export const Posts: React.FC<PostsProps> = ({
   const flexWidth = isMobile ? 'auto' : 35;
 
   return (
-    <ContentDiv height={isMobile ? '391px' : ''} >
+    <ContentDiv height={isMobile ? '391px' : ''}>
       <Box width="100%" padding={padding} style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
-          <Flex width={flexWidth} justify="space-between" align="center" gap='10px'>
+          <Flex
+            width={flexWidth}
+            justify="space-between"
+            align="center"
+            gap="10px"
+          >
             <SText color="#333" fontSize={fontSize} fontWeight={700}>
               {selectedDate}
             </SText>
@@ -101,7 +106,11 @@ export const Posts: React.FC<PostsProps> = ({
               align="center"
               style={{ minHeight: '216px' }}
             >
-              <SText color="#ccc" fontSize={isMobile ? '20px' : '24px'} fontWeight={400}>
+              <SText
+                color="#ccc"
+                fontSize={isMobile ? '16px' : '24px'}
+                fontWeight={400}
+              >
                 게시글이 존재하지 않아요
               </SText>
             </Flex>
@@ -109,64 +118,64 @@ export const Posts: React.FC<PostsProps> = ({
         ) : (
           <List>
             <ContentWrapper>
-            {data?.content?.map((article) => (
-              <Box
-                // TODO: 100%로 하면 grid로 width가 계산되어 피그마 디자인(145px)과 달라집니다.
-                width='100%'
-                height={isMobile ? '86px' : '104px'}
-                padding={isMobile ? '12px 14px' : '20px'}
-                key={article.articleId}
-                style={{
-                  cursor: 'pointer',
-                  boxShadow:
-                    selectedId === article.articleId
-                      ? '4px 4px 8.2px 0px rgba(104, 104, 104, 0.20) inset'
-                      : undefined,
-                  backgroundColor: '#fff',
-                }}
-                onClick={() => handleArticleClick(article.articleId)}
-              >
-                <Flex direction="column">
-                  <PostTitleWrap>
+              {data?.content?.map((article) => (
+                <Box
+                  // TODO: 100%로 하면 grid로 width가 계산되어 피그마 디자인(145px)과 달라집니다.
+                  width="100%"
+                  height={isMobile ? '86px' : '104px'}
+                  padding={isMobile ? '12px 14px' : '20px'}
+                  key={article.articleId}
+                  style={{
+                    cursor: 'pointer',
+                    boxShadow:
+                      selectedId === article.articleId
+                        ? '4px 4px 8.2px 0px rgba(104, 104, 104, 0.20) inset'
+                        : undefined,
+                    backgroundColor: '#fff',
+                  }}
+                  onClick={() => handleArticleClick(article.articleId)}
+                >
+                  <Flex direction="column">
+                    <PostTitleWrap>
+                      <SText
+                        color="#333"
+                        fontSize={isMobile ? '14px' : '16px'}
+                        lineHeight={isMobile ? '17px' : '20px'}
+                        fontWeight={600}
+                        shouldCut
+                      >
+                        {article.articleTitle}
+                      </SText>
+                    </PostTitleWrap>
+                    <Spacer h={8} />
                     <SText
-                      color="#333"
-                      fontSize={isMobile ? '14px' : '16px'}
-                      lineHeight={isMobile ? '17px' : '20px'}
-                      fontWeight={600}
-                      shouldCut
-                    >
-                      {article.articleTitle}
-                    </SText>
-                  </PostTitleWrap>
-                  <Spacer h={8} />
-                  <SText
-                    color="#777"
-                    fontSize={isMobile ? '10px' : '12px'}
-                    fontWeight={400}
-                  >
-                    {article.createdDate.slice(0, -3)}
-                  </SText>
-                  <Spacer h={12} />
-                  <Flex align="center" gap="6px">
-                    <LazyImage
-                      src={article.memberImage}
-                      altText={article.memberName}
-                      w={isMobile ? 14 : 16}
-                      h={isMobile ? 14 : 16}
-                      maxW={16}
-                      style={{ borderRadius: '50%' }}
-                    />
-                    <SText
-                      color="#333"
+                      color="#777"
                       fontSize={isMobile ? '10px' : '12px'}
-                      fontWeight={600}
+                      fontWeight={400}
                     >
-                      {article.memberName}
+                      {article.createdDate.slice(0, -3)}
                     </SText>
+                    <Spacer h={12} />
+                    <Flex align="center" gap="6px">
+                      <LazyImage
+                        src={article.memberImage}
+                        altText={article.memberName}
+                        w={isMobile ? 14 : 16}
+                        h={isMobile ? 14 : 16}
+                        maxW={16}
+                        style={{ borderRadius: '50%' }}
+                      />
+                      <SText
+                        color="#333"
+                        fontSize={isMobile ? '10px' : '12px'}
+                        fontWeight={600}
+                      >
+                        {article.memberName}
+                      </SText>
+                    </Flex>
                   </Flex>
-                </Flex>
-              </Box>
-            ))}
+                </Box>
+              ))}
             </ContentWrapper>
           </List>
         )}
@@ -175,7 +184,7 @@ export const Posts: React.FC<PostsProps> = ({
   );
 };
 
-const ContentDiv = styled.div<{height: string}>`
+const ContentDiv = styled.div<{ height: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -246,6 +255,7 @@ const ContentWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, calc(33.33% - 8px));
   width: calc(100% - 80px);
+  height: 216px;
   gap: 8px;
   top: 0px;
   left: 50%;
@@ -255,6 +265,7 @@ const ContentWrapper = styled.div`
     grid-template-columns: repeat(2, calc(50% - 4px));
     gap: 8px;
     width: calc(100% - 40px);
+    height: auto;
   }
 `;
 
