@@ -14,7 +14,7 @@ interface IMemberCommon {
 }
 
 interface IPostMemberRequest {
-  teamId: string;
+  teamId?: string;
   memberInfo: string;
 }
 

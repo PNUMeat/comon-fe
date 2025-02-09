@@ -22,7 +22,6 @@ import { PATH } from '@/routes/path';
 const MemberTableGrid = () => {
   const { teamId } = useParams();
   const navigate = useNavigate();
-  if (!teamId) return null;
   
   const { data: teamMembers = [] } = useQuery({
     queryKey: ['team-members', 0],
@@ -46,6 +45,7 @@ const MemberTableGrid = () => {
       return failureCount < 3;
     },
   });
+  
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [statuses, setStatuses] = useState<string[]>(
