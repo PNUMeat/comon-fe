@@ -50,9 +50,6 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   selectedDate,
   isPending = false,
 }) => {
-  const [activeStartDate, setActiveStartDate] = useState(
-    new Date(selectedDate)
-  );
   const [showPending, setShowPending] = useState(false);
 
   useEffect(() => {
@@ -66,18 +63,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
     }
   }, [isPending]);
 
-  const onChangeDate = (date: Date) => {
-    const formattedDate = formatDate(date);
-    onDateSelect(formattedDate);
-    setActiveStartDate(date);
-  };
-
   const handleTodayClick = () => {
     const today = new Date();
     const formattedToday = formatDate(today);
 
     onDateSelect(formattedToday);
-    setActiveStartDate(today);
   };
 
   const width = useWindowWidth();
@@ -105,22 +95,18 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
             )
           ) : null;
         }}
-        onClickDay={(value: Date) => {
-          const formattedDate = formatDate(value);
-          onDateSelect(formattedDate);
-        }}
-        onActiveStartDateChange={({ activeStartDate, view }) => {
-          if (activeStartDate) {
-            if (view === 'month') {
-              const formattedDate = formatDate(activeStartDate);
-              onDateSelect(formattedDate);
-            }
-            setActiveStartDate(activeStartDate);
+        // onClickDay={(value: Date) => {
+        //   const formattedDate = formatDate(value);
+        //   onDateSelect(formattedDate);
+        // }}
+        // onClickMonth={(date) => onChangeDate(date)}
+        defaultValue={new Date(selectedDate)}
+        onChange={(date) => {
+          if (date !== null && date instanceof Date) {
+            const formattedDate = formatDate(date);
+            onDateSelect(formattedDate);
           }
         }}
-        onClickMonth={(date) => onChangeDate(date)}
-        defaultValue={new Date(selectedDate)}
-        activeStartDate={activeStartDate}
       />
     </CalendarWrapper>
   );
