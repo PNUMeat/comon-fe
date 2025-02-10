@@ -286,6 +286,7 @@ const ContentWrapper = styled.div`
   padding: 56px 46px;
   position: relative;
   box-sizing: border-box;
+  background-color: #fff;
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 40px 20px;
