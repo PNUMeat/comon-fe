@@ -120,15 +120,15 @@ const MemberTableGrid = () => {
           return;
         }
         if (confirm("방장을 위임하시겠어요?") ) {
-        addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
-        .then(() => {
-          alert("방장으로 위임되었습니다.");
-          navigate(PATH.TEAM_DASHBOARD);
-        })
-        .catch(() => {
-          alert("방장으로 위임하는데 실패했습니다.");
-        })
-      }
+          delegationManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+          .then(() => {
+            alert("방장이 위임되었습니다.");
+            navigate(PATH.TEAM_DASHBOARD);
+          })
+          .catch(() => {
+            alert("방장으로 위임하는데 실패했습니다.");
+          })
+        }
       }
       if (status === "공동 방장으로 지정") {
         if (managerCount >= 3) {
@@ -136,8 +136,8 @@ const MemberTableGrid = () => {
           return;
         }
         if (confirm("공동 방장으로 지정하시겠어요?") ) {
-        delegationManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
-        .then(() => {
+          addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+          .then(() => {
           alert("공동 방장으로 지정되었습니다.");
         })
         .catch(() => {
