@@ -45,9 +45,10 @@ const TeamSetting = () => {
       </DSidebar>
       <DContent>
         <BackgroundGradient
-          count={2}
-          positions={[{ top: '90px' }]}
+          count={1}
+          positions={[{ top: '50%', left: '50%' }]}
           height="470px"
+          transform='translate(-50%, -50%)'
         />
         <Outlet />
         <Spacer h={312} />
