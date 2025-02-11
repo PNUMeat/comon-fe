@@ -190,6 +190,7 @@ export const TeamInformation = () => {
           alert('팀 수정 성공');
           setIsDirty(false);
           setIsEditMode(false);
+          navigate(0);
         })
         .catch(() => {
           alert('팀 수정 요청 실패: 필드를 다시 입력해주세요');
