@@ -45,12 +45,7 @@ export const EnrollSubmitButton = () => {
       })
       .catch((err) => {
         console.error(err);
-        setAlert({
-          // '회원가입에 실패했습니다'
-          message: `${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`,
-          isVisible: true,
-          onConfirm: () => {},
-        });
+        setAlert({message: `에러 로그: ${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`, isVisible: true, onConfirm: () => {}});
       });
   };
 

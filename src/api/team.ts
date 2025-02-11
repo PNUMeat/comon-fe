@@ -1,7 +1,7 @@
 // import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance from '@/api/apiInstance';
 // import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
-//import { teamCombinedMock } from '@/api/mocks.ts';
+// import { teamCombinedMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -45,6 +45,7 @@ export interface ITeamInfo extends ITeamCommon {
   teamAnnouncement: string;
   createdAt: string;
 
+  password: string;
   members: ITeamMember[];
   // TODO: 서버에서 실제로 주는 데이터 속성
   memberLimit: number;

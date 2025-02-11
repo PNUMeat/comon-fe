@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 type DashboardCategories = {
   label: string;
@@ -43,6 +44,12 @@ const TeamSetting = () => {
         ))}
       </DSidebar>
       <DContent>
+        <BackgroundGradient
+          count={1}
+          positions={[{ top: '50%', left: '50%' }]}
+          height="470px"
+          transform='translate(-50%, -50%)'
+        />
         <Outlet />
         <Spacer h={312} />
       </DContent>

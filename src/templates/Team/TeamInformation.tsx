@@ -1,10 +1,10 @@
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 
-import { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { deleteTeam, getTeamList } from '@/api/team';
+import { deleteTeam, getTeamInfoAdmin, modifyTeam, TeamAdminResponse } from '@/api/team';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
@@ -12,6 +12,8 @@ import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import TeamModification from './TeamModification';
+import { formTextInputAtom, formTextareaAtom, teamSubjectAtom, teamMaxNumAtom, teamPasswordAtom, imageAtom } from '@/store/form';
+import { useAtom } from 'jotai';
 
 interface InfoRowProps {
   label: string;
@@ -91,47 +93,69 @@ const TeamSubjectButton = styled.button`
   transition: all 0.2s;
 `;
 
+interface InformationProps {
+  currentTeam: TeamAdminResponse;
+}
+
+const Information: React.FC<InformationProps> = ({ currentTeam }) => (
+  <InfoGrid>
+    <InfoRow label="팀 이름" content={currentTeam.teamName} />
+    <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
+    <InfoRow label="팀 아이콘" content={currentTeam.teamIconUrl} />
+    <InfoRow label="주제" content={currentTeam.topic} />
+    <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
+    <InfoRow label="입장 비밀번호" content={currentTeam.password} />
+  </InfoGrid>
+);
+
+
+
 export const TeamInformation = () => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [teamName] = useAtom(formTextInputAtom);
+  const [teamExplain] = useAtom(formTextareaAtom);
+  const [topic] = useAtom(teamSubjectAtom);
+  const [memberLimit] = useAtom(teamMaxNumAtom);
+  const [password] = useAtom(teamPasswordAtom);
+  const [image] = useAtom(imageAtom);
+  const [isDirty, setIsDirty] = useState(false);
   const { teamId } = useParams();
+  const navigate = useNavigate();
+  
+  console.log(teamName);
+  
+  
+  
+  const teamIdNum = teamId ? parseInt(teamId) : null;
   const { data } = useSuspenseQuery({
     queryKey: ['team-list', 0],
-    queryFn: () => getTeamList('recent', 0, 1),
+    queryFn: () => getTeamInfoAdmin(teamIdNum as number),
   });
-
+  const currentTeam = data;
+  
+  
+  useEffect(() => {
+    if (!currentTeam) {
+      navigate(PATH.TEAMS);
+      return;
+    }
+    
+    const name = teamName.length === 0 ? currentTeam.teamName : teamName;
+    const exp = teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain;
+    const top = topic ?? currentTeam.topic;
+    const mem = memberLimit ?? currentTeam.memberLimit;
+    const pas = password ?? currentTeam.password;
+    
+    const curr = `${currentTeam.teamName}-${currentTeam.teamExplain}-null-${currentTeam.topic}-${currentTeam.memberLimit}-${currentTeam.password}`;
+    const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}-${pas}`;
+    
+    setIsDirty(curr !== changed);
+  }, [teamName, teamExplain, topic, memberLimit, image, password, currentTeam]);
+  
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
-  const teamIdNum = parseInt(teamId);
-  const currentTeam = (data?.myTeams ?? []).find(
-    (team) => team.teamId === teamIdNum
-  );
-  if (!currentTeam) {
-    // 토스트?
-    return <Navigate to={PATH.TEAMS} />;
-  }
 
-  const Information = () => {
-    return (
-      <InfoGrid>
-        <InfoRow label="팀 이름" content={currentTeam.teamName} />
-        <InfoRow label="팀 설명" content={currentTeam.teamExplain} />
-        <InfoRow label="팀 아이콘" content={currentTeam.imageUrl} />
-        <InfoRow label="주제" content={currentTeam.topic} />
-        <InfoRow label="인원 제한" content={currentTeam.memberLimit} />
-        {/* 임시 데이터 넣어둠 */}
-        <InfoRow label="입장 비밀번호" content={''} />
-      </InfoGrid>
-    );
-  };
-
-  const Modification = () => {
-    return (
-      <>
-        <TeamModification />
-      </>
-    );
-  };
 
   const handleDeleteTeam = () => {
     const isConfirmed = confirm('팀을 정말 삭제하시겠습니까?');
@@ -144,15 +168,46 @@ export const TeamInformation = () => {
     }
   };
 
+  const handleModifyTeam = () => {
+    if (!currentTeam) return;
+  
+    if (isDirty) {
+      const vMemberLimit = memberLimit ?? currentTeam.memberLimit;
+  
+      modifyTeam({
+        teamId: parseInt(teamId),
+        teamName: teamName.length === 0 ? currentTeam.teamName : teamName,
+        teamExplain: teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain,
+        topic: topic ?? currentTeam.topic,
+        image: image,
+        memberLimit: typeof vMemberLimit === 'number' ? vMemberLimit : parseInt(vMemberLimit),
+        password:
+          currentTeam.password === password || password.trim().length === 0
+            ? null
+            : password,
+      })
+        .then(() => {
+          alert('팀 수정 성공');
+          setIsDirty(false);
+          setIsEditMode(false);
+        })
+        .catch(() => {
+          alert('팀 수정 요청 실패: 필드를 다시 입력해주세요');
+        });
+    }
+  };
+  
+
   return (
     <TeamInfoGrid>
       <ModeButton>
         <img src={noteIcon} alt="note icon" />팀 정보
       </ModeButton>
       <ContentWrapper>
-        {isEditMode ? <Modification /> : <Information />}
+        { isEditMode && currentTeam && <TeamModification currentTeam={currentTeam} /> }
+        { !isEditMode && currentTeam && <Information currentTeam={currentTeam} /> }
         {isEditMode ? (
-          <ModifyButton onClick={() => setIsEditMode(false)}>
+          <ModifyButton onClick={handleModifyTeam}>
             저장하기
           </ModifyButton>
         ) : (
@@ -231,6 +286,7 @@ const ContentWrapper = styled.div`
   padding: 56px 46px;
   position: relative;
   box-sizing: border-box;
+  background-color: #fff;
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 40px 20px;
@@ -257,3 +313,4 @@ const ModifyButton = styled.button`
     right: 40px;
   }
 `;
+

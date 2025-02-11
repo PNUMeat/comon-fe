@@ -3,7 +3,7 @@ import { InputField } from '@/components/commons/Form/segments/InputField';
 import { InputHelperText } from '@/components/commons/Form/segments/InputHelperText';
 import { Wrap } from '@/components/commons/Wrap';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { formTextInputAtom } from '@/store/form';
 import { useAtom } from 'jotai';
@@ -23,8 +23,12 @@ export const ComonTextInput: React.FC<{
   //  클린업 함수는 submit 후동작으로 넣을 것임. useEffect의 return 부분에 넣어야하는지?
   const [name, setName] = useAtom(formTextInputAtom);
 
+  useEffect(() => {
+    setName(value ?? '');
+  }, [value, setName]);
+
   const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>): void => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       setName(e.target.value);
     },
     [setName]
@@ -36,7 +40,7 @@ export const ComonTextInput: React.FC<{
         <InputField
           placeholder={placeholder}
           maxLength={maxLength}
-          value={value && !name ? value : name}
+          value={name}
           onChange={onChange}
           disabled={isDisabled}
         />

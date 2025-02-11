@@ -3,24 +3,23 @@ import styled from "@emotion/styled";
 import downArrow from "@/assets/TeamInfo/down_arrow.svg";
 
 interface MemberStatusDropdownProps {
+  selected: string; 
   onChange: (value: string) => void;
 }
 
-const MemberStatusDropdown = ({ onChange }: MemberStatusDropdownProps) => {
+const MemberStatusDropdown = ({ selected, onChange }: MemberStatusDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const handleSelect = (value: string) => {
     onChange(value);
-    setSelected(value);
     setIsOpen(false);
   };
 
   return (
     <DropdownContainer>
       <DropdownHeader onClick={toggleDropdown}>
-        {selected}
+        {selected || ""}
         <DropdownIcon>
           <img src={downArrow} alt="dropdown" />
         </DropdownIcon>
@@ -28,9 +27,6 @@ const MemberStatusDropdown = ({ onChange }: MemberStatusDropdownProps) => {
       {isOpen && (
         <DropdownList>
           <DropdownItem onClick={() => handleSelect("")}>
-          <DropdownIcon>
-          <img src={downArrow} alt="dropdown" />
-        </DropdownIcon>
           </DropdownItem>
           <DropdownItem onClick={() => handleSelect("공동 방장으로 지정")}>
             공동 방장으로 지정
@@ -43,6 +39,7 @@ const MemberStatusDropdown = ({ onChange }: MemberStatusDropdownProps) => {
     </DropdownContainer>
   );
 };
+
 
 const DropdownContainer = styled.div`
   position: relative;
