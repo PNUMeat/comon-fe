@@ -1,7 +1,7 @@
-// import { isDevMode } from '@/utils/cookie.ts';
+import { isDevMode } from '@/utils/cookie.ts';
+
 import apiInstance from '@/api/apiInstance';
-// import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
-// import { teamCombinedMock } from '@/api/mocks.ts';
+import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -9,7 +9,6 @@ interface ITeamCommon {
   teamName: string;
   teamExplain: string;
   topic: string;
-  // TODO: 정수로 넘어옴
   memberLimit: number;
 }
 
@@ -42,12 +41,10 @@ export interface ITeamInfo extends ITeamCommon {
   memberCount: number;
   streakDays: number;
   // successMemberCount: number;
-  teamAnnouncement: string;
+  teamAnnouncement?: string;
   createdAt: string;
-
-  password: string;
-  members: ITeamMember[];
-  // TODO: 서버에서 실제로 주는 데이터 속성
+  // password: string;
+  members?: ITeamMember[];
   memberLimit: number;
 }
 
@@ -158,10 +155,9 @@ export const getTeamList = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
-  // 개발시 주석 해제 필요. 목데이터랑 타입이 안맞음
-  // if (isDevMode()) {
-  //   return teamCombinedMock.data;
-  // }
+  if (isDevMode()) {
+    return teamCombinedMock.data;
+  }
 
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
@@ -192,9 +188,9 @@ export const searchTeams = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamSearchResponse> => {
-  // if (isDevMode()) {
-  //   return teamSearchMock.data;
-  // }
+  if (isDevMode()) {
+    return teamSearchMock.data;
+  }
 
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,

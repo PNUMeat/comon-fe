@@ -532,7 +532,7 @@ export const teamCombinedMock = {
               memberName: '강수민',
               imageUrl:
                 'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: null,
+              memberExplain: 'Null은 안됨',
               uuid: 'aec0d712-8382-456e-8331-58d705900d98',
             },
           ],
