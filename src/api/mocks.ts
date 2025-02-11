@@ -114,28 +114,28 @@ export const teamArticlesMock = {
   data: {
     content: [
       {
-        articleId: 301,
-        articleTitle: '2/1 자유 백준 17298번 : 오큰수',
-        articleBody: 'abc',
-        createdDate: '2025-02-01 01:38:42',
+        articleId: 482,
+        articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
+        articleBody:
+          '<p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr" style="text-align: start;"><span style="">자료 구조 </span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐 </span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐를 활용하면 쉽게 풀 수 있는 문제이다. </span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐에 offer 하면 오름차순으로 자동으로 정렬해준다. </span></p><p dir="ltr" style="text-align: start;"><span style="">0이 나오면 큐 poll() 해주고, 그렇지 않으면 offer 해주면 된다. </span></p><p dir="ltr" style="text-align: start;"><span style="">배열로 직접 힙 구현하려니깐 삭제 구현이 너무 복잡했다 ㅠㅜㅠ</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr" style="text-align: start;"><span style="">자바는 heap 기반의 우선순위 큐를 사용하기 때문에 삽입 및 추출에 O(log N)의 시간복잡도가 걸린다. </span></p><p dir="ltr" style="text-align: start;"><span style="">따라서 전체 시간 복잡도는 O(NlogN)이라고 볼 수 있다. </span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14"><span>&nbsp;</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>int n </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; PriorityQueue</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> pq </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">PriorityQueue</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">for</span><span> </span><span class="v">(</span><span>int i </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><span> i </span><span class="t">&lt;</span><span> n</span><span class="v">;</span><span> i</span><span class="t">++</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int input </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">if</span><span> </span><span class="v">(</span><span>input </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">if</span><span> </span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">isEmpty</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bw</span><span class="v">.</span><span class="s">write</span><span class="v">(</span><span class="q">"0\\n"</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">else</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bw</span><span class="v">.</span><span class="s">write</span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">poll</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">+</span><span> </span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pq</span><span class="v">.</span><span class="s">offer</span><span class="v">(</span><span>input</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span></pre>',
+        createdDate: '2025-02-11 14:28:46',
         imageUrl: null,
-        memberName: '이시웅',
+        memberName: '영',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/0c383528-4a39-4a6f-8a5b-db7cc3849409.jpg',
         isAuthor: false,
       },
       {
-        articleId: 456,
-        articleTitle: '글자 export 제대로 되나?',
+        articleId: 479,
+        articleTitle: '2/11 class4 - 백준 1927 : 최소 힙',
         articleBody:
-          '<p dir="ltr"><span class="editor-text-bold" style="font-family: Noto Sans KR;color: #6E74FA;font-size: 26px;">노토 산스</span></p><p><br></p><p dir="ltr"><span class="editor-text-italic" style="font-family: Nanum Gothic;color: #EF2528;font-size: 28px;">나눔고딕</span></p><p><br></p><p dir="ltr"><span class="editor-text-strikethrough" style="font-family: Times New Roman;color: #FF377F;font-size: 24px;">Times New Roman</span></p><p><br></p><p dir="ltr"><span class="editor-text-bold editor-text-italic" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><br></p><p dir="ltr"><br></p><p><br></p>',
-        createdDate: '2025-01-25 04:09:53',
-        imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/30c79431-ba08-461f-8f77-dd90e4d12d91.jpg',
-        memberName: '하내안',
+          '<p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><ol><li value="1" class="editor-listitem" style="text-align: start;"><span style="">자연수 X를 배열에 넣고, 가장 작은 값을 출력한 후 제거하는 문제이다.</span></li><li value="2" class="editor-listitem"><span style="">이 문제를 보고 우선순위 큐를 사용해야겠다고 판단했다.</span></li><li value="3" class="editor-listitem"><span style="">또한 최소 힙을 사용하라고 했으므로, 우선순위 큐를 최소 힙으로 구현하면 된다.</span></li><li value="4" class="editor-listitem"><span style="">Java의 </span><span style="">PriorityQueue</span><span style=""> 기본 정렬 방식은 </span><span class="editor-text-bold" style="">최소 힙</span><span style="">이므로, 자바의 PriorityQueue를 사용해서 문제를 풀었다.</span></li></ol><p style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐만 사용하기 때문에 O(nlogn)이다.</span></p><ul><li value="1" class="editor-listitem" style="text-align: start;"><span style="">O(nlogn)</span></li></ul><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐를 이용하여 문제를 풀이하였다.</span></p><p dir="ltr" style="text-align: start;"><br></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16"><span>PriorityQueue</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> pq </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">PriorityQueue</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span class="o">for</span><span> </span><span class="v">(</span><span>int i </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><span> i </span><span class="t">&lt;</span><span> n</span><span class="v">;</span><span> i</span><span class="t">++</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    int input </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><br><span>    </span><span class="o">if</span><span> </span><span class="v">(</span><span>input </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>        </span><span class="o">if</span><span> </span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">size</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>            bw</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span class="q">"0\\n"</span><span class="v">)</span><span class="v">;</span><br><span>        </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>            bw</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">poll</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">+</span><span> </span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><span>        </span><span class="v">}</span><br><span>    </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>        pq</span><span class="v">.</span><span class="s">add</span><span class="v">(</span><span>input</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><br><span class="v">}</span><br></pre>',
+        createdDate: '2025-02-11 11:13:54',
+        imageUrl: null,
+        memberName: '강수밈밈',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-        isAuthor: true,
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+        isAuthor: false,
       },
       {
         articleId: 242,
@@ -157,13 +157,12 @@ export const teamArticlesMock = {
         imageUrl: null,
         memberName: '하내안',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-        isAuthor: true,
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+        isAuthor: false,
       },
       {
-        articleId: 240,
-        articleTitle:
-          '두줄이 넘어가는 제목입니다~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+        articleId: 476,
+        articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
@@ -189,8 +188,8 @@ export const teamArticlesMock = {
     page: {
       size: 6,
       number: 0,
-      totalElements: 5,
-      totalPages: 4,
+      totalElements: 4,
+      totalPages: 1,
     },
   },
 };

@@ -62,6 +62,8 @@ const MemberTableGrid = () => {
       return newStatuses;
     });
   };
+  
+  
 
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
