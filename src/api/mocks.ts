@@ -117,7 +117,7 @@ export const teamArticlesMock = {
       {
         articleId: 301,
         articleTitle: '2/1 자유 백준 17298번 : 오큰수',
-        articleBody: null,
+        articleBody: 'abc',
         createdDate: '2025-02-01 01:38:42',
         imageUrl: null,
         memberName: '이시웅',
@@ -131,7 +131,8 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span class="editor-text-bold" style="font-family: Noto Sans KR;color: #6E74FA;font-size: 26px;">노토 산스</span></p><p><br></p><p dir="ltr"><span class="editor-text-italic" style="font-family: Nanum Gothic;color: #EF2528;font-size: 28px;">나눔고딕</span></p><p><br></p><p dir="ltr"><span class="editor-text-strikethrough" style="font-family: Times New Roman;color: #FF377F;font-size: 24px;">Times New Roman</span></p><p><br></p><p dir="ltr"><span class="editor-text-bold editor-text-italic" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><br></p><p dir="ltr"><br></p><p><br></p>',
         createdDate: '2025-01-25 04:09:53',
-        imageUrls: [],
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/30c79431-ba08-461f-8f77-dd90e4d12d91.jpg',
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -142,7 +143,7 @@ export const teamArticlesMock = {
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
         createdDate: '2025-01-13 20:33:36',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -154,7 +155,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
         createdDate: '2025-01-13 20:29:10',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -167,7 +168,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -179,7 +180,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:37:18',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
