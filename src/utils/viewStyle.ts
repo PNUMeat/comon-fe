@@ -1,3 +1,5 @@
+import { breakpoints } from '@/constants/breakpoints.ts';
+
 export const viewStyle = `& {
     img {
         max-width: 600px;
@@ -207,9 +209,18 @@ export const viewStyle = `& {
     line-height: 1.53;
     font-size: 16px;
     margin: 8px 0;
-    overflow-x: auto;
+    max-width: 576px;
+    overflow-x: scroll;
+    overflow-y: hidden;
     position: relative;
     tab-size: 2;
+    
+    @media (max-width: ${breakpoints.mobile}px) {
+      font-size: 12px;
+  }
+}
+.codeblock span {
+  white-space: nowrap !important;
 }
 .codeblock:before {
     content: attr(data-gutter);
