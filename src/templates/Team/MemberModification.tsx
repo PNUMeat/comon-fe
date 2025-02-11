@@ -416,7 +416,7 @@ const LeaderIcon = styled.img`
 const SaveButton = styled.button<{ isModifying: boolean }>`
   position: absolute;
   right: 0;
-  bottom: -30px;
+  bottom: -50px;
   background-color: ${({ isModifying }) =>
     isModifying ? '#6e74fa' : '#777777'};
   color: white;
