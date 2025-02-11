@@ -13,9 +13,24 @@ export const teamInfoMock = {
       memberLimit: 12,
       memberCount: 1,
       streakDays: 0,
-      successMemberCount: 0,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
+      members: [
+        {
+          memberName: '파댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '생선 좋아하는 강아지',
+          uuid: '358e0577-696f-418a-a0fc-80d63dbfe587',
+        },
+        {
+          memberName: '주댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '당근 많이 먹어서 주황색 된 강아지',
+          uuid: 'aec0d712-8382-456e-8331-58d705900d98',
+        },
+      ],
     },
     teamManager: true,
     subjectArticleDateAndTagResponses: [
@@ -123,13 +138,24 @@ export const teamArticlesMock = {
         isAuthor: false,
       },
       {
-        articleId: 478,
-        articleTitle: '2/11 class2 - 백준 2108번 : 통계학',
-        articleBody:
-          '<p dir="ltr"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr"><span style="">수학, 구현, 정렬</span></p><p><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><ol><li value="1" class="editor-listitem"><span style="">산술평균, 중앙값, 최빈값, 범위 등 4가지 기본 통계값을 구해야한다.</span></li><li value="2" class="editor-listitem"><span style="">특별한 알고리즘은 필요 없고, 각 방식을 구현하면 된다.</span></li><li value="3" class="editor-listitem"><span style="">다른 값들을 무난하나 최빈값을 구할 때, 최빈값이 여러 개일 경우 두번째로 작은 값을 구해야하는데 이를 놓쳐서 사람들의 오답이 많았던 문제였다.</span></li></ol><p><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr"><span style="">입력 및 해시맵 저장: </span><span class="editor-text-bold" style="">O(n)</span></p><p dir="ltr"><span style="">정렬 (Arrays.sort): </span><span class="editor-text-bold" style="">O(n log n)</span></p><p dir="ltr"><span style="">최빈값 탐색 (for + 해시맵 조회): </span><span class="editor-text-bold" style="">O(n)</span></p><p dir="ltr"><span style="">최빈값 리스트 정렬 (Collections.sort): </span><span class="editor-text-bold" style="">O(k log k) ≈ O(n log n)</span></p><p><br></p><p dir="ltr"><span style="">최종적으로 가장 큰 차수를 취하면 O(n log n)이다.</span></p><ul><li value="1" class="editor-listitem"><span style="">O(nlogn)</span></li></ul><p><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><p dir="ltr"><span style="">산술 평균: for문으로 총 값을 구하고, n으로 나눗셈 연산을 하여 구하였다.</span></p><p dir="ltr"><br></p><p dir="ltr"><span style="">중앙값: 배열을 오름차순으로 정렬한 다음 인덱스/2의 값을 출력했다.</span></p><p dir="ltr"><br></p><p dir="ltr"><span style="">최빈값: 각각의 값을 map에 넣고, 빈도수가 가장 큰 값을 구했다. 그리고 빈도수가 높은 값들을 따로 모아서 정렬한 후, 1개가 아니라면 두번째로 작은 수를 출력했다.</span></p><p dir="ltr"><br></p><p dir="ltr"><span style="">범위: 배열을 오름차순으로 정렬한 다음 맨 뒤 값과 맨 앞 값은 빼주었다. </span></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25\r\n26\r\n27\r\n28\r\n29\r\n30\r\n31\r\n32\r\n33\r\n34\r\n35\r\n36\r\n37\r\n38\r\n39\r\n40\r\n41\r\n42\r\n43\r\n44\r\n45\r\n46\r\n47\r\n48\r\n49\r\n50\r\n51"><span>int</span><span class="v">[</span><span class="v">]</span><span> arr </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">int</span><span class="v">[</span><span>n</span><span class="v">]</span><span class="v">;</span><br><span>Long sum </span><span class="t">=</span><span> 0l</span><span class="v">;</span><br><span>Map</span><span class="t">&lt;</span><span>Integer</span><span class="v">,</span><span> Integer</span><span class="t">&gt;</span><span> m </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">HashMap</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span class="o">for</span><span> </span><span class="v">(</span><span>int i </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><span> i </span><span class="t">&lt;</span><span> n</span><span class="v">;</span><span> i</span><span class="t">++</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span> </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><span>    sum </span><span class="t">+=</span><span> </span><span class="v">(</span><span>long</span><span class="v">)</span><span> arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span class="v">;</span><br><br><span>    </span><span class="o">if</span><span> </span><span class="v">(</span><span>m</span><span class="v">.</span><span class="s">containsKey</span><span class="v">(</span><span>arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>        m</span><span class="v">.</span><span class="s">put</span><span class="v">(</span><span>arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span class="v">,</span><span> m</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span>arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span class="v">)</span><span> </span><span class="t">+</span><span> </span><span class="p">1</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>        m</span><span class="v">.</span><span class="s">put</span><span class="v">(</span><span>arr</span><span class="v">[</span><span>i</span><span class="v">]</span><span class="v">,</span><span> </span><span class="p">1</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><br><span class="v">}</span><br><br><span>Arrays</span><span class="v">.</span><span class="s">sort</span><span class="v">(</span><span>arr</span><span class="v">)</span><span class="v">;</span><br><br><span class="r">// 산술 평균</span><br><span>long val1 </span><span class="t">=</span><span> </span><span class="v">(</span><span>long</span><span class="v">)</span><span> Math</span><span class="v">.</span><span class="s">round</span><span class="v">(</span><span class="v">(</span><span>double</span><span class="v">)</span><span> sum </span><span class="t">/</span><span> n</span><span class="v">)</span><span class="v">;</span><br><br><span class="r">// 중앙값</span><br><span>int val2 </span><span class="t">=</span><span> arr</span><span class="v">[</span><span>n </span><span class="t">/</span><span> </span><span class="p">2</span><span class="v">]</span><span class="v">;</span><br><br><span class="r">// 최빈 값</span><br><span>int max_count </span><span class="t">=</span><span> </span><span class="t">-</span><span class="p">1</span><span class="v">;</span><br><br><span>List</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> vals </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">ArrayList</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span class="o">for</span><span> </span><span class="v">(</span><span>int num </span><span class="t">:</span><span> m</span><span class="v">.</span><span class="s">keySet</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    </span><span class="o">if</span><span> </span><span class="v">(</span><span>max_count </span><span class="t">&lt;</span><span> m</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span>num</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>        max_count </span><span class="t">=</span><span> m</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span>num</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><br><span class="v">}</span><br><br><span class="o">for</span><span> </span><span class="v">(</span><span>int num </span><span class="t">:</span><span> m</span><span class="v">.</span><span class="s">keySet</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    </span><span class="o">if</span><span> </span><span class="v">(</span><span>max_count </span><span class="t">==</span><span> m</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span>num</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>        vals</span><span class="v">.</span><span class="s">add</span><span class="v">(</span><span>num</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><br><span class="v">}</span><br><br><span>Collections</span><span class="v">.</span><span class="s">sort</span><span class="v">(</span><span>vals</span><span class="v">)</span><span class="v">;</span><br><br><span>int val3 </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><br><span class="o">if</span><span> </span><span class="v">(</span><span>vals</span><span class="v">.</span><span class="s">size</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">==</span><span> </span><span class="p">1</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    val3 </span><span class="t">=</span><span> vals</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span class="p">0</span><span class="v">)</span><span class="v">;</span><br><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>    val3 </span><span class="t">=</span><span> vals</span><span class="v">.</span><span class="s">get</span><span class="v">(</span><span class="p">1</span><span class="v">)</span><span class="v">;</span><br><span class="v">}</span><br><br><span class="r">// 범위</span><br><span>int val4 </span><span class="t">=</span><span> arr</span><span class="v">[</span><span>n </span><span class="t">-</span><span> </span><span class="p">1</span><span class="v">]</span><span> </span><span class="t">-</span><span> arr</span><span class="v">[</span><span class="p">0</span><span class="v">]</span><span class="v">;</span></pre>',
-        createdDate: '2025-02-11 10:37:35',
+        articleId: 242,
+        articleTitle: '14일에씀',
+        articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
+        createdDate: '2025-01-13 20:33:36',
         imageUrl: null,
-        memberName: '강수밈밈',
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+        isAuthor: true,
+      },
+      {
+        articleId: 241,
+        articleTitle: '아니',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
+        createdDate: '2025-01-13 20:29:10',
+        imageUrl: null,
+        memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
         isAuthor: false,
@@ -138,13 +164,25 @@ export const teamArticlesMock = {
         articleId: 476,
         articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
         articleBody:
-          '<p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr" style="text-align: start;"><span style="">자료구조</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><ol><li value="1" class="editor-listitem" style="text-align: start;"><span style="">0이 들어오면 이때까지 입력받은 수 중 작은 순으로 출력한다</span></li><li value="2" class="editor-listitem"><span style="">만약 비어있으면 0을 출력한다</span></li><li value="3" class="editor-listitem"><span style="">넣은 값을 작은 순으로 정렬하는 우선순위 큐를 쓰면 된다</span></li></ol><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐 내부 정렬만 사용했기 때문에 O(nlogn)</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐를 사용해서 해결했다</span></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16\r\n17\r\n18\r\n19\r\n20\r\n21\r\n22\r\n23\r\n24\r\n25\r\n26\r\n27\r\n28\r\n29\r\n30\r\n31\r\n32\r\n33\r\n34\r\n35\r\n36\r\n37\r\n38\r\n39"><span class="o">public</span><span> </span><span class="o">static</span><span> </span><span class="o">void</span><span> </span><span class="s">main</span><span class="v">(</span><span>String</span><span class="v">[</span><span class="v">]</span><span> args</span><span class="v">)</span><span> throws IOException </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>BufferedReader br </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">BufferedReader</span><span class="v">(</span><span class="o">new</span><span> </span><span class="s">InputStreamReader</span><span class="v">(</span><span>System</span><span class="v">.</span><span>in</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>Queue</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> q </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">PriorityQueue</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>StringBuilder sb </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">StringBuilder</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>int n </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="o">while</span><span> </span><span class="v">(</span><span>n</span><span class="t">--</span><span> </span><span class="t">&gt;</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>int x </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="o">if</span><span> </span><span class="v">(</span><span>x </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="o">if</span><span> </span><span class="v">(</span><span>q</span><span class="v">.</span><span class="s">isEmpty</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span> </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>sb</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span class="p">0</span><span class="v">)</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>sb</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span>q</span><span class="v">.</span><span class="s">poll</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="v">}</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>q</span><span class="v">.</span><span class="s">offer</span><span class="v">(</span><span>x</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="v">}</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span class="v">}</span><br><br><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>System</span><span class="v">.</span><span>out</span><span class="v">.</span><span class="s">print</span><span class="v">(</span><span>sb</span><span class="v">)</span><span class="v">;</span><br><br><span style="white-space: pre-wrap;">\t</span><span class="v">}</span></pre>',
-        createdDate: '2025-02-11 09:13:50',
+          '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
+        createdDate: '2025-01-13 19:44:29',
         imageUrl: null,
-        memberName: '서준혁',
+        memberName: '하내안',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-        isAuthor: false,
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+        isAuthor: true,
+      },
+      {
+        articleId: 239,
+        articleTitle: '확인했습니다~!',
+        articleBody:
+          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
+        createdDate: '2025-01-13 19:37:18',
+        imageUrl: null,
+        memberName: '하내안',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+        isAuthor: true,
       },
     ],
     page: {
@@ -310,7 +348,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -324,7 +361,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -338,7 +374,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -352,7 +387,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -366,7 +400,6 @@ export const teamCombinedMock = {
         memberLimit: 5,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-27',
       },
@@ -380,7 +413,6 @@ export const teamCombinedMock = {
         memberLimit: 10,
         memberCount: 6,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '수정테스트(2025/01/02)',
         createdAt: '2024-12-23',
       },
@@ -394,7 +426,6 @@ export const teamCombinedMock = {
         memberLimit: 11,
         memberCount: 4,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '안녕하세요 공지입니다.',
         createdAt: '2024-12-22',
       },
@@ -408,7 +439,6 @@ export const teamCombinedMock = {
         memberLimit: 20,
         memberCount: 4,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '하이하이하이하이',
         createdAt: '2024-12-22',
       },
@@ -501,7 +531,7 @@ export const teamCombinedMock = {
               memberName: '강수민',
               imageUrl:
                 'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: null,
+              memberExplain: 'Null은 안됨',
               uuid: 'aec0d712-8382-456e-8331-58d705900d98',
             },
           ],
@@ -610,7 +640,6 @@ export const teamPageMock = {
       memberLimit: 12,
       memberCount: 1,
       streakDays: 0,
-      successMemberCount: 0,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
     },
@@ -838,7 +867,7 @@ export const teamMemberMock = {
   data: [
     {
       uuid: '048f6e88-d6ef-4112-bac2-1242fff3f584',
-      memberName: '껄낄깔꼴',
+      memberName: '하내안',
       memberExplain: '껄껄껄껄',
       imageUrl:
         'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/bc29d0d7-134b-4a71-bcdb-023be71422b7',

@@ -77,10 +77,11 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
           </SText>
         ) : (
           teams.map((team) => {
-            const profiles = team.members
+            const profiles = (team.members ?? [])
               .slice(0, 6)
               .map((member) => member.imageUrl);
-            if (team.members.length > 6) {
+
+            if (team.members && team.members.length > 6) {
               profiles.push(more);
             }
 
