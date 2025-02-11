@@ -7,8 +7,7 @@ export const viewStyle = `& {
     }
     
     span {
-      white-space: preserve nowrap !important;
-      // white-space: pre-wrap !important;
+      white-space: pre-wrap !important;
       dir: ltr !important;
       word-break: break-word;
     }
@@ -221,7 +220,8 @@ export const viewStyle = `& {
   }
 }
 .codeblock span {
-  // white-space: nowrap !important;
+    white-space: preserve nowrap !important;
+  
 }
 .codeblock:before {
     content: attr(data-gutter);
