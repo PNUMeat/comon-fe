@@ -957,3 +957,18 @@ export const teamMemberMock = {
     },
   ],
 };
+
+export const teamInformationMock = {
+  status: "success",
+  code: 200,
+  message: null,
+  data: {
+    teamId: 61,
+    teamName: "11111111",
+    teamExplain: "324",
+    topic: "코딩테스트",
+    memberLimit: 34,
+    password: "1111",
+    teamIconUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/87ebfcaa-adb1-4dd9-b921-37a83778f892"
+  }
+};

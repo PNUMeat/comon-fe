@@ -1,7 +1,7 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 import apiInstance from '@/api/apiInstance';
-import { teamCombinedMock, teamSearchMock } from '@/api/mocks.ts';
+import { teamCombinedMock, teamInformationMock, teamSearchMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -211,6 +211,9 @@ export const withdrawTeam = async (teamId: number) => {
 };
 
 export const getTeamInfoAdmin = async (teamId: number) => {
+  if (isDevMode()) {
+    return teamInformationMock.data;
+  }
   const res = await apiInstance.get<ServerResponse<TeamAdminResponse>>(
     `v1/teams/${teamId}`
   );
