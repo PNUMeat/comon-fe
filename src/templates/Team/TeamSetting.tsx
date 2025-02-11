@@ -11,14 +11,14 @@ type DashboardCategories = {
   path: string;
 };
 
+const categories: DashboardCategories[] = [
+  { label: '팀 관리', path: 'team' },
+  { label: '멤버 관리', path: 'members' },
+];
+
 const TeamSetting = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const categories: DashboardCategories[] = [
-    { label: '팀 관리', path: 'team' },
-    { label: '멤버 관리', path: 'members' },
-  ];
 
   const category = location.pathname.split('/')[2];
 

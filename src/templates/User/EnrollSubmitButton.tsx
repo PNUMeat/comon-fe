@@ -10,8 +10,8 @@ import {
   imageAtom,
   isEnrollSatisfiedAtom,
 } from '@/store/form';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { alertAtom } from '@/store/modal';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 export const EnrollSubmitButton = () => {
   const isAllFieldSatisfied = useAtomValue(isEnrollSatisfiedAtom);
@@ -36,12 +36,16 @@ export const EnrollSubmitButton = () => {
             ? PATH.TEAMS
             : PATH.HOME
           : PATH.HOME;
-        navigate(navigatePath);
-        setAlert({message: '회원가입에 성공했습니다', isVisible: true, onConfirm: () => {}});
+
+        setAlert({
+          message: '회원가입에 성공했습니다',
+          isVisible: true,
+          onConfirm: () => navigate(navigatePath),
+        });
       })
       .catch((err) => {
         console.error(err);
-        setAlert({message: `${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`, isVisible: true, onConfirm: () => {}});
+        setAlert({message: `에러 로그: ${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`, isVisible: true, onConfirm: () => {}});
       });
   };
 

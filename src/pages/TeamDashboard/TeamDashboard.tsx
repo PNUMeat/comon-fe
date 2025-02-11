@@ -1,3 +1,5 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -107,7 +109,7 @@ const TeamDashboardPage = () => {
 
   const isMyTeam = (teamData?.myTeams ?? []).reduce(
     (acc, myTeam) => acc || myTeam.teamId === parseInt(teamId as string),
-    false
+    isDevMode()
   );
 
   return (
