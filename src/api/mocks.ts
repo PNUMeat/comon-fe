@@ -16,6 +16,22 @@ export const teamInfoMock = {
       successMemberCount: 0,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
+      members: [
+        {
+          memberName: '파댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '생선 좋아하는 강아지',
+          uuid: '358e0577-696f-418a-a0fc-80d63dbfe587',
+        },
+        {
+          memberName: '주댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '당근 많이 먹어서 주황색 된 강아지',
+          uuid: 'aec0d712-8382-456e-8331-58d705900d98',
+        },
+      ],
     },
     teamManager: true,
     subjectArticleDateAndTagResponses: [
@@ -855,89 +871,99 @@ export const teamAdminMock = {
 };
 
 export const teamMemberMock = {
-  status: "success",
+  status: 'success',
   code: 200,
   message: null,
   data: [
     {
-      uuid: "048f6e88-d6ef-4112-bac2-1242fff3f584",
-      memberName: "하내안",
-      memberExplain: "껄껄껄껄",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/bc29d0d7-134b-4a71-bcdb-023be71422b7",
-      registerDate: "2025-02-02",
+      uuid: '048f6e88-d6ef-4112-bac2-1242fff3f584',
+      memberName: '하내안',
+      memberExplain: '껄껄껄껄',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/bc29d0d7-134b-4a71-bcdb-023be71422b7',
+      registerDate: '2025-02-02',
       isTeamManager: true,
     },
     {
-      uuid: "c7c3d4c4-e8d8-493e-9cf9-e40f7eef41c8",
-      memberName: "강수민",
-      memberExplain: "강수민",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-03",
+      uuid: 'c7c3d4c4-e8d8-493e-9cf9-e40f7eef41c8',
+      memberName: '강수민',
+      memberExplain: '강수민',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-03',
       isTeamManager: false,
     },
     {
-      uuid: "8a91c3f2-33c3-4c0f-bf34-8123d73e5b9a",
-      memberName: "김민수",
-      memberExplain: "안녕하세요, 김민수입니다.",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-04",
+      uuid: '8a91c3f2-33c3-4c0f-bf34-8123d73e5b9a',
+      memberName: '김민수',
+      memberExplain: '안녕하세요, 김민수입니다.',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-04',
       isTeamManager: false,
     },
     {
-      uuid: "1e8e9f6b-02f4-4852-a8d6-b9273cb984a4",
-      memberName: "이정민",
-      memberExplain: "프론트엔드 개발자",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-05",
+      uuid: '1e8e9f6b-02f4-4852-a8d6-b9273cb984a4',
+      memberName: '이정민',
+      memberExplain: '프론트엔드 개발자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-05',
       isTeamManager: true,
     },
     {
-      uuid: "99e23f1e-7419-47a1-9499-58e6a40e6223",
-      memberName: "박서준",
-      memberExplain: "백엔드 개발자",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-06",
+      uuid: '99e23f1e-7419-47a1-9499-58e6a40e6223',
+      memberName: '박서준',
+      memberExplain: '백엔드 개발자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-06',
       isTeamManager: false,
     },
     {
-      uuid: "c52d43f5-814b-462e-9d51-25c9e16c15c6",
-      memberName: "최지현",
-      memberExplain: "디자이너",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-07",
+      uuid: 'c52d43f5-814b-462e-9d51-25c9e16c15c6',
+      memberName: '최지현',
+      memberExplain: '디자이너',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-07',
       isTeamManager: false,
     },
     {
-      uuid: "da0c80f1-8d59-42b5-94d4-7ec1bcfd3d20",
-      memberName: "정도현",
-      memberExplain: "AI 엔지니어",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-08",
+      uuid: 'da0c80f1-8d59-42b5-94d4-7ec1bcfd3d20',
+      memberName: '정도현',
+      memberExplain: 'AI 엔지니어',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-08',
       isTeamManager: true,
     },
     {
-      uuid: "c1ef2c3a-2fd9-49e7-8b69-3f49864de118",
-      memberName: "홍길동",
-      memberExplain: "데이터 분석가",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-09",
+      uuid: 'c1ef2c3a-2fd9-49e7-8b69-3f49864de118',
+      memberName: '홍길동',
+      memberExplain: '데이터 분석가',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-09',
       isTeamManager: false,
     },
     {
-      uuid: "e75b4a9e-611b-470e-b3f6-015f8fbce7d5",
-      memberName: "이지수",
-      memberExplain: "기획자",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-10",
+      uuid: 'e75b4a9e-611b-470e-b3f6-015f8fbce7d5',
+      memberName: '이지수',
+      memberExplain: '기획자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-10',
       isTeamManager: false,
     },
     {
-      uuid: "d4e12c8b-8b8f-4a6f-9b5c-078e6248b2c4",
-      memberName: "김도윤",
-      memberExplain: "QA 엔지니어",
-      imageUrl: "https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8",
-      registerDate: "2025-02-11",
+      uuid: 'd4e12c8b-8b8f-4a6f-9b5c-078e6248b2c4',
+      memberName: '김도윤',
+      memberExplain: 'QA 엔지니어',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-11',
       isTeamManager: true,
-    }
-  ]
+    },
+  ],
 };
