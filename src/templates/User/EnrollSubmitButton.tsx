@@ -36,11 +36,11 @@ export const EnrollSubmitButton = () => {
             ? PATH.TEAMS
             : PATH.HOME
           : PATH.HOME;
-        navigate(navigatePath);
+
         setAlert({
           message: '회원가입에 성공했습니다',
           isVisible: true,
-          onConfirm: () => {},
+          onConfirm: () => navigate(navigatePath),
         });
       })
       .catch((err) => {
