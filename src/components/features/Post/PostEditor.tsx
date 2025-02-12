@@ -356,23 +356,27 @@ const useDetectImageMutation = () => {
   const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
   const firstNodeKey = useRef('');
 
-  // useEffect(() => {
-  //   editor.read(() => {
-  //     const rootElement = editor.getRootElement();
-  //     if (!rootElement) {
-  //       return;
-  //     }
-  //     const imgs = rootElement.querySelectorAll('.editor-image');
-  //     const nodeKeys = Array.from(imgs).map((img) =>
-  //       $getNearestNodeFromDOMNode(img)
-  //     );
-  //     // const line = $getRoot()
-  //     //   .getChildren()
-  //     //   .findIndex((node) => node.getKey() === parentNodeKey);
-  //
-  //     console.log(imgs, nodeKeys);
-  //   });
-  // }, []);
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      // if (firstNodeKey.current !== '') {
+      console.log('???');
+      editor.read(() => {
+        const rootElement = editor.getRootElement();
+        if (!rootElement) {
+          return;
+        }
+        const imgs = rootElement.querySelectorAll('.editor-image');
+        const imgNodes = Array.from(imgs)
+          .map((img) => $getNearestNodeFromDOMNode(img))
+          .filter((imgNode) => imgNode !== null);
+
+        if (imgNodes.length > 0) {
+          firstNodeKey.current = imgNodes[0]?.getKey();
+        }
+      });
+      // }
+    });
+  }, [editor]);
 
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
@@ -391,12 +395,11 @@ const useDetectImageMutation = () => {
                 return;
               }
 
-              console.log('???', images);
-              if (images.length === 0) {
+              if (images.length === 0 && firstNodeKey.current === '') {
                 firstNodeKey.current = nodeKey;
               }
               // 이미지 최대 하나로 제한
-              else if (images.length > 1) {
+              else {
                 if (nodeKey !== firstNodeKey.current) {
                   node.remove();
                   alert('이미지는 최대 하나 까지만 넣을 수 있어요');
