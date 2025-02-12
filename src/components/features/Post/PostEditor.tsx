@@ -356,6 +356,24 @@ const useDetectImageMutation = () => {
   const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
   const firstNodeKey = useRef('');
 
+  // useEffect(() => {
+  //   editor.read(() => {
+  //     const rootElement = editor.getRootElement();
+  //     if (!rootElement) {
+  //       return;
+  //     }
+  //     const imgs = rootElement.querySelectorAll('.editor-image');
+  //     const nodeKeys = Array.from(imgs).map((img) =>
+  //       $getNearestNodeFromDOMNode(img)
+  //     );
+  //     // const line = $getRoot()
+  //     //   .getChildren()
+  //     //   .findIndex((node) => node.getKey() === parentNodeKey);
+  //
+  //     console.log(imgs, nodeKeys);
+  //   });
+  // }, []);
+
   useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
@@ -373,6 +391,7 @@ const useDetectImageMutation = () => {
                 return;
               }
 
+              console.log('???', images);
               if (images.length === 0) {
                 firstNodeKey.current = nodeKey;
               }
@@ -398,6 +417,7 @@ const useDetectImageMutation = () => {
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
 
+              // 이거 아직 이미지가 하나
               Promise.all(
                 [...imgs].map((img) =>
                   findImgElement(img as HTMLElement).then((foundImg) => {
