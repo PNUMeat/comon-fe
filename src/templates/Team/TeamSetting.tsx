@@ -1,10 +1,11 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
-import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 type DashboardCategories = {
   label: string;
@@ -28,6 +29,14 @@ const TeamSetting = () => {
     navigate(path, { state: { teamId } });
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
+
   return (
     <DashboardGird>
       <DSidebar>
@@ -48,7 +57,7 @@ const TeamSetting = () => {
           count={1}
           positions={[{ top: '50%', left: '50%' }]}
           height="470px"
-          transform='translate(-50%, -50%)'
+          transform="translate(-50%, -50%)"
         />
         <Outlet />
         <Spacer h={312} />
