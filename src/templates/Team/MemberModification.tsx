@@ -229,7 +229,7 @@ const MemberTableGrid = () => {
               {row.memberName !== memberInfo?.memberName && (
                 <Checkbox
                   checked={selectedIndex === index}
-                  check={checkIcon}
+                  src={checkIcon}
                   onClick={() => {
                     toggleCheck(index);
                   }}
@@ -354,15 +354,10 @@ const NicknameContainer = styled.div`
   position: relative;
 `;
 
-const Checkbox = styled.div<{ checked: boolean; check: string }>`
+const Checkbox = styled.img<{ checked: boolean }>`
   border: 0.5px solid #777777;
   background: ${({ checked }) => (checked ? '#EF2528' : '#ffffff')};
-  background-image: ${({ checked }) =>
-    checked ? `url(${checkIcon})` : 'none'};
-  background-size: cover;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  object-fit: contain;
   width: 18px;
   height: 18px;
   border-radius: 2px;
@@ -371,6 +366,7 @@ const Checkbox = styled.div<{ checked: boolean; check: string }>`
   justify-content: center;
   flex-shrink: 0;
   margin-left: 8px;
+  cursor: pointer;
 
   &::after {
     font-size: 14px;
