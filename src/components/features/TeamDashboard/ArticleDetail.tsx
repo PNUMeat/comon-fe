@@ -1,3 +1,5 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -83,37 +85,38 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           >
             {data?.articleTitle}
           </SText>
-          {data?.isAuthor && (
-            <Suspense fallback={null}>
-              <Flex width={7} gap="16px">
-                <Link
-                  to={`/posting/${teamId}`}
-                  state={{
-                    article: article,
-                    articleId: data?.articleId,
-                    articleTitle: data?.articleTitle,
-                  }}
-                >
-                  <LazyImage
-                    src={ModifyIcon}
-                    altText="수정"
-                    w={20}
-                    h={20}
-                    maxW={20}
-                  />
-                </Link>
-                <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
-                  <LazyImage
-                    src={DeleteIcon}
-                    altText="삭제"
-                    w={20}
-                    h={20}
-                    maxW={16}
-                  />
-                </div>
-              </Flex>
-            </Suspense>
-          )}
+          {data?.isAuthor ||
+            (isDevMode() && (
+              <Suspense fallback={null}>
+                <Flex width={7} gap="16px">
+                  <Link
+                    to={`/posting/${teamId}`}
+                    state={{
+                      article: article,
+                      articleId: data?.articleId,
+                      articleTitle: data?.articleTitle,
+                    }}
+                  >
+                    <LazyImage
+                      src={ModifyIcon}
+                      altText="수정"
+                      w={20}
+                      h={20}
+                      maxW={20}
+                    />
+                  </Link>
+                  <div style={{ cursor: 'pointer' }} onClick={onClickDelete}>
+                    <LazyImage
+                      src={DeleteIcon}
+                      altText="삭제"
+                      w={20}
+                      h={20}
+                      maxW={16}
+                    />
+                  </div>
+                </Flex>
+              </Suspense>
+            ))}
         </ArticleFlex>
         <Spacer h={8} />
         <SText color="#777" fontSize="14px" fontWeight={400}>
