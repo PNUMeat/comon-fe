@@ -91,7 +91,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
             isMobile ? (
               <Dot bgColor={categoryColors[category]} />
             ) : (
-              <Tag bgColor={categoryColors[category]} label={category} />
+              <Tag
+                bgColor={categoryColors[category]}
+                label={category}
+                height="fit-content"
+              />
             )
           ) : null;
         }}
