@@ -234,6 +234,7 @@ const Posting = () => {
       behavior: 'instant',
     });
   }, []);
+
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }

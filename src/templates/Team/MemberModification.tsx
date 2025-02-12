@@ -1,26 +1,32 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import {
+  addTeamManager,
+  delegationManager,
+  demotionManager,
+  getTeamMembers,
+  removeTeamMember,
+} from '@/api/member';
+import { ServerResponse } from '@/api/types';
+import { getMemberInfo } from '@/api/user';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import checkIcon from '@/assets/TeamInfo/check.svg';
 import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
-import styled from '@emotion/styled';
-
-import { addTeamManager, delegationManager, demotionManager, getTeamMembers, removeTeamMember } from '@/api/member';
-import { useQuery } from '@tanstack/react-query';
-import { MemberExplainModal } from './segments/MemberExplainModal';
-import ManagerStatusDropdown from './ManagerStatusDropdown';
-import { getMemberInfo } from '@/api/user';
-import { AxiosError } from 'axios';
-import MemberStatusDropdown from './MemberStatusDropdown';
-import { ServerResponse } from '@/api/types';
 import { PATH } from '@/routes/path';
+import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+
+import ManagerStatusDropdown from './ManagerStatusDropdown';
+import MemberStatusDropdown from './MemberStatusDropdown';
+import { MemberExplainModal } from './segments/MemberExplainModal';
 
 const MemberTableGrid = () => {
   const { teamId } = useParams();
   const navigate = useNavigate();
-  
+
   const { data: teamMembers = [] } = useQuery({
     queryKey: ['team-members', 0],
     queryFn: () => getTeamMembers(teamId!),
@@ -43,7 +49,6 @@ const MemberTableGrid = () => {
       return failureCount < 3;
     },
   });
-  
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [statuses, setStatuses] = useState<string[]>(
@@ -57,13 +62,11 @@ const MemberTableGrid = () => {
 
   const handleStatusChange = (index: number, value: string) => {
     setStatuses((prev) => {
-      const newStatuses = Array(prev.length).fill("");
+      const newStatuses = Array(prev.length).fill('');
       newStatuses[index] = value;
       return newStatuses;
     });
   };
-  
-  
 
   const sortedTeamMembers = [...teamMembers].sort((a, b) => {
     if (a.isTeamManager && !b.isTeamManager) return -1;
@@ -85,84 +88,87 @@ const MemberTableGrid = () => {
     setIsModifying(hasCheckedItems || hasModifiedStatuses);
   }, [selectedIndex, statuses, teamMembers]);
 
-  
   const clickSaveButton = () => {
     const selectedStatuses = statuses
-      .map((status, index) => (status !== "" ? { index, status } : null))
-      .filter((item): item is { index: number; status: string } => item !== null);
+      .map((status, index) => (status !== '' ? { index, status } : null))
+      .filter(
+        (item): item is { index: number; status: string } => item !== null
+      );
 
     if (selectedIndex && selectedStatuses[0]?.index) {
-      alert("강퇴와 상태 변경을 동시에 수행할 수 없습니다.");
+      alert('강퇴와 상태 변경을 동시에 수행할 수 없습니다.');
       return;
     }
     if (selectedIndex !== null) {
       const uuid = sortedTeamMembers[selectedIndex].uuid;
-      if (confirm("해당 팀원을 강퇴하시겠어요?") ) {
-      removeTeamMember({ teamId, memberInfo: uuid })
-      .then(() => {
-        alert("강퇴되었습니다.");
-      })
-      .catch(() => {
-        alert("강퇴하는데 실패했습니다.");
-      })
-      .finally(() => {
-        // navigate(0);
-      });
-    }
-  }
-
-    const managerCount = sortedTeamMembers.filter((member) => member.isTeamManager).length;
-
-    selectedStatuses.forEach(({ index, status }) => {
-      if (status === "방장으로 위임") {
-        if (confirm("방장을 위임하시겠어요?") ) {
-          delegationManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+      if (confirm('해당 팀원을 강퇴하시겠어요?')) {
+        removeTeamMember({ teamId, memberInfo: uuid })
           .then(() => {
-            alert("방장이 위임되었습니다.");
-            navigate(PATH.TEAM_DASHBOARD);
+            alert('강퇴되었습니다.');
           })
           .catch(() => {
-            alert("방장으로 위임하는데 실패했습니다.");
-          })
-        }
-      }
-      if (status === "공동 방장으로 지정") {
-        if (managerCount >= 3) {
-          alert("방장은 최대 3명까지만 지정할 수 있습니다.");
-          return;
-        }
-        if (confirm("공동 방장으로 지정하시겠어요?") ) {
-          addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
-          .then(() => {
-            alert("공동 방장으로 지정되었습니다.");
-          })
-          .catch(() => {
-            alert("공동 방장으로 지정하는데 실패했습니다.");
+            alert('강퇴하는데 실패했습니다.');
           })
           .finally(() => {
             // navigate(0);
           });
+      }
+    }
+
+    const managerCount = sortedTeamMembers.filter(
+      (member) => member.isTeamManager
+    ).length;
+
+    selectedStatuses.forEach(({ index, status }) => {
+      if (status === '방장으로 위임') {
+        if (confirm('방장을 위임하시겠어요?')) {
+          delegationManager({
+            teamId,
+            memberInfo: sortedTeamMembers[index].uuid,
+          })
+            .then(() => {
+              alert('방장이 위임되었습니다.');
+              navigate(PATH.TEAM_DASHBOARD);
+            })
+            .catch(() => {
+              alert('방장으로 위임하는데 실패했습니다.');
+            });
         }
       }
-      if (status === "일반 회원으로 변경") {
-        if (confirm("일반 회원으로 변경하시겠어요?")) {
-        demotionManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
-        .then(() => {
-          alert("일반 회원으로 변경되었습니다.");
-        })
-        .catch(() => {
-          alert("일반 회원으로 변경하는데 실패했습니다.");
-        })
-        .finally(() => {
-          // navigate(0);
-        });
+      if (status === '공동 방장으로 지정') {
+        if (managerCount >= 3) {
+          alert('방장은 최대 3명까지만 지정할 수 있습니다.');
+          return;
+        }
+        if (confirm('공동 방장으로 지정하시겠어요?')) {
+          addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+            .then(() => {
+              alert('공동 방장으로 지정되었습니다.');
+            })
+            .catch(() => {
+              alert('공동 방장으로 지정하는데 실패했습니다.');
+            })
+            .finally(() => {
+              // navigate(0);
+            });
+        }
       }
+      if (status === '일반 회원으로 변경') {
+        if (confirm('일반 회원으로 변경하시겠어요?')) {
+          demotionManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+            .then(() => {
+              alert('일반 회원으로 변경되었습니다.');
+            })
+            .catch(() => {
+              alert('일반 회원으로 변경하는데 실패했습니다.');
+            })
+            .finally(() => {
+              // navigate(0);
+            });
+        }
       }
     });
-};
-  
-  
-  
+  };
 
   const roleString = (isTeamManager: boolean) => {
     if (isTeamManager) {
@@ -206,25 +212,24 @@ const MemberTableGrid = () => {
             <RowCell>{roleString(row.isTeamManager)}</RowCell>
             <RowCell>{formatDate(row.registerDate)}</RowCell>
             <RowCell>
-            {row.memberName !== memberInfo?.memberName && (
-              row.isTeamManager ? (
-                <ManagerStatusDropdown
-                  selected={statuses[index]}
-                  onChange={(value) => handleStatusChange(index, value)}
-                />
-              ) : (
-                <MemberStatusDropdown
-                  selected={statuses[index]}
-                  onChange={(value) => handleStatusChange(index, value)}
-                />
-              )
-            )}
+              {row.memberName !== memberInfo?.memberName &&
+                (row.isTeamManager ? (
+                  <ManagerStatusDropdown
+                    selected={statuses[index]}
+                    onChange={(value) => handleStatusChange(index, value)}
+                  />
+                ) : (
+                  <MemberStatusDropdown
+                    selected={statuses[index]}
+                    onChange={(value) => handleStatusChange(index, value)}
+                  />
+                ))}
             </RowCell>
             <RowCell>
               {row.memberName !== memberInfo?.memberName && (
                 <Checkbox
                   checked={selectedIndex === index}
-                  check={checkIcon}
+                  src={checkIcon}
                   onClick={() => {
                     toggleCheck(index);
                   }}
@@ -234,7 +239,11 @@ const MemberTableGrid = () => {
           </React.Fragment>
         ))}
       </GridContainer>
-      <SaveButton isModifying={isModifying} disabled={!isModifying} onClick={clickSaveButton}>
+      <SaveButton
+        isModifying={isModifying}
+        disabled={!isModifying}
+        onClick={clickSaveButton}
+      >
         적용하기
       </SaveButton>
     </Table>
@@ -345,15 +354,10 @@ const NicknameContainer = styled.div`
   position: relative;
 `;
 
-const Checkbox = styled.div<{ checked: boolean; check: string }>`
+const Checkbox = styled.img<{ checked: boolean }>`
   border: 0.5px solid #777777;
   background: ${({ checked }) => (checked ? '#EF2528' : '#ffffff')};
-  background-image: ${({ checked, check }) =>
-    checked ? `url(${check})` : 'none'};
-  background-size: cover;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  object-fit: contain;
   width: 18px;
   height: 18px;
   border-radius: 2px;
@@ -362,6 +366,7 @@ const Checkbox = styled.div<{ checked: boolean; check: string }>`
   justify-content: center;
   flex-shrink: 0;
   margin-left: 8px;
+  cursor: pointer;
 
   &::after {
     font-size: 14px;
