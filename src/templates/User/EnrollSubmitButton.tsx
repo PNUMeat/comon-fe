@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { createProfile } from '@/api/user';
 import { PATH } from '@/routes/path';
+import { isSubmittedAtom } from '@/store/form';
 import {
   formTextInputAtom,
   formTextareaAtom,
@@ -21,6 +22,7 @@ export const EnrollSubmitButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const setAlert = useSetAtom(alertAtom);
+  const setIsSubmitted = useSetAtom(isSubmittedAtom);
 
   const onClick = () => {
     createProfile({
@@ -31,6 +33,8 @@ export const EnrollSubmitButton = () => {
       .then(() => {
         // const previousPath = location.state?.redirect ?? PATH.TEAMS;
         // navigate(previousPath);
+        setIsSubmitted(true);
+
         const navigatePath = location.state?.redirect
           ? location.state.redirect === PATH.HOME
             ? PATH.TEAMS
@@ -45,7 +49,11 @@ export const EnrollSubmitButton = () => {
       })
       .catch((err) => {
         console.error(err);
-        setAlert({message: `에러 로그: ${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`, isVisible: true, onConfirm: () => {}});
+        setAlert({
+          message: `에러 로그: ${err?.message} / ${err?.response?.status} / ${err.response?.data?.message} / ${err.response?.data?.code}`,
+          isVisible: true,
+          onConfirm: () => {},
+        });
       });
   };
 
