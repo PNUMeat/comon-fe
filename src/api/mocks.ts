@@ -607,7 +607,7 @@ export const subjectMock =
   //   code: 200,
   //   message: null,
   //   data: {
-  //     articleId: 394,
+  //     articleId: 391,
   //     articleCategory: '스터디 복습',
   //     articleTitle: '주제주제',
   //     articleBody: '<p dir="ltr"><span>이밎이없이</span></p>',
