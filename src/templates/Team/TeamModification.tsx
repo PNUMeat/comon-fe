@@ -3,23 +3,22 @@ import { ComonTextInput } from '@/components/commons/Form/ComonTextInput';
 import { ComonTextarea } from '@/components/commons/Form/ComonTextarea';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Fragment, Suspense } from 'react';
+import { Fragment } from 'react';
 
+import { TeamAdminResponse } from '@/api/team';
 import { breakpoints } from '@/constants/breakpoints';
-import { TeamSkeleton } from '@/templates/Team/TeamSkeleton';
 import styled from '@emotion/styled';
 
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
-import { TeamAdminResponse } from '@/api/team';
 
 interface ModificationProps {
   currentTeam: TeamAdminResponse;
 }
 
 const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
-
+  console.log('aa', currentTeam);
   return (
     <TeamModificationContainer>
       <Row>
@@ -42,7 +41,11 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
       </Row>
       <Row>
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
-        <ComonImageInput imageUrl={currentTeam.teamIconUrl} h={140} padding="0" />
+        <ComonImageInput
+          imageUrl={currentTeam.teamIconUrl}
+          h={140}
+          padding="0"
+        />
       </Row>
       <Row>
         <FormFieldLabel>주제</FormFieldLabel>
@@ -64,12 +67,12 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
 
 const TeamModification: React.FC<ModificationProps> = ({ currentTeam }) => {
   return (
-      <Fragment>
-        <Suspense fallback={<TeamSkeleton h={977} />}>
-          <SuspenseTeamForm currentTeam={currentTeam}/>
-        </Suspense>
-        <Spacer h={312} />
-      </Fragment>
+    <Fragment>
+      {/*<Suspense fallback={<TeamSkeleton h={977} />}>*/}
+      <SuspenseTeamForm currentTeam={currentTeam} />
+      {/*</Suspense>*/}
+      <Spacer h={312} />
+    </Fragment>
   );
 };
 

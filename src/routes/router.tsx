@@ -1,5 +1,6 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
+import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
@@ -24,7 +25,6 @@ import MemberModification from '@/templates/Team/MemberModification';
 import { TeamInformation } from '@/templates/Team/TeamInformation';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import TeamSetting from '@/templates/Team/TeamSetting';
-import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
 
 const useAuth = () => {
   if (isDevMode()) {

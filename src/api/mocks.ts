@@ -969,3 +969,19 @@ export const teamMemberMock = {
     },
   ],
 };
+
+export const teamAdminPageMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    teamId: 23,
+    teamName: '팀 이름 바뀌나용?',
+    teamExplain: '12345',
+    topic: '코딩테스트',
+    memberLimit: 7,
+    password: '3456',
+    teamIconUrl:
+      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
+  },
+};
