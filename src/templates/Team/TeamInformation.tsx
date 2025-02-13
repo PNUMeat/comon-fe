@@ -22,7 +22,7 @@ import {
   teamSubjectAtom,
 } from '@/store/form';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
 import TeamModification from './TeamModification';
@@ -134,11 +134,12 @@ export const TeamInformation = () => {
   const navigate = useNavigate();
 
   const teamIdNum = teamId ? parseInt(teamId) : null;
-  const { data } = useQuery({
+  const { data: currentTeam } = useQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamInfoAdmin(teamIdNum as number),
+    enabled: !!teamId,
   });
-  const currentTeam = data;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!currentTeam) {
@@ -197,9 +198,13 @@ export const TeamInformation = () => {
             : password,
       })
         .then(() => {
-          alert('팀 수정 성공');
-          setIsDirty(false);
-          setIsEditMode(false);
+          queryClient
+            .refetchQueries({ queryKey: ['team-list', 0] })
+            .then(() => {
+              alert('팀 수정 성공');
+              setIsDirty(false);
+              setIsEditMode(false);
+            });
         })
         .catch(() => {
           alert('팀 수정 요청 실패: 필드를 다시 입력해주세요');
@@ -219,13 +224,11 @@ export const TeamInformation = () => {
         {!isEditMode && currentTeam && (
           <Information currentTeam={currentTeam} />
         )}
-        {isEditMode ? (
-          <ModifyButton onClick={handleModifyTeam}>저장하기</ModifyButton>
-        ) : (
-          <ModifyButton onClick={() => setIsEditMode(true)}>
-            수정하기
-          </ModifyButton>
-        )}
+        <ModifyButton
+          onClick={isEditMode ? handleModifyTeam : () => setIsEditMode(true)}
+        >
+          {isEditMode ? '저장하기' : '수정하기'}
+        </ModifyButton>
       </ContentWrapper>
       <Flex justify="flex-end" padding="0px 14px">
         <SText
