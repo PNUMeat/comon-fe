@@ -357,6 +357,28 @@ const useDetectImageMutation = () => {
   const firstNodeKey = useRef('');
 
   useEffect(() => {
+    Promise.resolve().then(() => {
+      // if (firstNodeKey.current !== '') {
+      console.log('???');
+      editor.read(() => {
+        const rootElement = editor.getRootElement();
+        if (!rootElement) {
+          return;
+        }
+        const imgs = rootElement.querySelectorAll('.editor-image');
+        const imgNodes = Array.from(imgs)
+          .map((img) => $getNearestNodeFromDOMNode(img))
+          .filter((imgNode) => imgNode !== null);
+
+        if (imgNodes.length > 0) {
+          firstNodeKey.current = imgNodes[0]?.getKey();
+        }
+      });
+      // }
+    });
+  }, [editor]);
+
+  useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
       (mutations) => {
@@ -373,11 +395,11 @@ const useDetectImageMutation = () => {
                 return;
               }
 
-              if (images.length === 0) {
+              if (images.length === 0 && firstNodeKey.current === '') {
                 firstNodeKey.current = nodeKey;
               }
               // 이미지 최대 하나로 제한
-              else if (images.length > 1) {
+              else {
                 if (nodeKey !== firstNodeKey.current) {
                   node.remove();
                   alert('이미지는 최대 하나 까지만 넣을 수 있어요');
@@ -398,6 +420,7 @@ const useDetectImageMutation = () => {
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
 
+              // 이거 아직 이미지가 하나
               Promise.all(
                 [...imgs].map((img) =>
                   findImgElement(img as HTMLElement).then((foundImg) => {

@@ -114,6 +114,18 @@ export const teamArticlesMock = {
   data: {
     content: [
       {
+        articleId: 453,
+        articleTitle: '사진 테스트',
+        articleBody: '<p><img src="?" alt="이미지"></p>',
+        createdDate: '2025-02-11 18:14:07',
+        imageUrl:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/49bf322a-ebb9-476b-aea1-427e366f6f40.jpg',
+        memberName: '파댕이',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/5d22085d-ae52-451d-8fc6-8154ff9e08b2',
+        isAuthor: false,
+      },
+      {
         articleId: 482,
         articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
         articleBody:
@@ -595,7 +607,7 @@ export const subjectMock =
   //   code: 200,
   //   message: null,
   //   data: {
-  //     articleId: 394,
+  //     articleId: 391,
   //     articleCategory: '스터디 복습',
   //     articleTitle: '주제주제',
   //     articleBody: '<p dir="ltr"><span>이밎이없이</span></p>',

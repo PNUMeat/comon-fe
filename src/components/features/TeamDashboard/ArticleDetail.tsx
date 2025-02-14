@@ -1,3 +1,5 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -83,7 +85,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
           >
             {data?.articleTitle}
           </SText>
-          {data?.isAuthor && (
+          {(data?.isAuthor || isDevMode()) && (
             <Suspense fallback={null}>
               <Flex width={7} gap="16px">
                 <Link

@@ -1,5 +1,7 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
@@ -26,6 +28,14 @@ const TeamSetting = () => {
   const handleNavigation = (path: string) => {
     navigate(path, { state: { teamId } });
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
 
   return (
     <Container>
