@@ -141,6 +141,10 @@
   transform: translate(0, -4px);
 }
 
+.member-dropdown-items hr {
+  margin: 2px 0;
+}
+
 .member-dropdown-item {
   height: 19px;
   font-family: Pretendard;

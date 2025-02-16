@@ -171,9 +171,10 @@ const MemberTableGrid = () => {
               isManager={row.isTeamManager}
               selected={statuses[index]}
               onChange={(value) => handleStatusChange(index, value)}
+              shouldBeEmpty={row.memberName === memberInfo?.memberName}
             />
             <ExpelCell
-              shouldBeEmpty={row.memberName !== memberInfo?.memberName}
+              shouldBeEmpty={row.memberName === memberInfo?.memberName}
               isChecked={statuses[index] === '강퇴하기'}
               onClick={() => handleStatusChange(index, '강퇴하기')}
             />
@@ -230,24 +231,20 @@ const NicknameCell: React.FC<IMemberCommon> = ({
 );
 
 const RoleCell: React.FC<{ isTeamManager: boolean }> = ({ isTeamManager }) => {
-  if (isTeamManager) {
-    return (
-      <RowCell>
-        <StatusWrapper>
-          방장
-          <LeaderIcon src={crown} />
-        </StatusWrapper>
-      </RowCell>
-    );
-  } else {
-    return (
-      <RowCell>
-        <SText fontFamily={'Pretendard'} fontWeight={500}>
-          일반 회원
-        </SText>
-      </RowCell>
-    );
-  }
+  return (
+    <RowCell isStart>
+      <StatusWrapper>
+        {isTeamManager ? (
+          <Fragment>
+            방장
+            <LeaderIcon src={crown} />
+          </Fragment>
+        ) : (
+          '일반 회원'
+        )}
+      </StatusWrapper>
+    </RowCell>
+  );
 };
 
 const EnterDateCell: React.FC<{ dateString: string }> = ({ dateString }) => {
@@ -261,7 +258,7 @@ const ExpelCell: React.FC<{
 }> = ({ isChecked, onClick, shouldBeEmpty }) => {
   return (
     <RowCell>
-      {shouldBeEmpty && (
+      {!shouldBeEmpty && (
         <Checkbox checked={isChecked} src={checkIcon} onClick={onClick} />
       )}
     </RowCell>
@@ -282,48 +279,51 @@ const MemberStatusChangeCell: React.FC<{
   isManager: boolean;
   selected: string;
   onChange: (value: string) => void;
-}> = ({ isManager, onChange, selected }) => {
+  shouldBeEmpty?: boolean;
+}> = ({ isManager, onChange, selected, shouldBeEmpty }) => {
   return (
     <RowCell>
-      <Dropdown
-        buttonLabel={''}
-        buttonComponent={
-          <Flex justify={'space-between'} align={'center'}>
-            <SText>{selected}</SText>
-            <DropdownIcon>
-              <img src={downArrow} alt="dropdown" />
-            </DropdownIcon>
-          </Flex>
-        }
-        className={'member-dropdown'}
-        dropdownClassName={'member-dropdown-items'}
-      >
-        {isManager && (
-          <DropdownItem
-            onClick={() => onChange('일반 회원으로 변경')}
-            className={'member-dropdown-item'}
-          >
-            일반 회원으로 변경
-          </DropdownItem>
-        )}
-        {!isManager && (
-          <Fragment>
+      {!shouldBeEmpty && (
+        <Dropdown
+          buttonLabel={''}
+          buttonComponent={
+            <Flex justify={'space-between'} align={'center'}>
+              <SText>{selected === '강퇴하기' ? '' : selected}</SText>
+              <DropdownIcon>
+                <img src={downArrow} alt="dropdown" />
+              </DropdownIcon>
+            </Flex>
+          }
+          className={'member-dropdown'}
+          dropdownClassName={'member-dropdown-items'}
+        >
+          {isManager && (
             <DropdownItem
-              onClick={() => onChange('공동 방장으로 지정')}
+              onClick={() => onChange('일반 회원으로 변경')}
               className={'member-dropdown-item'}
             >
-              공동 방장으로 지정
+              일반 회원으로 변경
             </DropdownItem>
-            <hr />
-            <DropdownItem
-              onClick={() => onChange('방장으로 위임')}
-              className={'member-dropdown-item'}
-            >
-              방장으로 위임
-            </DropdownItem>
-          </Fragment>
-        )}
-      </Dropdown>
+          )}
+          {!isManager && (
+            <Fragment>
+              <DropdownItem
+                onClick={() => onChange('공동 방장으로 지정')}
+                className={'member-dropdown-item'}
+              >
+                공동 방장으로 지정
+              </DropdownItem>
+              <hr />
+              <DropdownItem
+                onClick={() => onChange('방장으로 위임')}
+                className={'member-dropdown-item'}
+              >
+                방장으로 위임
+              </DropdownItem>
+            </Fragment>
+          )}
+        </Dropdown>
+      )}
     </RowCell>
   );
 };
@@ -480,6 +480,8 @@ const StatusWrapper = styled.div`
   font-family: Pretendard;
   font-size: 16px;
   font-weight: 500;
+  margin-left: 20px;
+  white-space: nowrap;
 `;
 
 const LeaderIcon = styled.img`

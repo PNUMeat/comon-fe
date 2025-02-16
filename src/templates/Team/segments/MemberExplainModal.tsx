@@ -70,7 +70,7 @@ const SearchIcon = styled.img`
 
 const ModalWrapper = styled.div`
   position: absolute;
-  transform: translate(140px, -50%);
+  // transform: translate(0, -50%);
   width: 240px;
   min-height: 80px;
   padding: 10px;
