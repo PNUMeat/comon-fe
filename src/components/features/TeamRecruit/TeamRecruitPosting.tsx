@@ -1,16 +1,24 @@
 import { SText } from "@/components/commons/SText";
-import { viewStyle } from "@/utils/viewStyle";
 import styled from "@emotion/styled";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import PostEditor from "../Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
 import click from '@/assets/TeamJoin/click.png';
+import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import { RecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import sendIcon from '@/assets/TeamRecruit/send.svg';
+import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
+import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 
 export const TeamRecruitPosting = () => {
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>(RecruitDefaultData);
   const [postTitle, setPostTitle] = useState('');
+  const [contact, setContact] = useState<string>('');
+
+  const isButtonDisabled = !postTitle.trim() || !content.trim() || !contact.trim();
+  
   return (
     <ContentWrapper>
       <PostSubjectViewer />
@@ -22,15 +30,23 @@ export const TeamRecruitPosting = () => {
           />
           <Spacer h={10} />
           <ContactWrapper>
-            연락 방법 칸
+            <Contact>
+              <SendIconStyle src={sendIcon} />
+              <ContactTitle>연락 방법</ContactTitle>
+              <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
+            </Contact>
+            <TeamRecruitInput 
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
             </ContactWrapper>
             <Spacer h={30} />
             <ConfirmButtonWrap
-            disabled={false}
+            disabled={isButtonDisabled}
             isPending={false}
             onClick={() => {}}
           >
-          <ClickImage src={click} />
+          <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
             <SText fontSize={'20px'} fontWeight={700}>
               작성 완료
@@ -41,23 +57,43 @@ export const TeamRecruitPosting = () => {
   );
 }
 
-const minShowHeight = 790;
+const Contact = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const SendIconStyle = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+const ContactTitle = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  color: #333; 
+  margin-top: 5px;
+`;
+
+const ContactText = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  color: #B5B5B5;
+  margin-top: 5px;
+`;
+
 
 const PostSubjectViewer: React.FC = () => {
-  const [height] = useState<number>(minShowHeight);
   const [show, setShow] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  const data = '데이터 데이터';
 
   return (
     <PostSubjectViewWrap
-      height={show ? Math.max(height, minShowHeight) : 57}
+      height={show ? "auto" : 57}
       show={show}
     >
       <GapFlex gap={20}>
         <SText
-          color={'#333'}
+          color={show ? "#E5E6ED" : "#333"}
           fontSize={'20px'}
           fontWeight={700}
           fontFamily={'Pretendard'}
@@ -74,12 +110,7 @@ const PostSubjectViewer: React.FC = () => {
         >
         </SText>
       </GapFlex>
-      {show && data ? (
-        <TopicViewer
-          ref={contentRef}
-          dangerouslySetInnerHTML={{ __html: data }}
-        />
-      ) : null}
+      {show && <RecruitExampleData />}
       <GapFlex
         gap={12}
         padding={'0 10px'}
@@ -121,7 +152,7 @@ const ContentWrapper = styled.div`
 `;
 
 const PostSubjectViewWrap = styled.div<{
-  height: number;
+  height: string | number;
   show: boolean;
 }>`
   display: grid;
@@ -158,54 +189,49 @@ const GapFlex = styled.div<{
   width: 100%;
 `;
 
-const TopicViewer = styled.div`
-  line-height: 1.5;
-
-  ${viewStyle}
-`;
-
 const ContactWrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   padding: 20px 40px;
   height: 100px;
-  width: 100%;
+  width: calc(100% - 12px);
   border-radius: 16px;
   box-sizing: border-box;
   border: 1px solid #CDCFFF;
 `;
 
-const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
+const ConfirmButtonWrap = styled.button<{ disabled: boolean, isPending: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
-  color: #000;
+  background: ${({ isPending, disabled }) =>
+    disabled ? '#E0E0E0' : isPending ? '#919191' : '#fff'};
+  color: ${({ disabled }) => (disabled ? '#A0A0A0' : '#000')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
   width: 712px;
   height: 80px;
   padding: 0;
-  border: 3px solid ${colors.borderPurple};
-  cursor: pointer;
+  border: ${({ disabled }) => (disabled ? "none" : `3px solid ${colors.borderPurple}`)};
+  font-size: 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 312px;
-    border-radius: 40px;
+    border-radius: 20px;
     height: 50px;
     border: 2px solid ${colors.borderPurple};
   }
 `;
 
-// TODO: TeamJoin에서 가져옴
 const ClickImage = styled.img`
   width: 24px;
   height: 24px;
 `;
-// TODO: TeamJoin에서 가져옴
+
 const ActionText = styled.div`
   margin-left: 8px;
 `;

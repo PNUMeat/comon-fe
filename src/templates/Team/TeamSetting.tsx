@@ -1,4 +1,3 @@
-import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { useEffect } from 'react';
