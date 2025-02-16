@@ -25,10 +25,6 @@ const TeamSetting = () => {
 
   const { teamId } = useParams();
 
-  const handleNavigation = (path: string) => {
-    navigate(path, { state: { teamId } });
-  };
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -45,7 +41,9 @@ const TeamSetting = () => {
             key={c.path}
             isSelected={c.path === category}
             onClick={() =>
-              handleNavigation(`/team-setting/${c.path}/${teamId}`)
+              navigate(`/team-setting/${c.path}/${teamId}`, {
+                state: { teamId },
+              })
             }
           >
             {c.label}
@@ -74,6 +72,7 @@ const DashboardGird = styled.div`
   grid-template-areas: 'sidebar main';
   gap: 121px;
   margin-top: 54px;
+  // min-height: 766px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     display: block;

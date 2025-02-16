@@ -2,6 +2,7 @@ import { Dropdown } from '@/components/commons/Dropdown/Dropdown.tsx';
 import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem.tsx';
 import { Flex } from '@/components/commons/Flex.tsx';
 import { SText } from '@/components/commons/SText.tsx';
+import { Spacer } from '@/components/commons/Spacer.tsx';
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -194,10 +195,11 @@ const MemberTableGrid = () => {
 
 const MemberModification = () => {
   return (
-    <MemberModGrid>
+    <MemberModWrap>
       <MemberSectionHeader />
+      <Spacer h={31} />
       <MemberTableGrid />
-    </MemberModGrid>
+    </MemberModWrap>
   );
 };
 
@@ -346,7 +348,7 @@ const GridContainer = styled.div`
 const Table = styled.div`
   justify-items: start;
   min-width: 700px;
-
+  display: grid;
   @media (max-width: ${breakpoints.mobile}px) {
     min-width: 390px;
   }
@@ -444,12 +446,11 @@ const Checkbox = styled.img<{ checked: boolean }>`
   }
 `;
 
-const MemberModGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 31px;
-  justify-items: start;
+// const MemberModGrid = styled.div`
+const MemberModWrap = styled.div`
+  // gap: 31px;
   position: relative;
+  height: 776px;
 `;
 
 const ModeButton = styled.button`
@@ -494,9 +495,8 @@ const LeaderIcon = styled.img`
 `;
 
 const SaveButton = styled.button<{ isModifying: boolean }>`
-  position: absolute;
-  right: 0;
-  bottom: -30px;
+  bottom: -20px;
+  justify-self: flex-end;
   background-color: ${({ isModifying }) =>
     isModifying ? '#6e74fa' : '#777777'};
   color: white;

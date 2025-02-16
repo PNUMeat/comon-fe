@@ -134,6 +134,7 @@ export const TeamInformation = () => {
   const navigate = useNavigate();
 
   const teamIdNum = teamId ? parseInt(teamId) : null;
+
   const { data: currentTeam } = useQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamInfoAdmin(teamIdNum as number),
