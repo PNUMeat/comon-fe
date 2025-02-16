@@ -18,7 +18,6 @@ interface ModificationProps {
 }
 
 const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
-  console.log('aa', currentTeam);
   return (
     <TeamModificationContainer>
       <Row>
