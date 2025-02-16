@@ -1,26 +1,29 @@
+import { Dropdown } from '@/components/commons/Dropdown/Dropdown.tsx';
+import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem.tsx';
+import { Flex } from '@/components/commons/Flex.tsx';
+import { SText } from '@/components/commons/SText.tsx';
+
 import React, { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
+  IMemberCommon,
   addTeamManager,
   delegationManager,
   demotionManager,
   getTeamMembers,
   removeTeamMember,
 } from '@/api/member';
-import { ServerResponse } from '@/api/types';
 import { getMemberInfo } from '@/api/user';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import checkIcon from '@/assets/TeamInfo/check.svg';
+import downArrow from '@/assets/TeamInfo/down_arrow.svg';
 import crown from '@/assets/TeamJoin/crown.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import ManagerStatusDropdown from './ManagerStatusDropdown';
-import MemberStatusDropdown from './MemberStatusDropdown';
 import { MemberExplainModal } from './segments/MemberExplainModal';
 
 const MemberTableGrid = () => {
@@ -33,36 +36,25 @@ const MemberTableGrid = () => {
     enabled: !!teamId,
   });
 
+  // 꼭 필요한건지 ??????
   const { data: memberInfo } = useQuery({
     queryKey: ['membersInfo'],
     queryFn: getMemberInfo,
-    staleTime: 1000 * 60 * 60,
-    enabled: !!teamMembers,
-    retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
-      if (
-        error.response &&
-        error.response.status === 401 &&
-        error.response.data.code === 100
-      ) {
-        return false;
-      }
-      return failureCount < 3;
-    },
+    enabled: teamMembers.length > 0,
   });
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const queryClient = useQueryClient();
   const [statuses, setStatuses] = useState<string[]>(
     Array(teamMembers.length).fill('')
   );
   const [isModifying, setIsModifying] = useState(false);
 
-  const toggleCheck = (index: number) => {
-    setSelectedIndex((prev) => (prev === index ? null : index));
-  };
-
   const handleStatusChange = (index: number, value: string) => {
     setStatuses((prev) => {
       const newStatuses = Array(prev.length).fill('');
+      if (prev[index] === '강퇴하기' && value === '강퇴하기') {
+        return newStatuses;
+      }
       newStatuses[index] = value;
       return newStatuses;
     });
@@ -77,16 +69,13 @@ const MemberTableGrid = () => {
     );
   });
 
-  console.log(sortedTeamMembers);
-
   useEffect(() => {
     if (!teamMembers) return;
 
-    const hasCheckedItems = selectedIndex !== null;
     const hasModifiedStatuses = statuses.some((status) => status !== '');
 
-    setIsModifying(hasCheckedItems || hasModifiedStatuses);
-  }, [selectedIndex, statuses, teamMembers]);
+    setIsModifying(hasModifiedStatuses);
+  }, [statuses, teamMembers]);
 
   const clickSaveButton = () => {
     const selectedStatuses = statuses
@@ -95,31 +84,22 @@ const MemberTableGrid = () => {
         (item): item is { index: number; status: string } => item !== null
       );
 
-    if (selectedIndex && selectedStatuses[0]?.index) {
-      alert('강퇴와 상태 변경을 동시에 수행할 수 없습니다.');
-      return;
-    }
-    if (selectedIndex !== null) {
-      const uuid = sortedTeamMembers[selectedIndex].uuid;
-      if (confirm('해당 팀원을 강퇴하시겠어요?')) {
-        removeTeamMember({ teamId, memberInfo: uuid })
-          .then(() => {
-            alert('강퇴되었습니다.');
-          })
-          .catch(() => {
-            alert('강퇴하는데 실패했습니다.');
-          })
-          .finally(() => {
-            // navigate(0);
-          });
-      }
-    }
-
     const managerCount = sortedTeamMembers.filter(
       (member) => member.isTeamManager
     ).length;
 
     selectedStatuses.forEach(({ index, status }) => {
+      if (status === '강퇴하기') {
+        removeTeamMember({ teamId, memberInfo: sortedTeamMembers[index].uuid })
+          .then(() => {
+            queryClient.refetchQueries({ queryKey: ['team-members', 0] });
+            alert('강퇴되었습니다.');
+          })
+          .catch(() => {
+            alert('강퇴하는데 실패했습니다.');
+          });
+        return;
+      }
       if (status === '방장으로 위임') {
         if (confirm('방장을 위임하시겠어요?')) {
           delegationManager({
@@ -128,7 +108,12 @@ const MemberTableGrid = () => {
           })
             .then(() => {
               alert('방장이 위임되었습니다.');
-              navigate(PATH.TEAM_DASHBOARD);
+
+              queryClient
+                .refetchQueries({ queryKey: ['team-members', 0] })
+                .then(() => {
+                  navigate(PATH.TEAM_DASHBOARD);
+                });
             })
             .catch(() => {
               alert('방장으로 위임하는데 실패했습니다.');
@@ -143,6 +128,7 @@ const MemberTableGrid = () => {
         if (confirm('공동 방장으로 지정하시겠어요?')) {
           addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
             .then(() => {
+              queryClient.refetchQueries({ queryKey: ['team-members', 0] });
               alert('공동 방장으로 지정되었습니다.');
             })
             .catch(() => {
@@ -157,6 +143,7 @@ const MemberTableGrid = () => {
         if (confirm('일반 회원으로 변경하시겠어요?')) {
           demotionManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
             .then(() => {
+              queryClient.refetchQueries({ queryKey: ['team-members', 0] });
               alert('일반 회원으로 변경되었습니다.');
             })
             .catch(() => {
@@ -170,72 +157,26 @@ const MemberTableGrid = () => {
     });
   };
 
-  const roleString = (isTeamManager: boolean) => {
-    if (isTeamManager) {
-      return (
-        <StatusWrapper>
-          방장
-          <LeaderIcon src={crown} />
-        </StatusWrapper>
-      );
-    } else {
-      return <div>일반 회원</div>;
-    }
-  };
-
-  const formatDate = (dateString: string): string => {
-    return dateString.replace(/-/g, '.');
-  };
-
   return (
     <Table>
-      <Header>
-        <HeaderCell>닉네임</HeaderCell>
-        <HeaderCell>상태</HeaderCell>
-        <HeaderCell>팀 가입일</HeaderCell>
-        <HeaderCell>상태 변경</HeaderCell>
-        <HeaderCell>강퇴</HeaderCell>
-      </Header>
+      <TableHeader />
 
       <GridContainer>
         {sortedTeamMembers.map((row, index) => (
           <React.Fragment key={index}>
-            <RowCell>
-              <Avatar>
-                <AvatarImage src={row.imageUrl} />
-                <NicknameContainer>
-                  {row.memberName}
-                  <MemberExplainModal memberExplain={row.memberExplain} />
-                </NicknameContainer>
-              </Avatar>
-            </RowCell>
-            <RowCell>{roleString(row.isTeamManager)}</RowCell>
-            <RowCell>{formatDate(row.registerDate)}</RowCell>
-            <RowCell>
-              {row.memberName !== memberInfo?.memberName &&
-                (row.isTeamManager ? (
-                  <ManagerStatusDropdown
-                    selected={statuses[index]}
-                    onChange={(value) => handleStatusChange(index, value)}
-                  />
-                ) : (
-                  <MemberStatusDropdown
-                    selected={statuses[index]}
-                    onChange={(value) => handleStatusChange(index, value)}
-                  />
-                ))}
-            </RowCell>
-            <RowCell>
-              {row.memberName !== memberInfo?.memberName && (
-                <Checkbox
-                  checked={selectedIndex === index}
-                  src={checkIcon}
-                  onClick={() => {
-                    toggleCheck(index);
-                  }}
-                />
-              )}
-            </RowCell>
+            <NicknameCell {...row} />
+            <RoleCell isTeamManager={row.isTeamManager} />
+            <EnterDateCell dateString={row.registerDate} />
+            <MemberStatusChangeCell
+              isManager={row.isTeamManager}
+              selected={statuses[index]}
+              onChange={(value) => handleStatusChange(index, value)}
+            />
+            <ExpelCell
+              shouldBeEmpty={row.memberName !== memberInfo?.memberName}
+              isChecked={statuses[index] === '강퇴하기'}
+              onClick={() => handleStatusChange(index, '강퇴하기')}
+            />
           </React.Fragment>
         ))}
       </GridContainer>
@@ -252,15 +193,138 @@ const MemberTableGrid = () => {
 
 const MemberModification = () => {
   return (
-    <Fragment>
-      <MemberModGrid>
-        <ModeButton>
-          <img src={noteIcon} alt="note icon" />
-          멤버 관리
-        </ModeButton>
-        <MemberTableGrid />
-      </MemberModGrid>
-    </Fragment>
+    <MemberModGrid>
+      <ModeButton>
+        <img src={noteIcon} alt="note icon" />
+        멤버 관리
+      </ModeButton>
+      <MemberTableGrid />
+    </MemberModGrid>
+  );
+};
+
+const TableHeader = () => (
+  <Header>
+    <HeaderCell>닉네임</HeaderCell>
+    <HeaderCell>상태</HeaderCell>
+    <HeaderCell>팀 가입일</HeaderCell>
+    <HeaderCell>상태 변경</HeaderCell>
+    <HeaderCell>강퇴</HeaderCell>
+  </Header>
+);
+
+const NicknameCell: React.FC<IMemberCommon> = ({
+  imageUrl,
+  memberName,
+  memberExplain,
+}) => (
+  <RowCell isStart>
+    <Avatar>
+      <AvatarImage src={imageUrl} />
+      <NicknameContainer>
+        {memberName}
+        <MemberExplainModal memberExplain={memberExplain} />
+      </NicknameContainer>
+    </Avatar>
+  </RowCell>
+);
+
+const RoleCell: React.FC<{ isTeamManager: boolean }> = ({ isTeamManager }) => {
+  if (isTeamManager) {
+    return (
+      <RowCell>
+        <StatusWrapper>
+          방장
+          <LeaderIcon src={crown} />
+        </StatusWrapper>
+      </RowCell>
+    );
+  } else {
+    return (
+      <RowCell>
+        <SText fontFamily={'Pretendard'} fontWeight={500}>
+          일반 회원
+        </SText>
+      </RowCell>
+    );
+  }
+};
+
+const EnterDateCell: React.FC<{ dateString: string }> = ({ dateString }) => {
+  return <RowCell>{dateString.replace(/-/g, '.')}</RowCell>;
+};
+
+const ExpelCell: React.FC<{
+  isChecked: boolean;
+  onClick: () => void;
+  shouldBeEmpty?: boolean;
+}> = ({ isChecked, onClick, shouldBeEmpty }) => {
+  return (
+    <RowCell>
+      {shouldBeEmpty && (
+        <Checkbox checked={isChecked} src={checkIcon} onClick={onClick} />
+      )}
+    </RowCell>
+  );
+};
+
+const DropdownIcon = styled.div`
+  background-color: rgba(43, 63, 108, 0.2);
+  border-radius: 30%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MemberStatusChangeCell: React.FC<{
+  isManager: boolean;
+  selected: string;
+  onChange: (value: string) => void;
+}> = ({ isManager, onChange, selected }) => {
+  return (
+    <RowCell>
+      <Dropdown
+        buttonLabel={''}
+        buttonComponent={
+          <Flex justify={'space-between'} align={'center'}>
+            <SText>{selected}</SText>
+            <DropdownIcon>
+              <img src={downArrow} alt="dropdown" />
+            </DropdownIcon>
+          </Flex>
+        }
+        className={'member-dropdown'}
+        dropdownClassName={'member-dropdown-items'}
+      >
+        {isManager && (
+          <DropdownItem
+            onClick={() => onChange('일반 회원으로 변경')}
+            className={'member-dropdown-item'}
+          >
+            일반 회원으로 변경
+          </DropdownItem>
+        )}
+        {!isManager && (
+          <Fragment>
+            <DropdownItem
+              onClick={() => onChange('공동 방장으로 지정')}
+              className={'member-dropdown-item'}
+            >
+              공동 방장으로 지정
+            </DropdownItem>
+            <hr />
+            <DropdownItem
+              onClick={() => onChange('방장으로 위임')}
+              className={'member-dropdown-item'}
+            >
+              방장으로 위임
+            </DropdownItem>
+          </Fragment>
+        )}
+      </Dropdown>
+    </RowCell>
   );
 };
 
@@ -323,12 +387,14 @@ const HeaderCell = styled.div`
   }
 `;
 
-const RowCell = styled.div`
+const RowCell = styled.div<{ isStart?: boolean }>`
   padding: 7px 16px;
   font-size: 16px;
+  font-weight: 500;
+  font-family: Pretendard;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: ${(props) => (props.isStart ? 'flex-start' : 'center')};
 `;
 
 const Avatar = styled.div`
@@ -411,11 +477,14 @@ const StatusWrapper = styled.div`
   gap: 2px;
   align-items: center;
   text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const LeaderIcon = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 `;
 
 const SaveButton = styled.button<{ isModifying: boolean }>`

@@ -4,7 +4,7 @@ import apiInstance from '@/api/apiInstance';
 import { teamMemberMock } from '@/api/mocks';
 import { ServerResponse } from '@/api/types';
 
-interface IMemberCommon {
+export interface IMemberCommon {
   uuid: string;
   memberName: string;
   memberExplain: string;
@@ -39,11 +39,15 @@ export const removeTeamMember = async ({
   // if (isDevMode()) {
   //   return;
   // }
-  await apiInstance.post(`v1/teams/${teamId}/remove/team-member`, {memberInfo : memberInfo}, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  await apiInstance.post(
+    `v1/teams/${teamId}/remove/team-member`,
+    { memberInfo: memberInfo },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 };
 
 // 팀장 추가
@@ -54,12 +58,16 @@ export const addTeamManager = async ({
   // if (isDevMode()) {
   //   return;
   // }
-  await apiInstance.post(`v1/teams/${teamId}/team-manager`, { memberInfo : memberInfo }, { 
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-}
+  await apiInstance.post(
+    `v1/teams/${teamId}/team-manager`,
+    { memberInfo: memberInfo },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};
 
 // 일반 회원 강등
 export const demotionManager = async ({
@@ -69,12 +77,16 @@ export const demotionManager = async ({
   // if (isDevMode()) {
   //   return;
   // }
-  await apiInstance.post(`v1/teams/${teamId}/team-manager/demotion`, { memberInfo : memberInfo }, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-}
+  await apiInstance.post(
+    `v1/teams/${teamId}/team-manager/demotion`,
+    { memberInfo: memberInfo },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};
 
 // 팀장 위임
 export const delegationManager = async ({
@@ -84,9 +96,13 @@ export const delegationManager = async ({
   // if (isDevMode()) {
   //   return;
   // }
-  await apiInstance.put(`v1/teams/${teamId}/team-manager`, { memberInfo: memberInfo }, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-}
+  await apiInstance.put(
+    `v1/teams/${teamId}/team-manager`,
+    { memberInfo: memberInfo },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};

@@ -1,13 +1,16 @@
-import { useState, useRef, useEffect } from "react";
-import styled from "@emotion/styled";
+import { useEffect, useRef, useState } from 'react';
+
 import searchIcon from '@/assets/TeamDashboard/search.png';
 import closeIcon from '@/assets/TeamInfo/close.svg';
+import styled from '@emotion/styled';
 
 interface MemberExplainModalProps {
   memberExplain: string;
 }
 
-export const MemberExplainModal: React.FC<MemberExplainModalProps> = ({ memberExplain }) => {
+export const MemberExplainModal: React.FC<MemberExplainModalProps> = ({
+  memberExplain,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -15,18 +18,21 @@ export const MemberExplainModal: React.FC<MemberExplainModalProps> = ({ memberEx
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
   return (
@@ -35,7 +41,12 @@ export const MemberExplainModal: React.FC<MemberExplainModalProps> = ({ memberEx
       {isOpen && (
         <ModalWrapper ref={modalRef}>
           <CloseButton onClick={toggleModal}>
-            <img src={closeIcon} />
+            <img
+              src={closeIcon}
+              alt={'glass icon'}
+              width={'18px'}
+              height={'18px'}
+            />
           </CloseButton>
           <ModalContent>
             <Title>소개글</Title>
@@ -59,7 +70,7 @@ const SearchIcon = styled.img`
 
 const ModalWrapper = styled.div`
   position: absolute;
-  transform: translate(150px, -50%);
+  transform: translate(140px, -50%);
   width: 240px;
   min-height: 80px;
   padding: 10px;
@@ -76,7 +87,7 @@ const CloseButton = styled.button`
   position: absolute;
   top: 5px;
   right: 5px;
-  background-color: #E5E5E5;
+  background-color: #e5e5e5;
   width: 12px;
   height: 12px;
   border: none;
@@ -90,7 +101,6 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-
 `;
 
 const Title = styled.div`
