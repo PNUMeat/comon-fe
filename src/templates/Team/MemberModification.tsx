@@ -480,7 +480,7 @@ const StatusWrapper = styled.div`
   font-family: Pretendard;
   font-size: 16px;
   font-weight: 500;
-  margin-left: 20px;
+  margin-left: 16px;
   white-space: nowrap;
 `;
 
