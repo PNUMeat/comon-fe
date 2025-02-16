@@ -171,6 +171,7 @@ export const TeamInformation = () => {
       deleteTeam(teamId)
         .then((res) => {
           alert(res.message);
+          navigate(PATH.TEAMS);
         })
         .catch((res) => alert(res.message));
     }
