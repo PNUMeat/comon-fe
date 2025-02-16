@@ -195,14 +195,18 @@ const MemberTableGrid = () => {
 const MemberModification = () => {
   return (
     <MemberModGrid>
-      <ModeButton>
-        <img src={noteIcon} alt="note icon" />
-        멤버 관리
-      </ModeButton>
+      <MemberSectionHeader />
       <MemberTableGrid />
     </MemberModGrid>
   );
 };
+
+const MemberSectionHeader = () => (
+  <ModeButton>
+    <img src={noteIcon} alt="note icon" />
+    멤버 관리
+  </ModeButton>
+);
 
 const TableHeader = () => (
   <Header>
