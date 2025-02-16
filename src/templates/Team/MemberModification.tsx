@@ -113,7 +113,7 @@ const MemberTableGrid = () => {
               queryClient
                 .refetchQueries({ queryKey: ['team-members', 0] })
                 .then(() => {
-                  navigate(PATH.TEAM_DASHBOARD);
+                  navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
                 });
             })
             .catch(() => {
