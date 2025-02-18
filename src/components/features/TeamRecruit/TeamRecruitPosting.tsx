@@ -88,7 +88,7 @@ const PostSubjectViewer: React.FC = () => {
 
   return (
     <PostSubjectViewWrap
-      height={show ? "auto" : 57}
+      height={show ? 790 : 57}
       show={show}
     >
       <GapFlex gap={20}>
@@ -163,13 +163,13 @@ const PostSubjectViewWrap = styled.div<{
 
   width: 100%;
   min-height: 57px;
-  height: ${(props) => props.height}px;
+  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')}; 
   border: 1px solid #f15ca7;
   border-radius: 10px;
   margin: 20px 0;
   padding: 0 40px;
   box-sizing: border-box;
-  transition: height 0.5s ease;
+  transition: max-height 0.5s ease-in-out;
   overflow: hidden;
 `;
 

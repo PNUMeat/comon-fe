@@ -70,8 +70,8 @@ const Title = styled.h3`
 `;
 
 const Content = styled.p`
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 19px;
   font-weight: 500;
 `;
 
@@ -84,5 +84,6 @@ const List = styled.ul`
 `;
 
 const ListContent = styled.li`
-  line-height: 1.6;
+  line-height: 19px;
+  font-size: 16px;
 `;
