@@ -24,7 +24,7 @@ import MemberModification from '@/templates/Team/MemberModification';
 import { TeamInformation } from '@/templates/Team/TeamInformation';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import TeamSetting from '@/templates/Team/TeamSetting';
-import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
+// import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -158,10 +158,10 @@ export const router = createBrowserRouter(
             },
           ],
         },
-        {
-          path: `${PATH.TEAM_RECRUIT}/posting`,
-          element: <TeamRecruitPosting />,
-        },
+        // {
+        //   path: `${PATH.TEAM_RECRUIT}/posting`,
+        //   element: <TeamRecruitPosting />,
+        // },
       ],
     },
     {
