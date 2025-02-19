@@ -1,28 +1,54 @@
 import { SText } from "@/components/commons/SText";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PostEditor from "../Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
 import click from '@/assets/TeamJoin/click.png';
 import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
-import { RecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import { getRecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
 import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 
 export const TeamRecruitPosting = () => {
-  const [content, setContent] = useState<string>(RecruitDefaultData);
+  const getFontSize = () => (window.innerWidth < breakpoints.mobile ? "14px" : "18px");
+  const [fontSize, setFontSize] = useState(getFontSize());
+  const [content, setContent] = useState<string>(getRecruitDefaultData(getFontSize()));
   const [postTitle, setPostTitle] = useState('');
   const [contact, setContact] = useState<string>('');
 
   const isButtonDisabled = !postTitle.trim() || !content.trim() || !contact.trim();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setFontSize((prevFontSize) => {
+        if (prevFontSize !== getFontSize()) {
+          setContent(getRecruitDefaultData(getFontSize()));
+        }
+        return getFontSize();
+      });
+    };
+    
+
+    window.addEventListener("resize", handleResize);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    setContent(getRecruitDefaultData(fontSize));
+  }, [fontSize]);
+
   
   return (
     <ContentWrapper>
       <PostSubjectViewer />
         <PostEditor
+            key={fontSize}
             forwardContent={setContent}
             forwardTitle={setPostTitle}
             content={content}
@@ -85,16 +111,34 @@ const ContactText = styled.div`
 
 const PostSubjectViewer: React.FC = () => {
   const [show, setShow] = useState(false);
+  const [height, setHeight] = useState(57);
+  const contentRef = useRef<{getHeight: () => number}>(null);
+  const isMobile = window.innerWidth < breakpoints.mobile;
+
+  useEffect(() => {
+    if (show && contentRef.current) {
+      const content = contentRef.current;
+      const resizeObserver = new ResizeObserver(() => {
+        // 제목 57 + 하단 57
+        setHeight(content.getHeight() + 114);
+      });
+      resizeObserver.observe(document.body);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [show]);
 
   return (
     <PostSubjectViewWrap
-      height={show ? 790 : 57}
+      height={height}
       show={show}
     >
       <GapFlex gap={20}>
         <SText
           color={show ? "#E5E6ED" : "#333"}
-          fontSize={'20px'}
+          fontSize={isMobile ? '18px' : '20px'}
           fontWeight={700}
           fontFamily={'Pretendard'}
         >
@@ -110,7 +154,7 @@ const PostSubjectViewer: React.FC = () => {
         >
         </SText>
       </GapFlex>
-      {show && <RecruitExampleData />}
+      {show && <RecruitExampleData ref={contentRef}/>}
       <GapFlex
         gap={12}
         padding={'0 10px'}
@@ -119,8 +163,8 @@ const PostSubjectViewer: React.FC = () => {
         justifyContent={'end'}
       >
         <SText
-          color={'#777'}
-          fontSize={'16px'}
+          color={'#D9D9D9'}
+          fontSize={isMobile ? '14px' : '16px'}
           fontWeight={400}
           fontFamily={'Pretendard'}
         >
@@ -128,8 +172,8 @@ const PostSubjectViewer: React.FC = () => {
         </SText>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="17"
-          height="10"
+          width={isMobile ? '13' : '17'}
+          height={isMobile ? '6.5' : '10'}
           viewBox="0 0 17 10"
           fill="none"
           style={{
@@ -171,6 +215,10 @@ const PostSubjectViewWrap = styled.div<{
   box-sizing: border-box;
   transition: max-height 0.5s ease-in-out;
   overflow: hidden;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 20px;
+  }
 `;
 
 const GapFlex = styled.div<{

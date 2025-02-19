@@ -1,9 +1,17 @@
 import { Spacer } from '@/components/commons/Spacer';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-export const RecruitExampleData = () => {
+export const RecruitExampleData = forwardRef(( _, ref ) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    getHeight: () => containerRef.current?.clientHeight,
+  }));
+
   return (
-    <>
+    <div ref={containerRef} >
     <div>
       <Spacer h={30} />
       <Title>📣 스터디 이름 및 소개</Title>
@@ -59,20 +67,72 @@ export const RecruitExampleData = () => {
         <ListContent>스터디를 통해 이루고 싶은 목표, 다짐 😀</ListContent>
       </List>
     </div>
-    </>
+    </div>
   );
-};
+});
 
-export const RecruitDefaultData = `<p dir="ltr"><span style="">📣 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p dir="ltr"><span style="">📌 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p dir="ltr"><span style="">🗓️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p dir="ltr"><span style="">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p dir="ltr"><span style="">📃 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p><br></p><p><br></p><p><br></p>`;
+export const getRecruitDefaultData = (fontSize: string) => `
+  <p dir="ltr">
+    <span style="font-size: ${fontSize};">📣 스터디 이름 및 소개</span>
+  </p>
+  <ul>
+    <li value="1" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+    <li value="2" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+  </ul>
+  <br/>
+  <p dir="ltr">
+    <span style="font-size: ${fontSize};">📌 스터디 진행방식</span>
+  </p>
+  <ul>
+    <li value="1" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+    <li value="2" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+  </ul>
+  <br/>
+  <p dir="ltr">
+    <span style="font-size: ${fontSize};">🗓️ 스터디 일정(횟수)</span>
+  </p>
+  <ul>
+    <li value="1" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+    <li value="2" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+  </ul>
+  <br/>
+  <p dir="ltr">
+    <span style="font-size: ${fontSize};">✅ 참여 조건</span>
+  </p>
+  <ul>
+    <li value="1" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+    <li value="2" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+  </ul>
+  <br/>
+  <p dir="ltr">
+    <span style="font-size: ${fontSize};">📃 신청 시 작성 내용</span>
+  </p>
+  <ul>
+    <li value="1" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+    <li value="2" class="editor-listitem" style="font-size: ${fontSize};"><span style="font-size: ${fontSize};">&nbsp;</span></li>
+  </ul>
+`.replace(/<br\s*\/?>/g, "{{BR}}")
+.replace(/\s+/g, " ")
+.replace(/>\s+</g, "><")
+.replace(/{{BR}}/g, "<br/>");
+
 
 const Title = styled.h3`
   font-weight: 600;
+  font-size: 18px;
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 11px;
+  }
 `;
 
 const Content = styled.p`
-  font-size: 16px;
+  font-size: 18px;
   line-height: 19px;
   font-weight: 500;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 11px;
+  }
 `;
 
 const List = styled.ul`
@@ -81,9 +141,18 @@ const List = styled.ul`
   font-family: 'Pretendard';
   font-size: 18px;
   font-weight: 500;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 11px;
+  }
 `;
 
 const ListContent = styled.li`
   line-height: 19px;
-  font-size: 16px;
+  font-size: 18px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 11px;
+    line-height: 13px;
+  }
 `;
