@@ -101,6 +101,7 @@ const MemberTableGrid = () => {
           });
         return;
       }
+
       if (status === '방장으로 위임') {
         if (confirm('방장을 위임하시겠어요?')) {
           delegationManager({
