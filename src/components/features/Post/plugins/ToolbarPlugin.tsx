@@ -209,8 +209,8 @@ export const ToolbarPlugin: React.FC<{
             display: 'flex',
             width: '100%',
             justifyContent: 'space-between',
-            gap: '20px',
             alignItems: 'center',
+            gap: '20px',
             zIndex: 100,
           }}
         >
@@ -325,4 +325,9 @@ const InsertIcon = styled.img<{ isSelected?: boolean }>`
   width: 20px;
   margin-left: 8px;
   border: ${(props) => (props.isSelected ? '1px solid #ccc' : undefined)};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    margin-left: 5px;
+  }
 `;
