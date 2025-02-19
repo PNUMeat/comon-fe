@@ -1,3 +1,4 @@
+import { breakpoints } from "@/constants/breakpoints";
 import styled from "@emotion/styled";
 
 interface TeamRecruitInputProps {
@@ -29,6 +30,11 @@ const TeamRecruitInputStyle = styled.input`
 
   &::placeholder {
     color: #CCCCCC;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 11px;
+    padding: 6px 15px;
   }
 `;
 

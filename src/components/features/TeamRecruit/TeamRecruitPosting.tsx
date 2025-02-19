@@ -13,7 +13,8 @@ import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 
 export const TeamRecruitPosting = () => {
-  const getFontSize = () => (window.innerWidth < breakpoints.mobile ? "14px" : "18px");
+  const isMobile = window.innerWidth < breakpoints.mobile;
+  const getFontSize = () => (isMobile ? "14px" : "18px");
   const [fontSize, setFontSize] = useState(getFontSize());
   const [content, setContent] = useState<string>(getRecruitDefaultData(getFontSize()));
   const [postTitle, setPostTitle] = useState('');
@@ -57,8 +58,10 @@ export const TeamRecruitPosting = () => {
           <Spacer h={10} />
           <ContactWrapper>
             <Contact>
-              <SendIconStyle src={sendIcon} />
-              <ContactTitle>연락 방법</ContactTitle>
+              <IconTitleWrapper>
+                <SendIconStyle src={sendIcon} />
+                <ContactTitle>연락 방법</ContactTitle>
+              </IconTitleWrapper>
               <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
             </Contact>
             <TeamRecruitInput 
@@ -74,7 +77,7 @@ export const TeamRecruitPosting = () => {
           >
           <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
-            <SText fontSize={'20px'} fontWeight={700}>
+            <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -87,11 +90,28 @@ const Contact = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+`;
+
+const IconTitleWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
 `;
 
 const SendIconStyle = styled.img`
   width: 24px;
   height: 24px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const ContactTitle = styled.div`
@@ -99,6 +119,11 @@ const ContactTitle = styled.div`
   font-weight: 600;
   color: #333; 
   margin-top: 5px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    margin-top: 3px;
+  }
 `;
 
 const ContactText = styled.div`
@@ -106,6 +131,10 @@ const ContactText = styled.div`
   font-weight: 400;
   color: #B5B5B5;
   margin-top: 5px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+  }
 `;
 
 
@@ -248,6 +277,11 @@ const ContactWrapper = styled.div`
   border-radius: 16px;
   box-sizing: border-box;
   border: 1px solid #CDCFFF;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 14px 15px;
+    gap: 8px;
+  }
 `;
 
 const ConfirmButtonWrap = styled.button<{ disabled: boolean, isPending: boolean }>`
