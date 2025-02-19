@@ -423,8 +423,7 @@ const useDetectImageMutation = () => {
               // 이거 아직 이미지가 하나
               Promise.all(
                 [...imgs].map((img) =>
-                  // findImgElement(img as HTMLElement).then((foundImg) => {
-                  findImgElement(img as HTMLElement).then(() => {
+                  findImgElement(img as HTMLElement).then((foundImg) => {
                     let myNodeKey = '';
                     editor.read(() => {
                       const node = $getNearestNodeFromDOMNode(img);
@@ -432,12 +431,7 @@ const useDetectImageMutation = () => {
                         myNodeKey = node.getKey();
                       }
                     });
-                    // return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
-                    return blobUrlToFile(
-                      'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
-
-                      `img-${myNodeKey}`
-                    );
+                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
                   })
                 )
               )
