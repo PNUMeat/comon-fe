@@ -38,8 +38,6 @@ export const getTeamMembers = async (
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
       navigate(`/team-dashboard/${teamId}`);
-
-      return [];
     }
     throw err;
   }
@@ -69,7 +67,6 @@ export const removeTeamMember = async ({
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
       navigate(`/team-dashboard/${teamId}`);
-      return;
     }
     throw err;
   }
@@ -99,7 +96,6 @@ export const addTeamManager = async ({
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
       navigate(`/team-dashboard/${teamId}`);
-      return;
     }
     throw err;
   }
@@ -129,7 +125,6 @@ export const demotionManager = async ({
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
       navigate(`/team-dashboard/${teamId}`);
-      return;
     }
     throw err;
   }
@@ -160,7 +155,6 @@ export const delegationManager = async ({
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
       navigate(`/team-dashboard/${teamId}`);
-      return;
     }
     throw err;
   }
