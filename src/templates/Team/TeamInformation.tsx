@@ -2,7 +2,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   TeamAdminResponse,
@@ -133,18 +133,17 @@ export const TeamInformation = () => {
   const { teamId } = useParams();
   const navigate = useNavigate();
 
-  const teamIdNum = teamId ? parseInt(teamId) : null;
+  console.log('????', teamId);
 
   const { data: currentTeam } = useQuery({
     queryKey: ['team-list', 0],
-    queryFn: () => getTeamInfoAdmin(teamIdNum as number),
+    queryFn: () => getTeamInfoAdmin(teamId as string),
     enabled: !!teamId,
   });
   const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!currentTeam) {
-      navigate(PATH.TEAMS);
       return;
     }
 
@@ -161,13 +160,9 @@ export const TeamInformation = () => {
     setIsDirty(curr !== changed);
   }, [teamName, teamExplain, topic, memberLimit, image, password, currentTeam]);
 
-  if (!teamId) {
-    return <Navigate to={PATH.TEAMS} />;
-  }
-
   const handleDeleteTeam = () => {
     const isConfirmed = confirm('팀을 정말 삭제하시겠습니까?');
-    if (isConfirmed) {
+    if (isConfirmed && teamId) {
       deleteTeam(teamId)
         .then((res) => {
           alert(res.message);
@@ -180,7 +175,7 @@ export const TeamInformation = () => {
   const handleModifyTeam = () => {
     if (!currentTeam) return;
 
-    if (isDirty) {
+    if (isDirty && teamId) {
       const vMemberLimit = memberLimit ?? currentTeam.memberLimit;
 
       modifyTeam({
