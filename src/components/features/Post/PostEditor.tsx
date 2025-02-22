@@ -403,7 +403,9 @@ const useDetectImageMutation = () => {
                 return;
               }
 
-              if (images.length === 0 && firstNodeKey.current === '') {
+              console.log('nodeKey', firstNodeKey.current, images);
+              // if (images.length === 0 && firstNodeKey.current === '') {
+              if (firstNodeKey.current === '') {
                 firstNodeKey.current = nodeKey;
               }
               // 이미지 최대 하나로 제한
@@ -506,6 +508,7 @@ const useDetectImageMutation = () => {
     );
 
     return () => {
+      // firstNodeKey.current = '';
       unregisterMutationListener();
     };
   }, [editor, images]);
