@@ -214,7 +214,7 @@ export const withdrawTeam = async (teamId: number) => {
   return res.data;
 };
 
-export const getTeamInfoAdmin = async (teamId: number) => {
+export const getTeamInfoAdmin = async (teamId: string) => {
   if (isDevMode()) {
     return teamAdminPageMock.data;
   }
