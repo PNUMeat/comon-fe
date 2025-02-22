@@ -127,8 +127,8 @@ const Title = styled.h3`
 
 const Content = styled.p`
   font-size: 18px;
-  line-height: 19px;
-  font-weight: 500;
+  line-height: 20px;
+  font-weight: 400;
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 11px;
@@ -148,8 +148,9 @@ const List = styled.ul`
 `;
 
 const ListContent = styled.li`
-  line-height: 19px;
+  line-height: 20px;
   font-size: 18px;
+  font-weight: 400;
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 11px;

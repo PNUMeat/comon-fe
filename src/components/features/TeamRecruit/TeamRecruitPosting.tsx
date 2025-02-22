@@ -13,7 +13,7 @@ import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 
 export const TeamRecruitPosting = () => {
-  const isMobile = window.innerWidth < breakpoints.mobile;
+  const [isMobile, setIsMobile ] = useState(window.innerWidth < breakpoints.mobile);
   const getFontSize = () => (isMobile ? "14px" : "18px");
   const [fontSize, setFontSize] = useState(getFontSize());
   const [content, setContent] = useState<string>(getRecruitDefaultData(getFontSize()));
@@ -24,16 +24,11 @@ export const TeamRecruitPosting = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setFontSize((prevFontSize) => {
-        if (prevFontSize !== getFontSize()) {
-          setContent(getRecruitDefaultData(getFontSize()));
-        }
-        return getFontSize();
-      });
+      setIsMobile(window.innerWidth < breakpoints.mobile);
     };
     
-
     window.addEventListener("resize", handleResize);
+    handleResize();
     
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -41,8 +36,12 @@ export const TeamRecruitPosting = () => {
   }, []);
 
   useEffect(() => {
-    setContent(getRecruitDefaultData(fontSize));
-  }, [fontSize]);
+    const newFontSize = isMobile ? "14px" : "18px";
+    if (fontSize !== newFontSize) {
+      setFontSize(newFontSize);
+      setContent(getRecruitDefaultData(newFontSize));
+    }
+  }, [isMobile]);
 
   
   return (
