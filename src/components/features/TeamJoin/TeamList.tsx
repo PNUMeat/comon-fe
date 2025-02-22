@@ -59,14 +59,10 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
         itemCount={teams.length}
         h={
           isPending
-            ? isMobile
-              ? '518px'
-              : '440px'
+            ? 'auto'
             : teams.length === 0
               ? '210px'
-              : isMobile
-                ? '518px'
-                : '440px'
+              : 'auto'
         }
       >
         {isPending ? null : teams.length === 0 ? (
