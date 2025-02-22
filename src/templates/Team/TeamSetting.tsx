@@ -24,10 +24,6 @@ const TeamSetting = () => {
 
   const { teamId } = useParams();
 
-  const handleNavigation = (path: string) => {
-    navigate(path, { state: { teamId } });
-  };
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -37,30 +33,33 @@ const TeamSetting = () => {
   }, []);
 
   return (
-    <Container>
-      <GradientWrapper>
-        <GradientCircle />
-      </GradientWrapper>
-      <DashboardGird>
-        <DSidebar>
-          {categories.map((c) => (
-            <Category
-              key={c.path}
-              isSelected={c.path === category}
-              onClick={() =>
-                handleNavigation(`/team-setting/${c.path}/${teamId}`)
-              }
-            >
-              {c.label}
-            </Category>
-          ))}
-        </DSidebar>
-        <DContent>
-          <Outlet />
-          <Spacer h={312} />
-        </DContent>
-      </DashboardGird>
-    </Container>
+    <DashboardGird>
+      <DSidebar>
+        {categories.map((c) => (
+          <Category
+            key={c.path}
+            isSelected={c.path === category}
+            onClick={() =>
+              navigate(`/team-setting/${c.path}/${teamId}`, {
+                state: { teamId },
+              })
+            }
+          >
+            {c.label}
+          </Category>
+        ))}
+      </DSidebar>
+      <DContent>
+        <BackgroundGradient
+          count={1}
+          positions={[{ top: '50%', left: '50%' }]}
+          height="470px"
+          transform="translate(-50%, -50%)"
+        />
+        <Outlet />
+        <Spacer h={312} />
+      </DContent>
+    </DashboardGird>
   );
 };
 
@@ -79,6 +78,7 @@ const DashboardGird = styled.div`
   grid-template-areas: 'sidebar main';
   gap: 121px;
   margin-top: 54px;
+  // min-height: 766px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     display: block;

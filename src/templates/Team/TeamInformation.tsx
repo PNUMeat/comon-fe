@@ -4,16 +4,28 @@ import { SText } from '@/components/commons/SText';
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { deleteTeam, getTeamInfoAdmin, modifyTeam, TeamAdminResponse } from '@/api/team';
+import {
+  TeamAdminResponse,
+  deleteTeam,
+  getTeamInfoAdmin,
+  modifyTeam,
+} from '@/api/team';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
+import {
+  formTextInputAtom,
+  formTextareaAtom,
+  imageAtom,
+  teamMaxNumAtom,
+  teamPasswordAtom,
+  teamSubjectAtom,
+} from '@/store/form';
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 
 import TeamModification from './TeamModification';
-import { formTextInputAtom, formTextareaAtom, teamSubjectAtom, teamMaxNumAtom, teamPasswordAtom, imageAtom } from '@/store/form';
-import { useAtom } from 'jotai';
 
 interface InfoRowProps {
   label: string;
@@ -62,6 +74,7 @@ const Label = styled.div`
   font-weight: bold;
   color: #333;
   font-size: 20px;
+  white-space: nowrap;
 `;
 
 const Content = styled.div`
@@ -108,8 +121,6 @@ const Information: React.FC<InformationProps> = ({ currentTeam }) => (
   </InfoGrid>
 );
 
-
-
 export const TeamInformation = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [teamName] = useAtom(formTextInputAtom);
@@ -121,41 +132,38 @@ export const TeamInformation = () => {
   const [isDirty, setIsDirty] = useState(false);
   const { teamId } = useParams();
   const navigate = useNavigate();
-  
-  console.log(teamName);
-  
-  
-  
+
   const teamIdNum = teamId ? parseInt(teamId) : null;
-  const { data } = useSuspenseQuery({
+
+  const { data: currentTeam } = useQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamInfoAdmin(teamIdNum as number),
+    enabled: !!teamId,
   });
-  const currentTeam = data;
-  
-  
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (!currentTeam) {
       navigate(PATH.TEAMS);
       return;
     }
-    
+
     const name = teamName.length === 0 ? currentTeam.teamName : teamName;
-    const exp = teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain;
+    const exp =
+      teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain;
     const top = topic ?? currentTeam.topic;
     const mem = memberLimit ?? currentTeam.memberLimit;
     const pas = password ?? currentTeam.password;
-    
+
     const curr = `${currentTeam.teamName}-${currentTeam.teamExplain}-null-${currentTeam.topic}-${currentTeam.memberLimit}-${currentTeam.password}`;
     const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}-${pas}`;
-    
+
     setIsDirty(curr !== changed);
   }, [teamName, teamExplain, topic, memberLimit, image, password, currentTeam]);
-  
+
   if (!teamId) {
     return <Navigate to={PATH.TEAMS} />;
   }
-
 
   const handleDeleteTeam = () => {
     const isConfirmed = confirm('팀을 정말 삭제하시겠습니까?');
@@ -163,6 +171,7 @@ export const TeamInformation = () => {
       deleteTeam(teamId)
         .then((res) => {
           alert(res.message);
+          navigate(PATH.TEAMS);
         })
         .catch((res) => alert(res.message));
     }
@@ -170,34 +179,40 @@ export const TeamInformation = () => {
 
   const handleModifyTeam = () => {
     if (!currentTeam) return;
-  
+
     if (isDirty) {
       const vMemberLimit = memberLimit ?? currentTeam.memberLimit;
-  
+
       modifyTeam({
         teamId: parseInt(teamId),
         teamName: teamName.length === 0 ? currentTeam.teamName : teamName,
-        teamExplain: teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain,
+        teamExplain:
+          teamExplain.length === 0 ? currentTeam.teamExplain : teamExplain,
         topic: topic ?? currentTeam.topic,
         image: image,
-        memberLimit: typeof vMemberLimit === 'number' ? vMemberLimit : parseInt(vMemberLimit),
+        memberLimit:
+          typeof vMemberLimit === 'number'
+            ? vMemberLimit
+            : parseInt(vMemberLimit),
         password:
           currentTeam.password === password || password.trim().length === 0
             ? null
             : password,
       })
         .then(() => {
-          alert('팀 수정 성공');
-          setIsDirty(false);
-          setIsEditMode(false);
-          navigate(0);
+          queryClient
+            .refetchQueries({ queryKey: ['team-list', 0] })
+            .then(() => {
+              alert('팀 수정 성공');
+              setIsDirty(false);
+              setIsEditMode(false);
+            });
         })
         .catch(() => {
           alert('팀 수정 요청 실패: 필드를 다시 입력해주세요');
         });
     }
   };
-  
 
   return (
     <TeamInfoGrid>
@@ -205,17 +220,17 @@ export const TeamInformation = () => {
         <img src={noteIcon} alt="note icon" />팀 정보
       </ModeButton>
       <ContentWrapper>
-        { isEditMode && currentTeam && <TeamModification currentTeam={currentTeam} /> }
-        { !isEditMode && currentTeam && <Information currentTeam={currentTeam} /> }
-        {isEditMode ? (
-          <ModifyButton onClick={handleModifyTeam}>
-            저장하기
-          </ModifyButton>
-        ) : (
-          <ModifyButton onClick={() => setIsEditMode(true)}>
-            수정하기
-          </ModifyButton>
+        {isEditMode && currentTeam && (
+          <TeamModification currentTeam={currentTeam} />
         )}
+        {!isEditMode && currentTeam && (
+          <Information currentTeam={currentTeam} />
+        )}
+        <ModifyButton
+          onClick={isEditMode ? handleModifyTeam : () => setIsEditMode(true)}
+        >
+          {isEditMode ? '저장하기' : '수정하기'}
+        </ModifyButton>
       </ContentWrapper>
       <Flex justify="flex-end" padding="0px 14px">
         <SText
@@ -314,4 +329,3 @@ const ModifyButton = styled.button`
     right: 40px;
   }
 `;
-

@@ -36,14 +36,16 @@ export const TeamJoinModal: React.FC<{
         queryClient
           .refetchQueries({ queryKey: ['membersInfo'] })
           .catch((err) =>
-            alert(err.message ?? '팀 목록 최신화에 실패했습니다')
+            alert(
+              err?.response?.data?.message ?? '팀 목록 최신화에 실패했습니다'
+            )
           );
         setIsModalOpen(false);
         setPassword('');
         window.location.reload();
       })
       .catch((err) => {
-        alert(err.message ?? '팀 가입 요청에 실패했습니다.');
+        alert(err?.response?.data?.message ?? '팀 가입 요청에 실패했습니다.');
         console.error(err);
       });
   };
