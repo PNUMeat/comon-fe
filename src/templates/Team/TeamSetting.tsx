@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 type DashboardCategories = {
   label: string;
@@ -62,13 +63,6 @@ const TeamSetting = () => {
     </DashboardGird>
   );
 };
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
 
 const DashboardGird = styled.div`
   width: 100%;
@@ -158,33 +152,6 @@ const Category = styled.div<{ isSelected?: boolean }>`
     left: 7px;
   }`
         : ''}
-  }
-`;
-
-const GradientWrapper = styled.div`
-  position: relative;
-`;
-
-const GradientCircle = styled.div`
-  position: absolute;
-  width: 980px;
-  height: 490px;
-  top: 450px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 600px 600px 0 0;
-  background: radial-gradient(100% 100% at 50% 100%, #c2c5fb 40%, #fda2d0 100%);
-  filter: blur(50px);
-  opacity: 0.4;
-  transform-origin: center;
-  z-index: -1;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 100%;
-    height: 160px;
-    border-radius: 400px 400px 0 0;
-    top: 10%;
-    filter: blur(30px);
   }
 `;
 
