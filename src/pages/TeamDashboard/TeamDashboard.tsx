@@ -50,11 +50,12 @@ const TeamDashboardPage = () => {
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
-  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
-    teamId,
-    year,
-    month,
-  });
+  const { tagsMap, myTeamResponse, isTeamManager, isPending } =
+    useTeamInfoManager({
+      teamId,
+      year,
+      month,
+    });
 
   const {
     data: articlesData,
@@ -125,6 +126,7 @@ const TeamDashboardPage = () => {
             tags={tagsMap.get(teamId as string) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
+            isPending={isPending}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts

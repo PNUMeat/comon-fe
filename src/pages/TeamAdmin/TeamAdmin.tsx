@@ -322,6 +322,11 @@ const CalendarSection = styled.section`
   padding: 20px 36px 40px 36px;
   margin-bottom: 100px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 8px 2px 16px 2px;
+    border-radius: 10px;
+  }
 `;
 
 let totalPageCache = 0;
@@ -349,11 +354,12 @@ const TeamAdmin = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
 
-  const { tagsMap, myTeamResponse, isTeamManager } = useTeamInfoManager({
-    teamId: id,
-    year,
-    month,
-  });
+  const { tagsMap, myTeamResponse, isTeamManager, isPending } =
+    useTeamInfoManager({
+      teamId: id,
+      year,
+      month,
+    });
 
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
@@ -511,6 +517,7 @@ const TeamAdmin = () => {
             tags={tagsMap.get(id) ?? []}
             onDateSelect={onClickCalendarDate}
             selectedDate={selectedDate}
+            isPending={isPending}
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
@@ -525,6 +532,7 @@ const TeamAdmin = () => {
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}
+            marginTop="-70px"
           />
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
