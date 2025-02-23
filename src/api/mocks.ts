@@ -119,7 +119,7 @@ export const teamArticlesMock = {
         articleBody: '<p><img src="?" alt="이미지"></p>',
         createdDate: '2025-02-11 18:14:07',
         imageUrl:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/49bf322a-ebb9-476b-aea1-427e366f6f40.jpg',
+          'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
         memberName: '파댕이',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/5d22085d-ae52-451d-8fc6-8154ff9e08b2',
