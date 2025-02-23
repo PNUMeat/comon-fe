@@ -148,9 +148,12 @@ const TeamDailySubject = () => {
             });
         })
         .catch((err) => {
-          alert('문제 수정에 실패했습니다.');
+          alert(err?.response?.data?.message ?? '문제 수정에 실패했습니다.');
           console.error(err);
           setIsPending(false);
+          if (err.response.data.message === '팀의 매니저가 옳지 않습니다.') {
+            navigate(`/team-admin/${id}`);
+          }
         });
       return;
     }
