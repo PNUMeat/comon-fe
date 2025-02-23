@@ -288,23 +288,20 @@ const Posting = () => {
                 },
               });
             })
-            .catch(() => {
+            .catch((err) => {
               setAlert({
-                message: '최신 게시글 조회를 실패했습니다.',
+                message:
+                  err.response.data.message ??
+                  '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
                 onConfirm: () => {},
               });
               setIsPending(false);
             });
         })
-        .catch(() => {
+        .catch((err) => {
           setAlert({
-            message: '게시글 수정에 실패했어요',
-            isVisible: true,
-            onConfirm: () => {},
-          });
-          setAlert({
-            message: '게시글 수정에 실패했어요',
+            message: err.response.data.message ?? '게시글 수정에 실패했어요',
             isVisible: true,
             onConfirm: () => {},
           });
@@ -355,9 +352,11 @@ const Posting = () => {
               },
             });
           })
-          .catch(() => {
+          .catch((err) => {
             setAlert({
-              message: '최신 게시글 조회에 실패했습니다.',
+              message:
+                err?.response?.data?.message ??
+                '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
               onConfirm: () => {},
             });
@@ -366,12 +365,12 @@ const Posting = () => {
       })
       .catch((err) => {
         // 작성중 강퇴시
-        if (err.response.data.message === '팀에 멤버가 존재하지않습니다.') {
+        if (err?.response?.data?.message === '팀에 멤버가 존재하지않습니다.') {
           navigate(PATH.TEAMS);
           return;
         }
         setAlert({
-          message: '글쓰기에 실패했어요',
+          message: err?.response?.data?.message ?? '글쓰기에 실패했어요',
           isVisible: true,
           onConfirm: () => {},
         });
