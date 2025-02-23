@@ -310,8 +310,14 @@ const Posting = () => {
       return;
     }
 
-    if (!postTitle || !content) {
-      alert('모든 필드를 채워주세요');
+    if (!postTitle) {
+      alert('제목을 작성해주세요');
+      setIsPending(false);
+      return;
+    }
+
+    if (!content) {
+      alert('게시글 본문을 작성해주세요');
       setIsPending(false);
       return;
     }
