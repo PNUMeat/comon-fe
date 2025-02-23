@@ -235,6 +235,24 @@ const EditorContainer = styled.div`
   min-height: 700px;
   ${viewStyle}
 
+  .codeblock {
+    background-color: #f8f6f2;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    display: block;
+    padding: 8px 8px 8px 52px;
+    line-height: 1.53;
+    font-size: 16px;
+    margin: 8px 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    position: relative;
+    tab-size: 2;
+
+    @media (max-width: ${breakpoints.mobile}px) {
+      font-size: 12px;
+    }
+  }
+
   @media (max-width: ${breakpoints.mobile}px) {
     min-height: 400px;
   }
@@ -306,9 +324,17 @@ const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
-    .catch((error) => {
+    .catch(async (error) => {
       console.error('Error converting blob URL to file:', error);
-      throw error;
+      // throw error;
+      return await fetch(
+        'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
+        {
+          mode: 'cors',
+        }
+      )
+        .then((res) => res.blob())
+        .then((blob) => new File([blob], fileName, { type: blob.type }));
     });
 };
 
@@ -339,6 +365,28 @@ const useDetectImageMutation = () => {
   const firstNodeKey = useRef('');
 
   useEffect(() => {
+    Promise.resolve().then(() => {
+      // if (firstNodeKey.current !== '') {
+      console.log('???');
+      editor.read(() => {
+        const rootElement = editor.getRootElement();
+        if (!rootElement) {
+          return;
+        }
+        const imgs = rootElement.querySelectorAll('.editor-image');
+        const imgNodes = Array.from(imgs)
+          .map((img) => $getNearestNodeFromDOMNode(img))
+          .filter((imgNode) => imgNode !== null);
+
+        if (imgNodes.length > 0) {
+          firstNodeKey.current = imgNodes[0]?.getKey();
+        }
+      });
+      // }
+    });
+  }, [editor]);
+
+  useEffect(() => {
     const unregisterMutationListener = editor.registerMutationListener(
       ImageNode,
       (mutations) => {
@@ -355,11 +403,13 @@ const useDetectImageMutation = () => {
                 return;
               }
 
-              if (images.length === 0) {
+              console.log('nodeKey', firstNodeKey.current, images);
+              // if (images.length === 0 && firstNodeKey.current === '') {
+              if (firstNodeKey.current === '') {
                 firstNodeKey.current = nodeKey;
               }
               // 이미지 최대 하나로 제한
-              else if (images.length > 1) {
+              else {
                 if (nodeKey !== firstNodeKey.current) {
                   node.remove();
                   alert('이미지는 최대 하나 까지만 넣을 수 있어요');
@@ -380,10 +430,7 @@ const useDetectImageMutation = () => {
                 .getChildren()
                 .findIndex((node) => node.getKey() === parentNodeKey);
 
-              /**
-               * 진짜 건들이면 안되는 코드
-               * 건들이는 순간 비동기 흐름다 깨져서 Promise.all이 resolve가 안됨
-               */
+              // 이거 아직 이미지가 하나
               Promise.all(
                 [...imgs].map((img) =>
                   findImgElement(img as HTMLElement).then((foundImg) => {
@@ -461,6 +508,7 @@ const useDetectImageMutation = () => {
     );
 
     return () => {
+      // firstNodeKey.current = '';
       unregisterMutationListener();
     };
   }, [editor, images]);

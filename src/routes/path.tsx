@@ -11,4 +11,5 @@ export const PATH = {
   TEAM_ADMIN: '/team-admin',
   SUBJECT: '/team-subject/:id/:selectedDate',
   POSTING: '/posting/:id',
+  TEAM_RECRUIT: '/team-recruit',
 };

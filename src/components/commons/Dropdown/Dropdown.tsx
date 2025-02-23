@@ -1,7 +1,7 @@
 import { DropdownItems } from '@/components/commons/Dropdown/DropdownItems';
 import { Flex } from '@/components/commons/Flex';
 
-import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import dropdownIcon from '@/assets/Posting/dropdownIcon.svg';
@@ -18,8 +18,16 @@ const DropdownIcon = styled.img<{ isClicked?: boolean }>`
 export const Dropdown: React.FC<{
   buttonLabel: ReactNode;
   children: ReactNode;
+  buttonComponent?: ReactNode;
   className?: string;
-}> = ({ buttonLabel, className = 'editor-dropdown', children }) => {
+  dropdownClassName?: string;
+}> = ({
+  buttonLabel,
+  children,
+  className = 'editor-dropdown',
+  dropdownClassName = 'editor-dropdown-items',
+  buttonComponent,
+}) => {
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [showDropDown, setShowDropDown] = useState(false);
@@ -86,18 +94,25 @@ export const Dropdown: React.FC<{
         ref={buttonRef}
         className={className}
       >
-        <Flex>
-          {buttonLabel}
-          <DropdownIcon
-            src={dropdownIcon}
-            alt={'downward arrow icon'}
-            isClicked={showDropDown}
-          />
-        </Flex>
+        {buttonComponent ?? (
+          <Flex>
+            {buttonLabel}
+            <DropdownIcon
+              src={dropdownIcon}
+              alt={'downward arrow icon'}
+              isClicked={showDropDown}
+            />
+          </Flex>
+        )}
       </button>
       {showDropDown &&
         createPortal(
-          <DropdownItems dropDownRef={dropDownRef}>{children}</DropdownItems>,
+          <DropdownItems
+            dropDownRef={dropDownRef}
+            className={dropdownClassName}
+          >
+            {children}
+          </DropdownItems>,
           document.body
         )}
     </Fragment>

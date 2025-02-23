@@ -13,9 +13,24 @@ export const teamInfoMock = {
       memberLimit: 12,
       memberCount: 1,
       streakDays: 0,
-      successMemberCount: 0,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
+      members: [
+        {
+          memberName: '파댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '생선 좋아하는 강아지',
+          uuid: '358e0577-696f-418a-a0fc-80d63dbfe587',
+        },
+        {
+          memberName: '주댕이',
+          imageUrl:
+            'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
+          memberExplain: '당근 많이 먹어서 주황색 된 강아지',
+          uuid: 'aec0d712-8382-456e-8331-58d705900d98',
+        },
+      ],
     },
     teamManager: true,
     subjectArticleDateAndTagResponses: [
@@ -99,23 +114,47 @@ export const teamArticlesMock = {
   data: {
     content: [
       {
-        articleId: 456,
-        articleTitle: '글자 export 제대로 되나?',
-        articleBody:
-          '<p dir="ltr"><span class="editor-text-bold" style="font-family: Noto Sans KR;color: #6E74FA;font-size: 26px;">노토 산스</span></p><p><br></p><p dir="ltr"><span class="editor-text-italic" style="font-family: Nanum Gothic;color: #EF2528;font-size: 28px;">나눔고딕</span></p><p><br></p><p dir="ltr"><span class="editor-text-strikethrough" style="font-family: Times New Roman;color: #FF377F;font-size: 24px;">Times New Roman</span></p><p><br></p><p dir="ltr"><span class="editor-text-bold editor-text-italic" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><span class="editor-text-bold editor-text-italic editor-text-strikethrough" style="">다른거는?</span></p><p dir="ltr"><br></p><p dir="ltr"><br></p><p><br></p>',
-        createdDate: '2025-01-25 04:09:53',
-        imageUrls: [],
-        memberName: '하내안',
+        articleId: 453,
+        articleTitle: '사진 테스트',
+        articleBody: '<p><img src="?" alt="이미지"></p>',
+        createdDate: '2025-02-11 18:14:07',
+        imageUrl:
+          'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
+        memberName: '파댕이',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-        isAuthor: true,
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/5d22085d-ae52-451d-8fc6-8154ff9e08b2',
+        isAuthor: false,
+      },
+      {
+        articleId: 482,
+        articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
+        articleBody:
+          '<p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr" style="text-align: start;"><span style="">자료 구조 </span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐 </span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐를 활용하면 쉽게 풀 수 있는 문제이다. </span></p><p dir="ltr" style="text-align: start;"><span style="">우선순위 큐에 offer 하면 오름차순으로 자동으로 정렬해준다. </span></p><p dir="ltr" style="text-align: start;"><span style="">0이 나오면 큐 poll() 해주고, 그렇지 않으면 offer 해주면 된다. </span></p><p dir="ltr" style="text-align: start;"><span style="">배열로 직접 힙 구현하려니깐 삭제 구현이 너무 복잡했다 ㅠㅜㅠ</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr" style="text-align: start;"><span style="">자바는 heap 기반의 우선순위 큐를 사용하기 때문에 삽입 및 추출에 O(log N)의 시간복잡도가 걸린다. </span></p><p dir="ltr" style="text-align: start;"><span style="">따라서 전체 시간 복잡도는 O(NlogN)이라고 볼 수 있다. </span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14"><span>&nbsp;</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span style="white-space: pre-wrap;">\t</span><span>int n </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; PriorityQueue</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> pq </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">PriorityQueue</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">for</span><span> </span><span class="v">(</span><span>int i </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><span> i </span><span class="t">&lt;</span><span> n</span><span class="v">;</span><span> i</span><span class="t">++</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int input </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">if</span><span> </span><span class="v">(</span><span>input </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">if</span><span> </span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">isEmpty</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bw</span><span class="v">.</span><span class="s">write</span><span class="v">(</span><span class="q">"0\\n"</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="o">else</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bw</span><span class="v">.</span><span class="s">write</span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">poll</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">+</span><span> </span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pq</span><span class="v">.</span><span class="s">offer</span><span class="v">(</span><span>input</span><span class="v">)</span><span class="v">;</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span><br><span>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="v">}</span></pre>',
+        createdDate: '2025-02-11 14:28:46',
+        imageUrl: null,
+        memberName: '영',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/0c383528-4a39-4a6f-8a5b-db7cc3849409.jpg',
+        isAuthor: false,
+      },
+      {
+        articleId: 479,
+        articleTitle: '2/11 class4 - 백준 1927 : 최소 힙',
+        articleBody:
+          '<p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 유형</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐</span></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">풀이 방법 도출 과정</span></p><ol><li value="1" class="editor-listitem" style="text-align: start;"><span style="">자연수 X를 배열에 넣고, 가장 작은 값을 출력한 후 제거하는 문제이다.</span></li><li value="2" class="editor-listitem"><span style="">이 문제를 보고 우선순위 큐를 사용해야겠다고 판단했다.</span></li><li value="3" class="editor-listitem"><span style="">또한 최소 힙을 사용하라고 했으므로, 우선순위 큐를 최소 힙으로 구현하면 된다.</span></li><li value="4" class="editor-listitem"><span style="">Java의 </span><span style="">PriorityQueue</span><span style=""> 기본 정렬 방식은 </span><span class="editor-text-bold" style="">최소 힙</span><span style="">이므로, 자바의 PriorityQueue를 사용해서 문제를 풀었다.</span></li></ol><p style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">시간 복잡도</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐만 사용하기 때문에 O(nlogn)이다.</span></p><ul><li value="1" class="editor-listitem" style="text-align: start;"><span style="">O(nlogn)</span></li></ul><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><br></p><p dir="ltr" style="text-align: start;"><span class="editor-text-bold" style="">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명</span></p><p dir="ltr" style="text-align: start;"><span style="">우선 순위 큐를 이용하여 문제를 풀이하였다.</span></p><p dir="ltr" style="text-align: start;"><br></p><pre class="codeblock" spellcheck="false" data-gutter="1\r\n2\r\n3\r\n4\r\n5\r\n6\r\n7\r\n8\r\n9\r\n10\r\n11\r\n12\r\n13\r\n14\r\n15\r\n16"><span>PriorityQueue</span><span class="t">&lt;</span><span>Integer</span><span class="t">&gt;</span><span> pq </span><span class="t">=</span><span> </span><span class="o">new</span><span> </span><span class="s">PriorityQueue</span><span class="t">&lt;</span><span class="t">&gt;</span><span class="v">(</span><span class="v">)</span><span class="v">;</span><br><br><span class="o">for</span><span> </span><span class="v">(</span><span>int i </span><span class="t">=</span><span> </span><span class="p">0</span><span class="v">;</span><span> i </span><span class="t">&lt;</span><span> n</span><span class="v">;</span><span> i</span><span class="t">++</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>    int input </span><span class="t">=</span><span> Integer</span><span class="v">.</span><span class="s">parseInt</span><span class="v">(</span><span>br</span><span class="v">.</span><span class="s">readLine</span><span class="v">(</span><span class="v">)</span><span class="v">)</span><span class="v">;</span><br><br><span>    </span><span class="o">if</span><span> </span><span class="v">(</span><span>input </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>        </span><span class="o">if</span><span> </span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">size</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">==</span><span> </span><span class="p">0</span><span class="v">)</span><span> </span><span class="v">{</span><br><span>            bw</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span class="q">"0\\n"</span><span class="v">)</span><span class="v">;</span><br><span>        </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>            bw</span><span class="v">.</span><span class="s">append</span><span class="v">(</span><span>pq</span><span class="v">.</span><span class="s">poll</span><span class="v">(</span><span class="v">)</span><span> </span><span class="t">+</span><span> </span><span class="q">"\\n"</span><span class="v">)</span><span class="v">;</span><br><span>        </span><span class="v">}</span><br><span>    </span><span class="v">}</span><span> </span><span class="o">else</span><span> </span><span class="v">{</span><br><span>        pq</span><span class="v">.</span><span class="s">add</span><span class="v">(</span><span>input</span><span class="v">)</span><span class="v">;</span><br><span>    </span><span class="v">}</span><br><span class="v">}</span><br></pre>',
+        createdDate: '2025-02-11 11:13:54',
+        imageUrl: null,
+        memberName: '강수밈밈',
+        memberImage:
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+        isAuthor: false,
       },
       {
         articleId: 242,
         articleTitle: '14일에씀',
         articleBody: '<p><span style="white-space: pre-wrap;">????</span></p>',
         createdDate: '2025-01-13 20:33:36',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -127,20 +166,19 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅁㄴㅇ</span></p>',
         createdDate: '2025-01-13 20:29:10',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-        isAuthor: true,
+          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+        isAuthor: false,
       },
       {
-        articleId: 240,
-        articleTitle:
-          '두줄이 넘어가는 제목입니다~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+        articleId: 476,
+        articleTitle: '2/11 class3 - 백준 1927번 : 최소힙',
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">그러네요!!!!</span></p>',
         createdDate: '2025-01-13 19:44:29',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -152,19 +190,7 @@ export const teamArticlesMock = {
         articleBody:
           '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊ</span></p>',
         createdDate: '2025-01-13 19:37:18',
-        imageUrls: null,
-        memberName: '하내안',
-        memberImage:
-          'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-        isAuthor: true,
-      },
-      {
-        articleId: 238,
-        articleTitle: '네 알겠습니다~~',
-        articleBody:
-          '<p dir="ltr"><span style="white-space: pre-wrap;">ㅋㅌㅊㅋㅌㅊ</span></p>',
-        createdDate: '2025-01-13 19:36:57',
-        imageUrls: null,
+        imageUrl: null,
         memberName: '하내안',
         memberImage:
           'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
@@ -174,8 +200,8 @@ export const teamArticlesMock = {
     page: {
       size: 6,
       number: 0,
-      totalElements: 5,
-      totalPages: 4,
+      totalElements: 4,
+      totalPages: 1,
     },
   },
 };
@@ -334,7 +360,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -348,7 +373,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -362,7 +386,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -376,7 +399,6 @@ export const teamCombinedMock = {
         memberLimit: 12,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-26',
       },
@@ -390,7 +412,6 @@ export const teamCombinedMock = {
         memberLimit: 5,
         memberCount: 1,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '',
         createdAt: '2024-12-27',
       },
@@ -404,7 +425,6 @@ export const teamCombinedMock = {
         memberLimit: 10,
         memberCount: 6,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '수정테스트(2025/01/02)',
         createdAt: '2024-12-23',
       },
@@ -418,7 +438,6 @@ export const teamCombinedMock = {
         memberLimit: 11,
         memberCount: 4,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '안녕하세요 공지입니다.',
         createdAt: '2024-12-22',
       },
@@ -432,7 +451,6 @@ export const teamCombinedMock = {
         memberLimit: 20,
         memberCount: 4,
         streakDays: 0,
-        successMemberCount: 0,
         teamAnnouncement: '하이하이하이하이',
         createdAt: '2024-12-22',
       },
@@ -525,7 +543,7 @@ export const teamCombinedMock = {
               memberName: '강수민',
               imageUrl:
                 'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/default-image.png',
-              memberExplain: null,
+              memberExplain: 'Null은 안됨',
               uuid: 'aec0d712-8382-456e-8331-58d705900d98',
             },
           ],
@@ -583,40 +601,41 @@ export const teamCombinedMock = {
   },
 };
 
-export const subjectMock = {
-  status: 'success',
-  code: 200,
-  message: null,
-  data: {
-    articleId: 394,
-    articleCategory: '스터디 복습',
-    articleTitle: '주제주제',
-    articleBody: '<p dir="ltr"><span>이밎이없이</span></p>',
-    createdDate: '2025-01-21 23:26:34',
-    imageUrls: [],
-    authorName: '하내안',
-    authorImageUrl:
-      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
-  },
-};
-// {
-//   status: 'success',
-//   code: 200,
-//   message: null,
-//   data: {
-//     articleId: 98,
-//     articleCategory: '코딩 테스트',
-//     articleTitle: '1/15 오늘의 문제',
-//     articleBody:
-//       '<p dir="ltr"><span style="white-space: pre-wrap;">안녕하세요~ 평일의 가운데 수요일이네요\uD83D\uDE0A</span></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘도 코딩테스트 풀이를 위해 이 곳까지 오셨다니! 아주 잘하고 있습니다\uD83D\uDC4D</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘은 어제보다 쉬운 난이도의 문제 입니다! (힌트: ✨♥️\uD83D\uDC9E♥️✨)</span></p><p dir="ltr"><span style="white-space: pre-wrap;">얼른 빨리 쓱 풀고 쉬러갑시다!! 파이팅\uD83D\uDC23\uD83D\uDC23</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDCE2</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 1/15 오늘의 문제</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">class2 - 백준 1259번 : </span><a href="https://www.acmicpc.net/problem/1259" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">펠린드롬수</span></a></p><p dir="ltr"><span style="white-space: pre-wrap;">class4 - 백준 1043번 : </span><a href="https://www.acmicpc.net/problem/1043" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">거짓말</span></a></p><p><br></p><p><span style="white-space: pre-wrap;">-----------------------------------------------------------------------------------------------------------</span></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDD17</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 문제 풀이 예시 (복사해서 가져가세요!)</strong></b></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">제목 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">1/7 class2 - 백준 1003번 : 피보나치 함수</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 유형 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2중 for문을 활용한 브루트포스</span></p><p dir="ltr"><span style="white-space: pre-wrap;">DFS, BFS를 이용한 완전탐색</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">풀이 방법 도출 과정 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">입력 Size가 1000이기 때문에 완전탐색을 활용하여 1초 내에 문제를 해결할 수 있고 판단, 이를 바탕으로 2중 for문을 활용했다.</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명(예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2차원 배열을 활용하여 Dynamic Programming을 활용했다.</span></p><p><br></p><p dir="ltr"><img src="https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png" alt="이미지"></p>',
-//     createdDate: '2025-01-13 00:22:38',
-//     imageUrl:
-//       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png',
-//     authorName: '강수밈밈',
-//     authorImageUrl:
-//       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
-//   },
-// };
+export const subjectMock =
+  //     {
+  //   status: 'success',
+  //   code: 200,
+  //   message: null,
+  //   data: {
+  //     articleId: 391,
+  //     articleCategory: '스터디 복습',
+  //     articleTitle: '주제주제',
+  //     articleBody: '<p dir="ltr"><span>이밎이없이</span></p>',
+  //     createdDate: '2025-01-21 23:26:34',
+  //     imageUrls: [],
+  //     authorName: '하내안',
+  //     authorImageUrl:
+  //       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/489de088-0b90-48bf-a96a-c5d1fdb50f73.png',
+  //   },
+  // };
+  {
+    status: 'success',
+    code: 200,
+    message: null,
+    data: {
+      articleId: 98,
+      articleCategory: '코딩 테스트',
+      articleTitle: '1/15 오늘의 문제',
+      articleBody:
+        '<p dir="ltr"><span style="white-space: pre-wrap;">안녕하세요~ 평일의 가운데 수요일이네요\uD83D\uDE0A</span></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘도 코딩테스트 풀이를 위해 이 곳까지 오셨다니! 아주 잘하고 있습니다\uD83D\uDC4D</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">오늘은 어제보다 쉬운 난이도의 문제 입니다! (힌트: ✨♥️\uD83D\uDC9E♥️✨)</span></p><p dir="ltr"><span style="white-space: pre-wrap;">얼른 빨리 쓱 풀고 쉬러갑시다!! 파이팅\uD83D\uDC23\uD83D\uDC23</span></p><p><br></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDCE2</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 1/15 오늘의 문제</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">class2 - 백준 1259번 : </span><a href="https://www.acmicpc.net/problem/1259" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">펠린드롬수</span></a></p><p dir="ltr"><span style="white-space: pre-wrap;">class4 - 백준 1043번 : </span><a href="https://www.acmicpc.net/problem/1043" target="_blank" rel="noopener noreferrer" class="editor-link"><span style="white-space: pre-wrap;">거짓말</span></a></p><p><br></p><p><span style="white-space: pre-wrap;">-----------------------------------------------------------------------------------------------------------</span></p><p dir="ltr"><span style="white-space: pre-wrap;">\uD83D\uDD17</span><b><strong class="editor-text-bold" style="white-space: pre-wrap;"> 문제 풀이 예시 (복사해서 가져가세요!)</strong></b></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">제목 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">1/7 class2 - 백준 1003번 : 피보나치 함수</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 유형 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2중 for문을 활용한 브루트포스</span></p><p dir="ltr"><span style="white-space: pre-wrap;">DFS, BFS를 이용한 완전탐색</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">풀이 방법 도출 과정 (예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">입력 Size가 1000이기 때문에 완전탐색을 활용하여 1초 내에 문제를 해결할 수 있고 판단, 이를 바탕으로 2중 for문을 활용했다.</span></p><p><br></p><p dir="ltr"><b><strong class="editor-text-bold" style="white-space: pre-wrap;">문제 풀이 핵심 코드 이미지 삽입 및 간단 설명(예시)</strong></b></p><p dir="ltr"><span style="white-space: pre-wrap;">2차원 배열을 활용하여 Dynamic Programming을 활용했다.</span></p><p><br></p><p dir="ltr"><img src="https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png" alt="이미지"></p>',
+      createdDate: '2025-01-13 00:22:38',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/article/0f83fdc5-e72d-4d84-a0cc-3222f1b15e18.png',
+      authorName: '강수밈밈',
+      authorImageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/d3ac6803-3e66-438b-ac07-1e5091891ea5.png',
+    },
+  };
 
 export const teamPageMock = {
   status: 'success',
@@ -633,7 +652,6 @@ export const teamPageMock = {
       memberLimit: 12,
       memberCount: 1,
       streakDays: 0,
-      successMemberCount: 0,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
     },
@@ -834,5 +852,136 @@ export const teamSearchMock = {
       totalElements: 13,
       totalPages: 3,
     },
+  },
+};
+
+export const teamAdminMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    teamId: 59,
+    teamName: '팀생성1111',
+    teamExplain:
+      '비번 1111. 아 근데 팀 수정 이미지만 바꿨을 때는 버튼 활성화가 안되네',
+    topic: '스터디',
+    memberLimit: 50,
+    password: '1111',
+    teamIconUrl:
+      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/bfb0bae3-0112-4013-b554-9b608a38df63',
+  },
+};
+
+export const teamMemberMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: [
+    {
+      uuid: '048f6e88-d6ef-4112-bac2-1242fff3f584',
+      memberName: '하내안',
+      memberExplain: '껄껄껄껄',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/bc29d0d7-134b-4a71-bcdb-023be71422b7',
+      registerDate: '2025-02-02',
+      isTeamManager: true,
+    },
+    {
+      uuid: 'c7c3d4c4-e8d8-493e-9cf9-e40f7eef41c8',
+      memberName: '강수민',
+      memberExplain: '강수민',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-03',
+      isTeamManager: false,
+    },
+    {
+      uuid: '8a91c3f2-33c3-4c0f-bf34-8123d73e5b9a',
+      memberName: '김민수',
+      memberExplain: '안녕하세요, 김민수입니다.',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-04',
+      isTeamManager: false,
+    },
+    {
+      uuid: '1e8e9f6b-02f4-4852-a8d6-b9273cb984a4',
+      memberName: '이정민',
+      memberExplain: '프론트엔드 개발자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-05',
+      isTeamManager: true,
+    },
+    {
+      uuid: '99e23f1e-7419-47a1-9499-58e6a40e6223',
+      memberName: '박서준',
+      memberExplain: '백엔드 개발자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-06',
+      isTeamManager: false,
+    },
+    {
+      uuid: 'c52d43f5-814b-462e-9d51-25c9e16c15c6',
+      memberName: '최지현',
+      memberExplain: '디자이너',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-07',
+      isTeamManager: false,
+    },
+    {
+      uuid: 'da0c80f1-8d59-42b5-94d4-7ec1bcfd3d20',
+      memberName: '정도현',
+      memberExplain: 'AI 엔지니어',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-08',
+      isTeamManager: true,
+    },
+    {
+      uuid: 'c1ef2c3a-2fd9-49e7-8b69-3f49864de118',
+      memberName: '홍길동',
+      memberExplain: '데이터 분석가',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-09',
+      isTeamManager: false,
+    },
+    {
+      uuid: 'e75b4a9e-611b-470e-b3f6-015f8fbce7d5',
+      memberName: '이지수',
+      memberExplain: '기획자',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-10',
+      isTeamManager: false,
+    },
+    {
+      uuid: 'd4e12c8b-8b8f-4a6f-9b5c-078e6248b2c4',
+      memberName: '김도윤',
+      memberExplain: 'QA 엔지니어',
+      imageUrl:
+        'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',
+      registerDate: '2025-02-11',
+      isTeamManager: true,
+    },
+  ],
+};
+
+export const teamAdminPageMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    teamId: 23,
+    teamName: '팀 이름 바뀌나용?',
+    teamExplain: '12345',
+    topic: '코딩테스트',
+    memberLimit: 7,
+    password: '3456',
+    teamIconUrl:
+      'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
   },
 };
