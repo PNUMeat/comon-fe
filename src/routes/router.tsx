@@ -1,5 +1,6 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
+import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
 import { SingleSectionLayout } from '@/components/layout/SingleSectionLayout';
@@ -20,8 +21,10 @@ import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
 import { Profile } from '@/templates/MyDashboard/Profile';
-import TeamModification from '@/templates/Team/TeamModification.tsx';
+import MemberModification from '@/templates/Team/MemberModification';
+import { TeamInformation } from '@/templates/Team/TeamInformation';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
+import TeamSetting from '@/templates/Team/TeamSetting';
 
 const useAuth = () => {
   if (isDevMode()) {
@@ -122,26 +125,22 @@ export const router = createBrowserRouter(
           ),
         },
         {
-          path: `${PATH.TEAM_SETTING}/team`,
-          element: <TeamModification />,
+          element: (
+            <PrivateRoute>
+              <TeamSetting />
+            </PrivateRoute>
+          ),
+          children: [
+            {
+              path: `${PATH.TEAM_SETTING}/team/:teamId`,
+              element: <TeamInformation />,
+            },
+            {
+              path: `${PATH.TEAM_SETTING}/members/:teamId`,
+              element: <MemberModification />,
+            },
+          ],
         },
-        // {
-        //   element: (
-        //     <PrivateRoute>
-        //       <TeamSetting />
-        //     </PrivateRoute>
-        //   ),
-        //   children: [
-        //     {
-        //       path: `${PATH.TEAM_SETTING}/team`,
-        //       element: <TeamModification />,
-        //     },
-        //     {
-        //       path: `${PATH.TEAM_SETTING}/members`,
-        //       element: <MemberModification />,
-        //     },
-        //   ],
-        // },
         {
           element: (
             <PrivateRoute>
@@ -158,6 +157,10 @@ export const router = createBrowserRouter(
               element: <MyTeams />,
             },
           ],
+        },
+        {
+          path: `${PATH.TEAM_RECRUIT}/posting`,
+          element: <TeamRecruitPosting />,
         },
       ],
     },

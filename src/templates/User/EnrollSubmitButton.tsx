@@ -4,14 +4,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { createProfile } from '@/api/user';
 import { PATH } from '@/routes/path';
+import { isSubmittedAtom } from '@/store/form';
 import {
   formTextInputAtom,
   formTextareaAtom,
   imageAtom,
   isEnrollSatisfiedAtom,
 } from '@/store/form';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { alertAtom } from '@/store/modal';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 export const EnrollSubmitButton = () => {
   const isAllFieldSatisfied = useAtomValue(isEnrollSatisfiedAtom);
@@ -21,6 +22,7 @@ export const EnrollSubmitButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const setAlert = useSetAtom(alertAtom);
+  const setIsSubmitted = useSetAtom(isSubmittedAtom);
 
   const onClick = () => {
     createProfile({
@@ -31,17 +33,27 @@ export const EnrollSubmitButton = () => {
       .then(() => {
         // const previousPath = location.state?.redirect ?? PATH.TEAMS;
         // navigate(previousPath);
+        setIsSubmitted(true);
+
         const navigatePath = location.state?.redirect
           ? location.state.redirect === PATH.HOME
             ? PATH.TEAMS
             : PATH.HOME
           : PATH.HOME;
-        navigate(navigatePath);
-        setAlert({message: '회원가입에 성공했습니다', isVisible: true, onConfirm: () => {}});
+
+        setAlert({
+          message: '회원가입에 성공했습니다',
+          isVisible: true,
+          onConfirm: () => navigate(navigatePath),
+        });
       })
       .catch((err) => {
         console.error(err);
-        setAlert({message: '회원가입에 실패했습니다', isVisible: true, onConfirm: () => {}});
+        setAlert({
+          message: `${err?.response?.data?.message ?? '회원가입에 실패했어요'}`,
+          isVisible: true,
+          onConfirm: () => {},
+        });
       });
   };
 

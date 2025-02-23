@@ -234,6 +234,7 @@ const Posting = () => {
       behavior: 'instant',
     });
   }, []);
+
   if (!id) {
     return <Navigate to={PATH.TEAMS} />;
   }
@@ -363,7 +364,12 @@ const Posting = () => {
             setIsPending(false);
           });
       })
-      .catch(() => {
+      .catch((err) => {
+        // 작성중 강퇴시
+        if (err.response.data.message === '팀에 멤버가 존재하지않습니다.') {
+          navigate(PATH.TEAMS);
+          return;
+        }
         setAlert({
           message: '글쓰기에 실패했어요',
           isVisible: true,

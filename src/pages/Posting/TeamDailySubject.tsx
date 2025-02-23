@@ -185,7 +185,6 @@ const TeamDailySubject = () => {
             const articleId = data.articleId;
             setDashboardView('topic');
             setSelectedPostId(articleId);
-            alert(data.message);
           })
           .catch(() => {
             alert('최신 팀 상태 조회에 실패했습니다.');
