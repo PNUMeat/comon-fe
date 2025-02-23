@@ -50,6 +50,9 @@ const MemberTableGrid = () => {
   );
   const [isModifying, setIsModifying] = useState(false);
 
+  const resetDropdownLabels = () =>
+    setStatuses(Array(teamMembers.length).fill(''));
+
   const handleStatusChange = (index: number, value: string) => {
     setStatuses((prev) => {
       const newStatuses = Array(prev.length).fill('');
@@ -130,14 +133,16 @@ const MemberTableGrid = () => {
         if (confirm('공동 방장으로 지정하시겠어요?')) {
           addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
             .then(() => {
-              queryClient.refetchQueries({ queryKey: ['team-members', 0] });
+              queryClient
+                .refetchQueries({ queryKey: ['team-members', 0] })
+                .then(() => resetDropdownLabels());
               alert('공동 방장으로 지정되었습니다.');
             })
             .catch(() => {
               alert('공동 방장으로 지정하는데 실패했습니다.');
             })
             .finally(() => {
-              // navigate(0);
+              resetDropdownLabels();
             });
         }
       }
@@ -145,14 +150,16 @@ const MemberTableGrid = () => {
         if (confirm('일반 회원으로 변경하시겠어요?')) {
           demotionManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
             .then(() => {
-              queryClient.refetchQueries({ queryKey: ['team-members', 0] });
+              queryClient
+                .refetchQueries({ queryKey: ['team-members', 0] })
+                .then(() => resetDropdownLabels());
               alert('일반 회원으로 변경되었습니다.');
             })
             .catch(() => {
               alert('일반 회원으로 변경하는데 실패했습니다.');
             })
             .finally(() => {
-              // navigate(0);
+              resetDropdownLabels();
             });
         }
       }
