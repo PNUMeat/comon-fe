@@ -106,6 +106,8 @@ export const isEnrollSatisfiedAtom = atom<boolean>((get) => {
   return name.trim().length > 0 && introduction.trim().length > 0 && isAgreed;
 });
 
+export const isSubmittedAtom = atom(false);
+
 /*
     Team
  */

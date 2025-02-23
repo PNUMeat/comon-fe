@@ -81,7 +81,14 @@ apiInstance.interceptors.response.use(
 
     if (error.response) {
       const data = error.response.data;
-      const { code } = data;
+      const { code, message } = data;
+      // 팀 방장 일반회원 강등
+      if (message === '팀 매니저가 옳지 않습니다') {
+        navigate(PATH.TEAMS);
+
+        return Promise.reject(error);
+      }
+
       if (error.response.status === 401) {
         if (code === 100) {
           navigate(PATH.ENROLL);

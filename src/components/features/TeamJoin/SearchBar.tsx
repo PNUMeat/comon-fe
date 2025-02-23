@@ -48,7 +48,7 @@ export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
         onKeyDown={onKeyDown}
         defaultValue={keyword}
       />
-      <SearchIcon onClick={onClickSearch} />
+      <SearchIcon src={MagnifierIcon} onClick={onClickSearch} />
     </SearchBarWrapper>
   );
 };
@@ -84,14 +84,16 @@ const SearchInput = styled.input`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 12px;
+    width: 125px;
   }
 `;
 
-const SearchIcon = styled.div`
+const SearchIcon = styled.img`
   width: 18px;
   height: 18px;
   margin-left: 8px;
-  background: url(${MagnifierIcon}) no-repeat center;
-  background-size: contain;
+  object-fit: contain;
+  // background: url(${MagnifierIcon}) no-repeat center;
+  // background-size: contain;
   cursor: pointer;
 `;

@@ -1,6 +1,8 @@
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
@@ -10,22 +12,26 @@ type DashboardCategories = {
   path: string;
 };
 
+const categories: DashboardCategories[] = [
+  { label: '팀 관리', path: 'team' },
+  { label: '멤버 관리', path: 'members' },
+];
+
 const TeamSetting = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const categories: DashboardCategories[] = [
-    { label: '팀 관리', path: 'team' },
-    { label: '멤버 관리', path: 'members' },
-  ];
-
   const category = location.pathname.split('/')[2];
 
-  const teamId = location.state.teamId;
+  const { teamId } = useParams();
 
-  const handleNavigation = (path: string) => {
-    navigate(path, { state: { teamId } });
-  };
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+  }, []);
 
   return (
     <DashboardGird>
@@ -34,14 +40,24 @@ const TeamSetting = () => {
           <Category
             key={c.path}
             isSelected={c.path === category}
-            onClick={() => handleNavigation(`/team-setting/${c.path}`)}
+            onClick={() =>
+              navigate(`/team-setting/${c.path}/${teamId}`, {
+                state: { teamId },
+              })
+            }
           >
             {c.label}
           </Category>
         ))}
       </DSidebar>
       <DContent>
-      <Outlet />
+        <BackgroundGradient
+          count={1}
+          positions={[{ top: '50%', left: '50%' }]}
+          height="470px"
+          transform="translate(-50%, -50%)"
+        />
+        <Outlet />
         <Spacer h={312} />
       </DContent>
     </DashboardGird>
@@ -56,6 +72,7 @@ const DashboardGird = styled.div`
   grid-template-areas: 'sidebar main';
   gap: 121px;
   margin-top: 54px;
+  // min-height: 766px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     display: block;
@@ -137,6 +154,5 @@ const Category = styled.div<{ isSelected?: boolean }>`
         : ''}
   }
 `;
-
 
 export default TeamSetting;
