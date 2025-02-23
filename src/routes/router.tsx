@@ -15,6 +15,7 @@ import TeamDailySubject from '@/pages/Posting/TeamDailySubject.tsx';
 import TeamAdmin from '@/pages/TeamAdmin/TeamAdmin.tsx';
 import TeamDashboardPage from '@/pages/TeamDashboard/TeamDashboard.tsx';
 import TeamJoinPage from '@/pages/TeamJoin/TeamJoin.tsx';
+import { TeamRecruitListPage } from '@/pages/TeamRecruit/TeamRecruitList';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
@@ -161,6 +162,10 @@ export const router = createBrowserRouter(
         {
           path: `${PATH.TEAM_RECRUIT}/posting`,
           element: <TeamRecruitPosting />,
+        },
+        {
+          path: `${PATH.TEAM_RECRUIT}/list`,
+          element: <TeamRecruitListPage />,
         },
       ],
     },
