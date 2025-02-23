@@ -209,6 +209,9 @@ const TeamDailySubject = () => {
       .catch((err) => {
         alert(err.response.data.message);
         setIsPending(false);
+        if (err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.') {
+          navigate(`team-dashboard/${id}`);
+        }
       });
   };
 
