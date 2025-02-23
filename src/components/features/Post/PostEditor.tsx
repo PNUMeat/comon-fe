@@ -235,6 +235,10 @@ const EditorContainer = styled.div`
   min-height: 700px;
   ${viewStyle}
 
+  .codeblock {
+    max-width: 100%;
+  }
+
   @media (max-width: ${breakpoints.mobile}px) {
     min-height: 400px;
   }
