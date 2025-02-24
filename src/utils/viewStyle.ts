@@ -214,6 +214,7 @@ export const viewStyle = `& {
     overflow-y: hidden;
     position: relative;
     tab-size: 2;
+    white-space: pre;
     
     @media (max-width: ${breakpoints.mobile}px) {
       font-size: 12px;
@@ -221,8 +222,8 @@ export const viewStyle = `& {
 }
 .codeblock span {
     white-space: preserve nowrap !important;
-  
 }
+
 .codeblock:before {
     content: attr(data-gutter);
     position: absolute;

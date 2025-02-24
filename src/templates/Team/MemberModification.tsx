@@ -50,7 +50,7 @@ const MemberTableGrid = () => {
   );
   const [isModifying, setIsModifying] = useState(false);
 
-  const resetDropdownLabels = () =>
+  const resetDropdownLabelsAndCheckbox = () =>
     setStatuses(Array(teamMembers.length).fill(''));
 
   const handleStatusChange = (index: number, value: string) => {
@@ -96,7 +96,9 @@ const MemberTableGrid = () => {
       if (status === '강퇴하기') {
         removeTeamMember({ teamId, memberInfo: sortedTeamMembers[index].uuid })
           .then(() => {
-            queryClient.refetchQueries({ queryKey: ['team-members', 0] });
+            queryClient
+              .refetchQueries({ queryKey: ['team-members', 0] })
+              .then(() => resetDropdownLabelsAndCheckbox());
             alert('강퇴되었습니다.');
           })
           .catch(() => {
@@ -135,14 +137,14 @@ const MemberTableGrid = () => {
             .then(() => {
               queryClient
                 .refetchQueries({ queryKey: ['team-members', 0] })
-                .then(() => resetDropdownLabels());
+                .then(() => resetDropdownLabelsAndCheckbox());
               alert('공동 방장으로 지정되었습니다.');
             })
             .catch(() => {
               alert('공동 방장으로 지정하는데 실패했습니다.');
             })
             .finally(() => {
-              resetDropdownLabels();
+              resetDropdownLabelsAndCheckbox();
             });
         }
       }
@@ -152,14 +154,14 @@ const MemberTableGrid = () => {
             .then(() => {
               queryClient
                 .refetchQueries({ queryKey: ['team-members', 0] })
-                .then(() => resetDropdownLabels());
+                .then(() => resetDropdownLabelsAndCheckbox());
               alert('일반 회원으로 변경되었습니다.');
             })
             .catch(() => {
               alert('일반 회원으로 변경하는데 실패했습니다.');
             })
             .finally(() => {
-              resetDropdownLabels();
+              resetDropdownLabelsAndCheckbox();
             });
         }
       }
