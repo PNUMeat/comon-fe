@@ -284,7 +284,7 @@ const Posting = () => {
                 message: '게시글을 수정했어요',
                 isVisible: true,
                 onConfirm: () => {
-                  navigate(`/team-dashboard/${id}`);
+                  navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
                 },
               });
             })
@@ -354,7 +354,7 @@ const Posting = () => {
               message: '글쓰기를 완료했어요',
               isVisible: true,
               onConfirm: () => {
-                navigate(`/team-dashboard/${id}`);
+                navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
               },
             });
           })
