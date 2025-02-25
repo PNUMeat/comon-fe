@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { createTeam } from '@/api/team';
 import click from '@/assets/TeamJoin/click.png';
+import { PATH } from '@/routes/path.tsx';
 import {
   formTextInputAtom,
   formTextareaAtom,
@@ -42,7 +43,7 @@ export const TeamRegistrationButton = () => {
         image,
       })
         .then((data) => {
-          navigate(`/team-dashboard/${data.teamId}`);
+          navigate(`${PATH.TEAM_DASHBOARD}/${data.teamId}`);
           setAlert({
             message: '팀 생성을 완료했어요',
             isVisible: true,
