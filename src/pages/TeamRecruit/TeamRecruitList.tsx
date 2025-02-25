@@ -286,11 +286,13 @@ export const StyledButton = styled.button<{
   font-family: 'Pretendard';
   font-weight: 700;
   border: none;
+  width: 80px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     border-radius: 4px;
     font-size: 12px;
     font-weight: 600;
+    width: 60px;
   }
 `;
 

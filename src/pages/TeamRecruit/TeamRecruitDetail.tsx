@@ -5,11 +5,15 @@ import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { Link } from 'react-router-dom';
+
+import Click from '@/assets/TeamJoin/click.png';
 import Pencil from '@/assets/TeamRecruit/pencil.svg';
 import Send from '@/assets/TeamRecruit/send.svg';
 import Trash from '@/assets/TeamRecruit/trash.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 import { StyledButton } from './TeamRecruitList';
@@ -56,19 +60,150 @@ const data = {
   ],
 };
 
+// 신청자 0명일 때
+const EmptyState = ({ isAuthor }: { isAuthor: boolean }) => {
+  return isAuthor ? (
+    <>
+      <Spacer h={72} />
+      <SText color="#777" fontWeight={500} fontSize="12px" textAlign="center">
+        대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요
+      </SText>
+      <Spacer h={14} />
+      <RegistrationButton disabled={true}>
+        <img src={Click} style={{ width: '24px', height: '24px' }} />팀 생성하기
+      </RegistrationButton>
+    </>
+  ) : (
+    <>
+      <Spacer h={60} />
+      <SText color="#ccc" fontSize="16px" fontWeight={600} textAlign="center">
+        첫 번째 신청자가 되어보세요
+      </SText>
+    </>
+  );
+};
+
+// 신청자 0명 아닐 때
+const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
+  return (
+    <>
+      {data.teamApplyResponses.map((applicant) => (
+        <ApplicantContainer key={applicant.teamApplyId}>
+          <Flex align="flex-start">
+            <SText
+              color="#000"
+              fontSize="16px"
+              fontWeight={700}
+              fontFamily="Pretendard"
+              lineHeight="normal"
+              style={{ minWidth: '100px' }}
+            >
+              {applicant.memberName}
+            </SText>
+
+            {isAuthor ? (
+              <>
+                <SText
+                  color="#333"
+                  fontSize="14px"
+                  fontWeight={500}
+                  fontFamily="Pretendard"
+                  lineHeight="20px"
+                >
+                  {applicant.teamApplyBody}
+                </SText>
+                <Flex justify="flex-end">
+                  <StyledButton
+                    backgroundColor="#FB676A"
+                    color="#fff"
+                    style={{
+                      height: '30px',
+                      borderRadius: '40px',
+                    }}
+                  >
+                    <SText fontSize="14px" fontWeight={400} lineHeight="normal">
+                      내보내기
+                    </SText>
+                  </StyledButton>
+                </Flex>
+              </>
+            ) : (
+              <>
+                {applicant.isMyApply && (
+                  <>
+                    <SText
+                      color="#333"
+                      fontSize="14px"
+                      fontWeight={500}
+                      fontFamily="Pretendard"
+                      lineHeight="20px"
+                    >
+                      {applicant.teamApplyBody}
+                    </SText>
+                    <Flex gap="10px" justify="flex-end">
+                      <img src={Pencil} alt="수정" />
+                      <img src={Trash} alt="삭제" />
+                    </Flex>
+                  </>
+                )}
+              </>
+            )}
+          </Flex>
+        </ApplicantContainer>
+      ))}
+
+      {isAuthor && (
+        <>
+          <Spacer h={72} />
+          <SText
+            color="#777"
+            fontWeight={500}
+            fontSize="12px"
+            textAlign="center"
+          >
+            신청자들과 함께 팀을 시작할 준비가 되었다면,
+          </SText>
+          <Spacer h={14} />
+          <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
+            <RegistrationButton disabled={false}>
+              <img src={Click} style={{ width: '24px', height: '24px' }} />팀
+              생성하기
+            </RegistrationButton>
+          </Link>
+        </>
+      )}
+    </>
+  );
+};
+
 export const TeamRecruitDetail = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
   return (
     <div style={{ padding: '30px 20px' }}>
-      <StyledButton
-        backgroundColor="#e5e6ed"
-        color="#333"
-        style={{ height: '36px', width: '80px' }}
-      >
-        목록
-      </StyledButton>
+      <Flex height={36}>
+        <StyledButton backgroundColor="#e5e6ed" color="#333">
+          목록
+        </StyledButton>
+        {data.isAuthor && (
+          <Flex gap="12px" justify="flex-end">
+            <StyledButton
+              backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
+              color="#fff"
+              style={{ width: 'auto' }}
+            >
+              {data.isRecruiting ? '모집중단' : '모집재개'}
+            </StyledButton>
+            <StyledButton backgroundColor="#e5e6ed" color="#333">
+              수정
+            </StyledButton>
+            <StyledButton backgroundColor="#e5e6ed" color="#333">
+              삭제
+            </StyledButton>
+          </Flex>
+        )}
+      </Flex>
       <Spacer h={24} />
       <ContentBox>
         <Flex gap="26px" align="center">
@@ -114,64 +249,76 @@ export const TeamRecruitDetail = () => {
         />
       </ContentBox>
       <Spacer h={24} />
-      <ContentBox padding="24px 36px">
-        <Flex align="center" gap="10px">
-          <img src={Send} alt="연락 방법" />
-          <SText
-            color="#333"
-            fontSize="18px"
-            fontWeight={600}
-            fontFamily="Pretendard"
-          >
-            연락 방법
-          </SText>
-        </Flex>
-        <SText
-          color="#333"
-          fontSize="16px"
-          fontWeight={400}
-          fontFamily="Pretendard"
-          lineHeight="normal"
-        >
-          {data.chatUrl}
-        </SText>
-      </ContentBox>
-      <Spacer h={66} />
-      {/* 하단 (신청 관련) */}
+
       {data.isRecruiting && (
         <>
-          <Flex align="center" gap="8px">
-            <img src={Pencil} alt="신청하기" />
+          <ContentBox padding="24px 36px">
+            <Flex align="center" gap="10px">
+              <img src={Send} alt="연락 방법" />
+              <SText
+                color="#333"
+                fontSize="18px"
+                fontWeight={600}
+                fontFamily="Pretendard"
+              >
+                연락 방법
+              </SText>
+            </Flex>
             <SText
               color="#333"
-              fontSize="18px"
-              fontWeight={700}
+              fontSize="16px"
+              fontWeight={400}
               fontFamily="Pretendard"
+              lineHeight="normal"
             >
-              신청하기
+              {data.chatUrl}
             </SText>
-            <Spacer h={0} width={16} />
-            <SText
-              color="#8B8B8B"
-              fontSize="14x"
-              fontWeight={500}
-              fontFamily="Pretendard"
-            >
-              가입 신청 전에 꼭 연락 방법을 확인해 주세요
-            </SText>
-          </Flex>
-          <Spacer h={24} />
-          <ApplyFormContainer>
-            <ApplyInput placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 " />
-            <StyledButton
-              backgroundColor="#6E74FA"
-              color="#fff"
-              style={{ height: '30px', borderRadius: '40px' }}
-            >
-              가입 신청
-            </StyledButton>
-          </ApplyFormContainer>
-          <Spacer h={50} />
+          </ContentBox>
+          <Spacer h={70} />
+
+          {/* 하단 (신청 관련) */}
+          {/* 신청하기 */}
+          {!data.isAuthor && (
+            <>
+              <Flex align="center" gap="8px">
+                <img src={Pencil} alt="신청하기" />
+                <SText
+                  color="#333"
+                  fontSize="18px"
+                  fontWeight={700}
+                  fontFamily="Pretendard"
+                >
+                  신청하기
+                </SText>
+                <Spacer h={0} width={16} />
+                <SText
+                  color="#8B8B8B"
+                  fontSize="14x"
+                  fontWeight={500}
+                  fontFamily="Pretendard"
+                >
+                  가입 신청 전에 꼭 연락 방법을 확인해 주세요
+                </SText>
+              </Flex>
+              <Spacer h={24} />
+              <ApplyFormContainer>
+                <ApplyInput placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 " />
+                <StyledButton
+                  backgroundColor="#6E74FA"
+                  color="#fff"
+                  style={{
+                    width: '100px',
+                    height: '30px',
+                    borderRadius: '40px',
+                  }}
+                >
+                  가입 신청
+                </StyledButton>
+              </ApplyFormContainer>
+              <Spacer h={50} />
+            </>
+          )}
+
           <Flex gap="8px" align="center">
             <SText
               color="#333"
@@ -190,55 +337,13 @@ export const TeamRecruitDetail = () => {
               {data.teamApplyResponses.length}
             </SText>
           </Flex>
+          <Spacer h={24} />
+
+          {/* 신청자 */}
           {data.teamApplyResponses.length === 0 ? (
-            <>
-              <Spacer h={60} />
-              <SText
-                color="#ccc"
-                fontSize="16px"
-                fontWeight={600}
-                textAlign="center"
-              >
-                첫 번째 신청자가 되어보세요
-              </SText>
-            </>
+            <EmptyState isAuthor={data.isAuthor} />
           ) : (
-            <>
-              <Spacer h={24} />
-              {data.teamApplyResponses.map((applicant) => (
-                <ApplicantContainer key={applicant.teamApplyId}>
-                  <Flex align="flex-start">
-                    <SText
-                      color="#000"
-                      fontSize="16px"
-                      fontWeight={700}
-                      fontFamily="Pretendard"
-                      lineHeight="normal"
-                      style={{ minWidth: '100px' }}
-                    >
-                      {applicant.memberName}
-                    </SText>
-                    {applicant.isMyApply && (
-                      <>
-                        <SText
-                          color="#333"
-                          fontSize="14px"
-                          fontWeight={500}
-                          fontFamily="Pretendard"
-                          lineHeight="20px"
-                        >
-                          {applicant.teamApplyBody}
-                        </SText>
-                        <Flex gap="10px" justify="flex-end">
-                          <img src={Pencil} alt="수정" />
-                          <img src={Trash} alt="삭제" />
-                        </Flex>
-                      </>
-                    )}
-                  </Flex>
-                </ApplicantContainer>
-              ))}
-            </>
+            <ApplicantList isAuthor={data.isAuthor} />
           )}
         </>
       )}
@@ -295,4 +400,29 @@ const ApplicantContainer = styled.div`
   background: #fff;
   padding: 20px 24px;
   margin-bottom: 4px;
+`;
+
+const RegistrationButton = styled.div<{ disabled: boolean }>`
+  width: 100%;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: 'Pretendard';
+  gap: 8px;
+  background: ${(props) => (props.disabled ? '#f2f2f2' : '#fff')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  color: ${(props) => (props.disabled ? '#ccc' : '#333')};
+  border: ${(props) =>
+    props.disabled ? 'none' : `1px solid ${colors.buttonPurple}`};
+
+  img {
+    filter: ${(props) =>
+      props.disabled
+        ? 'invert(0%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(95%) contrast(90%)'
+        : ''};
+  }
 `;
