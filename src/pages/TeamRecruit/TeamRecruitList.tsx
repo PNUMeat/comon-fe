@@ -293,6 +293,7 @@ export const StyledButton = styled.button<{
     font-size: 12px;
     font-weight: 600;
     width: 60px;
+    padding: 0px 10px;
   }
 `;
 

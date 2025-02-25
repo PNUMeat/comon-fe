@@ -26,7 +26,7 @@ const data = {
     "<h2>팀원을 모집합니다!</h2><p>우리 팀은 <strong>프론트엔드 개발자</strong>를 찾고 있습니다.</p><ul><li>React, TypeScript 경험자 우대</li><li>주 2회 온라인 미팅</li><li>프로젝트 기간: 3개월</li></ul><p>관심 있는 분은 <a href='mailto:recruit@example.com'>이메일</a>로 지원해주세요!</p>",
   chatUrl:
     'https://open.kakao.com/o/g9F1qXchopen.kakao.com/o/g9F1qXckakao.com/o/g9F1qXchopen.kakao.com/o/g9F1qXckakao.com/o/2d2g 9F1qXchopen.kakao.com/o/g9F1qXc',
-  isRecruiting: true,
+  isRecruiting: false,
   memberNickName: 'test',
   isAuthor: true,
   createdAt: '2025.01.01',
@@ -61,14 +61,25 @@ const data = {
 };
 
 // 신청자 0명일 때
-const EmptyState = ({ isAuthor }: { isAuthor: boolean }) => {
+const EmptyState = ({
+  isAuthor,
+  isMobile,
+}: {
+  isAuthor: boolean;
+  isMobile: boolean;
+}) => {
   return isAuthor ? (
     <>
       <Spacer h={72} />
-      <SText color="#777" fontWeight={500} fontSize="12px" textAlign="center">
+      <SText
+        color="#777"
+        fontWeight={isMobile ? 400 : 500}
+        fontSize={isMobile ? '10px' : '12px'}
+        textAlign="center"
+      >
         대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요
       </SText>
-      <Spacer h={14} />
+      <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
         <img src={Click} style={{ width: '24px', height: '24px' }} />팀 생성하기
       </RegistrationButton>
@@ -84,19 +95,27 @@ const EmptyState = ({ isAuthor }: { isAuthor: boolean }) => {
 };
 
 // 신청자 0명 아닐 때
-const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
+const ApplicantList = ({
+  isAuthor,
+  isMobile,
+}: {
+  isAuthor: boolean;
+  isMobile: boolean;
+}) => {
   return (
     <>
       {data.teamApplyResponses.map((applicant) => (
         <ApplicantContainer key={applicant.teamApplyId}>
-          <Flex align="flex-start">
+          <Flex align="center">
             <SText
               color="#000"
-              fontSize="16px"
+              fontSize={isMobile ? '12px' : '16px'}
               fontWeight={700}
               fontFamily="Pretendard"
               lineHeight="normal"
-              style={{ minWidth: '100px' }}
+              style={{
+                minWidth: isMobile ? '40px' : '100px',
+              }}
             >
               {applicant.memberName}
             </SText>
@@ -105,10 +124,10 @@ const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
               <>
                 <SText
                   color="#333"
-                  fontSize="14px"
+                  fontSize={isMobile ? '10px' : '14px'}
                   fontWeight={500}
                   fontFamily="Pretendard"
-                  lineHeight="20px"
+                  lineHeight={isMobile ? 'normal' : '20px'}
                 >
                   {applicant.teamApplyBody}
                 </SText>
@@ -117,11 +136,15 @@ const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
                     backgroundColor="#FB676A"
                     color="#fff"
                     style={{
-                      height: '30px',
-                      borderRadius: '40px',
+                      height: isMobile ? '26px' : '30px',
+                      borderRadius: isMobile ? '16px' : '40px',
                     }}
                   >
-                    <SText fontSize="14px" fontWeight={400} lineHeight="normal">
+                    <SText
+                      fontSize={isMobile ? '10px' : '14px'}
+                      fontWeight={400}
+                      lineHeight="normal"
+                    >
                       내보내기
                     </SText>
                   </StyledButton>
@@ -133,10 +156,10 @@ const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
                   <>
                     <SText
                       color="#333"
-                      fontSize="14px"
+                      fontSize={isMobile ? '10px' : '14px'}
                       fontWeight={500}
                       fontFamily="Pretendard"
-                      lineHeight="20px"
+                      lineHeight={isMobile ? 'normal' : '20px'}
                     >
                       {applicant.teamApplyBody}
                     </SText>
@@ -154,11 +177,11 @@ const ApplicantList = ({ isAuthor }: { isAuthor: boolean }) => {
 
       {isAuthor && (
         <>
-          <Spacer h={72} />
+          <Spacer h={isMobile ? 48 : 72} />
           <SText
             color="#777"
-            fontWeight={500}
-            fontSize="12px"
+            fontWeight={isMobile ? 400 : 500}
+            fontSize={isMobile ? '10px' : '12px'}
             textAlign="center"
           >
             신청자들과 함께 팀을 시작할 준비가 되었다면,
@@ -181,13 +204,13 @@ export const TeamRecruitDetail = () => {
   const isMobile = width <= breakpoints.mobile;
 
   return (
-    <div style={{ padding: '30px 20px' }}>
-      <Flex height={36}>
+    <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
+      <Flex height={isMobile ? 26 : 36}>
         <StyledButton backgroundColor="#e5e6ed" color="#333">
           목록
         </StyledButton>
         {data.isAuthor && (
-          <Flex gap="12px" justify="flex-end">
+          <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
             <StyledButton
               backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
               color="#fff"
@@ -206,7 +229,11 @@ export const TeamRecruitDetail = () => {
       </Flex>
       <Spacer h={24} />
       <ContentBox>
-        <Flex gap="26px" align="center">
+        <Flex
+          gap={isMobile ? '14px' : '26px'}
+          align={isMobile ? 'flex-start' : 'center'}
+          direction={isMobile ? 'column' : 'row'}
+        >
           <Label
             background={data.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
             padding="4px 10px"
@@ -221,28 +248,27 @@ export const TeamRecruitDetail = () => {
               {data.isRecruiting ? '모집중' : '모집완료'}
             </SText>
           </Label>
-          <SText fontSize="18px" fontWeight={700}>
+          <SText
+            fontSize={isMobile ? '14px' : '18px'}
+            fontWeight={700}
+            fontFamily="Pretendard"
+          >
             {data.teamRecruitTitle}
           </SText>
         </Flex>
-        <Spacer h={8} />
+        <Spacer h={isMobile ? 0 : 8} />
         <SText
           color="#5C5C5C"
           fontSize={isMobile ? '10px' : '12px'}
           fontWeight={400}
           fontFamily="Pretendard"
+          lineHeight="normal"
         >
           {data.memberNickName}
-        </SText>
-        <SText
-          color="#5C5C5C"
-          fontSize={isMobile ? '10px' : '12px'}
-          fontWeight={400}
-          fontFamily="Pretendard"
-        >
+          <br />
           {data.createdAt}
         </SText>
-        <Spacer h={20} />
+        <Spacer h={isMobile ? 0 : 20} />
         <div
           dangerouslySetInnerHTML={{ __html: data.teamRecruitBody }}
           style={{ lineHeight: 'normal' }}
@@ -253,11 +279,18 @@ export const TeamRecruitDetail = () => {
       {data.isRecruiting && (
         <>
           <ContentBox padding="24px 36px">
-            <Flex align="center" gap="10px">
-              <img src={Send} alt="연락 방법" />
+            <Flex align="center" gap={isMobile ? '6px' : '10px'}>
+              <img
+                src={Send}
+                alt="연락 방법"
+                style={{
+                  width: isMobile ? '16px' : '',
+                  height: isMobile ? '16px' : '',
+                }}
+              />
               <SText
                 color="#333"
-                fontSize="18px"
+                fontSize={isMobile ? '14px' : '18px'}
                 fontWeight={600}
                 fontFamily="Pretendard"
               >
@@ -266,15 +299,16 @@ export const TeamRecruitDetail = () => {
             </Flex>
             <SText
               color="#333"
-              fontSize="16px"
+              fontSize={isMobile ? '10px' : '16px'}
               fontWeight={400}
               fontFamily="Pretendard"
               lineHeight="normal"
+              wordBreak="break-word"
             >
               {data.chatUrl}
             </SText>
           </ContentBox>
-          <Spacer h={70} />
+          <Spacer h={isMobile ? 48 : 70} />
 
           {/* 하단 (신청 관련) */}
           {/* 신청하기 */}
@@ -322,7 +356,7 @@ export const TeamRecruitDetail = () => {
           <Flex gap="8px" align="center">
             <SText
               color="#333"
-              fontSize="18px"
+              fontSize={isMobile ? '14px' : '18px'}
               fontWeight={700}
               fontFamily="Pretendard"
             >
@@ -330,20 +364,20 @@ export const TeamRecruitDetail = () => {
             </SText>
             <SText
               color="#6E74FA"
-              fontSize="22px"
+              fontSize={isMobile ? '16px' : '22px'}
               fontWeight={700}
               fontFamily="Pretendard"
             >
               {data.teamApplyResponses.length}
             </SText>
           </Flex>
-          <Spacer h={24} />
+          <Spacer h={isMobile ? 12 : 24} />
 
           {/* 신청자 */}
           {data.teamApplyResponses.length === 0 ? (
-            <EmptyState isAuthor={data.isAuthor} />
+            <EmptyState isAuthor={data.isAuthor} isMobile={isMobile} />
           ) : (
-            <ApplicantList isAuthor={data.isAuthor} />
+            <ApplicantList isAuthor={data.isAuthor} isMobile={isMobile} />
           )}
         </>
       )}
@@ -360,6 +394,11 @@ const ContentBox = styled.div<{ padding?: string }>`
   border-radius: 16px;
   background: #fff;
   box-shadow: 2px 2px 20px 0px rgba(94, 96, 153, 0.2);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 20px 24px;
+    border-radius: 12px;
+  }
 `;
 
 const ApplyFormContainer = styled.div`
@@ -400,6 +439,10 @@ const ApplicantContainer = styled.div`
   background: #fff;
   padding: 20px 24px;
   margin-bottom: 4px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 14px 16px;
+  }
 `;
 
 const RegistrationButton = styled.div<{ disabled: boolean }>`
@@ -417,12 +460,17 @@ const RegistrationButton = styled.div<{ disabled: boolean }>`
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   color: ${(props) => (props.disabled ? '#ccc' : '#333')};
   border: ${(props) =>
-    props.disabled ? 'none' : `1px solid ${colors.buttonPurple}`};
+    props.disabled ? 'none' : `1px solid ${colors.borderPurple}`};
 
   img {
     filter: ${(props) =>
       props.disabled
         ? 'invert(0%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(95%) contrast(90%)'
         : ''};
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 48px;
+    border-radius: 40px;
   }
 `;
