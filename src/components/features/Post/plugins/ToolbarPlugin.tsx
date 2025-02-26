@@ -3,6 +3,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { SText } from '@/components/commons/SText';
 import { Tag } from '@/components/commons/Tag';
 import { convertToKoreanIfIsKoreanFont } from '@/components/features/Post/constants';
+import { parseHtmlStrToLexicalNodes } from '@/components/features/Post/plugins/InitContentPlugin.tsx';
 import { FontDropdown } from '@/components/features/Post/segments/FontDropdown';
 import { InsertImageButton } from '@/components/features/Post/segments/InsertImageButton';
 import {
@@ -22,6 +23,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $getSelectionStyleValueForProperty } from '@lexical/selection';
 import { mergeRegister } from '@lexical/utils';
 import {
+  $getRoot,
   $getSelection,
   $isRangeSelection,
   COMMAND_PRIORITY_CRITICAL,
@@ -151,6 +153,18 @@ export const ToolbarPlugin: React.FC<{
     setIsLinkEditMode(false);
     activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
   }, [activeEditor, isLink, setIsLinkEditMode]);
+
+  const insertTemplate = useCallback(() => {
+    editor.update(() => {
+      $getRoot().select();
+      const nodes = parseHtmlStrToLexicalNodes(template);
+
+      const selection = $getSelection();
+      if (selection) {
+        selection.insertNodes(nodes);
+      }
+    });
+  }, [editor]);
 
   const insertImage = (payload: InsertImagePayload) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
@@ -298,24 +312,38 @@ export const ToolbarPlugin: React.FC<{
           ))}
         </div>
       ) : null}
+
       <div
         style={{
           display: 'flex',
-          width: '69px',
+          width: setTag ? '69px' : '169px',
           justifyContent: 'space-between',
         }}
       >
-        <button onClick={insertLink}>
-          <InsertIcon
-            src={linkIcon}
-            alt={'insert link button'}
-            isSelected={isLink}
+        {!setTag && (
+          <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+        )}
+        <div
+          style={{
+            display: 'flex',
+            width: '69px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <button onClick={insertLink}>
+            <InsertIcon
+              src={linkIcon}
+              alt={'insert link button'}
+              isSelected={isLink}
+            />
+          </button>
+          <InsertImageButton
+            insertImage={insertImage}
+            buttonLabel={
+              <InsertIcon src={imgIcon} alt={'insert image button'} />
+            }
           />
-        </button>
-        <InsertImageButton
-          insertImage={insertImage}
-          buttonLabel={<InsertIcon src={imgIcon} alt={'insert image button'} />}
-        />
+        </div>
       </div>
     </ToolbarWrap>
   );
@@ -326,3 +354,23 @@ const InsertIcon = styled.img<{ isSelected?: boolean }>`
   margin-left: 8px;
   border: ${(props) => (props.isSelected ? '1px solid #ccc' : undefined)};
 `;
+
+const TemplateButton = styled.button`
+  border-radius: 4px;
+  background: #cdcfff;
+  color: #6e74fa;
+  display: grid;
+  place-items: center;
+  width: 69px;
+  height: 28px;
+  flex-shrink: 0;
+
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const template =
+  '<p dir="ltr"><span class="editor-text-bold" style="">제목</span></p><p dir="ltr"><span style="">( 1/1 - class_ : 백준 )</span></p><p><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">문제 유형</span></p><p><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">풀이 방법 도출</span></p><ol><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ol><p dir="ltr"><br></p><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">시간 복잡도</span></p><ul><li value="1" class="editor-listitem"></li><li value="2" class="editor-listitem"></li></ul><p><br></p><p dir="ltr"><span class="editor-text-bold" style="">핵심 코드 삽입 및 설명</span></p><p><br></p><p dir="ltr"><br></p>';
