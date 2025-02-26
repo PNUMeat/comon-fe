@@ -312,7 +312,6 @@ export const ToolbarPlugin: React.FC<{
           ))}
         </div>
       ) : null}
-      {/*{!setTag && <button>탬플릿</button>}*/}
 
       <div
         style={{
@@ -321,7 +320,9 @@ export const ToolbarPlugin: React.FC<{
           justifyContent: 'space-between',
         }}
       >
-        <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+        {!setTag && (
+          <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+        )}
         <div
           style={{
             display: 'flex',
