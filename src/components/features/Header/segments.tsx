@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import navArrow from '@/assets/Header/jumpArrow.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
+import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
 
 export const ProfileBoxContainer = styled.div`
@@ -124,7 +125,7 @@ export const MyTeamNav: React.FC<{
   return (
     <TeamNavWrapper
       onClick={() => {
-        navigate(`/team-dashboard/${teamId}`);
+        navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
       }}
     >
       <TeamInfoWrap>

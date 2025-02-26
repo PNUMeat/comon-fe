@@ -236,21 +236,7 @@ const EditorContainer = styled.div`
   ${viewStyle}
 
   .codeblock {
-    background-color: #f8f6f2;
-    font-family: Menlo, Consolas, Monaco, monospace;
-    display: block;
-    padding: 8px 8px 8px 52px;
-    line-height: 1.53;
-    font-size: 16px;
-    margin: 8px 0;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    position: relative;
-    tab-size: 2;
-
-    @media (max-width: ${breakpoints.mobile}px) {
-      font-size: 12px;
-    }
+    max-width: 100%;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {

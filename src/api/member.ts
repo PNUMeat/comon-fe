@@ -3,6 +3,7 @@ import { isDevMode } from '@/utils/cookie.ts';
 import apiInstance, { navigate } from '@/api/apiInstance';
 import { teamMemberMock } from '@/api/mocks';
 import { ServerResponse } from '@/api/types';
+import { PATH } from '@/routes/path.tsx';
 import { AxiosError } from 'axios';
 
 export interface IMemberCommon {
@@ -37,7 +38,7 @@ export const getTeamMembers = async (
       err instanceof AxiosError &&
       err?.response?.data?.message === '팀의 매니저가 옳지 않습니다.'
     ) {
-      navigate(`/team-dashboard/${teamId}`);
+      navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
     }
     throw err;
   }
