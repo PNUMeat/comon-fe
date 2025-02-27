@@ -190,6 +190,10 @@ const TextFlex = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 10px;
+  }
 `;
 
 const TextFormatButton = styled.button<{
@@ -208,6 +212,6 @@ const TextFormatButton = styled.button<{
     textStyle === 'strikethrough' && 'text-decoration: line-through;'}
     
     @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 16px;
+    font-size: 12px;
   }
 `;
