@@ -216,7 +216,17 @@ export const ToolbarPlugin: React.FC<{
             </div>
             <HorizontalLine />
           </>
-        ) : null}
+        ) : (
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+            </div>
+            )}
 
         <div
           style={{
@@ -241,8 +251,9 @@ export const ToolbarPlugin: React.FC<{
           <div
             style={{
               display: 'flex',
-              width: '69px',
-              justifyContent: 'space-between',
+              width: '100%',
+              justifyContent: 'flex-end',
+              gap: '10px',
             }}
           >
             <button onClick={insertLink}>
@@ -353,6 +364,11 @@ const InsertIcon = styled.img<{ isSelected?: boolean }>`
   width: 20px;
   margin-left: 8px;
   border: ${(props) => (props.isSelected ? '1px solid #ccc' : undefined)};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    margin-left: 5px;
+  }
 `;
 
 const TemplateButton = styled.button`
