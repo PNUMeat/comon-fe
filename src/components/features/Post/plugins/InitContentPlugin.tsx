@@ -58,7 +58,11 @@ const getFormatFromClasses = (classes: string[]): number => {
   return 0;
 };
 
-const parseHtmlStrToLexicalNodes = (htmlString: string): LexicalNode[] => {
+// 나중에 따로 뺌
+// eslint-disable-next-line
+export const parseHtmlStrToLexicalNodes = (
+  htmlString: string
+): LexicalNode[] => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(htmlString, 'text/html');
   const { body } = dom;
