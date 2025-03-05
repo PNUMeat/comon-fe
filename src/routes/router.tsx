@@ -158,10 +158,10 @@ export const router = createBrowserRouter(
             },
           ],
         },
-        // {
-        //   path: `${PATH.TEAM_RECRUIT}/posting`,
-        //   element: <TeamRecruitPosting />,
-        // },
+        {
+          path: `${PATH.TEAM_RECRUIT}/posting`,
+          element: <TeamRecruitPosting />,
+        },
       ],
     },
     {

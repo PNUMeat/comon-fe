@@ -13,42 +13,22 @@ import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 
 export const TeamRecruitPosting = () => {
-  const [isMobile, setIsMobile ] = useState(window.innerWidth < breakpoints.mobile);
-  const getFontSize = () => (isMobile ? "14px" : "18px");
-  const [fontSize, setFontSize] = useState(getFontSize());
-  const [content, setContent] = useState<string>(getRecruitDefaultData(getFontSize()));
+  const isMobile = window.innerWidth < breakpoints.mobile;
+  const [content, setContent] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
   const [postTitle, setPostTitle] = useState('');
   const [contact, setContact] = useState<string>('');
 
   const isButtonDisabled = !postTitle.trim() || !content.trim() || !contact.trim();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < breakpoints.mobile);
-    };
-    
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    const newFontSize = isMobile ? "14px" : "18px";
-    if (fontSize !== newFontSize) {
-      setFontSize(newFontSize);
-      setContent(getRecruitDefaultData(newFontSize));
-    }
-  }, [isMobile]);
+  const onClick = () => {
+    console.log('작성 완료');
+  };
 
   
   return (
     <ContentWrapper>
       <PostSubjectViewer />
         <PostEditor
-            key={fontSize}
             forwardContent={setContent}
             forwardTitle={setPostTitle}
             content={content}
@@ -72,7 +52,7 @@ export const TeamRecruitPosting = () => {
             <ConfirmButtonWrap
             disabled={isButtonDisabled}
             isPending={false}
-            onClick={() => {}}
+            onClick={onClick}
           >
           <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
