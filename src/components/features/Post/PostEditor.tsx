@@ -236,21 +236,7 @@ const EditorContainer = styled.div`
   ${viewStyle}
 
   .codeblock {
-    background-color: #f8f6f2;
-    font-family: Menlo, Consolas, Monaco, monospace;
-    display: block;
-    padding: 8px 8px 8px 52px;
-    line-height: 1.53;
-    font-size: 16px;
-    margin: 8px 0;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    position: relative;
-    tab-size: 2;
-
-    @media (max-width: ${breakpoints.mobile}px) {
-      font-size: 12px;
-    }
+    max-width: 100%;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
@@ -324,9 +310,17 @@ const blobUrlToFile = async (blobUrl: string, fileName: string) => {
   })
     .then((res) => res.blob())
     .then((blob) => new File([blob], fileName, { type: blob.type }))
-    .catch((error) => {
+    .catch(async (error) => {
       console.error('Error converting blob URL to file:', error);
-      throw error;
+      // throw error;
+      return await fetch(
+        'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
+        {
+          mode: 'cors',
+        }
+      )
+        .then((res) => res.blob())
+        .then((blob) => new File([blob], fileName, { type: blob.type }));
     });
 };
 
@@ -395,7 +389,9 @@ const useDetectImageMutation = () => {
                 return;
               }
 
-              if (images.length === 0 && firstNodeKey.current === '') {
+              console.log('nodeKey', firstNodeKey.current, images);
+              // if (images.length === 0 && firstNodeKey.current === '') {
+              if (firstNodeKey.current === '') {
                 firstNodeKey.current = nodeKey;
               }
               // 이미지 최대 하나로 제한
@@ -498,6 +494,7 @@ const useDetectImageMutation = () => {
     );
 
     return () => {
+      // firstNodeKey.current = '';
       unregisterMutationListener();
     };
   }, [editor, images]);
