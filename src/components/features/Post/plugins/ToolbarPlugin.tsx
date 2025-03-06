@@ -88,6 +88,8 @@ export const ToolbarPlugin: React.FC<{
   const [isStrikethrough, setIsStrikethrough] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
+  const isRecruitPost = document.location.pathname.includes('team-recruit');
+  console.log(isRecruitPost);
 
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
@@ -224,7 +226,7 @@ export const ToolbarPlugin: React.FC<{
                 justifyContent: 'flex-end',
               }}
             >
-              <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+              { !isRecruitPost && <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton> }
             </div>
             )}
 
@@ -328,10 +330,10 @@ export const ToolbarPlugin: React.FC<{
         style={{
           display: 'flex',
           width: setTag ? '69px' : '169px',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
         }}
       >
-        {!setTag && (
+        { ( !setTag && !isRecruitPost) && (
           <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
         )}
         <div
@@ -380,12 +382,17 @@ const TemplateButton = styled.button`
   width: 69px;
   height: 28px;
   flex-shrink: 0;
+  margin-right: 10px;
 
   font-family: 'Pretendard';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-right: 0;
+  }
 `;
 
 const template =
