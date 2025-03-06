@@ -201,15 +201,7 @@ const initialConfig = {
           const textNode = node as TextNode;
           const format = textNode.getFormat();
           const style = textNode.getStyle();
-          const type = textNode.getType();
-          let element = null;
-          if (type === 'subscript') {
-            element = document.createElement('sub');
-          } else if (type === 'superscript') {
-            element = document.createElement('sup');
-          } else {
-            element = document.createElement('span');
-          }
+          const element = document.createElement('span');
 
           if (format === 1) {
             element.className = 'editor-text-bold';
@@ -226,9 +218,11 @@ const initialConfig = {
           } else if (format === 7) {
             element.className =
               'editor-text-bold editor-text-italic editor-text-strikethrough';
+          } else if (format === 32) {
+            element.className = 'editor-text-subscript';
+          } else if (format === 64) {
+            element.className = 'editor-text-superscript';
           }
-
-          // if (element.)
 
           element.textContent = textNode.getTextContent();
           element.setAttribute('style', style);
