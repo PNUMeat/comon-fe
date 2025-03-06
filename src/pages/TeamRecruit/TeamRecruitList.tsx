@@ -10,55 +10,40 @@ import { Spacer } from '@/components/commons/Spacer';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { getTeamRecruitList } from '@/api/recruitment';
 import click from '@/assets/TeamJoin/click.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
-// TODO:
-const teamList = [
-  {
-    id: 1,
-    title: '백준 스터디',
-    author: '파댕이',
-    date: '2024.02.05',
-    status: '모집중',
-    description:
-      '[코드 몬스터] 🚀 팀 코딩 테스트 함께 하실 분 모집!함께 성장하고 도전하며, 효율적으로 코딩 실력을 쌓아갈 열정 있는 분을 찾고 있습니다. 혼자가 아닌 팀과 함께 목표를 이루고 싶다면 지금 바로 참여하세요! 매일 꾸준히 코딩 테스트를 연습하며 실력을 키우고 싶은 분, 라이트한 분위기에서 즐겁게 함께...',
-  },
-  {
-    id: 2,
-    title: 'React 스터디 모집',
-    author: 'React러버',
-    date: '2024.02.10',
-    status: '모집중',
-    description:
-      '[코드 몬스터] 🚀 팀 코딩 테스트 함께 하실 분 모집!함께 성장하고 도전하며, 효율적으로 코딩 실력을 쌓아갈 열정 있는 분을 찾고 있습니다. 혼자가 아닌 팀과 함께 목표를 이루고 싶다면 지금 바로 참여하세요! 매일 꾸준히 코딩 테스트를 연습하며 실력을 키우고 싶은 분, 라이트한 분위기에서 즐겁게 함께...',
-  },
-  {
-    id: 3,
-    title: '알고리즘 스터디',
-    author: '알고몬',
-    date: '2024.01.31',
-    status: '모집완료',
-    description: 'absdfsadasffsa',
-  },
-];
-
-const tabs = [
+const tabs: { label: string; value: 'all' | 'open' | 'closed' }[] = [
   { label: '전체', value: 'all' },
-  { label: '모집중', value: 'ongoing' },
-  { label: '모집완료', value: 'done' },
+  { label: '모집중', value: 'open' },
+  { label: '모집완료', value: 'closed' },
 ];
 
 export const TeamRecruitListPage = () => {
-  const [selectedTab, setSelectedTab] = useState<'all' | 'ongoing' | 'done'>(
+  const [selectedTab, setSelectedTab] = useState<'all' | 'open' | 'closed'>(
     'all'
   );
+  const [currentPage, setCurrentPage] = useState(0);
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+
+  const { data: teamList } = useQuery({
+    queryKey: ['teamRecruits', selectedTab, currentPage],
+    queryFn: () => getTeamRecruitList(selectedTab, currentPage, 5),
+    placeholderData: (previousData) => previousData,
+  });
+
+  const totalPages = teamList?.page?.totalPages ?? 1;
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <div style={{ padding: isMobile ? '0px' : '30px 20px' }}>
@@ -87,7 +72,7 @@ export const TeamRecruitListPage = () => {
             <TabButton
               key={tab.value}
               isActive={selectedTab === tab.value}
-              onClick={() => setSelectedTab('all')} // TODO:
+              onClick={() => setSelectedTab(tab.value)}
             >
               {tab.label}
             </TabButton>
@@ -110,12 +95,14 @@ export const TeamRecruitListPage = () => {
       <Spacer h={isMobile ? 24 : 36} />
       {/* 모집글 리스트 */}
       <Flex direction="column" gap={isMobile ? '6px' : '8px'}>
-        {teamList.length > 0 ? (
-          teamList.map((team) => (
-            <Card key={team.id}>
+        {(teamList?.content ?? []).length > 0 ? (
+          (teamList?.content ?? []).map((team) => (
+            <Card key={team.recruitmentId}>
               <Flex gap={isMobile ? '8px' : '16px'} align="center">
                 <Label
-                  background={colors.buttonPurple}
+                  background={
+                    team.isRecruiting ? colors.buttonPurple : '#8E8E8E'
+                  }
                   padding="4px 10px"
                   style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
                 >
@@ -125,7 +112,7 @@ export const TeamRecruitListPage = () => {
                     fontWeight={700}
                     fontFamily="Pretendard"
                   >
-                    {team.status}
+                    {team.isRecruiting ? '모집중' : '모집완료'}
                   </SText>
                 </Label>
                 <SText
@@ -134,7 +121,7 @@ export const TeamRecruitListPage = () => {
                   fontWeight={700}
                   fontFamily="Pretendard"
                 >
-                  {team.title}
+                  {team.teamRecruitTitle}
                 </SText>
               </Flex>
               <SText
@@ -147,7 +134,7 @@ export const TeamRecruitListPage = () => {
                   height: isMobile ? '28px' : '40px',
                 }}
               >
-                {team.description}
+                {team.teamRecruitBody}
               </SText>
               <Flex gap="12px">
                 <SText
@@ -156,7 +143,7 @@ export const TeamRecruitListPage = () => {
                   fontWeight={500}
                   fontFamily="Pretendard"
                 >
-                  {team.author}
+                  {team.memberName}
                 </SText>
                 <SText
                   color="#5C5C5C"
@@ -164,7 +151,7 @@ export const TeamRecruitListPage = () => {
                   fontWeight={400}
                   fontFamily="Pretendard"
                 >
-                  {team.date}
+                  {team.createdAt}
                 </SText>
               </Flex>
             </Card>
@@ -182,9 +169,9 @@ export const TeamRecruitListPage = () => {
       </Flex>
       <Spacer h={36} />
       <Pagination
-        totalPages={5}
-        onPageChange={() => {}}
-        currentPageProp={3}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        currentPageProp={currentPage}
         hideShadow={true}
       />
       <Spacer h={isMobile ? 36 : 56} />
