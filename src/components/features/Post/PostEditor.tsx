@@ -199,9 +199,17 @@ const initialConfig = {
         TextNode,
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
           const textNode = node as TextNode;
-          const element = document.createElement('span');
           const format = textNode.getFormat();
           const style = textNode.getStyle();
+          const type = textNode.getType();
+          let element = null;
+          if (type === 'subscript') {
+            element = document.createElement('sub');
+          } else if (type === 'superscript') {
+            element = document.createElement('sup');
+          } else {
+            element = document.createElement('span');
+          }
 
           if (format === 1) {
             element.className = 'editor-text-bold';
@@ -219,6 +227,8 @@ const initialConfig = {
             element.className =
               'editor-text-bold editor-text-italic editor-text-strikethrough';
           }
+
+          // if (element.)
 
           element.textContent = textNode.getTextContent();
           element.setAttribute('style', style);
