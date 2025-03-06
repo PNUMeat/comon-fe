@@ -1,7 +1,7 @@
 import { SText } from "@/components/commons/SText";
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
-import PostEditor from "../Post/PostEditor";
+import PostEditor from "@/components/features/Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
@@ -11,17 +11,59 @@ import { getRecruitDefaultData } from "@/components/features/TeamRecruit/Recruit
 import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
+import { createRecruitPost } from "@/api/recruitment";
+import { useParams } from "react-router-dom";
+import { useAtom, useSetAtom } from "jotai";
+import { alertAtom } from "@/store/modal";
+import { postImagesAtom } from "@/store/posting";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
-  const [content, setContent] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
-  const [postTitle, setPostTitle] = useState('');
-  const [contact, setContact] = useState<string>('');
+  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
+  const [chatUrl, setChatUrl] = useState('');
+  const [postImages, setPostImages] = useAtom(postImagesAtom);
+  const chatUrlRef = useRef<HTMLTextAreaElement>(null);
+  const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
+  const setAlert = useSetAtom(alertAtom);
 
-  const isButtonDisabled = !postTitle.trim() || !content.trim() || !contact.trim();
+  const isButtonDisabled = !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setChatUrl(e.target.value);
+  }
 
   const onClick = () => {
-    console.log('작성 완료');
+    createRecruitPost({
+      teamId:
+      id ? id : null,
+      teamRecruitTitle : teamRecruitTitle,
+      teamRecruitBody : teamRecruitBody,
+      image : 
+      postImages.length > 0
+      ? postImages
+          .sort((a, b) => {
+            if (a.line !== b.line) {
+              return a.line - b.line;
+            }
+            return a.idx - b.idx;
+          })
+          .map((imgObj) => imgObj.img)
+      : null,
+      chatUrl: chatUrl,
+    })
+    .then((res) => {
+      setPostImages([]);
+      console.log(res);
+      // 게시글 상세 이동해야함
+    })
+    .catch((err) => {
+      setAlert({
+        message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    });
   };
 
   
@@ -29,10 +71,10 @@ export const TeamRecruitPosting = () => {
     <ContentWrapper>
       <PostSubjectViewer />
         <PostEditor
-            forwardContent={setContent}
-            forwardTitle={setPostTitle}
-            content={content}
-            title={postTitle}
+            forwardContent={setTeamRecruitBody}
+            forwardTitle={setTeamRecruitTitle}
+            content={teamRecruitBody}
+            title={teamRecruitTitle}
           />
           <Spacer h={10} />
           <ContactWrapper>
@@ -44,8 +86,8 @@ export const TeamRecruitPosting = () => {
               <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
             </Contact>
             <TeamRecruitInput 
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
+              ref={chatUrlRef}
+              onChange={onChange}
             />
             </ContactWrapper>
             <Spacer h={30} />
@@ -251,7 +293,7 @@ const ContactWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   padding: 20px 40px;
-  height: 100px;
+  height: auto;
   width: calc(100% - 12px);
   border-radius: 16px;
   box-sizing: border-box;

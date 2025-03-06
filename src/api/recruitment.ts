@@ -2,7 +2,7 @@ import { ServerResponse } from '@/api/types';
 import apiInstance from "./apiInstance";
 
 interface ICreateRecuitmentRequest {
-  teamId?: string;
+  teamId?: string | null;
   teamRecruitTitle: string;
   teamRecruitBody: string;
   image?: File[] | null;
@@ -13,7 +13,7 @@ interface ICreateRecuitmentResponse {
   teamRecruitId: number;
 }
 
-export const createRecruitment = async ({
+export const createRecruitPost = async ({
   teamId,
   teamRecruitTitle,
   teamRecruitBody,
