@@ -5,8 +5,12 @@ import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
+import {
+  ITeamRecruitDetailResponse,
+  getTeamRecruitById,
+} from '@/api/recruitment';
 import Click from '@/assets/TeamJoin/click.png';
 import Pencil from '@/assets/TeamRecruit/pencil.svg';
 import Send from '@/assets/TeamRecruit/send.svg';
@@ -15,50 +19,9 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
 import { StyledButton } from './TeamRecruitList';
-
-// TODO:
-const data = {
-  teamRecruitId: 1,
-  teamRecruitTitle: 'test',
-  teamRecruitBody:
-    "<h2>팀원을 모집합니다!</h2><p>우리 팀은 <strong>프론트엔드 개발자</strong>를 찾고 있습니다.</p><ul><li>React, TypeScript 경험자 우대</li><li>주 2회 온라인 미팅</li><li>프로젝트 기간: 3개월</li></ul><p>관심 있는 분은 <a href='mailto:recruit@example.com'>이메일</a>로 지원해주세요!</p>",
-  chatUrl:
-    'https://open.kakao.com/o/g9F1qXchopen.kakao.com/o/g9F1qXckakao.com/o/g9F1qXchopen.kakao.com/o/g9F1qXckakao.com/o/2d2g 9F1qXchopen.kakao.com/o/g9F1qXc',
-  isRecruiting: true, // TODO: 바꿔보기
-  memberNickName: 'test',
-  isAuthor: false, // TODO: 바꿔보기
-  createdAt: '2025.01.01',
-  teamId: '팀 있으면 ID 없으면 null',
-  teamApplyResponses: [
-    {
-      teamApplyId: 1,
-      teamApplyBody:
-        '안녕하세요, 스터디에 지원합니다! 저는 현재 대학교 3학년으로, 코딩 테스트를 준비 중인 학생입니다.',
-      memberName: 'test',
-      isMyApply: true,
-    },
-    {
-      teamApplyId: 2,
-      teamApplyBody: 'test2',
-      memberName: '파댕이',
-      isMyApply: false,
-    },
-    {
-      teamApplyId: 3,
-      teamApplyBody: 'test3',
-      memberName: '파댕이222',
-      isMyApply: false,
-    },
-    {
-      teamApplyId: 4,
-      teamApplyBody: 'rsesfsdffsdas',
-      memberName: '파댕이/6days',
-      isMyApply: false,
-    },
-  ],
-};
 
 // 신청자 0명일 때
 const EmptyState = ({
@@ -96,9 +59,11 @@ const EmptyState = ({
 
 // 신청자 0명 아닐 때
 const ApplicantList = ({
+  data,
   isAuthor,
   isMobile,
 }: {
+  data: ITeamRecruitDetailResponse;
   isAuthor: boolean;
   isMobile: boolean;
 }) => {
@@ -128,6 +93,7 @@ const ApplicantList = ({
                   fontWeight={500}
                   fontFamily="Pretendard"
                   lineHeight={isMobile ? 'normal' : '20px'}
+                  style={{ width: '100%' }}
                 >
                   {applicant.teamApplyBody}
                 </SText>
@@ -216,14 +182,23 @@ const ApplicantList = ({
 export const TeamRecruitDetail = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+  const { recruitId } = useParams();
+
+  const { data } = useQuery({
+    queryKey: ['teamRecruitDetail', recruitId],
+    queryFn: () => getTeamRecruitById(Number(recruitId)),
+    enabled: !!recruitId,
+  });
 
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
-        <StyledButton backgroundColor="#e5e6ed" color="#333">
-          목록
-        </StyledButton>
-        {data.isAuthor && (
+        <Link to={`${PATH.TEAM_RECRUIT}/list`}>
+          <StyledButton backgroundColor="#e5e6ed" color="#333">
+            목록
+          </StyledButton>
+        </Link>
+        {data?.isAuthor && (
           <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
             <StyledButton
               backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
@@ -249,7 +224,7 @@ export const TeamRecruitDetail = () => {
           direction={isMobile ? 'column' : 'row'}
         >
           <Label
-            background={data.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
+            background={data?.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
             padding="4px 10px"
             style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
           >
@@ -259,7 +234,7 @@ export const TeamRecruitDetail = () => {
               fontWeight={700}
               fontFamily="Pretendard"
             >
-              {data.isRecruiting ? '모집중' : '모집완료'}
+              {data?.isRecruiting ? '모집중' : '모집완료'}
             </SText>
           </Label>
           <SText
@@ -267,7 +242,7 @@ export const TeamRecruitDetail = () => {
             fontWeight={700}
             fontFamily="Pretendard"
           >
-            {data.teamRecruitTitle}
+            {data?.teamRecruitTitle}
           </SText>
         </Flex>
         <Spacer h={isMobile ? 0 : 8} />
@@ -278,19 +253,19 @@ export const TeamRecruitDetail = () => {
           fontFamily="Pretendard"
           lineHeight="normal"
         >
-          {data.memberNickName}
+          {data?.memberNickName}
           <br />
-          {data.createdAt}
+          {data?.createdAt}
         </SText>
         <Spacer h={isMobile ? 0 : 20} />
         <div
-          dangerouslySetInnerHTML={{ __html: data.teamRecruitBody }}
+          dangerouslySetInnerHTML={{ __html: data?.teamRecruitBody ?? '' }}
           style={{ lineHeight: 'normal' }}
         />
       </ContentBox>
       <Spacer h={24} />
 
-      {data.isRecruiting && (
+      {data?.isRecruiting && (
         <>
           <ContentBox padding="24px 36px">
             <Flex align="center" gap={isMobile ? '6px' : '10px'}>
@@ -403,7 +378,11 @@ export const TeamRecruitDetail = () => {
           {data.teamApplyResponses.length === 0 ? (
             <EmptyState isAuthor={data.isAuthor} isMobile={isMobile} />
           ) : (
-            <ApplicantList isAuthor={data.isAuthor} isMobile={isMobile} />
+            <ApplicantList
+              data={data}
+              isAuthor={data.isAuthor}
+              isMobile={isMobile}
+            />
           )}
         </>
       )}

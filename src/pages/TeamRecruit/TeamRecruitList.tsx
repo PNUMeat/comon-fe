@@ -101,64 +101,73 @@ export const TeamRecruitListPage = () => {
       <Flex direction="column" gap={isMobile ? '6px' : '8px'}>
         {(teamList?.content ?? []).length > 0 ? (
           (teamList?.content ?? []).map((team) => (
-            <Card key={team.recruitmentId}>
-              <Flex gap={isMobile ? '8px' : '16px'} align="center">
-                <Label
-                  background={
-                    team.isRecruiting ? colors.buttonPurple : '#8E8E8E'
-                  }
-                  padding="4px 10px"
-                  style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
-                >
+            <Link
+              to={`${PATH.TEAM_RECRUIT}/detail/${team.recruitmentId}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <Card key={team.recruitmentId}>
+                <Flex gap={isMobile ? '8px' : '16px'} align="center">
+                  <Label
+                    background={
+                      team.isRecruiting ? colors.buttonPurple : '#8E8E8E'
+                    }
+                    padding="4px 10px"
+                    style={{
+                      border: 'none',
+                      height: isMobile ? '18px' : '24px',
+                    }}
+                  >
+                    <SText
+                      color="#fff"
+                      fontSize={isMobile ? '10px' : '14px'}
+                      fontWeight={700}
+                      fontFamily="Pretendard"
+                    >
+                      {team.isRecruiting ? '모집중' : '모집완료'}
+                    </SText>
+                  </Label>
                   <SText
-                    color="#fff"
-                    fontSize={isMobile ? '10px' : '14px'}
+                    color="#000"
+                    fontSize={isMobile ? '14px' : '18px'}
                     fontWeight={700}
                     fontFamily="Pretendard"
                   >
-                    {team.isRecruiting ? '모집중' : '모집완료'}
+                    {team.teamRecruitTitle}
                   </SText>
-                </Label>
+                </Flex>
                 <SText
                   color="#000"
-                  fontSize={isMobile ? '14px' : '18px'}
-                  fontWeight={700}
-                  fontFamily="Pretendard"
-                >
-                  {team.teamRecruitTitle}
-                </SText>
-              </Flex>
-              <SText
-                fontSize={isMobile ? '12px' : '16px'}
-                fontWeight={500}
-                fontFamily="Pretendard"
-                lineHeight="normal"
-                shouldCut={true}
-                style={{
-                  height: isMobile ? '28px' : '40px',
-                }}
-              >
-                {team.teamRecruitBody}
-              </SText>
-              <Flex gap="12px">
-                <SText
-                  color="#5C5C5C"
-                  fontSize={isMobile ? '10px' : '12px'}
+                  fontSize={isMobile ? '12px' : '16px'}
                   fontWeight={500}
                   fontFamily="Pretendard"
+                  lineHeight="normal"
+                  shouldCut={true}
+                  style={{
+                    height: isMobile ? '28px' : '40px',
+                  }}
                 >
-                  {team.memberName}
+                  {team.teamRecruitBody}
                 </SText>
-                <SText
-                  color="#5C5C5C"
-                  fontSize={isMobile ? '10px' : '12px'}
-                  fontWeight={400}
-                  fontFamily="Pretendard"
-                >
-                  {team.createdAt}
-                </SText>
-              </Flex>
-            </Card>
+                <Flex gap="12px">
+                  <SText
+                    color="#5C5C5C"
+                    fontSize={isMobile ? '10px' : '12px'}
+                    fontWeight={500}
+                    fontFamily="Pretendard"
+                  >
+                    {team.memberName}
+                  </SText>
+                  <SText
+                    color="#5C5C5C"
+                    fontSize={isMobile ? '10px' : '12px'}
+                    fontWeight={400}
+                    fontFamily="Pretendard"
+                  >
+                    {team.createdAt}
+                  </SText>
+                </Flex>
+              </Card>
+            </Link>
           ))
         ) : (
           <>

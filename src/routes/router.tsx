@@ -169,7 +169,7 @@ export const router = createBrowserRouter(
           element: <TeamRecruitListPage />,
         },
         {
-          path: `${PATH.TEAM_RECRUIT}/detail/:teamId`,
+          path: `${PATH.TEAM_RECRUIT}/detail/:recruitId`,
           element: <TeamRecruitDetail />,
         },
       ],

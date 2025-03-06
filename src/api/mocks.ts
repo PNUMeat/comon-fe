@@ -991,6 +991,64 @@ export const teamRecruitListMock = {
   code: 200,
   message: null,
   data: {
-    content: [],
+    content: [
+      {
+        recruitmentId: 1,
+        teamRecruitTitle: '팀 모집글 제목',
+        teamRecruitBody: '팀 모집글 내용',
+        chatUrl: 'https://open.kakao.com/o/g123AbCdE',
+        imageUrl: '이미지주소',
+        isRecruiting: true,
+        memberName: '파댕이',
+        createdAt: '2025-01-04',
+      },
+      {
+        recruitmentId: 2,
+        teamRecruitTitle: '팀 모집글 제목',
+        teamRecruitBody: '팀 모집글 내용',
+        chatUrl: 'https://open.kakao.com/o/g123AbCdE',
+        imageUrl: '이미지주소',
+        isRecruiting: true,
+        memberName: '파댕이',
+        createdAt: '2025-01-04',
+      },
+    ],
+  },
+};
+
+export const teamRecruitDetailMock = {
+  status: 'success',
+  code: 200,
+  message: '팀 모집글이 성공적으로 조회되었습니다.',
+  data: {
+    teamRecruitId: 1,
+    teamRecruitTitle: 'test',
+    teamRecruitBody: 'test',
+    chatUrl: 'test',
+    isRecruiting: true, // TODO:
+    memberNickName: 'test',
+    isAuthor: false, // TODO:
+    createdAt: '2025.01.01',
+    teamId: null,
+    teamApplyResponses: [
+      {
+        teamApplyId: 1,
+        teamApplyBody: 'test1',
+        memberName: 'test',
+        isMyApply: false, // TODO:
+      },
+      {
+        teamApplyId: 2,
+        teamApplyBody: null,
+        memberName: 'test',
+        isMyApply: false,
+      },
+      {
+        teamApplyId: 3,
+        teamApplyBody: null,
+        memberName: 'test',
+        isMyApply: false,
+      },
+    ],
   },
 };

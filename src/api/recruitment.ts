@@ -1,9 +1,10 @@
 import { isDevMode } from '@/utils/cookie';
 
 import apiInstance from './apiInstance';
-import { teamRecruitListMock } from './mocks';
+import { teamRecruitDetailMock, teamRecruitListMock } from './mocks';
 import { ServerResponse } from './types';
 
+// 전체 팀 모집글을 조회
 interface ITeamRecruitPost {
   recruitmentId: number;
   teamRecruitTitle: string;
@@ -15,7 +16,7 @@ interface ITeamRecruitPost {
   createdAt: string;
 }
 
-export interface ITeamRecruitListResponse {
+interface ITeamRecruitListResponse {
   content: ITeamRecruitPost[];
   page?: {
     size: number;
@@ -23,6 +24,27 @@ export interface ITeamRecruitListResponse {
     totalElements: number;
     totalPages: number;
   };
+}
+
+// 특정 팀 모집글 조회
+interface ITeamRecruitApplyResponse {
+  teamApplyId: number;
+  teamApplyBody: string | null;
+  memberName: string;
+  isMyApply: boolean;
+}
+
+export interface ITeamRecruitDetailResponse {
+  teamRecruitId: number;
+  teamRecruitTitle: string;
+  teamRecruitBody: string;
+  chatUrl: string;
+  isRecruiting: boolean;
+  memberNickName: string;
+  isAuthor: boolean;
+  createdAt: string;
+  teamId: number | null;
+  teamApplyResponses: ITeamRecruitApplyResponse[];
 }
 
 export const getTeamRecruitList = async (
@@ -39,6 +61,20 @@ export const getTeamRecruitList = async (
     {
       params: { status, page, size },
     }
+  );
+
+  return res.data.data;
+};
+
+export const getTeamRecruitById = async (
+  recruitId: number
+): Promise<ITeamRecruitDetailResponse> => {
+  if (isDevMode()) {
+    return teamRecruitDetailMock.data;
+  }
+
+  const res = await apiInstance.get<ServerResponse<ITeamRecruitDetailResponse>>(
+    `/v1/recruitments/${recruitId}`
   );
 
   return res.data.data;
