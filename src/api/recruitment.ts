@@ -17,7 +17,7 @@ interface ITeamRecruitPost {
 
 export interface ITeamRecruitListResponse {
   content: ITeamRecruitPost[];
-  page: {
+  page?: {
     size: number;
     number: number;
     totalElements: number;

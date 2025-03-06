@@ -157,14 +157,19 @@ export const TeamRecruitListPage = () => {
             </Card>
           ))
         ) : (
-          <SText
-            color="#ccc"
-            fontSize="16px"
-            fontFamily="Pretendard"
-            fontWeight={600}
-          >
-            지금은 모집글이 없어요
-          </SText>
+          <>
+            <Spacer h={isMobile ? 50 : 130} />
+            <SText
+              color="#ccc"
+              fontSize="16px"
+              fontFamily="Pretendard"
+              fontWeight={600}
+              textAlign="center"
+            >
+              지금은 모집글이 없어요
+            </SText>
+            <Spacer h={isMobile ? 50 : 130} />
+          </>
         )}
       </Flex>
       <Spacer h={36} />
