@@ -100,6 +100,14 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
           ) : null;
         }}
         defaultValue={new Date(selectedDate)}
+        onActiveStartDateChange={({ action, view, activeStartDate }) => {
+          if (view === 'month' && (action === 'prev' || action === 'next')) {
+            if (activeStartDate) {
+              const formattedDate = formatDate(activeStartDate);
+              onDateSelect(formattedDate);
+            }
+          }
+        }}
         onChange={(date) => {
           if (date !== null && date instanceof Date) {
             const formattedDate = formatDate(date);
