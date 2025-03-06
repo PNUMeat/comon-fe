@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 
 import dropdownIcon from '@/assets/Posting/dropdownIcon.svg';
 import styled from '@emotion/styled';
+import { breakpoints } from '@/constants/breakpoints';
 
 const dropDownPadding = 4;
 
@@ -13,6 +14,11 @@ const DropdownIcon = styled.img<{ isClicked?: boolean }>`
   width: 16px;
   margin-left: 8px;
   transform: ${(props) => (props.isClicked ? 'rotate(180deg)' : undefined)};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    margin-left: 5px;
+  }
 `;
 
 export const Dropdown: React.FC<{
