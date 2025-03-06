@@ -86,6 +86,8 @@ export const ToolbarPlugin: React.FC<{
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [isSuperscript, setIsSuperscript] = useState(false);
+  const [isSubscript, setIsSubscript] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
 
@@ -95,6 +97,8 @@ export const ToolbarPlugin: React.FC<{
       setIsBold(selection.hasFormat('bold'));
       setIsItalic(selection.hasFormat('italic'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsSuperscript(selection.hasFormat('superscript'));
+      setIsSubscript(selection.hasFormat('subscript'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -217,16 +221,16 @@ export const ToolbarPlugin: React.FC<{
             <HorizontalLine />
           </>
         ) : (
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
-            </div>
-            )}
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+          </div>
+        )}
 
         <div
           style={{
@@ -247,6 +251,8 @@ export const ToolbarPlugin: React.FC<{
             isBold={isBold}
             isItalic={isItalic}
             isStrikethrough={isStrikethrough}
+            isSuperscript={isSuperscript}
+            isSubscript={isSubscript}
           />
           <div
             style={{
@@ -287,6 +293,8 @@ export const ToolbarPlugin: React.FC<{
         isBold={isBold}
         isItalic={isItalic}
         isStrikethrough={isStrikethrough}
+        isSuperscript={isSuperscript}
+        isSubscript={isSubscript}
       />
       {setTag ? (
         <div
