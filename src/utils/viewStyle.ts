@@ -1,16 +1,6 @@
 import { breakpoints } from '@/constants/breakpoints.ts';
 
 export const viewStyle = `& {
-    sup {
-      vertical-align: super;
-      font-size: smaller;
-    }
-    
-    sub {
-      vertical-align: sub;
-      font-size: smaller;
-    }
-    
     img {
         max-width: 600px;
         object-fit: contain;
@@ -24,6 +14,16 @@ export const viewStyle = `& {
     
     span.editor-image {
       display: inline-block;
+    }
+    
+    sup, .editor-text-superscript {
+      vertical-align: super;
+      font-size: smaller;
+    }
+    
+    sub, .editor-text-subscript {
+      vertical-align: sub;
+      font-size: smaller;
     }
     
     .editor-text-bold {

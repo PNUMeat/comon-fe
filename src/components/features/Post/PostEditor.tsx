@@ -84,6 +84,8 @@ const editorTheme: EditorThemeClasses = {
     strikethrough: 'editor-text-strikethrough',
     underlineStrikethrough: 'editor-text-underlineStrikethrough',
     code: 'editor-text-code',
+    superscript: 'editor-text-superscript',
+    subscript: 'editor-text-subscript',
   },
   code: 'codeblock',
   codeHighlight: {
