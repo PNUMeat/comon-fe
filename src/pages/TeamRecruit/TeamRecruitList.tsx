@@ -58,9 +58,11 @@ export const TeamRecruitListPage = () => {
             <StyledButton backgroundColor="#e5e6ed" color="#333">
               가이드
             </StyledButton>
-            <StyledButton backgroundColor="#6b71f8" color="#fff">
-              글쓰기
-            </StyledButton>
+            <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
+              <StyledButton backgroundColor="#6b71f8" color="#fff">
+                글쓰기
+              </StyledButton>
+            </Link>
           </Flex>
           <Spacer h={16} />
         </>
@@ -85,9 +87,11 @@ export const TeamRecruitListPage = () => {
             <StyledButton backgroundColor="#e5e6ed" color="#333">
               가이드
             </StyledButton>
-            <StyledButton backgroundColor="#6b71f8" color="#fff">
-              글쓰기
-            </StyledButton>
+            <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
+              <StyledButton backgroundColor="#6b71f8" color="#fff">
+                글쓰기
+              </StyledButton>
+            </Link>
           </Flex>
         )}
       </Flex>
@@ -279,6 +283,7 @@ export const StyledButton = styled.button<{
   font-weight: 700;
   border: none;
   width: 80px;
+  height: 100%;
 
   @media (max-width: ${breakpoints.mobile}px) {
     border-radius: 4px;
