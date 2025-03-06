@@ -106,6 +106,14 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
               const formattedDate = formatDate(activeStartDate);
               onDateSelect(formattedDate);
             }
+            return;
+          }
+
+          if (action === 'drillDown' && view === 'month') {
+            if (activeStartDate) {
+              const formattedDate = formatDate(activeStartDate);
+              onDateSelect(formattedDate);
+            }
           }
         }}
         onChange={(date) => {
