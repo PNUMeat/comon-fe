@@ -104,8 +104,9 @@ export const TeamRecruitListPage = () => {
             <Link
               to={`${PATH.TEAM_RECRUIT}/detail/${team.recruitmentId}`}
               style={{ textDecoration: 'none' }}
+              key={team.recruitmentId}
             >
-              <Card key={team.recruitmentId}>
+              <Card>
                 <Flex gap={isMobile ? '8px' : '16px'} align="center">
                   <Label
                     background={
