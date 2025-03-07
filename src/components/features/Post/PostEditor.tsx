@@ -220,8 +220,18 @@ const initialConfig = {
               'editor-text-bold editor-text-italic editor-text-strikethrough';
           } else if (format === 32) {
             element.className = 'editor-text-subscript';
+            const sub = document.createElement('sub');
+            element.textContent = textNode.getTextContent();
+            element.setAttribute('style', style);
+            sub.append(element);
+            return { element: sub };
           } else if (format === 64) {
             element.className = 'editor-text-superscript';
+            const sup = document.createElement('sup');
+            element.textContent = textNode.getTextContent();
+            element.setAttribute('style', style);
+            sup.append(element);
+            return { element: sup };
           }
 
           element.textContent = textNode.getTextContent();

@@ -18,12 +18,12 @@ export const viewStyle = `& {
     
     sup, .editor-text-superscript {
       vertical-align: super;
-      font-size: smaller;
+      font-size: 0.8rem;
     }
     
     sub, .editor-text-subscript {
       vertical-align: sub;
-      font-size: smaller;
+      font-size: 0.8rem;
     }
     
     .editor-text-bold {
