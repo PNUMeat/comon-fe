@@ -47,6 +47,12 @@ export interface ITeamRecruitDetailResponse {
   teamApplyResponses: ITeamRecruitApplyResponse[];
 }
 
+// 팀 지원글 생성
+interface ITeamApplyRequest {
+  recruitmentId: string;
+  teamApplyBody: string;
+}
+
 export const getTeamRecruitList = async (
   status: string = 'all',
   page: number = 0,
@@ -78,4 +84,10 @@ export const getTeamRecruitById = async (
   );
 
   return res.data.data;
+};
+
+export const applyForTeam = async (
+  requestData: ITeamApplyRequest
+): Promise<void> => {
+  await apiInstance.post<ServerResponse<null>>('/v1/apply', requestData);
 };

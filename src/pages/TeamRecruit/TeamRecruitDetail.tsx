@@ -5,10 +5,12 @@ import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import {
   ITeamRecruitDetailResponse,
+  applyForTeam,
   getTeamRecruitById,
 } from '@/api/recruitment';
 import Click from '@/assets/TeamJoin/click.png';
@@ -18,8 +20,10 @@ import Trash from '@/assets/TeamRecruit/trash.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { alertAtom } from '@/store/modal';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSetAtom } from 'jotai';
 
 import { StyledButton } from './TeamRecruitList';
 
@@ -190,6 +194,44 @@ export const TeamRecruitDetail = () => {
     enabled: !!recruitId,
   });
 
+  const [applyText, setApplyText] = useState('');
+  const setAlert = useSetAtom(alertAtom);
+
+  const { mutate } = useMutation({
+    mutationFn: applyForTeam,
+    onSuccess: () => {
+      setAlert({
+        message: '가입 신청을 완료했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+      alert('가입 신청이 완료되었습니다.');
+      setApplyText('');
+    },
+    onError: (error) => {
+      console.error('가입 신청 실패:', error);
+      setAlert({
+        message: '가입 신청 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
+
+  const submitApplication = () => {
+    if (!applyText.trim()) {
+      alert('신청 내용을 입력해주세요.');
+      return;
+    }
+
+    if (!recruitId) {
+      console.error('recruitmentId가 존재하지 않습니다.');
+      return;
+    }
+
+    mutate({ recruitmentId: recruitId, teamApplyBody: applyText });
+  };
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -335,7 +377,11 @@ export const TeamRecruitDetail = () => {
                 </Flex>
                 <Spacer h={isMobile ? 12 : 24} />
                 <ApplyFormContainer>
-                  <ApplyInput placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 " />
+                  <ApplyInput
+                    placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 "
+                    value={applyText}
+                    onChange={(e) => setApplyText(e.target.value)}
+                  />
                   <Flex justify="flex-end">
                     <StyledButton
                       backgroundColor="#6E74FA"
@@ -345,6 +391,7 @@ export const TeamRecruitDetail = () => {
                         height: '32px',
                         borderRadius: '40px',
                       }}
+                      onClick={submitApplication}
                     >
                       가입 신청
                     </StyledButton>
