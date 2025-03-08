@@ -90,6 +90,7 @@ export const ToolbarPlugin: React.FC<{
   const [isSubscript, setIsSubscript] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
+  const isRecruitPost = document.location.pathname.includes('team-recruit');
 
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
@@ -221,24 +222,24 @@ export const ToolbarPlugin: React.FC<{
             <HorizontalLine />
           </>
         ) : (
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
-          </div>
-        )}
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              { !isRecruitPost && <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton> }
+            </div>
+            )}
 
         <div
           style={{
             display: 'flex',
             width: '100%',
             justifyContent: 'space-between',
-            gap: '20px',
             alignItems: 'center',
+            gap: '20px',
             zIndex: 100,
           }}
         >
@@ -336,10 +337,10 @@ export const ToolbarPlugin: React.FC<{
         style={{
           display: 'flex',
           width: setTag ? '69px' : '169px',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
         }}
       >
-        {!setTag && (
+        { ( !setTag && !isRecruitPost) && (
           <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
         )}
         <div
@@ -388,12 +389,17 @@ const TemplateButton = styled.button`
   width: 69px;
   height: 28px;
   flex-shrink: 0;
+  margin-right: 10px;
 
   font-family: 'Pretendard';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-right: 0;
+  }
 `;
 
 const template =
