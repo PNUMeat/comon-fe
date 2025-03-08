@@ -14,7 +14,7 @@ import { HeightInString } from '@/components/types.ts';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ITeamInfo, createTeam } from '@/api/team';
+import { ITeamInfo } from '@/api/team';
 import magnifier from '@/assets/TeamJoin/magnifier.png';
 import more from '@/assets/TeamJoin/more.png';
 import { breakpoints } from '@/constants/breakpoints';
@@ -49,8 +49,6 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
         positions={[{ top: '90px' }]}
         height="470px"
       />
-      {/* 간단 테스트용 컴포넌트 지워야함 */}
-      <BestTeamForm />
       {!isMobile && <Spacer h={34} />}
       {/* <FilterButtons /> TODO: 정렬 옵션 추가되면 주석 해제할 예정 */}
       <Flex justify="flex-end" align="center" gap="10px">
@@ -366,62 +364,3 @@ const Icon = styled.img`
   margin-bottom: 5px;
   margin-right: 8px;
 `;
-
-const BestTeamForm = () => {
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const teamName = formData.get('teamName') as string;
-    const idsValue = (formData.get('ids') as string) || '';
-
-    const idsArray = idsValue
-      .split(',')
-      .map((item) => item.trim())
-      .filter((item) => item.length > 0);
-
-    createTeam({
-      teamName,
-      teamExplain: '미안하지만 바꿀 수 없다네',
-      topic: '코딩테스트',
-      password: '1234',
-      teamMemberUuids: idsArray,
-      memberLimit: 40,
-    })
-      .then((res) => {
-        const { teamId } = res;
-        alert(`생성된 팀 아이디는 ${teamId}이고 비밀번호는 1234`);
-      })
-      .catch((err) => {
-        alert(err?.response?.data?.teamName);
-      });
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        position: 'absolute',
-        border: '1px solid black',
-        borderRadius: '4px',
-        backgroundColor: 'black',
-        color: 'white',
-      }}
-    >
-      <div>
-        <label>
-          팀이름:
-          <input type="text" name="teamName" />
-        </label>
-      </div>
-      <div>
-        <label>
-          string ids (콤마로 구분):
-          <input type="text" name="ids" />
-        </label>
-        <span> 예) "1,2,3,4,5"</span>
-      </div>
-      <button type="submit">생성하기 {'<-'} 버튼</button>
-    </form>
-  );
-};
