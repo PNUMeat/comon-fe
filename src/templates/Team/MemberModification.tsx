@@ -425,6 +425,7 @@ const AvatarImage = styled.img`
   border-radius: 50%;
   min-width: 24px;
   min-height: 24px;
+  position: relative;
 `;
 
 const NicknameContainer = styled.div`
@@ -433,7 +434,6 @@ const NicknameContainer = styled.div`
   gap: 4px;
   font-size: 16px;
   font-weight: 600;
-  position: relative;
 `;
 
 const Checkbox = styled.img<{ checked: boolean }>`

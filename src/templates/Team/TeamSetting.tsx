@@ -1,4 +1,3 @@
-import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { useEffect } from 'react';
@@ -6,6 +5,7 @@ import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
+import { BackgroundGradient } from '@/components/commons/BackgroundGradient';
 
 type DashboardCategories = {
   label: string;
@@ -118,7 +118,7 @@ const Category = styled.div<{ isSelected?: boolean }>`
   border-radius: 5px;
   position: relative;
   cursor: pointer;
-  background-color: ${({ isSelected }) => (isSelected ? '#e5e5e5' : '#fff')};
+  background-color: ${({ isSelected }) => (isSelected ? '#e5e5e5' : 'transparent')};
   ${(props) =>
     props.isSelected
       ? `&::after {

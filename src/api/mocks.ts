@@ -906,7 +906,7 @@ export const teamMemberMock = {
     },
     {
       uuid: '1e8e9f6b-02f4-4852-a8d6-b9273cb984a4',
-      memberName: '이정민',
+      memberName: '긴 이름 테스트',
       memberExplain: '프론트엔드 개발자',
       imageUrl:
         'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/3bdc4b16-a54e-4d05-bed9-3ffa585cb7e8',

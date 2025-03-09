@@ -1,38 +1,104 @@
 import { SText } from "@/components/commons/SText";
-import { viewStyle } from "@/utils/viewStyle";
 import styled from "@emotion/styled";
-import { useState, useRef } from "react";
-import PostEditor from "../Post/PostEditor";
+import { useEffect, useRef, useState } from "react";
+import PostEditor from "@/components/features/Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
 import click from '@/assets/TeamJoin/click.png';
+import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import { getRecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import sendIcon from '@/assets/TeamRecruit/send.svg';
+import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
+import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
+import { createRecruitPost } from "@/api/recruitment";
+import { useParams } from "react-router-dom";
+import { useAtom, useSetAtom } from "jotai";
+import { alertAtom } from "@/store/modal";
+import { postImagesAtom } from "@/store/posting";
 
 export const TeamRecruitPosting = () => {
-  const [content, setContent] = useState<string>('');
-  const [postTitle, setPostTitle] = useState('');
+  const isMobile = window.innerWidth < breakpoints.mobile;
+  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
+  const [chatUrl, setChatUrl] = useState('');
+  const [postImages, setPostImages] = useAtom(postImagesAtom);
+  const chatUrlRef = useRef<HTMLTextAreaElement>(null);
+  const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
+  const setAlert = useSetAtom(alertAtom);
+
+  const isButtonDisabled = !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setChatUrl(e.target.value);
+  }
+
+  const onClick = () => {
+    createRecruitPost({
+      teamId:
+      id ? id : null,
+      teamRecruitTitle : teamRecruitTitle,
+      teamRecruitBody : teamRecruitBody,
+      image : 
+      postImages.length > 0
+      ? postImages
+          .sort((a, b) => {
+            if (a.line !== b.line) {
+              return a.line - b.line;
+            }
+            return a.idx - b.idx;
+          })
+          .map((imgObj) => imgObj.img)
+      : null,
+      chatUrl: chatUrl,
+    })
+    .then((res) => {
+      setPostImages([]);
+      console.log(res);
+      // 게시글 상세 이동해야함
+    })
+    .catch((err) => {
+      setAlert({
+        message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    });
+  };
+
+  
   return (
     <ContentWrapper>
       <PostSubjectViewer />
         <PostEditor
-            forwardContent={setContent}
-            forwardTitle={setPostTitle}
-            content={content}
-            title={postTitle}
+            forwardContent={setTeamRecruitBody}
+            forwardTitle={setTeamRecruitTitle}
+            content={teamRecruitBody}
+            title={teamRecruitTitle}
           />
           <Spacer h={10} />
           <ContactWrapper>
-            연락 방법 칸
+            <Contact>
+              <IconTitleWrapper>
+                <SendIconStyle src={sendIcon} />
+                <ContactTitle>연락 방법</ContactTitle>
+              </IconTitleWrapper>
+              <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
+            </Contact>
+            <TeamRecruitInput 
+              ref={chatUrlRef}
+              onChange={onChange}
+            />
             </ContactWrapper>
             <Spacer h={30} />
             <ConfirmButtonWrap
-            disabled={false}
+            disabled={isButtonDisabled}
             isPending={false}
-            onClick={() => {}}
+            onClick={onClick}
           >
-          <ClickImage src={click} />
+          <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
-            <SText fontSize={'20px'} fontWeight={700}>
+            <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
               작성 완료
             </SText>
           </ActionText>
@@ -41,24 +107,88 @@ export const TeamRecruitPosting = () => {
   );
 }
 
-const minShowHeight = 790;
+const Contact = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+`;
+
+const IconTitleWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const SendIconStyle = styled.img`
+  width: 24px;
+  height: 24px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+const ContactTitle = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  color: #333; 
+  margin-top: 5px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    margin-top: 3px;
+  }
+`;
+
+const ContactText = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  color: #B5B5B5;
+  margin-top: 5px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
+  }
+`;
+
 
 const PostSubjectViewer: React.FC = () => {
-  const [height] = useState<number>(minShowHeight);
   const [show, setShow] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(57);
+  const contentRef = useRef<{getHeight: () => number}>(null);
+  const isMobile = window.innerWidth < breakpoints.mobile;
 
-  const data = '데이터 데이터';
+  useEffect(() => {
+    if (show && contentRef.current) {
+      const content = contentRef.current;
+      const resizeObserver = new ResizeObserver(() => {
+        // 제목 57 + 하단 57
+        setHeight(content.getHeight() + 114);
+      });
+      resizeObserver.observe(document.body);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [show]);
 
   return (
     <PostSubjectViewWrap
-      height={show ? Math.max(height, minShowHeight) : 57}
+      height={height}
       show={show}
     >
       <GapFlex gap={20}>
         <SText
-          color={'#333'}
-          fontSize={'20px'}
+          color={show ? "#E5E6ED" : "#333"}
+          fontSize={isMobile ? '18px' : '20px'}
           fontWeight={700}
           fontFamily={'Pretendard'}
         >
@@ -74,12 +204,7 @@ const PostSubjectViewer: React.FC = () => {
         >
         </SText>
       </GapFlex>
-      {show && data ? (
-        <TopicViewer
-          ref={contentRef}
-          dangerouslySetInnerHTML={{ __html: data }}
-        />
-      ) : null}
+      {show && <RecruitExampleData ref={contentRef}/>}
       <GapFlex
         gap={12}
         padding={'0 10px'}
@@ -88,8 +213,8 @@ const PostSubjectViewer: React.FC = () => {
         justifyContent={'end'}
       >
         <SText
-          color={'#777'}
-          fontSize={'16px'}
+          color={'#D9D9D9'}
+          fontSize={isMobile ? '14px' : '16px'}
           fontWeight={400}
           fontFamily={'Pretendard'}
         >
@@ -97,8 +222,8 @@ const PostSubjectViewer: React.FC = () => {
         </SText>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="17"
-          height="10"
+          width={isMobile ? '13' : '17'}
+          height={isMobile ? '6.5' : '10'}
           viewBox="0 0 17 10"
           fill="none"
           style={{
@@ -121,7 +246,7 @@ const ContentWrapper = styled.div`
 `;
 
 const PostSubjectViewWrap = styled.div<{
-  height: number;
+  height: string | number;
   show: boolean;
 }>`
   display: grid;
@@ -132,14 +257,18 @@ const PostSubjectViewWrap = styled.div<{
 
   width: 100%;
   min-height: 57px;
-  height: ${(props) => props.height}px;
+  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')}; 
   border: 1px solid #f15ca7;
   border-radius: 10px;
   margin: 20px 0;
   padding: 0 40px;
   box-sizing: border-box;
-  transition: height 0.5s ease;
+  transition: max-height 0.5s ease-in-out;
   overflow: hidden;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 20px;
+  }
 `;
 
 const GapFlex = styled.div<{
@@ -158,54 +287,54 @@ const GapFlex = styled.div<{
   width: 100%;
 `;
 
-const TopicViewer = styled.div`
-  line-height: 1.5;
-
-  ${viewStyle}
-`;
-
 const ContactWrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   padding: 20px 40px;
-  height: 100px;
-  width: 100%;
+  height: auto;
+  width: calc(100% - 12px);
   border-radius: 16px;
   box-sizing: border-box;
   border: 1px solid #CDCFFF;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 14px 15px;
+    gap: 8px;
+  }
 `;
 
-const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
+const ConfirmButtonWrap = styled.button<{ disabled: boolean, isPending: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
-  color: #000;
+  background: ${({ isPending, disabled }) =>
+    disabled ? '#E0E0E0' : isPending ? '#919191' : '#fff'};
+  color: ${({ disabled }) => (disabled ? '#A0A0A0' : '#000')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
   width: 712px;
   height: 80px;
   padding: 0;
-  border: 3px solid ${colors.borderPurple};
-  cursor: pointer;
+  border: ${({ disabled }) => (disabled ? "none" : `3px solid ${colors.borderPurple}`)};
+  font-size: 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 312px;
-    border-radius: 40px;
+    border-radius: 20px;
     height: 50px;
     border: 2px solid ${colors.borderPurple};
   }
 `;
 
-// TODO: TeamJoin에서 가져옴
 const ClickImage = styled.img`
   width: 24px;
   height: 24px;
 `;
-// TODO: TeamJoin에서 가져옴
+
 const ActionText = styled.div`
   margin-left: 8px;
 `;
