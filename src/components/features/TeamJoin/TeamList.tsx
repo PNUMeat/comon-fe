@@ -57,13 +57,7 @@ export const TeamList = ({ teams, myTeam, isPending }: TeamListProps) => {
       <Spacer h={34} />
       <List
         itemCount={teams.length}
-        h={
-          isPending
-            ? 'auto'
-            : teams.length === 0
-              ? '210px'
-              : 'auto'
-        }
+        h={isPending ? '440px' : teams.length === 0 ? '210px' : '440px'}
       >
         {isPending ? null : teams.length === 0 ? (
           <SText color="#777" fontSize="16px">
@@ -269,12 +263,29 @@ const FlipCardContent = ({
 const List = styled.div<{ itemCount: number } & HeightInString>`
   display: ${({ itemCount }) => (itemCount === 2 ? 'flex' : 'grid')};
   height: ${({ h }) => (h ? h : 'auto')};
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-  gap: 20px;
+  // grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  grid-template-columns: 330px 330px 330px;
+
+  --gap: 20px;
+  --cell-height: 210px;
+  --cell-width: 330px;
+
+  gap: var(--gap);
+
+  @media (max-width: 1029px) {
+    height: calc(var(--cell-height) * 3 + var(--gap) * 2);
+    grid-template-columns: var(--cell-width) var(--cell-width);
+    margin: 0 auto;
+    width: calc(var(--cell-width) * 2 + var(--gap));
+  }
 
   @media (max-width: ${breakpoints.mobile}px) {
+    margin: 0;
+    max-width: ${breakpoints.mobile}px;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 4px;
+    width: auto;
+    height: 518px;
   }
 `;
 

@@ -86,10 +86,11 @@ export const ToolbarPlugin: React.FC<{
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [isSuperscript, setIsSuperscript] = useState(false);
+  const [isSubscript, setIsSubscript] = useState(false);
 
   const [tag, selectTag] = useState<string>(() => articleCategory ?? '');
   const isRecruitPost = document.location.pathname.includes('team-recruit');
-  console.log(isRecruitPost);
 
   const updateToolbarOnSelect = useCallback(() => {
     const selection = $getSelection();
@@ -97,6 +98,8 @@ export const ToolbarPlugin: React.FC<{
       setIsBold(selection.hasFormat('bold'));
       setIsItalic(selection.hasFormat('italic'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsSuperscript(selection.hasFormat('superscript'));
+      setIsSubscript(selection.hasFormat('subscript'));
 
       const node = getSelectedNode(selection);
       const parent = node.getParent();
@@ -249,6 +252,8 @@ export const ToolbarPlugin: React.FC<{
             isBold={isBold}
             isItalic={isItalic}
             isStrikethrough={isStrikethrough}
+            isSuperscript={isSuperscript}
+            isSubscript={isSubscript}
           />
           <div
             style={{
@@ -289,6 +294,8 @@ export const ToolbarPlugin: React.FC<{
         isBold={isBold}
         isItalic={isItalic}
         isStrikethrough={isStrikethrough}
+        isSuperscript={isSuperscript}
+        isSubscript={isSubscript}
       />
       {setTag ? (
         <div

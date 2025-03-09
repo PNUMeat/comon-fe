@@ -84,6 +84,8 @@ const editorTheme: EditorThemeClasses = {
     strikethrough: 'editor-text-strikethrough',
     underlineStrikethrough: 'editor-text-underlineStrikethrough',
     code: 'editor-text-code',
+    superscript: 'editor-text-superscript',
+    subscript: 'editor-text-subscript',
   },
   code: 'codeblock',
   codeHighlight: {
@@ -197,9 +199,9 @@ const initialConfig = {
         TextNode,
         (_editor: LexicalEditor, node: LexicalNode): DOMExportOutput => {
           const textNode = node as TextNode;
-          const element = document.createElement('span');
           const format = textNode.getFormat();
           const style = textNode.getStyle();
+          const element = document.createElement('span');
 
           if (format === 1) {
             element.className = 'editor-text-bold';
@@ -216,6 +218,20 @@ const initialConfig = {
           } else if (format === 7) {
             element.className =
               'editor-text-bold editor-text-italic editor-text-strikethrough';
+          } else if (format === 32) {
+            element.className = 'editor-text-subscript';
+            const sub = document.createElement('sub');
+            element.textContent = textNode.getTextContent();
+            element.setAttribute('style', style);
+            sub.append(element);
+            return { element: sub };
+          } else if (format === 64) {
+            element.className = 'editor-text-superscript';
+            const sup = document.createElement('sup');
+            element.textContent = textNode.getTextContent();
+            element.setAttribute('style', style);
+            sup.append(element);
+            return { element: sup };
           }
 
           element.textContent = textNode.getTextContent();
