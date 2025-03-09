@@ -243,7 +243,6 @@ export const TeamRecruitDetail = () => {
         isVisible: true,
         onConfirm: () => {},
       });
-      alert('가입 신청이 완료되었습니다.');
       setApplyText('');
     },
     onError: (error) => {
