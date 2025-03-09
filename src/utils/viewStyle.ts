@@ -16,6 +16,16 @@ export const viewStyle = `& {
       display: inline-block;
     }
     
+    sup, .editor-text-superscript {
+      vertical-align: super;
+      font-size: 0.8rem;
+    }
+    
+    sub, .editor-text-subscript {
+      vertical-align: sub;
+      font-size: 0.8rem;
+    }
+    
     .editor-text-bold {
       font-weight: bold;
     }

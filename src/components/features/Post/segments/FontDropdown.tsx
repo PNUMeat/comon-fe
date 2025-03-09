@@ -1,3 +1,5 @@
+import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
+
 import { Dropdown } from '@/components/commons/Dropdown/Dropdown';
 import { DropdownItem } from '@/components/commons/Dropdown/DropdownItem';
 import { SText } from '@/components/commons/SText';
@@ -74,6 +76,8 @@ export const FontDropdown: React.FC<{
   isBold: boolean;
   isItalic: boolean;
   isStrikethrough: boolean;
+  isSuperscript: boolean;
+  isSubscript: boolean;
 }> = ({
   editor,
   currentFontFamily,
@@ -83,6 +87,8 @@ export const FontDropdown: React.FC<{
   isBold,
   isItalic,
   isStrikethrough,
+  isSubscript,
+  isSuperscript,
 }) => {
   const onClick = useCallback(
     (style: string, option: string) => {
@@ -99,6 +105,9 @@ export const FontDropdown: React.FC<{
     },
     [editor]
   );
+
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
   return (
     <FontFlex>
@@ -169,6 +178,42 @@ export const FontDropdown: React.FC<{
         >
           S
         </TextFormatButton>
+        <TextFormatButton
+          onClick={dispatchTextFormat('superscript')}
+          isHighlighted={isSuperscript}
+          textStyle={''}
+        >
+          <div style={{ position: 'relative' }}>
+            S
+            <sup
+              style={{
+                position: 'absolute',
+                top: -4,
+                fontSize: isMobile ? '6px' : '12px',
+              }}
+            >
+              T
+            </sup>
+          </div>
+        </TextFormatButton>
+        <TextFormatButton
+          onClick={dispatchTextFormat('subscript')}
+          isHighlighted={isSubscript}
+          textStyle={''}
+        >
+          <div style={{ position: 'relative' }}>
+            S
+            <sup
+              style={{
+                position: 'absolute',
+                top: 11,
+                fontSize: isMobile ? '6px' : '12px',
+              }}
+            >
+              T
+            </sup>
+          </div>
+        </TextFormatButton>
       </TextFlex>
     </FontFlex>
   );
@@ -200,6 +245,7 @@ const TextFormatButton = styled.button<{
   isHighlighted: boolean;
   textStyle: string;
 }>`
+  position: relative;
   background: none;
   border: none;
   cursor: pointer;
@@ -213,5 +259,15 @@ const TextFormatButton = styled.button<{
     
     @media (max-width: ${breakpoints.mobile}px) {
     font-size: 12px;
+  }
+
+  sup {
+    vertical-align: super;
+    font-size: smaller;
+  }
+
+  sub {
+    vertical-align: sub;
+    font-size: smaller;
   }
 `;
