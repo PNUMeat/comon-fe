@@ -81,7 +81,9 @@ const ApplicantList = ({
     mutationFn: deleteTeamApply,
     onSuccess: () => {
       setAlert({
-        message: '팀 지원글이 삭제되었어요',
+        message: isAuthor
+          ? '내보내기가 완료되었어요'
+          : '팀 지원글이 삭제되었어요',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -89,7 +91,9 @@ const ApplicantList = ({
     onError: (error) => {
       console.error('팀 지원글 삭제 실패:', error);
       setAlert({
-        message: '팀 지원글 삭제 중 오류가 발생했어요',
+        message: isAuthor
+          ? '사용자 내보내기 중 오류가 발생했어요'
+          : '팀 지원글 삭제 중 오류가 발생했어요',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -139,6 +143,11 @@ const ApplicantList = ({
                       fontSize={isMobile ? '10px' : '14px'}
                       fontWeight={400}
                       lineHeight="normal"
+                      onClick={() => {
+                        if (window.confirm('해당 사용자를 내보내시겠어요?')) {
+                          deleteApply(applicant.teamApplyId);
+                        }
+                      }}
                     >
                       내보내기
                     </SText>
