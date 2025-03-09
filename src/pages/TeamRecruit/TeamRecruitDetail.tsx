@@ -164,10 +164,15 @@ const ApplicantList = ({
                       fontWeight={500}
                       fontFamily="Pretendard"
                       lineHeight={isMobile ? 'normal' : '20px'}
+                      style={{ width: '100%' }}
                     >
                       {applicant.teamApplyBody}
                     </SText>
-                    <Flex gap={isMobile ? '6px' : '10px'} justify="flex-end">
+                    <Flex
+                      gap={isMobile ? '6px' : '10px'}
+                      justify="flex-end"
+                      style={{ width: '70px' }}
+                    >
                       <img
                         src={Pencil}
                         alt="수정"
