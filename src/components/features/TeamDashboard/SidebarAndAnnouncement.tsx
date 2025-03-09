@@ -17,6 +17,7 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
+import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
 import LockIcon from '@/assets/TeamDashboard/lock.png';
 import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
 import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
@@ -26,6 +27,7 @@ import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
@@ -50,8 +52,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const toggleExpand = () => setIsExpanded((prev) => !prev);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  isMyTeam = false;
-
   const onClick = () => {
     if (isMyTeam) {
       navigate(`/posting/${teamId}`, {
@@ -62,26 +62,35 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         },
       });
     } else {
-      if (!isLoggedIn() && !isDevMode()) {
-        sessionStorage.setItem('redirect', location.pathname);
-        navigate(PATH.LOGIN, {
-          state: {
-            redirect: location.pathname,
-          },
-        });
-        return;
-      }
       setIsDropdownOpen((prev) => !prev);
     }
   };
 
+  const joinTeam = () => {
+    if (!isLoggedIn() && !isDevMode()) {
+      sessionStorage.setItem('redirect', location.pathname);
+      navigate(PATH.LOGIN, {
+        state: {
+          redirect: location.pathname,
+        },
+      });
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
   const goRecruitPage = () => {
-    console.log('goRecruitPage');
+    // if (teamRecruitId) {
+    //   navigate(`${PATH.TEAM_RECRUIT}/${teamRecruitId}`);
+    // } else {
+      toast.error('참가할 수 없는 상태입니다.');
+    // }
   }
 
 
   return (
     <>
+      <Toaster />
       <Sidebar>
         <Box
           width={isMobile ? '84px' : '100%'}
@@ -190,7 +199,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 </>
               )}
               {isTeamManager && (
-                <>
+                <Flex direction='column' justify='flex-start' align='flex-start'>
                   <Link
                     to={`${PATH.TEAM_ADMIN}/${teamId}`}
                     style={{ textDecoration: 'none' }}
@@ -226,7 +235,27 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                       </SText>
                     </Flex>
                   </Link>
-                </>
+                  <Spacer h={2} />
+                  <Link
+                    to ="#" // 임시 동작
+                    // to={teamRecruitId ? `${PATH.TEAM_RECRUIT}/team/${teamRecruitId}` : `${PATH.TEAM_RECRUIT}/posting/${teamRecruitId}`} // 임시 동작
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Flex
+                      justify={isMobile ? 'flex-start' : 'center'}
+                      align="center"
+                    >
+                      <SettingImage src={SettingsPurpleIcon} />
+                      <SText
+                        color="#ccc"
+                        fontWeight={600}
+                        fontSize={isMobile ? '10px' : '14px'}
+                      >
+                        모집글
+                      </SText>
+                    </Flex>
+                  </Link>
+                </Flex>
               )}
             </div>
           </Flex>
@@ -298,7 +327,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         </NewPostButton>
             {isDropdownOpen && 
               <DropdownWrapper>
-                <DropdownList onClick={() => setIsModalOpen((prev) => !prev)}>
+                <DropdownList onClick={joinTeam}>
                   <DropdownListIcon src={LockIcon} />
                   <DropdownListText>비밀번호 입력</DropdownListText>
                 </DropdownList>
