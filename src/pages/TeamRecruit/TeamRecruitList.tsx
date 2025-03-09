@@ -136,19 +136,9 @@ export const TeamRecruitListPage = () => {
                     {team.teamRecruitTitle}
                   </SText>
                 </Flex>
-                <SText
-                  color="#000"
-                  fontSize={isMobile ? '12px' : '16px'}
-                  fontWeight={500}
-                  fontFamily="Pretendard"
-                  lineHeight="normal"
-                  shouldCut={true}
-                  style={{
-                    height: isMobile ? '28px' : '40px',
-                  }}
-                >
-                  {team.teamRecruitBody}
-                </SText>
+                <CardBody
+                  dangerouslySetInnerHTML={{ __html: team.teamRecruitBody }}
+                />
                 <Flex gap="12px">
                   <SText
                     color="#5C5C5C"
@@ -317,5 +307,39 @@ const Card = styled.div`
   @media (max-width: ${breakpoints.mobile}px) {
     height: 90px;
     padding: 14px 20px;
+  }
+`;
+
+const CardBody = styled.div`
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Pretendard';
+  line-height: normal !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  * {
+    all: unset;
+    color: #000 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    font-family: 'Pretendard' !important;
+    line-height: normal !important;
+  }
+
+  img {
+    display: none !important;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+
+    * {
+      font-size: 12px !important;
+    }
   }
 `;
