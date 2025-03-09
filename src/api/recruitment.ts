@@ -66,6 +66,11 @@ interface ITeamApplyRequest {
   teamApplyBody: string;
 }
 
+// 팀 모집글 모집 상태 변경
+interface IUpdateRecruitmentStatusRequest {
+  isRecruiting: boolean;
+}
+
 // 모집글 관련
 export const createRecruitPost = async ({
   teamId,
@@ -139,6 +144,16 @@ export const deleteTeamRecruit = async (
 ): Promise<void> => {
   await apiInstance.delete<ServerResponse<null>>(
     `/v1/recruitments/${recruitmentId}`
+  );
+};
+
+export const updateRecruitmentStatus = async (
+  recruitmentId: number,
+  requestData: IUpdateRecruitmentStatusRequest
+): Promise<void> => {
+  await apiInstance.patch(
+    `/v1/recruitments/${recruitmentId}/recruiting-status`,
+    requestData
   );
 };
 

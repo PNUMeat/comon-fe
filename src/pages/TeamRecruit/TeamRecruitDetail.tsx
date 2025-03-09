@@ -14,6 +14,7 @@ import {
   deleteTeamApply,
   deleteTeamRecruit,
   getTeamRecruitById,
+  updateRecruitmentStatus,
 } from '@/api/recruitment';
 import Click from '@/assets/TeamJoin/click.png';
 import Pencil from '@/assets/TeamRecruit/pencil.svg';
@@ -289,6 +290,27 @@ export const TeamRecruitDetail = () => {
     },
   });
 
+  // 팀 모집글 상태 변경
+  const { mutate: toggleRecruitmentStatus } = useMutation({
+    mutationFn: (isRecruiting: boolean) =>
+      updateRecruitmentStatus(Number(recruitId), { isRecruiting }),
+    onSuccess: () => {
+      setAlert({
+        message: '모집 상태가 변경되었습니다.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+    onError: (error) => {
+      console.error('모집 상태 변경 실패:', error);
+      setAlert({
+        message: '모집 상태 변경 중 오류가 발생했습니다.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -303,6 +325,7 @@ export const TeamRecruitDetail = () => {
               backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
               color="#fff"
               style={{ width: 'auto' }}
+              onClick={() => toggleRecruitmentStatus(!data.isRecruiting)}
             >
               {data.isRecruiting ? '모집중단' : '모집재개'}
             </StyledButton>
