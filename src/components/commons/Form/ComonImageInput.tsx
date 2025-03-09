@@ -55,10 +55,6 @@ const SideContainer = styled.div<HeightInNumber>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    height: auto;
-  }
 `;
 
 const InfoText = styled.p<{ fontSize: string }>`

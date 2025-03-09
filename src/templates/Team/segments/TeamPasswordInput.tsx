@@ -6,10 +6,12 @@ import { useCallback, useEffect } from 'react';
 
 import { PROPER_PASSWORD_LENGTH, teamPasswordAtom } from '@/store/form';
 import { useAtom } from 'jotai';
+import { CSSObject } from '@emotion/react';
 
 export const TeamPasswordInput: React.FC<{
   defaultValue?: string;
-}> = ({ defaultValue }) => {
+  css?: CSSObject;
+}> = ({ defaultValue, css }) => {
   const [teamPassword, setTeamPassword] = useAtom(teamPasswordAtom);
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +34,7 @@ export const TeamPasswordInput: React.FC<{
         placeholder={'비밀번호 입력'}
         value={teamPassword}
         onChange={onChange}
+        css={css}
       />
       <InputHelperText textAlign={'left'}>
         {teamPassword.length === PROPER_PASSWORD_LENGTH

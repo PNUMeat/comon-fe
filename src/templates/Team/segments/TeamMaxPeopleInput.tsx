@@ -6,10 +6,12 @@ import { useCallback, useEffect } from 'react';
 
 import { MAX_PEOPLE_NUM, teamMaxNumAtom } from '@/store/form';
 import { useAtom } from 'jotai';
+import { CSSObject } from '@emotion/react';
 
 export const TeamMaxPeopleInput: React.FC<{
   defaultValue?: number;
-}> = ({ defaultValue }) => {
+  css?: CSSObject;
+}> = ({ defaultValue, css }) => {
   const [teamMaxNum, setTeamMaxNum] = useAtom(teamMaxNumAtom);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export const TeamMaxPeopleInput: React.FC<{
         placeholder={'제한인원 입력'}
         value={teamMaxNum}
         onChange={onChange}
+        css={css}
       />
       <InputHelperText textAlign={'left'}>
         {Number.isInteger(teamMaxNum) &&

@@ -24,6 +24,7 @@ import {
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
+import InfoIcon from '@/assets/TeamAdmin/info_square.png';
 
 import TeamModification from './TeamModification';
 
@@ -67,19 +68,34 @@ const Row = styled.div`
   display: flex;
   margin-bottom: 30px;
   gap: 60px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 20px;
+    margin-bottom: 20px;
+  }
 `;
 
 const Label = styled.div`
   width: 120px;
-  font-weight: bold;
+  font-weight: 700;
   color: #333;
   font-size: 20px;
   white-space: nowrap;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 14px;
+    width: 80px;
+  }
 `;
 
 const Content = styled.div`
   flex: 1;
-  color: #666;
+  color: #333;
+  font-weight: 500;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+  }
 `;
 
 const ImgContent = styled.img`
@@ -89,6 +105,11 @@ const ImgContent = styled.img`
   border-radius: 20px;
   box-sizing: border-box;
   padding: 10px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
 const TeamSubjectButton = styled.button`
@@ -104,6 +125,11 @@ const TeamSubjectButton = styled.button`
   color: #fff;
   cursor: pointer;
   transition: all 0.2s;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 25px;
+    font-size: 10px;
+  }
 `;
 
 interface InformationProps {
@@ -141,6 +167,7 @@ export const TeamInformation = () => {
     enabled: !!teamId,
   });
   const queryClient = useQueryClient();
+  const isMobile = window.innerWidth < breakpoints.mobile;
 
   useEffect(() => {
     if (!currentTeam) {
@@ -212,7 +239,7 @@ export const TeamInformation = () => {
   return (
     <TeamInfoGrid>
       <ModeButton>
-        <img src={noteIcon} alt="note icon" />팀 정보
+        <img src={isMobile ? InfoIcon : noteIcon} alt="note icon" />팀 정보
       </ModeButton>
       <ContentWrapper>
         {isEditMode && currentTeam && (
@@ -253,6 +280,7 @@ const TeamInfoGrid = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     grid-template-columns: 1fr;
+    margin-top: 40px;
   }
 `;
 
@@ -262,6 +290,10 @@ const InfoGrid = styled.div`
   grid-template-rows: 63px 63px 150px 63px 63px 63px;
   gap: 10px;
   width: 100%;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-rows: 40px 40px 100px 40px 40px 40px;
+  }
 `;
 
 const ModeButton = styled.button`
@@ -284,7 +316,8 @@ const ModeButton = styled.button`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 14px;
-    padding: 2px 20px;
+    padding: 0px 12px;
+    gap: 8px;
   }
 `;
 
@@ -300,7 +333,13 @@ const ContentWrapper = styled.div`
   background-color: #fff;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 40px 20px;
+    padding: 30px 28px;
+    box-sizing: border-box;
+    min-width: 100%;
+    border: 1px solid #F0F1FF;
+    backdrop-filter: blur(40px);
+    box-shadow: 5px 7px 11.6px 0px #3F3F4D12;
+    height: 450px;
   }
 `;
 
@@ -317,10 +356,10 @@ const ModifyButton = styled.button`
   right: 60px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 60px;
-    height: 20px;
+    width: 90px;
+    height: 30px;
     font-size: 12px;
-    bottom: 20px;
-    right: 40px;
+    bottom: 28px;
+    right: 24px;
   }
 `;
