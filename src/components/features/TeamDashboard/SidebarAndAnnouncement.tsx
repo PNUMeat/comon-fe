@@ -17,6 +17,8 @@ import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
+import LockIcon from '@/assets/TeamDashboard/lock.png';
+import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -45,6 +47,35 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+
+  const onClick = () => {
+    if (isMyTeam) {
+      navigate(`/posting/${teamId}`, {
+        state: {
+          article: null,
+          articleId: null,
+          articleTitle: null,
+        },
+      });
+    } else {
+      if (!isLoggedIn() && !isDevMode()) {
+        sessionStorage.setItem('redirect', location.pathname);
+        navigate(PATH.LOGIN, {
+          state: {
+            redirect: location.pathname,
+          },
+        });
+        return;
+      }
+      setIsDropdownOpen((prev) => !prev);
+    }
+  };
+
+  const goRecruitPage = () => {
+    console.log('goRecruitPage');
+  }
+
 
   return (
     <>
@@ -250,30 +281,9 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         </Box>
 
         <NewPostButton
-          onClick={() => {
-            if (isMyTeam) {
-              navigate(`/posting/${teamId}`, {
-                state: {
-                  article: null,
-                  articleId: null,
-                  articleTitle: null,
-                },
-              });
-            } else {
-              if (!isLoggedIn() && !isDevMode()) {
-                sessionStorage.setItem('redirect', location.pathname);
-                navigate(PATH.LOGIN, {
-                  state: {
-                    redirect: location.pathname,
-                  },
-                });
-                return;
-              }
-              setIsModalOpen(true);
-            }
-          }}
+          onClick={onClick}
         >
-          <AnnouncementImage src={PencilIcon} />
+          { isMyTeam && <AnnouncementImage src={PencilIcon} /> }
           <SText
             fontSize={isMobile ? '10px' : '18px'}
             color="#fff"
@@ -282,6 +292,18 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
           </SText>
         </NewPostButton>
+            {isDropdownOpen && 
+              <DropdownWrapper>
+                <DropdownList onClick={() => setIsModalOpen((prev) => !prev)}>
+                  <DropdownListIcon src={LockIcon} />
+                  <DropdownListText>비밀번호 입력</DropdownListText>
+                </DropdownList>
+                <DropdownList onClick={goRecruitPage}>
+                  <DropdownListIcon src={MessageIcon} />
+                  <DropdownListText>모집글 보러가기</DropdownListText>
+                </DropdownList>
+              </DropdownWrapper>
+            }
       </Announcement>
     </>
   );
@@ -322,6 +344,7 @@ const Announcement = styled.header`
   grid-area: announcement;
   display: flex;
   justify-content: space-between;
+  position: relative;
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin: 12px 0;
@@ -359,7 +382,9 @@ const NewPostButton = styled.button`
   display: flex;
   align-items: center;
   height: 70px;
-  padding: 24px 72px;
+  width: 265px;
+  align-items: center;
+  justify-content: center;
   border-radius: 20px;
   background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
@@ -370,5 +395,62 @@ const NewPostButton = styled.button`
     height: 32px;
     padding: 12px;
     border-radius: 28px;
+  }
+`;
+
+const DropdownWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  right: 0;
+  bottom: -100px;
+  z-index: 1;
+  border: 1px solid #E5E5E5;
+  width: 265px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 52px;
+  box-sizing: border-box;
+  box-shadow: 2px 2px 20px 0px #5E609933;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100px;
+    bottom: -60px;
+    right: 10px;
+  }
+`;
+
+const DropdownList = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 10px;
+  }
+`;
+
+const DropdownListIcon = styled.img`
+  width: 18px;
+  height: 18px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
+const DropdownListText = styled.div`
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 8px;
   }
 `;
