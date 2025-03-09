@@ -415,16 +415,14 @@ export const TeamRecruitDetail = () => {
                 연락 방법
               </SText>
             </Flex>
-            <SText
-              color="#333"
-              fontSize={isMobile ? '10px' : '16px'}
-              fontWeight={400}
-              fontFamily="Pretendard"
-              lineHeight="normal"
-              wordBreak="break-word"
+            <Spacer h={isMobile ? 4 : 8} />
+            <ChatLink
+              href={data.chatUrl}
+              target="_blank"
+              // rel="noopener noreferrer"
             >
               {data.chatUrl}
-            </SText>
+            </ChatLink>
           </ContentBox>
           <Spacer h={isMobile ? 48 : 70} />
 
@@ -537,6 +535,26 @@ const ContentBox = styled.div<{ padding?: string }>`
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 20px 24px;
     border-radius: 12px;
+  }
+`;
+
+const ChatLink = styled.a`
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'Pretendard';
+  line-height: normal;
+  word-break: break-word;
+  text-decoration: none;
+
+  &:hover {
+    color: #6e74fa;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 10px;
   }
 `;
 

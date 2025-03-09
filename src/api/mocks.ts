@@ -1056,7 +1056,7 @@ export const teamRecruitDetailMock = {
     teamRecruitTitle: 'test',
     teamRecruitBody: 'test',
     chatUrl: 'test',
-    isRecruiting: false, // TODO:
+    isRecruiting: true, // TODO:
     memberNickName: 'test',
     isAuthor: true, // TODO:
     createdAt: '2025.01.01',
