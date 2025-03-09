@@ -18,6 +18,7 @@ import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import LockIcon from '@/assets/TeamDashboard/lock.png';
+import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
 import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
@@ -47,7 +48,9 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  isMyTeam = false;
 
   const onClick = () => {
     if (isMyTeam) {
@@ -291,6 +294,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           >
             {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
           </SText>
+          { !isMyTeam && <MoreIcon src={TriangleIcon} /> }
         </NewPostButton>
             {isDropdownOpen && 
               <DropdownWrapper>
@@ -378,6 +382,13 @@ const AnnouncementImage = styled.img`
   }
 `;
 
+const MoreIcon = styled.img`
+  width: 15px;
+  height: 10px;
+  margin-left: 8px;
+  padding-top: 2px;
+`;
+
 const NewPostButton = styled.button`
   display: flex;
   align-items: center;
@@ -418,8 +429,9 @@ const DropdownWrapper = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100px;
-    bottom: -60px;
+    bottom: -50px;
     right: 10px;
+    padding: 8px 4px;
   }
 `;
 
@@ -431,7 +443,7 @@ const DropdownList = styled.div`
   cursor: pointer;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    gap: 10px;
+    gap: 8px;
   }
 `;
 
@@ -440,8 +452,8 @@ const DropdownListIcon = styled.img`
   height: 18px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
   }
 `;
 
@@ -451,6 +463,6 @@ const DropdownListText = styled.div`
   font-weight: 600;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 8px;
+    font-size: 6px;
   }
 `;
