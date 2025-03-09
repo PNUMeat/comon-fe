@@ -102,9 +102,9 @@ export const TeamRecruitListPage = () => {
         {(teamList?.content ?? []).length > 0 ? (
           (teamList?.content ?? []).map((team) => (
             <Link
-              to={`${PATH.TEAM_RECRUIT}/detail/${team.recruitmentId}`}
+              to={`${PATH.TEAM_RECRUIT}/detail/${team.teamRecruitId}`}
               style={{ textDecoration: 'none' }}
-              key={team.recruitmentId}
+              key={team.teamRecruitId}
             >
               <Card>
                 <Flex gap={isMobile ? '8px' : '16px'} align="center">
@@ -146,7 +146,7 @@ export const TeamRecruitListPage = () => {
                     fontWeight={500}
                     fontFamily="Pretendard"
                   >
-                    {team.memberName}
+                    {team.memberNickName}
                   </SText>
                   <SText
                     color="#5C5C5C"

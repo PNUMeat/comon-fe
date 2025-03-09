@@ -19,13 +19,11 @@ interface ICreateRecuitmentResponse {
 
 // 전체 팀 모집글을 조회
 interface ITeamRecruitPost {
-  recruitmentId: number;
+  teamRecruitId: number;
   teamRecruitTitle: string;
   teamRecruitBody: string;
-  chatUrl: string;
-  imageUrl: string;
+  memberNickName: string;
   isRecruiting: boolean;
-  memberName: string;
   createdAt: string;
 }
 
