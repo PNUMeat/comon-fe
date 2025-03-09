@@ -110,6 +110,10 @@
   font-family: serif;
 } */
 
+body {
+  font-family: Pretendard, sans-serif;
+}
+
 .member-dropdown {
   width: 131px;
   padding: 0 5px;

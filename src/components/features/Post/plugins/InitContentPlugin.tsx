@@ -228,6 +228,54 @@ export const parseHtmlStrToLexicalNodes = (
           return listItemNode;
         }
 
+        // <sup> -> 위 첨자 텍스트 노드 처리
+        case 'sup': {
+          const nodes: LexicalNode[] = [];
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                childLexicalNode.forEach((n) => {
+                  if ($isTextNode(n)) {
+                    n.setFormat('superscript');
+                  }
+                });
+                nodes.push(...childLexicalNode);
+              } else {
+                if ($isTextNode(childLexicalNode)) {
+                  childLexicalNode.setFormat('superscript');
+                }
+                nodes.push(childLexicalNode);
+              }
+            }
+          });
+          return nodes;
+        }
+
+        // <sub> -> 아래 첨자 텍스트 노드 처리
+        case 'sub': {
+          const nodes: LexicalNode[] = [];
+          element.childNodes.forEach((child) => {
+            const childLexicalNode = traverse(child);
+            if (childLexicalNode) {
+              if (Array.isArray(childLexicalNode)) {
+                childLexicalNode.forEach((n) => {
+                  if ($isTextNode(n)) {
+                    n.setFormat('subscript');
+                  }
+                });
+                nodes.push(...childLexicalNode);
+              } else {
+                if ($isTextNode(childLexicalNode)) {
+                  childLexicalNode.setFormat('subscript');
+                }
+                nodes.push(childLexicalNode);
+              }
+            }
+          });
+          return nodes;
+        }
+
         // <span> -> 자식 텍스트 노드들 처리
         case 'span': {
           let nodes: LexicalNode[] = [];

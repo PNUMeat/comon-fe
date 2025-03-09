@@ -19,6 +19,7 @@ interface ITeamCommon {
 interface ICreateTeamRequest extends ITeamCommon {
   password: string;
   image?: File | null;
+  teamMemberUuids?: string[];
 }
 
 interface IMPutTeamRequest extends ITeamCommon {
@@ -93,6 +94,7 @@ export const createTeam = async ({
   memberLimit,
   password,
   image,
+  teamMemberUuids,
 }: ICreateTeamRequest) => {
   const formData = new FormData();
 
@@ -104,6 +106,10 @@ export const createTeam = async ({
 
   if (image) {
     formData.append('image', image);
+  }
+
+  if (teamMemberUuids) {
+    formData.append('teamMemberUuids', JSON.stringify(teamMemberUuids));
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
