@@ -25,7 +25,7 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { alertAtom } from '@/store/modal';
 import styled from '@emotion/styled';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 
 import { StyledButton } from './TeamRecruitList';
@@ -244,6 +244,8 @@ export const TeamRecruitDetail = () => {
   const [applyText, setApplyText] = useState('');
   const setAlert = useSetAtom(alertAtom);
 
+  const queryClient = useQueryClient();
+
   const { mutate: apply } = useMutation({
     mutationFn: applyForTeam,
     onSuccess: () => {
@@ -252,6 +254,9 @@ export const TeamRecruitDetail = () => {
         isVisible: true,
         onConfirm: () => {},
       });
+
+      queryClient.invalidateQueries({ queryKey: ['teamRecruitDetail'] });
+
       setApplyText('');
     },
     onError: (error) => {
