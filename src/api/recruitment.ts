@@ -53,6 +53,7 @@ interface ITeamApplyRequest {
   teamApplyBody: string;
 }
 
+// 모집글 관련
 export const getTeamRecruitList = async (
   status: string = 'all',
   page: number = 0,
@@ -86,6 +87,15 @@ export const getTeamRecruitById = async (
   return res.data.data;
 };
 
+export const deleteTeamRecruit = async (
+  recruitmentId: string
+): Promise<void> => {
+  await apiInstance.delete<ServerResponse<null>>(
+    `/v1/recruitments/${recruitmentId}`
+  );
+};
+
+// 지원글 관련
 export const applyForTeam = async (
   requestData: ITeamApplyRequest
 ): Promise<void> => {

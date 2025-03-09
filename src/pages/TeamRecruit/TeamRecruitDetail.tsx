@@ -11,6 +11,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ITeamRecruitDetailResponse,
   applyForTeam,
+  deleteTeamRecruit,
   getTeamRecruitById,
 } from '@/api/recruitment';
 import Click from '@/assets/TeamJoin/click.png';
@@ -66,11 +67,35 @@ const ApplicantList = ({
   data,
   isAuthor,
   isMobile,
+  // recruitId,
 }: {
   data: ITeamRecruitDetailResponse;
   isAuthor: boolean;
   isMobile: boolean;
+  // recruitId: string;
 }) => {
+  // const setAlert = useSetAtom(alertAtom);
+
+  // 팀 지원글 삭제
+  // const { mutate: deleteRecruit } = useMutation({
+  //   mutationFn: deleteTeamRecruit,
+  //   onSuccess: () => {
+  //     setAlert({
+  //       message: '팀 모집글이 삭제되었어요',
+  //       isVisible: true,
+  //       onConfirm: () => {},
+  //     });
+  //   },
+  //   onError: (error) => {
+  //     console.error('팀 모집글 삭제 실패:', error);
+  //     setAlert({
+  //       message: '팀 모집글 삭제 중 오류가 발생했어요',
+  //       isVisible: true,
+  //       onConfirm: () => {},
+  //     });
+  //   },
+  // });
+
   return (
     <>
       {data.teamApplyResponses.map((applicant) => (
@@ -140,6 +165,7 @@ const ApplicantList = ({
                         style={{
                           width: isMobile ? '20px' : '',
                           height: isMobile ? '20px' : '',
+                          cursor: 'pointer',
                         }}
                       />
                       <img
@@ -148,6 +174,12 @@ const ApplicantList = ({
                         style={{
                           width: isMobile ? '18px' : '',
                           height: isMobile ? '18px' : '',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          if (window.confirm('정말로 삭제하시겠습니까?')) {
+                            // deleteRecruit(recruitId);
+                          }
                         }}
                       />
                     </Flex>
@@ -188,16 +220,22 @@ export const TeamRecruitDetail = () => {
   const isMobile = width <= breakpoints.mobile;
   const { recruitId } = useParams();
 
+  if (!recruitId) {
+    throw new Error('recruitId가 존재하지 않습니다.');
+    // navigate(`${PATH.TEAM_RECRUIT}`);
+  }
+
   const { data } = useQuery({
     queryKey: ['teamRecruitDetail', recruitId],
     queryFn: () => getTeamRecruitById(Number(recruitId)),
     enabled: !!recruitId,
   });
 
+  // 팀 지원글 생성
   const [applyText, setApplyText] = useState('');
   const setAlert = useSetAtom(alertAtom);
 
-  const { mutate } = useMutation({
+  const { mutate: apply } = useMutation({
     mutationFn: applyForTeam,
     onSuccess: () => {
       setAlert({
@@ -229,8 +267,28 @@ export const TeamRecruitDetail = () => {
       return;
     }
 
-    mutate({ recruitmentId: recruitId, teamApplyBody: applyText });
+    apply({ recruitmentId: recruitId, teamApplyBody: applyText });
   };
+
+  // 팀 모집글 삭제
+  const { mutate: deleteRecruit } = useMutation({
+    mutationFn: deleteTeamRecruit,
+    onSuccess: () => {
+      setAlert({
+        message: '팀 모집글이 삭제되었어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+    onError: (error) => {
+      console.error('팀 모집글 삭제 실패:', error);
+      setAlert({
+        message: '팀 모집글 삭제 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
 
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
@@ -252,7 +310,15 @@ export const TeamRecruitDetail = () => {
             <StyledButton backgroundColor="#e5e6ed" color="#333">
               수정
             </StyledButton>
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
+            <StyledButton
+              backgroundColor="#e5e6ed"
+              color="#333"
+              onClick={() => {
+                if (window.confirm('정말로 삭제하시겠습니까?')) {
+                  deleteRecruit(recruitId);
+                }
+              }}
+            >
               삭제
             </StyledButton>
           </Flex>

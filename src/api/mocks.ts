@@ -1027,7 +1027,7 @@ export const teamRecruitDetailMock = {
     chatUrl: 'test',
     isRecruiting: true, // TODO:
     memberNickName: 'test',
-    isAuthor: false, // TODO:
+    isAuthor: true, // TODO:
     createdAt: '2025.01.01',
     teamId: null,
     teamApplyResponses: [
@@ -1035,7 +1035,7 @@ export const teamRecruitDetailMock = {
         teamApplyId: 1,
         teamApplyBody: 'test1',
         memberName: 'test',
-        isMyApply: false, // TODO:
+        isMyApply: true, // TODO:
       },
       {
         teamApplyId: 2,
