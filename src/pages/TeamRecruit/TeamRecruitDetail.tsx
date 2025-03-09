@@ -11,6 +11,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ITeamRecruitDetailResponse,
   applyForTeam,
+  deleteTeamApply,
   deleteTeamRecruit,
   getTeamRecruitById,
 } from '@/api/recruitment';
@@ -67,34 +68,32 @@ const ApplicantList = ({
   data,
   isAuthor,
   isMobile,
-  // recruitId,
 }: {
   data: ITeamRecruitDetailResponse;
   isAuthor: boolean;
   isMobile: boolean;
-  // recruitId: string;
 }) => {
-  // const setAlert = useSetAtom(alertAtom);
+  const setAlert = useSetAtom(alertAtom);
 
   // 팀 지원글 삭제
-  // const { mutate: deleteRecruit } = useMutation({
-  //   mutationFn: deleteTeamRecruit,
-  //   onSuccess: () => {
-  //     setAlert({
-  //       message: '팀 모집글이 삭제되었어요',
-  //       isVisible: true,
-  //       onConfirm: () => {},
-  //     });
-  //   },
-  //   onError: (error) => {
-  //     console.error('팀 모집글 삭제 실패:', error);
-  //     setAlert({
-  //       message: '팀 모집글 삭제 중 오류가 발생했어요',
-  //       isVisible: true,
-  //       onConfirm: () => {},
-  //     });
-  //   },
-  // });
+  const { mutate: deleteApply } = useMutation({
+    mutationFn: deleteTeamApply,
+    onSuccess: () => {
+      setAlert({
+        message: '팀 지원글이 삭제되었어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+    onError: (error) => {
+      console.error('팀 지원글 삭제 실패:', error);
+      setAlert({
+        message: '팀 지원글 삭제 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
 
   return (
     <>
@@ -177,8 +176,8 @@ const ApplicantList = ({
                           cursor: 'pointer',
                         }}
                         onClick={() => {
-                          if (window.confirm('정말로 삭제하시겠습니까?')) {
-                            // deleteRecruit(recruitId);
+                          if (window.confirm('신청글을 삭제하시겠어요?')) {
+                            deleteApply(applicant.teamApplyId);
                           }
                         }}
                       />

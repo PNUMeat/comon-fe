@@ -148,3 +148,7 @@ export const applyForTeam = async (
 ): Promise<void> => {
   await apiInstance.post<ServerResponse<null>>('/v1/apply', requestData);
 };
+
+export const deleteTeamApply = async (applyId: number): Promise<void> => {
+  await apiInstance.delete<ServerResponse<null>>(`/v1/apply/${applyId}`);
+};
