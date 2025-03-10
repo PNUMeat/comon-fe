@@ -90,7 +90,7 @@ const MobileInput = css`
     height: 20px;
     align-items: flex-start;
     min-width: 200px;
-    width: 200px;
+    width: 100%;
     word-break: break-word;
     white-space: pre-wrap;
   }
@@ -116,7 +116,7 @@ const TeamModificationContainer = styled.div`
   gap: 10px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    grid-template-rows: 40px 40px 100px 40px 40px 40px;
+    grid-template-rows: 40px 60px 100px 40px 40px 40px;
   }
 `;
 

@@ -19,7 +19,7 @@ import { postImagesAtom } from "@/store/posting";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
-  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [content, setContent] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
   const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
   const [chatUrl, setChatUrl] = useState('');
   const [postImages, setPostImages] = useAtom(postImagesAtom);
@@ -27,13 +27,21 @@ export const TeamRecruitPosting = () => {
   const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
   const setAlert = useSetAtom(alertAtom);
 
-  const isButtonDisabled = !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
+  const isButtonDisabled = !teamRecruitTitle.trim() || !content.trim() || !chatUrl.trim();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setChatUrl(e.target.value);
   }
 
   const onClick = () => {
+
+    const teamRecruitBodyTrim = content.trim();
+
+    const teamRecruitBody =
+      postImages.length > 0
+      ? teamRecruitBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : teamRecruitBodyTrim;
+  
     createRecruitPost({
       teamId:
       id ? id : null,
@@ -71,9 +79,9 @@ export const TeamRecruitPosting = () => {
     <ContentWrapper>
       <PostSubjectViewer />
         <PostEditor
-            forwardContent={setTeamRecruitBody}
+            forwardContent={setContent}
             forwardTitle={setTeamRecruitTitle}
-            content={teamRecruitBody}
+            content={content}
             title={teamRecruitTitle}
           />
           <Spacer h={10} />

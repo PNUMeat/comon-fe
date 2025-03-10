@@ -292,7 +292,7 @@ const InfoGrid = styled.div`
   width: 100%;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    grid-template-rows: 40px 40px 100px 40px 40px 40px;
+    grid-template-rows: 40px 60px 100px 40px 40px 40px;
   }
 `;
 
