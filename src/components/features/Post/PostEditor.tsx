@@ -450,7 +450,6 @@ const useDetectImageMutation = () => {
                     line: line,
                     idx: idx,
                   }));
-                  // console.log('new img objs', imgObjs);
 
                   setImages((prev) => {
                     const filteredNewImages = imgObjs.filter(
@@ -460,9 +459,7 @@ const useDetectImageMutation = () => {
                             img.line === newImg.line && img.idx === newImg.idx
                         )
                     );
-                    // console.log('new img arr', filteredNewImages);
                     if (filteredNewImages.length === 0) {
-                      // console.log('no new img');
                       return prev;
                     }
 
@@ -473,13 +470,20 @@ const useDetectImageMutation = () => {
                       }
                       return imgObj;
                     });
-                    const fin = [...rearrangedArr, ...filteredNewImages];
-                    console.error('add fin', fin);
-                    return fin;
+                    return [...rearrangedArr, ...filteredNewImages];
                   });
                 })
                 .catch((err) => {
                   console.error('Promise.all error', err);
+                  editor.update(() => {
+                    const node = $getNodeByKey(nodeKey);
+                    if (node) {
+                      node.remove();
+                      setTimeout(() => {
+                        alert('이미지 파일로 전환을 실패했습니다.');
+                      }, 300);
+                    }
+                  });
                 });
             });
             return;
@@ -512,36 +516,54 @@ const PostWriteSection = forwardRef<
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
   useDetectImageMutation();
+  const onPaste = useCallback(
+    (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
 
-  const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith('image/')) {
-        const file = items[i].getAsFile();
-        if (file) {
-          const imageURL = URL.createObjectURL(file);
-          const imgPayload: InsertImagePayload = {
-            altText: '붙여넣은 이미지',
-            maxWidth: 600,
-            src: imageURL,
-          };
-          editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+      console.log('wtf?????', e.clipboardData);
+
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.startsWith('image/')) {
+            const file = items[i].getAsFile();
+            if (file) {
+              const imageURL = URL.createObjectURL(file);
+              const imgPayload: InsertImagePayload = {
+                altText: '붙여넣은 이미지',
+                maxWidth: 600,
+                src: imageURL,
+              };
+              editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+            }
+            break;
+          }
         }
-        break;
       }
+    },
+    [editor]
+  );
+
+  useEffect(() => {
+    let container: HTMLDivElement | null = null;
+    if (ref && typeof ref !== 'function') {
+      container = ref.current;
     }
-  };
+
+    if (container) {
+      container.addEventListener('paste', onPaste);
+
+      return () => {
+        container.removeEventListener('paste', onPaste);
+      };
+    }
+  }, []);
 
   const onClick = useCallback(() => {
     editor.focus();
   }, [editor]);
 
   return (
-    <EditorContainer
-      ref={ref as React.Ref<HTMLDivElement>}
-      onClick={onClick}
-      onPaste={onPaste}
-    >
+    <EditorContainer ref={ref} onClick={onClick}>
       {children}
     </EditorContainer>
   );
