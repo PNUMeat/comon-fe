@@ -200,46 +200,38 @@ const ApplicantList = ({
                     {editingApplyId === applicant.teamApplyId ? (
                       // 수정 모드일 때
                       <>
-                        <input
-                          type="text"
-                          value={editingText}
-                          onChange={(e) => setEditingText(e.target.value)}
-                          style={{
-                            fontSize: isMobile ? '10px' : '14px',
-                            fontFamily: 'Pretendard',
-                            flex: 1,
-                          }}
-                        />
-                        <Flex justify="flex-end">
-                          <StyledButton
-                            backgroundColor="#6E74FA"
-                            color="#fff"
-                            style={{
-                              height: isMobile ? '26px' : '30px',
-                              borderRadius: isMobile ? '16px' : '40px',
-                            }}
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  '수정된 내용을 저장하시겠습니까?'
-                                )
-                              ) {
-                                updateApply({
-                                  applyId: applicant.teamApplyId,
-                                  teamApplyBody: editingText,
-                                });
-                              }
-                            }}
-                          >
-                            <SText
-                              fontSize={isMobile ? '10px' : '14px'}
-                              fontWeight={400}
-                              lineHeight="normal"
+                        <ApplyFormContainer style={{ width: '100%' }}>
+                          <ApplyInput
+                            value={editingText}
+                            onChange={(e) => setEditingText(e.target.value)}
+                            style={{ height: 'auto' }}
+                          />
+                          <Flex justify="flex-end">
+                            <StyledButton
+                              backgroundColor="#6E74FA"
+                              color="#fff"
+                              style={{
+                                width: isMobile ? '64px' : '90px',
+                                height: isMobile ? '24px' : '32px',
+                                borderRadius: '40px',
+                              }}
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    '수정된 내용을 저장하시겠어요?'
+                                  )
+                                ) {
+                                  updateApply({
+                                    applyId: applicant.teamApplyId,
+                                    teamApplyBody: editingText,
+                                  });
+                                }
+                              }}
                             >
                               저장하기
-                            </SText>
-                          </StyledButton>
-                        </Flex>
+                            </StyledButton>
+                          </Flex>
+                        </ApplyFormContainer>
                       </>
                     ) : (
                       // 수정 모드 아닐 때
