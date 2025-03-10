@@ -154,10 +154,7 @@ export const updateRecruitmentStatus = async (
   recruitmentId: number,
   requestData: IUpdateRecruitmentStatusRequest
 ): Promise<void> => {
-  await apiInstance.patch(
-    `/v1/recruitments/${recruitmentId}/recruiting-status`,
-    requestData
-  );
+  await apiInstance.patch(`/v1/recruitments/${recruitmentId}`, requestData);
 };
 
 // 지원글 관련
