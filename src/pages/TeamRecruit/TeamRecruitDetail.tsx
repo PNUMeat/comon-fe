@@ -11,7 +11,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ITeamRecruitDetailResponse,
   applyForTeam,
-  deleteTeamApply,
+  deleteTeamApplication,
   deleteTeamRecruit,
   getTeamRecruitById,
   updateRecruitmentStatus,
@@ -78,7 +78,7 @@ const ApplicantList = ({
 
   // 팀 지원글 삭제
   const { mutate: deleteApply } = useMutation({
-    mutationFn: deleteTeamApply,
+    mutationFn: deleteTeamApplication,
     onSuccess: () => {
       setAlert({
         message: isAuthor
