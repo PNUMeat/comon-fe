@@ -325,19 +325,7 @@ const blobUrlToFile = async (blobUrl: string, fileName: string) => {
     // },
   })
     .then((res) => res.blob())
-    .then((blob) => new File([blob], fileName, { type: blob.type }))
-    .catch(async (error) => {
-      console.error('Error converting blob URL to file:', error);
-      // throw error;
-      return await fetch(
-        'https://d1onwxr2n696de.cloudfront.net/article/00cd8b80-6698-436d-8041-fe539310efb9.png',
-        {
-          mode: 'cors',
-        }
-      )
-        .then((res) => res.blob())
-        .then((blob) => new File([blob], fileName, { type: blob.type }));
-    });
+    .then((blob) => new File([blob], fileName, { type: blob.type }));
 };
 
 const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
