@@ -91,6 +91,10 @@ const ApplicantList = ({
         isVisible: true,
         onConfirm: () => {},
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ['teamRecruitDetail', recruitId],
+      });
     },
     onError: (error) => {
       console.error('팀 지원글 삭제 실패:', error);
@@ -401,6 +405,10 @@ export const TeamRecruitDetail = () => {
         message: '모집 상태가 변경되었습니다.',
         isVisible: true,
         onConfirm: () => {},
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['teamRecruitDetail', recruitId],
       });
     },
     onError: (error) => {
