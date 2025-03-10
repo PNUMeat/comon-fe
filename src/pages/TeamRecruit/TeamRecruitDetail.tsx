@@ -15,6 +15,7 @@ import {
   deleteTeamRecruit,
   getTeamRecruitById,
   updateRecruitmentStatus,
+  updateTeamApplication,
 } from '@/api/recruitment';
 import Click from '@/assets/TeamJoin/click.png';
 import Pencil from '@/assets/TeamRecruit/pencil.svg';
@@ -69,12 +70,15 @@ const ApplicantList = ({
   data,
   isAuthor,
   isMobile,
+  recruitId,
 }: {
   data: ITeamRecruitDetailResponse;
   isAuthor: boolean;
   isMobile: boolean;
+  recruitId: string;
 }) => {
   const setAlert = useSetAtom(alertAtom);
+  const queryClient = useQueryClient();
 
   // 팀 지원글 삭제
   const { mutate: deleteApply } = useMutation({
@@ -94,6 +98,41 @@ const ApplicantList = ({
         message: isAuthor
           ? '사용자 내보내기 중 오류가 발생했어요'
           : '팀 지원글 삭제 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
+
+  // 팀 지원글 수정
+  const [editingApplyId, setEditingApplyId] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState<string>('');
+
+  const { mutate: updateApply } = useMutation({
+    mutationFn: ({
+      applyId,
+      teamApplyBody,
+    }: {
+      applyId: number;
+      teamApplyBody: string;
+    }) => updateTeamApplication(applyId, { teamApplyBody }),
+    onSuccess: () => {
+      setAlert({
+        message: '신청글이 수정되었어요.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['teamRecruitDetail', recruitId],
+      });
+
+      setEditingApplyId(null);
+    },
+    onError: (error) => {
+      console.error('신청글 수정 실패:', error);
+      setAlert({
+        message: '신청글 수정 중 오류가 발생했어요.',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -158,45 +197,98 @@ const ApplicantList = ({
               <>
                 {applicant.isMyApply && (
                   <>
-                    <SText
-                      color="#333"
-                      fontSize={isMobile ? '10px' : '14px'}
-                      fontWeight={500}
-                      fontFamily="Pretendard"
-                      lineHeight={isMobile ? 'normal' : '20px'}
-                      style={{ width: '100%' }}
-                    >
-                      {applicant.teamApplyBody}
-                    </SText>
-                    <Flex
-                      gap={isMobile ? '6px' : '10px'}
-                      justify="flex-end"
-                      style={{ width: '70px' }}
-                    >
-                      <img
-                        src={Pencil}
-                        alt="수정"
-                        style={{
-                          width: isMobile ? '20px' : '',
-                          height: isMobile ? '20px' : '',
-                          cursor: 'pointer',
-                        }}
-                      />
-                      <img
-                        src={Trash}
-                        alt="삭제"
-                        style={{
-                          width: isMobile ? '18px' : '',
-                          height: isMobile ? '18px' : '',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => {
-                          if (window.confirm('신청글을 삭제하시겠어요?')) {
-                            deleteApply(applicant.teamApplyId);
-                          }
-                        }}
-                      />
-                    </Flex>
+                    {editingApplyId === applicant.teamApplyId ? (
+                      // 수정 모드일 때
+                      <>
+                        <input
+                          type="text"
+                          value={editingText}
+                          onChange={(e) => setEditingText(e.target.value)}
+                          style={{
+                            fontSize: isMobile ? '10px' : '14px',
+                            fontFamily: 'Pretendard',
+                            flex: 1,
+                          }}
+                        />
+                        <Flex justify="flex-end">
+                          <StyledButton
+                            backgroundColor="#6E74FA"
+                            color="#fff"
+                            style={{
+                              height: isMobile ? '26px' : '30px',
+                              borderRadius: isMobile ? '16px' : '40px',
+                            }}
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  '수정된 내용을 저장하시겠습니까?'
+                                )
+                              ) {
+                                updateApply({
+                                  applyId: applicant.teamApplyId,
+                                  teamApplyBody: editingText,
+                                });
+                              }
+                            }}
+                          >
+                            <SText
+                              fontSize={isMobile ? '10px' : '14px'}
+                              fontWeight={400}
+                              lineHeight="normal"
+                            >
+                              저장하기
+                            </SText>
+                          </StyledButton>
+                        </Flex>
+                      </>
+                    ) : (
+                      // 수정 모드 아닐 때
+                      <>
+                        <SText
+                          color="#333"
+                          fontSize={isMobile ? '10px' : '14px'}
+                          fontWeight={500}
+                          fontFamily="Pretendard"
+                          lineHeight={isMobile ? 'normal' : '20px'}
+                          style={{ width: '100%' }}
+                        >
+                          {applicant.teamApplyBody}
+                        </SText>
+                        <Flex
+                          gap={isMobile ? '6px' : '10px'}
+                          justify="flex-end"
+                          style={{ width: '70px' }}
+                        >
+                          <img
+                            src={Pencil}
+                            alt="수정"
+                            style={{
+                              width: isMobile ? '20px' : '',
+                              height: isMobile ? '20px' : '',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => {
+                              setEditingApplyId(applicant.teamApplyId);
+                              setEditingText(applicant.teamApplyBody || '');
+                            }}
+                          />
+                          <img
+                            src={Trash}
+                            alt="삭제"
+                            style={{
+                              width: isMobile ? '18px' : '',
+                              height: isMobile ? '18px' : '',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => {
+                              if (window.confirm('신청글을 삭제하시겠어요?')) {
+                                deleteApply(applicant.teamApplyId);
+                              }
+                            }}
+                          />
+                        </Flex>
+                      </>
+                    )}
                   </>
                 )}
               </>
@@ -533,6 +625,7 @@ export const TeamRecruitDetail = () => {
               data={data}
               isAuthor={data.isAuthor}
               isMobile={isMobile}
+              recruitId={recruitId}
             />
           )}
         </>

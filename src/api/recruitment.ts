@@ -58,15 +58,20 @@ export interface ITeamRecruitDetailResponse {
   teamApplyResponses: ITeamRecruitApplyResponse[];
 }
 
+// 팀 모집글 모집 상태 변경
+interface IUpdateRecruitmentStatusRequest {
+  isRecruiting: boolean;
+}
+
 // 팀 지원글 생성
 interface ITeamApplyRequest {
   recruitmentId: string;
   teamApplyBody: string;
 }
 
-// 팀 모집글 모집 상태 변경
-interface IUpdateRecruitmentStatusRequest {
-  isRecruiting: boolean;
+// 팀 지원글 수정
+interface IUpdateTeamApplicationRequest {
+  teamApplyBody: string;
 }
 
 // 모집글 관련
@@ -162,6 +167,13 @@ export const applyForTeam = async (
   await apiInstance.post<ServerResponse<null>>('/v1/apply', requestData);
 };
 
-export const deleteTeamApply = async (applyId: number): Promise<void> => {
+export const deleteTeamApplication = async (applyId: number): Promise<void> => {
   await apiInstance.delete<ServerResponse<null>>(`/v1/apply/${applyId}`);
+};
+
+export const updateTeamApplication = async (
+  applyId: number,
+  requestData: IUpdateTeamApplicationRequest
+): Promise<void> => {
+  await apiInstance.patch(`/v1/apply/${applyId}`, requestData);
 };
