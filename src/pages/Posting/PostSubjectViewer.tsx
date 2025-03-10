@@ -67,7 +67,17 @@ const waitForImageLoad = (img: HTMLImageElement) => {
 
 export const PostSubjectViewer: React.FC<{
   data: ITopicResponse | undefined;
-}> = ({ data }) => {
+  articleBodyFallback?: string;
+  titlePrefix?: string;
+  commentOpen?: string;
+  commentClose?: string;
+}> = ({
+  data,
+  articleBodyFallback = '문제가 등록되지 않았어요',
+  titlePrefix = '문제',
+  commentOpen = '문제 접기',
+  commentClose = '펼쳐서 확인하기',
+}) => {
   const [height, setHeight] = useState<number>(0);
   const [show, setShow] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -106,7 +116,7 @@ export const PostSubjectViewer: React.FC<{
             fontWeight={700}
             fontFamily={'Pretendard'}
           >
-            문제
+            {titlePrefix}
           </SText>
         ) : null}
         <SText
@@ -117,7 +127,7 @@ export const PostSubjectViewer: React.FC<{
           whiteSpace={'normal'}
           wordBreak={'break-word'}
         >
-          {data?.articleTitle ?? '문제가 등록되지 않았어요'}
+          {data?.articleTitle ?? articleBodyFallback}
         </SText>
       </GapFlex>
       {show && data ? (
@@ -141,7 +151,7 @@ export const PostSubjectViewer: React.FC<{
           fontWeight={400}
           fontFamily={'Pretendard'}
         >
-          {show ? '문제 접기' : '펼쳐서 확인하기'}
+          {show ? commentOpen : commentClose}
         </SText>
         <svg
           xmlns="http://www.w3.org/2000/svg"
