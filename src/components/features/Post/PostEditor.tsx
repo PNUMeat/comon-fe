@@ -357,7 +357,6 @@ const useDetectImageMutation = () => {
   useEffect(() => {
     Promise.resolve().then(() => {
       // if (firstNodeKey.current !== '') {
-      console.log('???');
       editor.read(() => {
         const rootElement = editor.getRootElement();
         if (!rootElement) {
@@ -516,11 +515,10 @@ const PostWriteSection = forwardRef<
 >(({ children }, ref) => {
   const [editor] = useLexicalComposerContext();
   useDetectImageMutation();
+
   const onPaste = useCallback(
     (e: ClipboardEvent) => {
       const items = e.clipboardData?.items;
-
-      console.log('wtf?????', e.clipboardData);
 
       if (items) {
         for (let i = 0; i < items.length; i++) {
