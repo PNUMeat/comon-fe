@@ -1066,7 +1066,7 @@ export const teamRecruitDetailMock = {
         teamApplyId: 1,
         teamApplyBody: 'test1',
         memberName: 'test',
-        isMyApply: true, // TODO:
+        isMyApply: false, // TODO:
       },
       {
         teamApplyId: 2,

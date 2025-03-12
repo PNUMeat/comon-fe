@@ -4,6 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { LoginPrompt } from '@/components/features/TeamRecruit/LoginPrompt';
 
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -421,6 +422,9 @@ export const TeamRecruitDetail = () => {
     },
   });
 
+  // 로그인 여부
+  const isLoggedIn = false; // TODO:
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -573,6 +577,8 @@ export const TeamRecruitDetail = () => {
                 </Flex>
                 <Spacer h={isMobile ? 12 : 24} />
                 <ApplyFormContainer>
+                  {!isLoggedIn && <LoginPrompt />}
+
                   <ApplyInput
                     placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 "
                     value={applyText}
@@ -671,6 +677,7 @@ const ChatLink = styled.a`
 `;
 
 const ApplyFormContainer = styled.div`
+  position: relative;
   width: auto;
   display: flex;
   flex-direction: column;
