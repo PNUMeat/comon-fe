@@ -1054,12 +1054,12 @@ export const teamRecruitDetailMock = {
   data: {
     teamRecruitId: 1,
     teamRecruitTitle: 'test',
-    teamRecruitBody: 'test',
+    teamRecruitBody: "<p dir=\"ltr\"><span style=\"\">image</span></p><p><br></p><p><img src=\"?\" alt=\"붙여넣은 이미지\"></p>",
     chatUrl: 'test',
     isRecruiting: true, // TODO:
     memberNickName: 'test',
     isAuthor: true, // TODO:
-    imageUrl: null,
+    imageUrl: "https://pnu-comon-s3-bucket-v2.s3.ap-northeast-2.amazonaws.com/article/0c92df08-dc4f-47ca-8f01-18dac1262761.jpg",
     createdAt: '2025.01.01',
     teamId: null,
     teamApplyResponses: [

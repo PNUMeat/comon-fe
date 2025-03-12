@@ -29,7 +29,6 @@ export const TeamRecruitPosting = () => {
     recruitId: null,
   };
 
-  console.log(location?.state);
   const [content, setContent] = useState<string>(() => teamRecruitBody);
   const [title, setTitle] = useState(teamRecruitTitle);
   const [url, setUrl] = useState(chatUrl);
@@ -72,8 +71,7 @@ export const TeamRecruitPosting = () => {
       })
       .then((res) => {
         setPostImages([]);
-        console.log(res);
-        navigate(`/team-recruit/detail/${recruitId}`);
+        navigate(`/team-recruit/detail/${res.teamRecruitId}`);
       })
       .catch((err) => {
         setAlert({
@@ -104,7 +102,6 @@ export const TeamRecruitPosting = () => {
     })
     .then((res) => {
       setPostImages([]);
-      console.log(res);
       navigate(`/team-recruit/detail/${res.teamRecruitId}`);
     })
     .catch((err) => {

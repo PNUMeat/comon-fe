@@ -5,7 +5,7 @@ import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import {
@@ -333,9 +333,12 @@ export const TeamRecruitDetail = () => {
     enabled: !!recruitId,
   });
 
-  if (data?.imageUrl) {
-    data?.teamRecruitBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
-  }
+  const updatedTeamRecruitBody = useMemo(() => {
+    if (data?.imageUrl) {
+      return data.teamRecruitBody.replace(/src="\?"/g, `src="${data.imageUrl}"`);
+    }
+    return data?.teamRecruitBody;
+  }, [data?.imageUrl, data?.teamRecruitBody]);
 
   // 팀 지원글 생성
   const [applyText, setApplyText] = useState('');
@@ -449,7 +452,7 @@ export const TeamRecruitDetail = () => {
                 state={{
                   recruitId: recruitId,
                   teamRecruitTitle: data.teamRecruitTitle,
-                  teamRecruitBody: data.teamRecruitBody,
+                  teamRecruitBody: updatedTeamRecruitBody,
                   chatUrl: data.chatUrl,
                 }}
               >
@@ -514,7 +517,7 @@ export const TeamRecruitDetail = () => {
         </SText>
         <Spacer h={isMobile ? 0 : 20} />
         <div
-          dangerouslySetInnerHTML={{ __html: data?.teamRecruitBody ?? '' }}
+          dangerouslySetInnerHTML={{ __html: updatedTeamRecruitBody ?? '' }}
           style={{ lineHeight: 'normal' }}
         />
       </ContentBox>

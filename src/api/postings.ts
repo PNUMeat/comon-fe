@@ -36,9 +36,6 @@ export const createPost = async ({
   // formData.append('images', '');
   // }
 
-  console.log(articleBody);
-  console.log(images);
-
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
     return createPostMock.data;
