@@ -12,25 +12,31 @@ import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
 import { createRecruitPost } from "@/api/recruitment";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
 import { alertAtom } from "@/store/modal";
 import { postImagesAtom } from "@/store/posting";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
-  const [content, setContent] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
-  const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
-  const [chatUrl, setChatUrl] = useState('');
+  const location = useLocation();
+  const { teamRecruitBody, teamRecruitTitle, chatUrl, teamId} = location?.state ?? {
+    teamRecruitBody: getRecruitDefaultData(isMobile ? "14px" : "18px"),
+    teamRecruitTitle: '',
+    chatUrl: '',
+    teamId: null,
+  };
+  const [content, setContent] = useState<string>(() => teamRecruitBody);
+  const [title, setTitle] = useState(teamRecruitTitle);
+  const [url, setUrl] = useState(chatUrl);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const chatUrlRef = useRef<HTMLTextAreaElement>(null);
-  const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
   const setAlert = useSetAtom(alertAtom);
 
-  const isButtonDisabled = !teamRecruitTitle.trim() || !content.trim() || !chatUrl.trim();
+  const isButtonDisabled = !title.trim() || !content.trim() || !url.trim();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setChatUrl(e.target.value);
+    setUrl(e.target.value);
   }
 
   const onClick = () => {
@@ -43,9 +49,8 @@ export const TeamRecruitPosting = () => {
       : teamRecruitBodyTrim;
   
     createRecruitPost({
-      teamId:
-      id ? id : null,
-      teamRecruitTitle : teamRecruitTitle,
+      teamId: teamId,
+      teamRecruitTitle : title,
       teamRecruitBody : teamRecruitBody,
       image : 
       postImages.length > 0
@@ -58,7 +63,7 @@ export const TeamRecruitPosting = () => {
           })
           .map((imgObj) => imgObj.img)
       : null,
-      chatUrl: chatUrl,
+      chatUrl: url,
     })
     .then((res) => {
       setPostImages([]);
@@ -80,9 +85,9 @@ export const TeamRecruitPosting = () => {
       <PostSubjectViewer />
         <PostEditor
             forwardContent={setContent}
-            forwardTitle={setTeamRecruitTitle}
+            forwardTitle={setTitle}
             content={content}
-            title={teamRecruitTitle}
+            title={title}
           />
           <Spacer h={10} />
           <ContactWrapper>
