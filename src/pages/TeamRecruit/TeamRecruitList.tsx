@@ -1,3 +1,5 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -45,6 +47,11 @@ export const TeamRecruitListPage = () => {
     setCurrentPage(newPage);
   };
 
+  // 로그인 여부
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
+
   return (
     <div style={{ padding: isMobile ? '0px' : '30px 20px' }}>
       {isMobile && (
@@ -63,7 +70,7 @@ export const TeamRecruitListPage = () => {
                 가이드
               </StyledButton>
             </a>
-            <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
+            <Link to={isLoggedIn ? `${PATH.TEAM_RECRUIT}/posting` : PATH.LOGIN}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
               </StyledButton>
@@ -205,7 +212,10 @@ export const TeamRecruitListPage = () => {
         모집글 없이 이미 정해진 팀원들과 팀 생성하기
       </SText>
       <Spacer h={14} />
-      <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
+      <Link
+        to={isLoggedIn ? PATH.TEAM_REGISTRATION : PATH.LOGIN}
+        style={{ textDecoration: 'none' }}
+      >
         <Box
           width="100%"
           height={isMobile ? '48px' : '80px'}
