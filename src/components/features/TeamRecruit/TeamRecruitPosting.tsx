@@ -69,9 +69,9 @@ export const TeamRecruitPosting = () => {
         chatUrl: url,
         recruitmentId: recruitId,
       })
-      .then((res) => {
+      .then(() => {
         setPostImages([]);
-        navigate(`/team-recruit/detail/${res.teamRecruitId}`);
+        navigate(`/team-recruit/detail/${recruitId}`);
       })
       .catch((err) => {
         setAlert({

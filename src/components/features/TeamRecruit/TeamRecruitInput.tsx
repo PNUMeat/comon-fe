@@ -4,18 +4,18 @@ import { forwardRef, useState } from "react";
 
 export const TeamRecruitInput = forwardRef<HTMLTextAreaElement, { onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, value: string}>(
   ({ onChange, value }, ref) => {
-  const isMobile = window.innerWidth < breakpoints.mobile;
-  const MAX_HEIGHT = isMobile ? 40 : 50;
+  const MAX_LENGTH = 200; // 글자수 제한
   const [inputValue, setInputValue] = useState(value);
 
   const handleChanges = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
-    console.log(e.target.scrollHeight);
-    if (e.target.scrollHeight <= MAX_HEIGHT) {
-      setInputValue(value);
-      e.target.style.height = 'auto';
-      e.target.style.height = `${e.target.scrollHeight}px`;
+    
+    if (value.length > MAX_LENGTH) {
+      return;
     }
+    setInputValue(value);
+    e.target.style.height = 'auto';
+    e.target.style.height = `${e.target.scrollHeight}px`;
     if (onChange) {
       onChange(e);
     }
