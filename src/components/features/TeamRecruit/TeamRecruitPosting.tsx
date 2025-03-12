@@ -11,21 +11,24 @@ import { getRecruitDefaultData } from "@/components/features/TeamRecruit/Recruit
 import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
-import { createRecruitPost } from "@/api/recruitment";
+import { createRecruitPost, modifyRecruitPost } from "@/api/recruitment";
 import { useLocation } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
 import { alertAtom } from "@/store/modal";
 import { postImagesAtom } from "@/store/posting";
+import { navigate } from "@/api/apiInstance";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
   const location = useLocation();
-  const { teamRecruitBody, teamRecruitTitle, chatUrl, teamId} = location?.state ?? {
+  const { teamRecruitBody, teamRecruitTitle, chatUrl, teamId, recruitId} = location?.state ?? {
     teamRecruitBody: getRecruitDefaultData(isMobile ? "14px" : "18px"),
     teamRecruitTitle: '',
     chatUrl: '',
     teamId: null,
+    recruitId: null,
   };
+
   const [content, setContent] = useState<string>(() => teamRecruitBody);
   const [title, setTitle] = useState(teamRecruitTitle);
   const [url, setUrl] = useState(chatUrl);
@@ -47,6 +50,39 @@ export const TeamRecruitPosting = () => {
       postImages.length > 0
       ? teamRecruitBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
       : teamRecruitBodyTrim;
+
+    if (recruitId) {
+      modifyRecruitPost({
+        teamRecruitTitle: title,
+        teamRecruitBody: teamRecruitBody,
+        image: 
+        postImages.length > 0
+        ? postImages
+            .sort((a, b) => {
+              if (a.line !== b.line) {
+                return a.line - b.line;
+              }
+              return a.idx - b.idx;
+            })
+            .map((imgObj) => imgObj.img)
+        : null,
+        chatUrl: url,
+        recruitmentId: recruitId,
+      })
+      .then((res) => {
+        setPostImages([]);
+        console.log(res);
+        navigate(`/team-recruit/detail/${recruitId}`);
+      })
+      .catch((err) => {
+        setAlert({
+          message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
+          isVisible: true,
+          onConfirm: () => {},
+        });
+      });
+      return;
+    } else {
   
     createRecruitPost({
       teamId: teamId,
@@ -68,7 +104,7 @@ export const TeamRecruitPosting = () => {
     .then((res) => {
       setPostImages([]);
       console.log(res);
-      // 게시글 상세 이동해야함
+      navigate(`/team-recruit/detail/${res.teamRecruitId}`);
     })
     .catch((err) => {
       setAlert({
@@ -77,6 +113,7 @@ export const TeamRecruitPosting = () => {
         onConfirm: () => {},
       });
     });
+  }
   };
 
   

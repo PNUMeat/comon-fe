@@ -439,9 +439,20 @@ export const TeamRecruitDetail = () => {
             >
               {data.isRecruiting ? '모집중단' : '모집재개'}
             </StyledButton>
+              <Link
+                to={`${PATH.TEAM_RECRUIT}/posting`}
+                style={{ textDecoration: 'none' }}
+                state={{
+                  recruitId: recruitId,
+                  teamRecruitTitle: data.teamRecruitTitle,
+                  teamRecruitBody: data.teamRecruitBody,
+                  chatUrl: data.chatUrl,
+                }}
+              >
             <StyledButton backgroundColor="#e5e6ed" color="#333">
               수정
             </StyledButton>
+          </Link>
             <StyledButton
               backgroundColor="#e5e6ed"
               color="#333"
