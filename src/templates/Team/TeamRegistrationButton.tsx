@@ -1,6 +1,6 @@
 import { ComonFormSubmitButton } from '@/components/commons/Form/ComonFormSubmitButton';
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { createTeam } from '@/api/team';
 import click from '@/assets/TeamJoin/click.png';
@@ -29,6 +29,9 @@ export const TeamRegistrationButton = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const setAlert = useSetAtom(alertAtom);
+  const location = useLocation();
+  const teamMemberUuids = location.state?.teamMemberUuids || [];
+  console.log(teamMemberUuids);
 
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
@@ -41,6 +44,7 @@ export const TeamRegistrationButton = () => {
         topic,
         password,
         image,
+        teamMemberUuids,
       })
         .then((data) => {
           navigate(`${PATH.TEAM_DASHBOARD}/${data.teamId}`);

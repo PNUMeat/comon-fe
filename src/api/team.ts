@@ -109,7 +109,9 @@ export const createTeam = async ({
   }
 
   if (teamMemberUuids) {
-    formData.append('teamMemberUuids', JSON.stringify(teamMemberUuids));
+    teamMemberUuids.forEach((uuid) => {
+      formData.append('teamMemberUuids', uuid);
+    });
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(

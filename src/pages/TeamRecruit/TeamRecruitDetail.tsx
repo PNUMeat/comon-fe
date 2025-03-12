@@ -56,6 +56,7 @@ const EmptyState = ({
       <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
         <img src={Click} style={{ width: '24px', height: '24px' }} />팀 생성하기
+        {/*TODO: */}
       </RegistrationButton>
     </>
   ) : (
@@ -308,7 +309,11 @@ const ApplicantList = ({
             신청자들과 함께 팀을 시작할 준비가 되었다면,
           </SText>
           <Spacer h={14} />
-          <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
+          <Link
+            to={PATH.TEAM_REGISTRATION}
+            state={{ teamMemberUuids: data.teamMemberUuids }}
+            style={{ textDecoration: 'none' }}
+          >
             <RegistrationButton disabled={false}>
               <img src={Click} style={{ width: '24px', height: '24px' }} />팀
               생성하기
