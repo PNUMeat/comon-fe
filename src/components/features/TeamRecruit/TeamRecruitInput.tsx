@@ -2,11 +2,11 @@ import { breakpoints } from "@/constants/breakpoints";
 import styled from "@emotion/styled";
 import { forwardRef, useState } from "react";
 
-export const TeamRecruitInput = forwardRef<HTMLTextAreaElement, { onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void }>(
-  ({ onChange }, ref) => {
+export const TeamRecruitInput = forwardRef<HTMLTextAreaElement, { onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, value: string}>(
+  ({ onChange, value }, ref) => {
   const isMobile = window.innerWidth < breakpoints.mobile;
   const MAX_HEIGHT = isMobile ? 40 : 50;
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(value);
 
   const handleChanges = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;

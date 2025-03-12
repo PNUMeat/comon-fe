@@ -114,6 +114,7 @@ export const modifyRecruitPost = async ({
   teamRecruitBody,
   image,
   chatUrl,
+  recruitmentId,
 }: ICreateRecuitmentRequest & {
     recruitmentId: number;
   }) => {
@@ -126,8 +127,9 @@ export const modifyRecruitPost = async ({
       formData.append('image', img);
     });
   }
+
   const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
-    'v1/recruitments/${recruitmentId}',
+    `v1/recruitments/${recruitmentId}`,
     formData,
     {
       headers: {

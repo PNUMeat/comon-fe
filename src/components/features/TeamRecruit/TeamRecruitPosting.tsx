@@ -29,6 +29,7 @@ export const TeamRecruitPosting = () => {
     recruitId: null,
   };
 
+  console.log(location?.state);
   const [content, setContent] = useState<string>(() => teamRecruitBody);
   const [title, setTitle] = useState(teamRecruitTitle);
   const [url, setUrl] = useState(chatUrl);
@@ -135,7 +136,8 @@ export const TeamRecruitPosting = () => {
               </IconTitleWrapper>
               <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
             </Contact>
-            <TeamRecruitInput 
+            <TeamRecruitInput
+              value={url}
               ref={chatUrlRef}
               onChange={onChange}
             />
