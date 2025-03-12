@@ -333,6 +333,10 @@ export const TeamRecruitDetail = () => {
     enabled: !!recruitId,
   });
 
+  if (data?.imageUrl) {
+    data?.teamRecruitBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
+  }
+
   // 팀 지원글 생성
   const [applyText, setApplyText] = useState('');
   const setAlert = useSetAtom(alertAtom);

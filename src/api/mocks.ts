@@ -1059,6 +1059,7 @@ export const teamRecruitDetailMock = {
     isRecruiting: true, // TODO:
     memberNickName: 'test',
     isAuthor: true, // TODO:
+    imageUrl: null,
     createdAt: '2025.01.01',
     teamId: null,
     teamApplyResponses: [

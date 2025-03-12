@@ -53,7 +53,8 @@ export interface ITeamRecruitDetailResponse {
   isRecruiting: boolean;
   memberNickName: string;
   isAuthor: boolean;
-  createdAt: string;
+  imageUrl: string | null;
+  createdAt: string; 
   teamId: number | null;
   teamApplyResponses: ITeamRecruitApplyResponse[];
 }
@@ -95,6 +96,9 @@ export const createRecruitPost = async ({
       formData.append('image', img);
     });
   }
+
+  console.log(image);
+  console.log(teamRecruitBody);
 
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
