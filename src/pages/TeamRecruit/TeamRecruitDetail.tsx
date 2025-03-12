@@ -9,7 +9,7 @@ import { Spacer } from '@/components/commons/Spacer';
 import { LoginPrompt } from '@/components/features/TeamRecruit/LoginPrompt';
 
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import {
   ITeamRecruitDetailResponse,
@@ -145,6 +145,16 @@ const ApplicantList = ({
       });
     },
   });
+
+  const navigate = useNavigate();
+
+  const inviteAll = () => {
+    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+      navigate(PATH.TEAM_REGISTRATION, {
+        state: { teamMemberUuids: data.teamMemberUuids },
+      });
+    }
+  };
 
   return (
     <>
@@ -311,16 +321,10 @@ const ApplicantList = ({
             신청자들과 함께 팀을 시작할 준비가 되었다면,
           </SText>
           <Spacer h={14} />
-          <Link
-            to={PATH.TEAM_REGISTRATION}
-            state={{ teamMemberUuids: data.teamMemberUuids }}
-            style={{ textDecoration: 'none' }}
-          >
-            <RegistrationButton disabled={false}>
-              <img src={Click} style={{ width: '24px', height: '24px' }} />팀
-              생성하기
-            </RegistrationButton>
-          </Link>
+          <RegistrationButton disabled={false} onClick={inviteAll}>
+            <img src={Click} style={{ width: '24px', height: '24px' }} />팀
+            생성하기
+          </RegistrationButton>
         </>
       )}
     </>
