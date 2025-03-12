@@ -1059,26 +1059,26 @@ export const teamRecruitDetailMock = {
     chatUrl: 'test',
     isRecruiting: true, // TODO:
     memberNickName: 'test',
-    isAuthor: true, // TODO:
+    isAuthor: false, // TODO:
     createdAt: '2025.01.01',
     teamId: null,
     teamApplyResponses: [
       {
         teamApplyId: 1,
         teamApplyBody: 'test1',
-        memberName: 'test',
-        isMyApply: false, // TODO:
+        memberName: '김코몬/4daysssss',
+        isMyApply: true, // TODO:
       },
       {
         teamApplyId: 2,
-        teamApplyBody: null,
-        memberName: 'test',
+        teamApplyBody: 'test222',
+        memberName: '강코몬',
         isMyApply: false,
       },
       {
         teamApplyId: 3,
-        teamApplyBody: null,
-        memberName: 'test',
+        teamApplyBody: 'test3224',
+        memberName: '이코몬',
         isMyApply: false,
       },
     ],

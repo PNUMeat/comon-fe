@@ -158,7 +158,10 @@ const ApplicantList = ({
               fontFamily="Pretendard"
               lineHeight="normal"
               style={{
-                minWidth: isMobile ? '40px' : '100px',
+                width: isMobile ? '60px' : '100px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
               {applicant.memberName}
@@ -172,7 +175,7 @@ const ApplicantList = ({
                   fontWeight={500}
                   fontFamily="Pretendard"
                   lineHeight={isMobile ? 'normal' : '20px'}
-                  style={{ width: '100%' }}
+                  style={{ flex: 1 }}
                 >
                   {applicant.teamApplyBody}
                 </SText>
@@ -249,7 +252,7 @@ const ApplicantList = ({
                           fontWeight={500}
                           fontFamily="Pretendard"
                           lineHeight={isMobile ? 'normal' : '20px'}
-                          style={{ width: '100%' }}
+                          style={{ flex: 1 }}
                         >
                           {applicant.teamApplyBody}
                         </SText>
