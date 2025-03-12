@@ -126,6 +126,7 @@ export const TeamRecruitListPage = () => {
                     style={{
                       border: 'none',
                       height: isMobile ? '18px' : '24px',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     <SText
@@ -142,6 +143,7 @@ export const TeamRecruitListPage = () => {
                     fontSize={isMobile ? '14px' : '18px'}
                     fontWeight={700}
                     fontFamily="Pretendard"
+                    shouldCut={true}
                   >
                     {team.teamRecruitTitle}
                   </SText>
