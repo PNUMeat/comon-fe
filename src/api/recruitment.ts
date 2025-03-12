@@ -56,6 +56,7 @@ export interface ITeamRecruitDetailResponse {
   createdAt: string;
   teamId: number | null;
   teamApplyResponses: ITeamRecruitApplyResponse[];
+  teamMemberUuids: string[];
 }
 
 // 팀 모집글 모집 상태 변경

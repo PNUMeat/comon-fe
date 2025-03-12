@@ -1058,7 +1058,7 @@ export const teamRecruitDetailMock = {
     chatUrl: 'test',
     isRecruiting: true, // TODO:
     memberNickName: 'test',
-    isAuthor: false, // TODO:
+    isAuthor: true, // TODO:
     createdAt: '2025.01.01',
     teamId: null,
     teamApplyResponses: [
@@ -1080,6 +1080,12 @@ export const teamRecruitDetailMock = {
         memberName: 'test',
         isMyApply: false,
       },
+    ],
+    teamMemberUuids: [
+      'dfd429ba-6790-4692-9f3b-bf480e10c194',
+      'f2362931-f5d7-485d-9418-42d8f703aa1b',
+      'ffacad10-ff7c-4528-91f6-33f9f767ee71',
+      'b9e736b0-0ee2-4572-a8ed-83440e45d710',
     ],
   },
 };
