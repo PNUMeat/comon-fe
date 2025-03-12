@@ -51,12 +51,11 @@ const EmptyState = ({
         fontSize={isMobile ? '10px' : '12px'}
         textAlign="center"
       >
-        대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요
+        최소 1명의 사용자가 신청해야 팀을 생성할 수 있어요
       </SText>
       <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
         <img src={Click} style={{ width: '24px', height: '24px' }} />팀 생성하기
-        {/*TODO: */}
       </RegistrationButton>
     </>
   ) : (
