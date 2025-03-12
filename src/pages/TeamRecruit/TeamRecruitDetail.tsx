@@ -1,3 +1,5 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
@@ -423,7 +425,9 @@ export const TeamRecruitDetail = () => {
   });
 
   // 로그인 여부
-  const isLoggedIn = false; // TODO:
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
 
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
@@ -583,6 +587,7 @@ export const TeamRecruitDetail = () => {
                     placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 "
                     value={applyText}
                     onChange={(e) => setApplyText(e.target.value)}
+                    disabled={!isLoggedIn}
                   />
                   <Flex justify="flex-end">
                     <StyledButton
@@ -594,6 +599,7 @@ export const TeamRecruitDetail = () => {
                         borderRadius: '40px',
                       }}
                       onClick={submitApplication}
+                      disabled={!isLoggedIn}
                     >
                       가입 신청
                     </StyledButton>
@@ -704,6 +710,11 @@ const ApplyInput = styled.textarea`
   &::placeholder {
     color: #ccc;
     font-weight: 600;
+  }
+
+  &:disabled {
+    background: #fff;
+    cursor: not-allowed;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {

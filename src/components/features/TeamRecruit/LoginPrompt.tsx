@@ -1,10 +1,15 @@
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useNavigate } from 'react-router-dom';
+
 import { breakpoints } from '@/constants/breakpoints';
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 export const LoginPrompt = () => {
+  const navigate = useNavigate();
+
   return (
     <LoginPromptContainer>
       <SText
@@ -17,7 +22,7 @@ export const LoginPrompt = () => {
         이 팀과 함께 하고 싶다면?
       </SText>
       <Spacer h={20} />
-      <LoginButton>로그인</LoginButton>
+      <LoginButton onClick={() => navigate(PATH.LOGIN)}>로그인</LoginButton>
     </LoginPromptContainer>
   );
 };

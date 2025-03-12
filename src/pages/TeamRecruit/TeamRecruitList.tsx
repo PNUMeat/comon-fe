@@ -285,6 +285,10 @@ export const StyledButton = styled.button<{
   width: 80px;
   height: 100%;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   @media (max-width: ${breakpoints.mobile}px) {
     border-radius: 4px;
     font-size: 12px;
