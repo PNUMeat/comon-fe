@@ -55,9 +55,14 @@ export const TeamRecruitListPage = () => {
             justify="flex-end"
             height={isMobile ? 26 : 60}
           >
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
-              가이드
-            </StyledButton>
+            <a
+              href="https://mini-rifle-a43.notion.site/codemonster-guide?pvs=4"
+              target="_blank"
+            >
+              <StyledButton backgroundColor="#e5e6ed" color="#333">
+                가이드
+              </StyledButton>
+            </a>
             <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
@@ -84,9 +89,14 @@ export const TeamRecruitListPage = () => {
         {/* 오른쪽 상단 버튼 */}
         {!isMobile && (
           <Flex width={30} gap="12px" justify="flex-end" height={36}>
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
-              가이드
-            </StyledButton>
+            <a
+              href="https://mini-rifle-a43.notion.site/codemonster-guide?pvs=4"
+              target="_blank"
+            >
+              <StyledButton backgroundColor="#e5e6ed" color="#333">
+                가이드
+              </StyledButton>
+            </a>
             <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
