@@ -17,6 +17,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { alertAtom } from "@/store/modal";
 import { postImagesAtom } from "@/store/posting";
 import { navigate } from "@/api/apiInstance";
+import { usePrompt } from "@/hooks/usePrompt";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
@@ -35,12 +36,15 @@ export const TeamRecruitPosting = () => {
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const chatUrlRef = useRef<HTMLTextAreaElement>(null);
   const setAlert = useSetAtom(alertAtom);
+  const [disablePrompt, setDisablePrompt] = useState(false);
 
   const isButtonDisabled = !title.trim() || !content.trim() || !url.trim();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUrl(e.target.value);
   }
+
+  usePrompt(!disablePrompt);
 
   const onClick = () => {
 
@@ -71,6 +75,7 @@ export const TeamRecruitPosting = () => {
       })
       .then(() => {
         setPostImages([]);
+        setDisablePrompt(true);
         navigate(`/team-recruit/detail/${recruitId}`);
       })
       .catch((err) => {
@@ -102,6 +107,7 @@ export const TeamRecruitPosting = () => {
     })
     .then((res) => {
       setPostImages([]);
+      setDisablePrompt(true);
       navigate(`/team-recruit/detail/${res.teamRecruitId}`);
     })
     .catch((err) => {
@@ -148,7 +154,7 @@ export const TeamRecruitPosting = () => {
           <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
             <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
-              작성 완료
+              {recruitId ? '수정 완료' : '작성 완료'}
             </SText>
           </ActionText>
         </ConfirmButtonWrap>
