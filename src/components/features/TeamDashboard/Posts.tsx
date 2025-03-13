@@ -67,14 +67,13 @@ export const Posts: React.FC<PostsProps> = ({
 
   const fontSize = isMobile ? '18px' : '24px';
   const padding = isMobile ? '10px 16px' : '10px 40px';
-  const flexWidth = isMobile ? 'auto' : 35;
 
   return (
     <ContentDiv height={isMobile ? '391px' : ''}>
       <Box width="100%" padding={padding} style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex
-            width={flexWidth}
+            width={"100%"}
             justify="space-between"
             align="center"
             gap="10px"
@@ -152,6 +151,7 @@ export const Posts: React.FC<PostsProps> = ({
                       color="#777"
                       fontSize={isMobile ? '10px' : '12px'}
                       fontWeight={400}
+                      whiteSpace='nowrap'
                     >
                       {article.createdDate.slice(0, -3)}
                     </SText>
