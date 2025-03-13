@@ -151,7 +151,10 @@ const ApplicantList = ({
   const inviteAll = () => {
     if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
       navigate(PATH.TEAM_REGISTRATION, {
-        state: { teamMemberUuids: data.teamMemberUuids },
+        state: {
+          teamMemberUuids: data.teamMemberUuids,
+          teamRecruitId: data.teamRecruitId,
+        },
       });
     }
   };

@@ -31,7 +31,9 @@ export const TeamRegistrationButton = () => {
   const setAlert = useSetAtom(alertAtom);
   const location = useLocation();
   const teamMemberUuids = location.state?.teamMemberUuids || [];
+  const teamRecruitId = location.state?.teamRecruitId || null;
   console.log(teamMemberUuids);
+  console.log(teamRecruitId);
 
   const onClick = () => {
     // 개발자 도구에서 버튼 disabled 바꿀 수 있음
@@ -45,6 +47,7 @@ export const TeamRegistrationButton = () => {
         password,
         image,
         teamMemberUuids,
+        teamRecruitId: teamRecruitId,
       })
         .then((data) => {
           navigate(`${PATH.TEAM_DASHBOARD}/${data.teamId}`);
