@@ -451,7 +451,7 @@ export const TeamRecruitDetail = () => {
             목록
           </StyledButton>
         </Link>
-        {data?.isAuthor && (
+        {data?.isAuthor ? (
           <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
             <StyledButton
               backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
@@ -476,6 +476,24 @@ export const TeamRecruitDetail = () => {
               삭제
             </StyledButton>
           </Flex>
+        ) : (
+          <>
+            {data?.teamId !== null &&
+              data?.teamId !== undefined &&
+              data?.isRecruiting && (
+                <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
+                  <Link to={`${PATH.TEAM_DASHBOARD}/${data.teamId}`}>
+                    <StyledButton
+                      backgroundColor="#6E74FA"
+                      color="#fff"
+                      style={{ width: 'auto' }}
+                    >
+                      팀 둘러보기
+                    </StyledButton>
+                  </Link>
+                </Flex>
+              )}
+          </>
         )}
       </Flex>
       <Spacer h={24} />
@@ -526,8 +544,7 @@ export const TeamRecruitDetail = () => {
         />
       </ContentBox>
       <Spacer h={24} />
-
-      {data?.isRecruiting && (
+      {!(!data?.isRecruiting && !data?.isAuthor) && (
         <>
           <ContentBox padding="24px 36px">
             <Flex align="center" gap={isMobile ? '6px' : '10px'}>

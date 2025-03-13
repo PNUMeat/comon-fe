@@ -1061,7 +1061,7 @@ export const teamRecruitDetailMock = {
     memberNickName: 'test',
     isAuthor: true, // TODO:
     createdAt: '2025.01.01',
-    teamId: null,
+    teamId: 10,
     teamApplyResponses: [
       {
         teamApplyId: 1,
