@@ -220,7 +220,7 @@ export const viewStyle = `& {
     font-size: 16px;
     margin: 8px 0;
     max-width: 576px;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     position: relative;
     tab-size: 2;

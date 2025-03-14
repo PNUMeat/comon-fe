@@ -19,7 +19,6 @@ import {
 } from 'react-router-dom';
 
 import { ITopicResponse } from '@/api/dashboard.ts';
-// import { ITopicResponse } from '@/api/dashboard.ts';
 import { createSubject, mutateSubject } from '@/api/subject';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
