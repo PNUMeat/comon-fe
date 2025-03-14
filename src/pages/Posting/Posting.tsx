@@ -284,27 +284,24 @@ const Posting = () => {
                 message: '게시글을 수정했어요',
                 isVisible: true,
                 onConfirm: () => {
-                  navigate(`/team-dashboard/${id}`);
+                  navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
                 },
               });
             })
-            .catch(() => {
+            .catch((err) => {
               setAlert({
-                message: '최신 게시글 조회를 실패했습니다.',
+                message:
+                  err.response.data.message ??
+                  '최신 게시글 조회를 실패했습니다.',
                 isVisible: true,
                 onConfirm: () => {},
               });
               setIsPending(false);
             });
         })
-        .catch(() => {
+        .catch((err) => {
           setAlert({
-            message: '게시글 수정에 실패했어요',
-            isVisible: true,
-            onConfirm: () => {},
-          });
-          setAlert({
-            message: '게시글 수정에 실패했어요',
+            message: err.response.data.message ?? '게시글 수정에 실패했어요',
             isVisible: true,
             onConfirm: () => {},
           });
@@ -313,8 +310,14 @@ const Posting = () => {
       return;
     }
 
-    if (!postTitle || !content) {
-      alert('모든 필드를 채워주세요');
+    if (!postTitle) {
+      alert('제목을 작성해주세요');
+      setIsPending(false);
+      return;
+    }
+
+    if (!content) {
+      alert('게시글 본문을 작성해주세요');
       setIsPending(false);
       return;
     }
@@ -351,13 +354,15 @@ const Posting = () => {
               message: '글쓰기를 완료했어요',
               isVisible: true,
               onConfirm: () => {
-                navigate(`/team-dashboard/${id}`);
+                navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
               },
             });
           })
-          .catch(() => {
+          .catch((err) => {
             setAlert({
-              message: '최신 게시글 조회에 실패했습니다.',
+              message:
+                err?.response?.data?.message ??
+                '최신 게시글 조회에 실패했습니다.',
               isVisible: true,
               onConfirm: () => {},
             });
@@ -366,12 +371,12 @@ const Posting = () => {
       })
       .catch((err) => {
         // 작성중 강퇴시
-        if (err.response.data.message === '팀에 멤버가 존재하지않습니다.') {
+        if (err?.response?.data?.message === '팀에 멤버가 존재하지않습니다.') {
           navigate(PATH.TEAMS);
           return;
         }
         setAlert({
-          message: '글쓰기에 실패했어요',
+          message: err?.response?.data?.message ?? '글쓰기에 실패했어요',
           isVisible: true,
           onConfirm: () => {},
         });
