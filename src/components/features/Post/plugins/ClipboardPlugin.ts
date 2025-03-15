@@ -279,19 +279,6 @@ export const registerPasteCommand = (editor: LexicalEditor) => {
 };
 
 export const registerClipboardShortcuts = (editor: LexicalEditor) => {
-  const removeKeyDownListener = editor.registerRootListener(
-    (rootElement: HTMLElement | null, prevRootElement: HTMLElement | null) => {
-      if (rootElement !== null) {
-        rootElement.addEventListener('keydown', onKeyDown, { capture: true });
-      }
-      if (prevRootElement !== null) {
-        prevRootElement.removeEventListener('keydown', onKeyDown, {
-          capture: true,
-        });
-      }
-    }
-  );
-
   const onKeyDown = (event: KeyboardEvent) => {
     const isCtrlOrCmd = event.ctrlKey || event.metaKey;
 
@@ -305,6 +292,19 @@ export const registerClipboardShortcuts = (editor: LexicalEditor) => {
       }
     }
   };
+
+  const removeKeyDownListener = editor.registerRootListener(
+    (rootElement: HTMLElement | null, prevRootElement: HTMLElement | null) => {
+      if (rootElement !== null) {
+        rootElement.addEventListener('keydown', onKeyDown, { capture: true });
+      }
+      if (prevRootElement !== null) {
+        prevRootElement.removeEventListener('keydown', onKeyDown, {
+          capture: true,
+        });
+      }
+    }
+  );
 
   return () => {
     removeKeyDownListener();
