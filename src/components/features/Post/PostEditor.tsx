@@ -4,6 +4,7 @@ import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
+import { CutLinePlugin } from '@/components/features/Post/plugins/CutLinePlugin.ts';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
@@ -697,6 +698,7 @@ const PostEditor: React.FC<{
           <TabIndentationPlugin />
           <MaxIndentPlugin />
           <HighlightCodePlugin />
+          <CutLinePlugin />
         </PostWriteSection>
       </PostSectionWrap>
     </LexicalComposer>
