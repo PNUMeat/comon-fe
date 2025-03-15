@@ -985,3 +985,107 @@ export const teamAdminPageMock = {
       'https://pnu-comon-s3-bucket.s3.ap-northeast-2.amazonaws.com/team/default-image.png',
   },
 };
+
+export const teamRecruitListMock = {
+  status: 'success',
+  code: 200,
+  message: '팀 모집글이 성공적으로 조회되었습니다.',
+  data: {
+    content: [
+      {
+        teamRecruitId: 7,
+        teamRecruitTitle:
+          '제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게',
+        teamRecruitBody:
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p dir="ltr"><span style=""> ㄴㄹㅁㄴㄹ</span></p>내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게',
+        memberNickName: '파댕이',
+        isRecruiting: false,
+        createdAt: '2025-03-09',
+      },
+      {
+        teamRecruitId: 6,
+        teamRecruitTitle: '페이지네이션',
+        teamRecruitBody:
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style=""> </span></p>',
+        memberNickName: '파댕이',
+        isRecruiting: true,
+        createdAt: '2025-03-09',
+      },
+      {
+        teamRecruitId: 5,
+        teamRecruitTitle: '페이지네이션',
+        teamRecruitBody:
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style=""> </span></p>',
+        memberNickName: '파댕이',
+        isRecruiting: true,
+        createdAt: '2025-03-09',
+      },
+      {
+        teamRecruitId: 4,
+        teamRecruitTitle: '페이지네이션',
+        teamRecruitBody:
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style=""> </span></p>',
+        memberNickName: '파댕이',
+        isRecruiting: true,
+        createdAt: '2025-03-09',
+      },
+      {
+        teamRecruitId: 3,
+        teamRecruitTitle: '테스트',
+        teamRecruitBody:
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;스터디 이름입니다.</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span><img src="https://reactnative.dev/img/header_logo.svg" alt="React Native"></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style=""> </span></p>',
+        memberNickName: '민경',
+        isRecruiting: true,
+        createdAt: '2025-03-06',
+      },
+    ],
+    page: {
+      size: 5,
+      number: 0,
+      totalElements: 7,
+      totalPages: 2,
+    },
+  },
+};
+
+export const teamRecruitDetailMock = {
+  status: 'success',
+  code: 200,
+  message: '팀 모집글이 성공적으로 조회되었습니다.',
+  data: {
+    teamRecruitId: 1,
+    teamRecruitTitle: 'test',
+    teamRecruitBody: 'test',
+    chatUrl: 'test',
+    isRecruiting: true, // TODO:
+    memberNickName: 'test',
+    isAuthor: true, // TODO:
+    createdAt: '2025.01.01',
+    teamId: 10,
+    teamApplyResponses: [
+      {
+        teamApplyId: 1,
+        teamApplyBody: 'test1',
+        memberName: '김코몬/4daysssss',
+        isMyApply: true, // TODO:
+      },
+      {
+        teamApplyId: 2,
+        teamApplyBody: 'test222',
+        memberName: '강코몬',
+        isMyApply: false,
+      },
+      {
+        teamApplyId: 3,
+        teamApplyBody: 'test3224',
+        memberName: '이코몬',
+        isMyApply: false,
+      },
+    ],
+    teamMemberUuids: [
+      'dfd429ba-6790-4692-9f3b-bf480e10c194',
+      'f2362931-f5d7-485d-9418-42d8f703aa1b',
+      'ffacad10-ff7c-4528-91f6-33f9f767ee71',
+    ],
+  },
+};

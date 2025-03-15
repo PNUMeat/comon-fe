@@ -1,7 +1,6 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Container } from '@/components/commons/Container';
-import { EventFloating } from '@/components/commons/EventFloating/EventFloating';
 import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
@@ -19,7 +18,6 @@ import continually from '@/assets/Home/goalContinually.svg';
 import together from '@/assets/Home/goalTogether.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { useBottomBound } from '@/pages/Home/useBottomBound.ts';
-import { useNanumFont } from '@/pages/Home/useNanumFont.ts';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
@@ -129,7 +127,6 @@ export const Home = () => {
   const onClickStart = () => navigate(PATH.TEAMS);
 
   const { bottomRef, effectRef } = useBottomBound();
-  const { isNanumFFReady } = useNanumFont();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
@@ -137,7 +134,6 @@ export const Home = () => {
     <ScrollSnapContainer>
       <ScrollStart />
       <CommonLayout>
-        {!isMobile && isNanumFFReady && <EventFloating />}
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}

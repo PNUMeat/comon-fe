@@ -20,6 +20,7 @@ interface ICreateTeamRequest extends ITeamCommon {
   password: string;
   image?: File | null;
   teamMemberUuids?: string[];
+  teamRecruitId: number | null;
 }
 
 interface IMPutTeamRequest extends ITeamCommon {
@@ -95,6 +96,7 @@ export const createTeam = async ({
   password,
   image,
   teamMemberUuids,
+  teamRecruitId,
 }: ICreateTeamRequest) => {
   const formData = new FormData();
 
@@ -109,7 +111,13 @@ export const createTeam = async ({
   }
 
   if (teamMemberUuids) {
-    formData.append('teamMemberUuids', JSON.stringify(teamMemberUuids));
+    teamMemberUuids.forEach((uuid) => {
+      formData.append('teamMemberUuids', uuid);
+    });
+  }
+
+  if (teamRecruitId !== null) {
+    formData.append('teamRecruitId', teamRecruitId.toString());
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
