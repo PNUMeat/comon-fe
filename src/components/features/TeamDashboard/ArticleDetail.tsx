@@ -8,7 +8,7 @@ import { Flex } from '@/components/commons/Flex';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
-import { PostBlurredViewer } from '@/components/features/Post/PostBlurredViewer.tsx';
+import { PostBlurredViewer } from '@/components/features/Post/PostBlurredViewer';
 
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';

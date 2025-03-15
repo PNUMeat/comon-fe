@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const InputContainer = styled.div<{minWidth : string}>`
+export const InputContainer = styled.div<{ minWidth: string }>`
   display: flex;
   align-items: center;
   padding: 10px 19px;

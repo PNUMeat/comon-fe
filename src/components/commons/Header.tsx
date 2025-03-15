@@ -124,16 +124,17 @@ const LogoKoImg = styled.img`
 
 type ModalControl = {
   modal: HTMLDivElement | null;
+  isClicked: boolean;
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const [isLoggedIn] = useState<boolean>(
     checkRemainingCookies() || isDevMode()
   );
-  const [isClicked, setIsClicked] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
+    isClicked: false,
   });
   const location = useLocation();
   const navigate = useNavigate();
@@ -153,11 +154,11 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           if (target && target.textContent !== '내정보') {
             modal.style.opacity = '0';
             modal.style.zIndex = '-100';
-            setIsClicked(false);
+            modalControlRef.current.isClicked = false;
             return;
           }
 
-          if (isClicked) {
+          if (modalControlRef.current.isClicked) {
             modal.style.opacity = '1';
             modal.style.zIndex = '100';
             return;
@@ -172,7 +173,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         };
       }
     }
-  }, [isLoggedIn, isClicked]);
+  }, [isLoggedIn]);
 
   const onClickHome = () => navigate(PATH.HOME);
   const onClickLogout = () =>
@@ -203,7 +204,8 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             <button
               onClick={() => {
                 if (isLoggedIn) {
-                  setIsClicked(true);
+                  modalControlRef.current.isClicked =
+                    !modalControlRef.current.isClicked;
                 } else {
                   navigate(PATH.LOGIN, {
                     state: { redirect: location.pathname },
@@ -215,7 +217,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             </button>
             <HeaderInfoModal
               isLoggedIn={isLoggedIn}
-              isModalOpen={isClicked}
               setModalRef={setModalRef}
               onClickLogout={onClickLogout}
             />

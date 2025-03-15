@@ -8,7 +8,7 @@ import { currentPathAtom, formTextareaAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
-const ContentContainer = styled.div<{minWidth: string}>`
+const ContentContainer = styled.div<{ minWidth: string }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -118,9 +118,7 @@ export const ComonTextarea: React.FC<{
 
   return (
     <Wrap>
-      <ContentContainer
-        minWidth={minWidth}
-      >
+      <ContentContainer minWidth={minWidth}>
         <EditableDiv
           ref={editableRef}
           contentEditable="plaintext-only"
