@@ -1,12 +1,12 @@
 import { SText } from "@/components/commons/SText";
 import styled from "@emotion/styled";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PostEditor from "@/components/features/Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
 import click from '@/assets/TeamJoin/click.png';
-import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import { TeamRecruitSubject } from "@/components/features/TeamRecruit/RecruitExampleData";
 import { getRecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
 import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
@@ -18,6 +18,7 @@ import { alertAtom } from "@/store/modal";
 import { postImagesAtom } from "@/store/posting";
 import { navigate } from "@/api/apiInstance";
 import { usePrompt } from "@/hooks/usePrompt";
+import { PostSubjectViewer } from "@/pages/Posting/PostSubjectViewer";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
@@ -125,7 +126,11 @@ export const TeamRecruitPosting = () => {
   
   return (
     <ContentWrapper>
-      <PostSubjectViewer />
+      <PostSubjectViewer
+        data={TeamRecruitSubject}
+        commentClose="예시 접기"
+        titlePrefix=""
+      />
         <PostEditor
             forwardContent={setContent}
             forwardTitle={setTitle}
@@ -215,133 +220,11 @@ const ContactText = styled.div`
   }
 `;
 
-
-const PostSubjectViewer: React.FC = () => {
-  const [show, setShow] = useState(false);
-  const [height, setHeight] = useState(57);
-  const contentRef = useRef<{getHeight: () => number}>(null);
-  const isMobile = window.innerWidth < breakpoints.mobile;
-
-  useEffect(() => {
-    if (show && contentRef.current) {
-      const content = contentRef.current;
-      const resizeObserver = new ResizeObserver(() => {
-        // 제목 57 + 하단 57
-        setHeight(content.getHeight() + 114);
-      });
-      resizeObserver.observe(document.body);
-
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }
-  }, [show]);
-
-  return (
-    <PostSubjectViewWrap
-      height={height}
-      show={show}
-    >
-      <GapFlex gap={20}>
-        <SText
-          color={show ? "#E5E6ED" : "#333"}
-          fontSize={isMobile ? '18px' : '20px'}
-          fontWeight={700}
-          fontFamily={'Pretendard'}
-        >
-          작성 예시
-        </SText>
-        <SText
-          color={'#333'}
-          fontSize={'20px'}
-          fontWeight={700}
-          fontFamily={'Pretendard'}
-          whiteSpace={'normal'}
-          wordBreak={'break-word'}
-        >
-        </SText>
-      </GapFlex>
-      {show && <RecruitExampleData ref={contentRef}/>}
-      <GapFlex
-        gap={12}
-        padding={'0 10px'}
-        cursor={'pointer'}
-        onClick={() => setShow((prev) => !prev)}
-        justifyContent={'end'}
-      >
-        <SText
-          color={'#D9D9D9'}
-          fontSize={isMobile ? '14px' : '16px'}
-          fontWeight={400}
-          fontFamily={'Pretendard'}
-        >
-          {show ? '예시 접기' : '펼쳐서 확인하기'}
-        </SText>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={isMobile ? '13' : '17'}
-          height={isMobile ? '6.5' : '10'}
-          viewBox="0 0 17 10"
-          fill="none"
-          style={{
-            transform: show ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.3s ease',
-          }}
-        >
-          <path d="M0 0 L8.5 10 L17 0" stroke="#CCCCCC" strokeWidth="1.5" />
-        </svg>
-      </GapFlex>
-    </PostSubjectViewWrap>
-  );
-};
-
 const ContentWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`;
-
-const PostSubjectViewWrap = styled.div<{
-  height: string | number;
-  show: boolean;
-}>`
-  display: grid;
-  grid-template-columns: ${({ show }) => (show ? '1fr' : 'auto auto')};
-  grid-template-rows: ${({ show }) => (show ? '1fr auto' : '1fr')};
-
-  justify-content: space-between;
-
-  width: 100%;
-  min-height: 57px;
-  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')}; 
-  border: 1px solid #f15ca7;
-  border-radius: 10px;
-  margin: 20px 0;
-  padding: 0 40px;
-  box-sizing: border-box;
-  transition: max-height 0.5s ease-in-out;
-  overflow: hidden;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    padding: 0 20px;
-  }
-`;
-
-const GapFlex = styled.div<{
-  gap?: number;
-  padding?: string;
-  cursor?: string;
-  justifyContent?: string;
-}>`
-  display: flex;
-  align-items: center;
-  justify-content: ${(props) => props.justifyContent ?? 'start'};
-  gap: ${(props) => props.gap ?? 0}px;
-  ${(props) => (props.padding ? `padding: ${props.padding};` : '')}
-  ${(props) => (props.cursor ? `cursor: ${props.cursor};` : '')}
-  height: 57px;
-  width: 100%;
 `;
 
 const ContactWrapper = styled.div`
