@@ -13,6 +13,7 @@ export const teamInfoMock = {
       memberLimit: 12,
       memberCount: 1,
       streakDays: 0,
+      teamRecruitId: null,
       teamAnnouncement: '',
       createdAt: '2024-12-26',
       members: [
