@@ -104,34 +104,6 @@ const copyCurrentLine = (editor: LexicalEditor): boolean => {
   return false;
 };
 
-const findLineOffsetsInCodeBlock = (
-  text: string,
-  cursorOffset: number
-): { startOffset: number; endOffset: number } => {
-  // 커서 위치가 텍스트 범위를 벗어나지 않도록 보정
-  const safeOffset = Math.min(Math.max(0, cursorOffset), text.length);
-
-  // 커서 이전 텍스트에서 마지막 줄바꿈 찾기
-  let startOffset = 0;
-  for (let i = safeOffset - 1; i >= 0; i--) {
-    if (text[i] === '\n') {
-      startOffset = i + 1;
-      break;
-    }
-  }
-
-  // 커서 이후 텍스트에서 다음 줄바꿈 찾기
-  let endOffset = text.length;
-  for (let i = safeOffset; i < text.length; i++) {
-    if (text[i] === '\n') {
-      endOffset = i;
-      break;
-    }
-  }
-
-  return { startOffset, endOffset };
-};
-
 const selectCurrentLine = (editor: LexicalEditor): boolean => {
   editor.update(() => {
     const selection = $getSelection();
@@ -152,97 +124,62 @@ const selectCurrentLine = (editor: LexicalEditor): boolean => {
 
     const children = currentNode.getChildren();
     if (children.length === 1 && children[0].getType() === 'link') {
-      const link = children[0];
-
-      const newSelection = $createRangeSelection();
-      newSelection.anchor.set(link.getKey(), 0, 'element');
-      newSelection.focus.set(
-        link.getKey(),
-        link.getTextContentSize(),
-        'element'
-      );
-      $setSelection(newSelection);
+      // const link = children[0];
+      //
+      // const newSelection = $createRangeSelection();
+      // newSelection.anchor.set(link.getKey(), 0, 'element');
+      // newSelection.focus.set(
+      //   link.getKey(),
+      //   link.getTextContentSize(),
+      //   'element'
+      // );
+      // $setSelection(newSelection);
       return true;
     }
 
     if (currentNode.getType() === 'code') {
-      const cursorOffset = selection.anchor.offset;
-      // const children = currentNode.getChildren();
-      // let totalOffset = 0;
-
-      // for (const child of children) {
-      //   const nodeText = child.getTextContent();
-      //   const nodeLength = nodeText.length;
-      //
-      //   if (
-      //     cursorOffset >= totalOffset &&
-      //     cursorOffset <= totalOffset + nodeLength
-      //   ) {
-      //     const relativeOffset = cursorOffset - totalOffset;
-      //
-      //     const newSelection = $createRangeSelection();
-      //     newSelection.anchor.set(child.getKey(), 0, 'text');
-      //     newSelection.focus.set(child.getKey(), nodeLength, 'text');
-      //     $setSelection(newSelection);
-      //
-      //     break;
-      //   }
-      //
-      //   totalOffset += nodeLength;
-      // }
-      const codeText = currentNode.getTextContent();
-      const { startOffset, endOffset } = findLineOffsetsInCodeBlock(
-        codeText,
-        cursorOffset
-      );
-
-      const newSelection = $createRangeSelection();
-
-      newSelection.anchor.set(currentNode.getKey(), startOffset, 'text');
-      newSelection.focus.set(currentNode.getKey(), endOffset, 'text');
-
-      $setSelection(newSelection);
-
       // const children = currentNode.getChildren();
       // const cursorOffset = selection.anchor.offset;
       // let totalOffset = 0;
-      // let currentLineNodes = [];
-      // let currentLineOffset = 0;
-      //
+      let foundLine = false;
+
       // for (const child of children) {
       //   const nodeText = child.getTextContent();
       //   if (!nodeText) continue;
       //
-      //   const lines = nodeText.split('\n');
-      //
-      //   for (let i = 0; i < lines.length; i++) {
-      //     const isLastLine = i === lines.length - 1;
-      //     const lineLength = lines[i].length + (isLastLine ? 0 : 1);
-      //
-      //     if (
-      //       cursorOffset >= totalOffset &&
-      //       cursorOffset < totalOffset + lineLength
-      //     ) {
-      //       const newSelection = $createRangeSelection();
-      //       newSelection.anchor.set(child.getKey(), currentLineOffset, 'text');
-      //       newSelection.focus.set(
-      //         child.getKey(),
-      //         currentLineOffset + lineLength - (isLastLine ? 0 : 1),
-      //         'text'
-      //       );
-      //       $setSelection(newSelection);
-      //       return true;
-      //     }
-      //
-      //     totalOffset += lineLength;
-      //     currentLineOffset = isLastLine ? 0 : currentLineOffset + lineLength;
-      //
-      //     if (!isLastLine) {
-      //       currentLineNodes = [];
-      //     }
+      //   if (totalOffset + nodeText.length < cursorOffset) {
+      //     totalOffset += nodeText.length;
+      //     continue;
       //   }
+      //
+      //   const relativeOffset = cursorOffset - totalOffset;
+      //   const textBeforeCursor = nodeText.substring(0, relativeOffset);
+      //   const textAfterCursor = nodeText.substring(relativeOffset);
+      //
+      //   let lineStartOffset = 0;
+      //   const lastNewlineBeforeCursor = textBeforeCursor.lastIndexOf('\n');
+      //   if (lastNewlineBeforeCursor !== -1) {
+      //     lineStartOffset = lastNewlineBeforeCursor + 1;
+      //   }
+      //
+      //   let lineEndOffset = nodeText.length;
+      //   const firstNewlineAfterCursor = textAfterCursor.indexOf('\n');
+      //   if (firstNewlineAfterCursor !== -1) {
+      //     lineEndOffset = relativeOffset + firstNewlineAfterCursor;
+      //   }
+      //
+      //   const newSelection = $createRangeSelection();
+      //   newSelection.anchor.set(child.getKey(), lineStartOffset, 'text');
+      //   newSelection.focus.set(child.getKey(), lineEndOffset, 'text');
+      //   $setSelection(newSelection);
+      //
+      foundLine = true;
+      //   break;
       // }
-      return true;
+
+      if (foundLine) {
+        return true;
+      }
     }
 
     let minLineStartOffset = Number.MAX_SAFE_INTEGER;
