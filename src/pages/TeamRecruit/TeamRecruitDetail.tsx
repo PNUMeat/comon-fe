@@ -1,12 +1,15 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
 import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { LoginPrompt } from '@/components/features/TeamRecruit/LoginPrompt';
 
 import { useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import {
   ITeamRecruitDetailResponse,
@@ -48,7 +51,7 @@ const EmptyState = ({
         fontSize={isMobile ? '10px' : '12px'}
         textAlign="center"
       >
-        대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요
+        최소 1명의 사용자가 신청해야 팀을 생성할 수 있어요
       </SText>
       <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
@@ -143,6 +146,19 @@ const ApplicantList = ({
     },
   });
 
+  const navigate = useNavigate();
+
+  const inviteAll = () => {
+    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+      navigate(PATH.TEAM_REGISTRATION, {
+        state: {
+          teamMemberUuids: data.teamMemberUuids,
+          teamRecruitId: data.teamRecruitId,
+        },
+      });
+    }
+  };
+
   return (
     <>
       {data.teamApplyResponses.map((applicant) => (
@@ -155,7 +171,10 @@ const ApplicantList = ({
               fontFamily="Pretendard"
               lineHeight="normal"
               style={{
-                minWidth: isMobile ? '40px' : '100px',
+                width: isMobile ? '60px' : '100px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
               {applicant.memberName}
@@ -169,7 +188,7 @@ const ApplicantList = ({
                   fontWeight={500}
                   fontFamily="Pretendard"
                   lineHeight={isMobile ? 'normal' : '20px'}
-                  style={{ width: '100%' }}
+                  style={{ flex: 1 }}
                 >
                   {applicant.teamApplyBody}
                 </SText>
@@ -246,7 +265,7 @@ const ApplicantList = ({
                           fontWeight={500}
                           fontFamily="Pretendard"
                           lineHeight={isMobile ? 'normal' : '20px'}
-                          style={{ width: '100%' }}
+                          style={{ flex: 1 }}
                         >
                           {applicant.teamApplyBody}
                         </SText>
@@ -305,12 +324,10 @@ const ApplicantList = ({
             신청자들과 함께 팀을 시작할 준비가 되었다면,
           </SText>
           <Spacer h={14} />
-          <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
-            <RegistrationButton disabled={false}>
-              <img src={Click} style={{ width: '24px', height: '24px' }} />팀
-              생성하기
-            </RegistrationButton>
-          </Link>
+          <RegistrationButton disabled={false} onClick={inviteAll}>
+            <img src={Click} style={{ width: '24px', height: '24px' }} />팀
+            생성하기
+          </RegistrationButton>
         </>
       )}
     </>
@@ -428,6 +445,11 @@ export const TeamRecruitDetail = () => {
     },
   });
 
+  // 로그인 여부
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -436,7 +458,7 @@ export const TeamRecruitDetail = () => {
             목록
           </StyledButton>
         </Link>
-        {data?.isAuthor && (
+        {data?.isAuthor ? (
           <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
             <StyledButton
               backgroundColor={data.isRecruiting ? '#FB676A' : '#6E74FA'}
@@ -472,6 +494,24 @@ export const TeamRecruitDetail = () => {
               삭제
             </StyledButton>
           </Flex>
+        ) : (
+          <>
+            {data?.teamId !== null &&
+              data?.teamId !== undefined &&
+              data?.isRecruiting && (
+                <Flex gap={isMobile ? '4px' : '12px'} justify="flex-end">
+                  <Link to={`${PATH.TEAM_DASHBOARD}/${data.teamId}`}>
+                    <StyledButton
+                      backgroundColor="#6E74FA"
+                      color="#fff"
+                      style={{ width: 'auto' }}
+                    >
+                      팀 둘러보기
+                    </StyledButton>
+                  </Link>
+                </Flex>
+              )}
+          </>
         )}
       </Flex>
       <Spacer h={24} />
@@ -522,8 +562,7 @@ export const TeamRecruitDetail = () => {
         />
       </ContentBox>
       <Spacer h={24} />
-
-      {data?.isRecruiting && (
+      {!(!data?.isRecruiting && !data?.isAuthor) && (
         <>
           <ContentBox padding="24px 36px">
             <Flex align="center" gap={isMobile ? '6px' : '10px'}>
@@ -591,10 +630,13 @@ export const TeamRecruitDetail = () => {
                 </Flex>
                 <Spacer h={isMobile ? 12 : 24} />
                 <ApplyFormContainer>
+                  {!isLoggedIn && <LoginPrompt />}
+
                   <ApplyInput
                     placeholder="방장이 제시하는 정보를 자세히 적으면 멋진 팀원들과 함께할 수 있을 거예요 "
                     value={applyText}
                     onChange={(e) => setApplyText(e.target.value)}
+                    disabled={!isLoggedIn}
                   />
                   <Flex justify="flex-end">
                     <StyledButton
@@ -606,6 +648,7 @@ export const TeamRecruitDetail = () => {
                         borderRadius: '40px',
                       }}
                       onClick={submitApplication}
+                      disabled={!isLoggedIn}
                     >
                       가입 신청
                     </StyledButton>
@@ -689,6 +732,7 @@ const ChatLink = styled.a`
 `;
 
 const ApplyFormContainer = styled.div`
+  position: relative;
   width: auto;
   display: flex;
   flex-direction: column;
@@ -715,6 +759,11 @@ const ApplyInput = styled.textarea`
   &::placeholder {
     color: #ccc;
     font-weight: 600;
+  }
+
+  &:disabled {
+    background: #fff;
+    cursor: not-allowed;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {

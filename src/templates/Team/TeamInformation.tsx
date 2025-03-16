@@ -159,8 +159,6 @@ export const TeamInformation = () => {
   const { teamId } = useParams();
   const navigate = useNavigate();
 
-  console.log('????', teamId);
-
   const { data: currentTeam } = useQuery({
     queryKey: ['team-list', 0],
     queryFn: () => getTeamInfoAdmin(teamId as string),

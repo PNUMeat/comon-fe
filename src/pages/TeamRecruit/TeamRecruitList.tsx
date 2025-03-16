@@ -1,3 +1,5 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -45,6 +47,11 @@ export const TeamRecruitListPage = () => {
     setCurrentPage(newPage);
   };
 
+  // 로그인 여부
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
+
   return (
     <div style={{ padding: isMobile ? '0px' : '30px 20px' }}>
       {isMobile && (
@@ -55,10 +62,15 @@ export const TeamRecruitListPage = () => {
             justify="flex-end"
             height={isMobile ? 26 : 60}
           >
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
-              가이드
-            </StyledButton>
-            <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
+            <a
+              href="https://mini-rifle-a43.notion.site/codemonster-guide?pvs=4"
+              target="_blank"
+            >
+              <StyledButton backgroundColor="#e5e6ed" color="#333">
+                가이드
+              </StyledButton>
+            </a>
+            <Link to={isLoggedIn ? `${PATH.TEAM_RECRUIT}/posting` : PATH.LOGIN}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
               </StyledButton>
@@ -84,9 +96,14 @@ export const TeamRecruitListPage = () => {
         {/* 오른쪽 상단 버튼 */}
         {!isMobile && (
           <Flex width={30} gap="12px" justify="flex-end" height={36}>
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
-              가이드
-            </StyledButton>
+            <a
+              href="https://mini-rifle-a43.notion.site/codemonster-guide?pvs=4"
+              target="_blank"
+            >
+              <StyledButton backgroundColor="#e5e6ed" color="#333">
+                가이드
+              </StyledButton>
+            </a>
             <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
@@ -116,6 +133,7 @@ export const TeamRecruitListPage = () => {
                     style={{
                       border: 'none',
                       height: isMobile ? '18px' : '24px',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     <SText
@@ -132,6 +150,7 @@ export const TeamRecruitListPage = () => {
                     fontSize={isMobile ? '14px' : '18px'}
                     fontWeight={700}
                     fontFamily="Pretendard"
+                    shouldCut={true}
                   >
                     {team.teamRecruitTitle}
                   </SText>
@@ -193,7 +212,10 @@ export const TeamRecruitListPage = () => {
         모집글 없이 이미 정해진 팀원들과 팀 생성하기
       </SText>
       <Spacer h={14} />
-      <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
+      <Link
+        to={isLoggedIn ? PATH.TEAM_REGISTRATION : PATH.LOGIN}
+        style={{ textDecoration: 'none' }}
+      >
         <Box
           width="100%"
           height={isMobile ? '48px' : '80px'}
@@ -284,6 +306,10 @@ export const StyledButton = styled.button<{
   border: none;
   width: 80px;
   height: 100%;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 
   @media (max-width: ${breakpoints.mobile}px) {
     border-radius: 4px;

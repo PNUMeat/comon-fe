@@ -1014,11 +1014,12 @@ export const teamRecruitListMock = {
     content: [
       {
         teamRecruitId: 7,
-        teamRecruitTitle: '페이지네이션',
+        teamRecruitTitle:
+          '제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게제목길게',
         teamRecruitBody:
-          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p dir="ltr"><span style=""> ㄴㄹㅁㄴㄹ</span></p>',
+          '<p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCE3 스터디 이름 및 소개</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCCC 스터디 진행방식</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDDD3️ 스터디 일정(횟수)</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">✅ 참여 조건</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p><span style="">  </span></p><p dir="ltr"><span style="font-size: 18px;">\uD83D\uDCC3 신청 시 작성 내용</span></p><ul><li value="1" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li><li value="2" class="editor-listitem"><span style="font-size: 18px;">&nbsp;</span></li></ul><p dir="ltr"><span style=""> ㄴㄹㅁㄴㄹ</span></p>내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게내용길게',
         memberNickName: '파댕이',
-        isRecruiting: true,
+        isRecruiting: false,
         createdAt: '2025-03-09',
       },
       {
@@ -1081,26 +1082,31 @@ export const teamRecruitDetailMock = {
     isAuthor: true, // TODO:
     imageUrl: "https://pnu-comon-s3-bucket-v2.s3.ap-northeast-2.amazonaws.com/article/0c92df08-dc4f-47ca-8f01-18dac1262761.jpg",
     createdAt: '2025.01.01',
-    teamId: null,
+    teamId: 10,
     teamApplyResponses: [
       {
         teamApplyId: 1,
         teamApplyBody: 'test1',
-        memberName: 'test',
+        memberName: '김코몬/4daysssss',
         isMyApply: true, // TODO:
       },
       {
         teamApplyId: 2,
-        teamApplyBody: null,
-        memberName: 'test',
+        teamApplyBody: 'test222',
+        memberName: '강코몬',
         isMyApply: false,
       },
       {
         teamApplyId: 3,
-        teamApplyBody: null,
-        memberName: 'test',
+        teamApplyBody: 'test3224',
+        memberName: '이코몬',
         isMyApply: false,
       },
+    ],
+    teamMemberUuids: [
+      'dfd429ba-6790-4692-9f3b-bf480e10c194',
+      'f2362931-f5d7-485d-9418-42d8f703aa1b',
+      'ffacad10-ff7c-4528-91f6-33f9f767ee71',
     ],
   },
 };
