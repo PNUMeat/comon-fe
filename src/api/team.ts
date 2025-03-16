@@ -48,6 +48,7 @@ export interface ITeamInfo extends ITeamCommon {
   // successMemberCount: number;
   teamAnnouncement?: string;
   createdAt: string;
+  teamRecruitId: number | null;
   // password: string;
   members?: ITeamMember[];
   memberLimit: number;

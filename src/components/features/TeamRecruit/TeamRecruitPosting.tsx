@@ -30,15 +30,17 @@ export const TeamRecruitPosting = () => {
     recruitId: null,
   };
 
-  const [content, setContent] = useState<string>(() => teamRecruitBody);
-  const [title, setTitle] = useState(teamRecruitTitle);
-  const [url, setUrl] = useState(chatUrl);
+
+  const [content, setContent] = useState(teamRecruitBody ?? getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [title, setTitle] = useState(teamRecruitTitle ?? '');
+  const [url, setUrl] = useState(chatUrl ?? '');
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const chatUrlRef = useRef<HTMLTextAreaElement>(null);
   const setAlert = useSetAtom(alertAtom);
   const [disablePrompt, setDisablePrompt] = useState(false);
-
+  
   const isButtonDisabled = !title.trim() || !content.trim() || !url.trim();
+
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUrl(e.target.value);

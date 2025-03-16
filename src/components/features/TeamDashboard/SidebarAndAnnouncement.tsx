@@ -28,6 +28,7 @@ import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
 import toast, { Toaster } from 'react-hot-toast';
+import { confirmAtom } from '@/store/modal';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
@@ -51,6 +52,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const setConfirm = useSetAtom(confirmAtom);
 
   const onClick = () => {
     if (isMyTeam) {
@@ -80,11 +82,29 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   };
 
   const goRecruitPage = () => {
-    // if (teamRecruitId) {
-    //   navigate(`${PATH.TEAM_RECRUIT}/${teamRecruitId}`);
-    // } else {
+    if (teamInfo.teamRecruitId) {
+      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+    } else {
       toast.error('참가할 수 없는 상태입니다.');
-    // }
+    }
+  }
+
+  const handleClick = () => {
+    if (teamInfo.teamRecruitId) {
+      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+    } else {
+      setConfirm({
+        message: '현재 모집글이 없습니다.',
+        description: '새로 작성하시겠어요?',
+        isVisible: true,
+        cancleText: '취소',
+        confirmText: '작성하기',
+        onConfirm: () => {
+          navigate(`${PATH.TEAM_RECRUIT}/posting`, { state: { teamId: teamId } });
+        },
+        onCancel: () => {},
+      });
+    }
   }
 
 
@@ -236,14 +256,12 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                     </Flex>
                   </Link>
                   <Spacer h={2} />
-                  <Link
-                    to ="#" // 임시 동작
-                    // to={teamRecruitId ? `${PATH.TEAM_RECRUIT}/team/${teamRecruitId}` : `${PATH.TEAM_RECRUIT}/posting/${teamRecruitId}`} // 임시 동작
-                    style={{ textDecoration: 'none' }}
-                  >
                     <Flex
+                      width={'auto'}
                       justify={isMobile ? 'flex-start' : 'center'}
                       align="center"
+                      onClick={handleClick}
+                      style={{ cursor: 'pointer' }}
                     >
                       <SettingImage src={SettingsPurpleIcon} />
                       <SText
@@ -254,7 +272,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                         모집글
                       </SText>
                     </Flex>
-                  </Link>
                 </Flex>
               )}
             </div>

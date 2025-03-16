@@ -9,7 +9,7 @@ export const Confirm: React.FC = () => {
   // const { message, description, isVisible, onConfirm, onCancel } = useAtomValue(confirmAtom);
   // const setModal = useSetAtom(confirmAtom);
   const [modal, setModal] = useAtom(confirmAtom);
-  const { message, description, isVisible, onConfirm, onCancel } = modal;
+  const { message, description, isVisible, cancleText = '취소', confirmText = '나가기', onConfirm, onCancel } = modal;
 
   const queryClient = useQueryClient();
 
@@ -43,8 +43,8 @@ export const Confirm: React.FC = () => {
         <MessageStyle>{message}</MessageStyle>
         <DescriptionStyle>{description}</DescriptionStyle>
         <ButtonContainer>
-          <CancelButton onClick={cancel}>취소</CancelButton>
-          <AcceptButton onClick={confirm}>나가기</AcceptButton>
+          <CancelButton onClick={cancel}>{cancleText}</CancelButton>
+          <AcceptButton onClick={confirm}>{confirmText}</AcceptButton>
         </ButtonContainer>
       </ConfirmStyle>
     </Modal>
@@ -63,6 +63,7 @@ const MessageStyle = styled.p`
   font-weight: 600;
   margin-top: 35px;
   color: #333;
+  white-space: pre-line;
 `;
 
 const DescriptionStyle = styled.p`

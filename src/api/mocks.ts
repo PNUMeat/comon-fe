@@ -361,6 +361,7 @@ export const teamCombinedMock = {
         memberCount: 1,
         streakDays: 0,
         teamAnnouncement: '',
+        teamRecruitId: null,
         createdAt: '2024-12-26',
       },
       {
@@ -374,6 +375,7 @@ export const teamCombinedMock = {
         memberCount: 1,
         streakDays: 0,
         teamAnnouncement: '',
+        teamRecruitId: null,
         createdAt: '2024-12-26',
       },
       {
@@ -387,6 +389,7 @@ export const teamCombinedMock = {
         memberCount: 1,
         streakDays: 0,
         teamAnnouncement: '',
+        teamRecruitId: null,
         createdAt: '2024-12-26',
       },
       {
@@ -400,6 +403,7 @@ export const teamCombinedMock = {
         memberCount: 1,
         streakDays: 0,
         teamAnnouncement: '',
+        teamRecruitId: null,
         createdAt: '2024-12-26',
       },
       {
@@ -413,6 +417,7 @@ export const teamCombinedMock = {
         memberCount: 1,
         streakDays: 0,
         teamAnnouncement: '',
+        teamRecruitId: null,
         createdAt: '2024-12-27',
       },
       {
@@ -426,6 +431,7 @@ export const teamCombinedMock = {
         memberCount: 6,
         streakDays: 0,
         teamAnnouncement: '수정테스트(2025/01/02)',
+        teamRecruitId: null,
         createdAt: '2024-12-23',
       },
       {
@@ -439,6 +445,7 @@ export const teamCombinedMock = {
         memberCount: 4,
         streakDays: 0,
         teamAnnouncement: '안녕하세요 공지입니다.',
+        teamRecruitId: null,
         createdAt: '2024-12-22',
       },
       {
@@ -452,6 +459,7 @@ export const teamCombinedMock = {
         memberCount: 4,
         streakDays: 0,
         teamAnnouncement: '하이하이하이하이',
+        teamRecruitId: null,
         createdAt: '2024-12-22',
       },
     ],
@@ -467,6 +475,7 @@ export const teamCombinedMock = {
           memberLimit: 5,
           memberCount: 1,
           streakDays: 0,
+          teamRecruitId: null,
           createdAt: '2024-12-27',
           members: [
             {
@@ -489,6 +498,7 @@ export const teamCombinedMock = {
           memberCount: 1,
           streakDays: 0,
           createdAt: '2024-12-27',
+          teamRecruitId: null,
           members: [
             {
               memberName: '장진영',
@@ -510,6 +520,7 @@ export const teamCombinedMock = {
           memberCount: 1,
           streakDays: 0,
           createdAt: '2024-12-27',
+          teamRecruitId: null,
           members: [
             {
               memberName: '하내안',
@@ -531,6 +542,7 @@ export const teamCombinedMock = {
           memberCount: 2,
           streakDays: 0,
           createdAt: '2024-12-27',
+          teamRecruitId: null,
           members: [
             {
               memberName: 'ddy',
@@ -559,6 +571,7 @@ export const teamCombinedMock = {
           memberCount: 1,
           streakDays: 0,
           createdAt: '2024-12-26',
+          teamRecruitId: null,
           members: [
             {
               memberName: '하내안',
@@ -580,6 +593,7 @@ export const teamCombinedMock = {
           memberCount: 1,
           streakDays: 0,
           createdAt: '2024-12-26',
+          teamRecruitId: null,
           members: [
             {
               memberName: '하내안',
@@ -723,6 +737,7 @@ export const teamSearchMock = {
         memberCount: 2,
         streakDays: 0,
         createdAt: '2025-01-25',
+        teamRecruitId: null,
         members: [
           {
             memberName: '하내안',
@@ -751,6 +766,7 @@ export const teamSearchMock = {
         memberCount: 1,
         streakDays: 0,
         createdAt: '2025-01-24',
+        teamRecruitId: null,
         members: [
           {
             memberName: '이지수',
@@ -772,6 +788,7 @@ export const teamSearchMock = {
         memberCount: 1,
         streakDays: 0,
         createdAt: '2025-01-16',
+        teamRecruitId: null,
         members: [
           {
             memberName: '김민욱',
@@ -793,6 +810,7 @@ export const teamSearchMock = {
         memberCount: 1,
         streakDays: 0,
         createdAt: '2025-01-14',
+        teamRecruitId: null,
         members: [
           {
             memberName: '12312312312',
@@ -814,6 +832,7 @@ export const teamSearchMock = {
         memberCount: 1,
         streakDays: 0,
         createdAt: '2025-01-14',
+        teamRecruitId: null,
         members: [
           {
             memberName: '민경',
@@ -835,6 +854,7 @@ export const teamSearchMock = {
         memberCount: 1,
         streakDays: 0,
         createdAt: '2025-01-14',
+        teamRecruitId: null,
         members: [
           {
             memberName: '민경',
