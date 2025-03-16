@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 
-import { $isCodeNode } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
+  $createRangeSelection,
   $getRoot,
   $getSelection,
+  $isElementNode,
   $isRangeSelection,
   $setSelection,
   COMMAND_PRIORITY_CRITICAL,
@@ -103,6 +104,34 @@ const copyCurrentLine = (editor: LexicalEditor): boolean => {
   return false;
 };
 
+const findLineOffsetsInCodeBlock = (
+  text: string,
+  cursorOffset: number
+): { startOffset: number; endOffset: number } => {
+  // 커서 위치가 텍스트 범위를 벗어나지 않도록 보정
+  const safeOffset = Math.min(Math.max(0, cursorOffset), text.length);
+
+  // 커서 이전 텍스트에서 마지막 줄바꿈 찾기
+  let startOffset = 0;
+  for (let i = safeOffset - 1; i >= 0; i--) {
+    if (text[i] === '\n') {
+      startOffset = i + 1;
+      break;
+    }
+  }
+
+  // 커서 이후 텍스트에서 다음 줄바꿈 찾기
+  let endOffset = text.length;
+  for (let i = safeOffset; i < text.length; i++) {
+    if (text[i] === '\n') {
+      endOffset = i;
+      break;
+    }
+  }
+
+  return { startOffset, endOffset };
+};
+
 const selectCurrentLine = (editor: LexicalEditor): boolean => {
   editor.update(() => {
     const selection = $getSelection();
@@ -113,42 +142,162 @@ const selectCurrentLine = (editor: LexicalEditor): boolean => {
 
     const rootNode = $getRoot();
 
-    while (
-      currentNode &&
-      currentNode.getTextContent().trim() === '' &&
-      currentNode !== rootNode
-    ) {
+    while (currentNode && currentNode !== rootNode) {
       const parent = currentNode.getParent();
       if (!parent || parent === rootNode) break;
       currentNode = parent;
     }
 
-    if (currentNode === rootNode) {
-      return;
+    if (currentNode === rootNode || !$isElementNode(currentNode)) return;
+
+    const children = currentNode.getChildren();
+    if (children.length === 1 && children[0].getType() === 'link') {
+      const link = children[0];
+
+      const newSelection = $createRangeSelection();
+      newSelection.anchor.set(link.getKey(), 0, 'element');
+      newSelection.focus.set(
+        link.getKey(),
+        link.getTextContentSize(),
+        'element'
+      );
+      $setSelection(newSelection);
+      return true;
     }
 
-    const nodeText = currentNode.getTextContent();
-    if (!nodeText) {
-      return;
+    if (currentNode.getType() === 'code') {
+      const cursorOffset = selection.anchor.offset;
+      // const children = currentNode.getChildren();
+      // let totalOffset = 0;
+
+      // for (const child of children) {
+      //   const nodeText = child.getTextContent();
+      //   const nodeLength = nodeText.length;
+      //
+      //   if (
+      //     cursorOffset >= totalOffset &&
+      //     cursorOffset <= totalOffset + nodeLength
+      //   ) {
+      //     const relativeOffset = cursorOffset - totalOffset;
+      //
+      //     const newSelection = $createRangeSelection();
+      //     newSelection.anchor.set(child.getKey(), 0, 'text');
+      //     newSelection.focus.set(child.getKey(), nodeLength, 'text');
+      //     $setSelection(newSelection);
+      //
+      //     break;
+      //   }
+      //
+      //   totalOffset += nodeLength;
+      // }
+      const codeText = currentNode.getTextContent();
+      const { startOffset, endOffset } = findLineOffsetsInCodeBlock(
+        codeText,
+        cursorOffset
+      );
+
+      const newSelection = $createRangeSelection();
+
+      newSelection.anchor.set(currentNode.getKey(), startOffset, 'text');
+      newSelection.focus.set(currentNode.getKey(), endOffset, 'text');
+
+      $setSelection(newSelection);
+
+      // const children = currentNode.getChildren();
+      // const cursorOffset = selection.anchor.offset;
+      // let totalOffset = 0;
+      // let currentLineNodes = [];
+      // let currentLineOffset = 0;
+      //
+      // for (const child of children) {
+      //   const nodeText = child.getTextContent();
+      //   if (!nodeText) continue;
+      //
+      //   const lines = nodeText.split('\n');
+      //
+      //   for (let i = 0; i < lines.length; i++) {
+      //     const isLastLine = i === lines.length - 1;
+      //     const lineLength = lines[i].length + (isLastLine ? 0 : 1);
+      //
+      //     if (
+      //       cursorOffset >= totalOffset &&
+      //       cursorOffset < totalOffset + lineLength
+      //     ) {
+      //       const newSelection = $createRangeSelection();
+      //       newSelection.anchor.set(child.getKey(), currentLineOffset, 'text');
+      //       newSelection.focus.set(
+      //         child.getKey(),
+      //         currentLineOffset + lineLength - (isLastLine ? 0 : 1),
+      //         'text'
+      //       );
+      //       $setSelection(newSelection);
+      //       return true;
+      //     }
+      //
+      //     totalOffset += lineLength;
+      //     currentLineOffset = isLastLine ? 0 : currentLineOffset + lineLength;
+      //
+      //     if (!isLastLine) {
+      //       currentLineNodes = [];
+      //     }
+      //   }
+      // }
+      return true;
     }
+
+    let minLineStartOffset = Number.MAX_SAFE_INTEGER;
+    let maxLineEndOffset = 0;
+    let totalOffset = 0;
 
     const cursorOffset = selection.anchor.offset;
 
-    const textBeforeCursor = nodeText.substring(0, cursorOffset);
+    for (const child of children) {
+      const nodeText = child.getTextContent();
+      if (nodeText) {
+        const textBeforeCursor = nodeText.substring(
+          0,
+          cursorOffset - totalOffset > 0 ? cursorOffset - totalOffset : 0
+        );
+        const lineStartOffset = textBeforeCursor.lastIndexOf('\n');
+        const currentLineStart =
+          lineStartOffset === -1 ? 0 : lineStartOffset + 1;
 
-    let lineStartOffset = textBeforeCursor.lastIndexOf('\n');
-    lineStartOffset = lineStartOffset === -1 ? 0 : lineStartOffset + 1;
+        const lineEndOffset = nodeText.indexOf(
+          '\n',
+          Math.max(0, cursorOffset - totalOffset)
+        );
+        const currentLineEnd =
+          lineEndOffset === -1 ? nodeText.length : lineEndOffset;
 
-    let lineEndOffset = nodeText.indexOf('\n', cursorOffset);
-    lineEndOffset = lineEndOffset === -1 ? nodeText.length : lineEndOffset;
+        minLineStartOffset = Math.min(
+          minLineStartOffset,
+          totalOffset + currentLineStart
+        );
+        maxLineEndOffset = Math.max(
+          maxLineEndOffset,
+          totalOffset + currentLineEnd
+        );
+      }
 
-    const currentLineText = nodeText.substring(lineStartOffset, lineEndOffset);
-    console.log('curr line:', currentLineText);
+      totalOffset += nodeText.length;
+    }
 
-    selection.anchor.set(currentNode.getKey(), lineStartOffset, 'text');
-    selection.focus.set(currentNode.getKey(), lineEndOffset, 'text');
+    if (minLineStartOffset === Number.MAX_SAFE_INTEGER) {
+      minLineStartOffset = 0;
+    }
 
-    $setSelection(selection);
+    const parentTextLength = currentNode.getTextContentSize();
+    maxLineEndOffset = Math.min(maxLineEndOffset, parentTextLength);
+
+    const newSelection = $createRangeSelection();
+    newSelection.anchor.set(
+      currentNode.getKey(),
+      minLineStartOffset,
+      'element'
+    );
+    newSelection.focus.set(currentNode.getKey(), maxLineEndOffset, 'element');
+
+    $setSelection(newSelection);
   });
 
   return true;
@@ -216,43 +365,14 @@ export const registerPasteCommand = (editor: LexicalEditor) => {
         const formats = event.clipboardData.types;
         console.log('clipboard format', formats);
 
-        const plainText = event.clipboardData.getData('text/plain');
-
         const lexicalData = event.clipboardData.getData(LEXICAL_CLIPBOARD_TYPE);
+        console.log('???wtf', lexicalData);
+        if (lexicalData) {
+          return false;
+        }
 
-        const editorState = editor.getEditorState().read(() => {
-          const selection = $getSelection();
-          if (!$isRangeSelection(selection))
-            return { inCodeBlock: false, nodeType: 'unknown' };
-
-          const anchorNode = selection.anchor.getNode();
-          let currentNode = anchorNode;
-          let inCodeBlock = false;
-          let nodeType = anchorNode.getType();
-
-          while (currentNode) {
-            if ($isCodeNode(currentNode)) {
-              inCodeBlock = true;
-              nodeType = 'code';
-              break;
-            }
-            const parent = currentNode.getParent();
-            if (!parent) break;
-            currentNode = parent;
-
-            if (parent.getType() !== 'text') {
-              nodeType = parent.getType();
-            }
-          }
-
-          return { inCodeBlock, nodeType };
-        });
-
-        const needsSpecialPasteHandling =
-          editorState.inCodeBlock ||
-          (plainText.startsWith('#') && editorState.nodeType !== 'heading');
-
-        if (needsSpecialPasteHandling && plainText) {
+        const plainText = event.clipboardData.getData('text/plain');
+        if (plainText) {
           editor.update(() => {
             const selection = $getSelection();
             if (!$isRangeSelection(selection)) return;
@@ -260,12 +380,7 @@ export const registerPasteCommand = (editor: LexicalEditor) => {
             selection.insertText(plainText);
           });
 
-          event.preventDefault();
           return true;
-        }
-
-        if (lexicalData) {
-          return false;
         }
 
         return false;
