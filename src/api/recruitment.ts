@@ -98,9 +98,6 @@ export const createRecruitPost = async ({
     });
   }
 
-  console.log(image);
-  console.log(teamRecruitBody);
-
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
     formData,

@@ -49,8 +49,8 @@ export const TeamRecruitPosting = () => {
 
   usePrompt(!disablePrompt);
 
-  const onClick = () => {
-
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     const teamRecruitBodyTrim = content.trim();
 
     const teamRecruitBody =
@@ -59,6 +59,7 @@ export const TeamRecruitPosting = () => {
       : teamRecruitBodyTrim;
 
     if (recruitId) {
+      console.log('recruitId', recruitId);
       modifyRecruitPost({
         teamRecruitTitle: title,
         teamRecruitBody: teamRecruitBody,
@@ -111,6 +112,7 @@ export const TeamRecruitPosting = () => {
     .then((res) => {
       setPostImages([]);
       setDisablePrompt(true);
+      console.log('res', res);
       navigate(`/team-recruit/detail/${res.teamRecruitId}`);
     })
     .catch((err) => {
