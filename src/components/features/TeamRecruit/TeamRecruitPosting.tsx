@@ -78,14 +78,14 @@ export const TeamRecruitPosting = () => {
         chatUrl: url,
         recruitmentId: recruitId,
       })
-      .then((res) => {
+      .then(() => {
         setPostImages([]);
         setDisablePrompt(true);
         setAlert({
           message: '모집글을 수정했어요',
           isVisible: true,
           onConfirm: () => {
-            navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
+            navigate(`${PATH.TEAM_RECRUIT}/detail/${recruitId}`);
           },
         });
       })
