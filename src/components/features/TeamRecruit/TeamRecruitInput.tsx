@@ -44,9 +44,11 @@ const TeamRecruitInputStyle = styled.textarea`
   resize: none;
   overflow: hidden;
   word-break: break-all;
+  font-family: 'Pretendard';
 
   &::placeholder {
     color: #CCCCCC;
+    font-weight: 400;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {

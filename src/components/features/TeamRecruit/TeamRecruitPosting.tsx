@@ -197,13 +197,13 @@ const Contact = styled.div`
 
 const IconTitleWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: center;
 `;
 
 const SendIconStyle = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 14px;
