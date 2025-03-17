@@ -19,6 +19,7 @@ import { postImagesAtom } from "@/store/posting";
 import { navigate } from "@/api/apiInstance";
 import { usePrompt } from "@/hooks/usePrompt";
 import { PostSubjectViewer } from "@/pages/Posting/PostSubjectViewer";
+import { PATH } from "@/routes/path";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
@@ -77,10 +78,16 @@ export const TeamRecruitPosting = () => {
         chatUrl: url,
         recruitmentId: recruitId,
       })
-      .then(() => {
+      .then((res) => {
         setPostImages([]);
         setDisablePrompt(true);
-        navigate(`/team-recruit/detail/${recruitId}`);
+        setAlert({
+          message: '모집글을 수정했어요',
+          isVisible: true,
+          onConfirm: () => {
+            navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
+          },
+        });
       })
       .catch((err) => {
         setAlert({
@@ -112,8 +119,13 @@ export const TeamRecruitPosting = () => {
     .then((res) => {
       setPostImages([]);
       setDisablePrompt(true);
-      console.log('res', res);
-      navigate(`/team-recruit/detail/${res.teamRecruitId}`);
+      setAlert({
+        message: '모집글을 생성했어요',
+        isVisible: true,
+        onConfirm: () => {
+          navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
+        },
+      });
     })
     .catch((err) => {
       setAlert({
