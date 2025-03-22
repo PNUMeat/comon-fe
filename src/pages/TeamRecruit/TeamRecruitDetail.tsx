@@ -352,7 +352,10 @@ export const TeamRecruitDetail = () => {
 
   const updatedTeamRecruitBody = useMemo(() => {
     if (data?.imageUrl) {
-      return data.teamRecruitBody.replace(/src="\?"/g, `src="${data.imageUrl}"`);
+      return data.teamRecruitBody.replace(
+        /src="\?"/g,
+        `src="${data.imageUrl}"`
+      );
     }
     return data?.teamRecruitBody;
   }, [data?.imageUrl, data?.teamRecruitBody]);
@@ -468,20 +471,20 @@ export const TeamRecruitDetail = () => {
             >
               {data.isRecruiting ? '모집중단' : '모집재개'}
             </StyledButton>
-              <Link
-                to={`${PATH.TEAM_RECRUIT}/posting`}
-                style={{ textDecoration: 'none' }}
-                state={{
-                  recruitId: recruitId,
-                  teamRecruitTitle: data.teamRecruitTitle,
-                  teamRecruitBody: updatedTeamRecruitBody,
-                  chatUrl: data.chatUrl,
-                }}
-              >
-            <StyledButton backgroundColor="#e5e6ed" color="#333">
-              수정
-            </StyledButton>
-          </Link>
+            <Link
+              to={`${PATH.TEAM_RECRUIT}/posting`}
+              style={{ textDecoration: 'none' }}
+              state={{
+                recruitId: recruitId,
+                teamRecruitTitle: data.teamRecruitTitle,
+                teamRecruitBody: updatedTeamRecruitBody,
+                chatUrl: data.chatUrl,
+              }}
+            >
+              <StyledButton backgroundColor="#e5e6ed" color="#333">
+                수정
+              </StyledButton>
+            </Link>
             <StyledButton
               backgroundColor="#e5e6ed"
               color="#333"

@@ -104,7 +104,7 @@ export const TeamRecruitListPage = () => {
                 가이드
               </StyledButton>
             </a>
-            <Link to={`${PATH.TEAM_RECRUIT}/posting`}>
+            <Link to={isLoggedIn ? `${PATH.TEAM_RECRUIT}/posting` : PATH.LOGIN}>
               <StyledButton backgroundColor="#6b71f8" color="#fff">
                 글쓰기
               </StyledButton>
