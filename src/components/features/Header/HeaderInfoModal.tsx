@@ -41,7 +41,14 @@ const InfoModal = styled.div`
   align-items: center;
   max-height: 500px;
   // overflow-x: hidden;
-  // overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border-radius: 10px;
+  border: 1px solid #8488ec;
+  background: #fff;
+
+  box-shadow: 0px 6px 20px 0px rgba(48, 49, 67, 0.06);
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 230px;
@@ -141,7 +148,7 @@ export const HeaderInfoModal: React.FC<{
             color={'#CA2D2D'}
             fontSize={isMobile ? '8px' : '12px'}
             fontWeight={500}
-            fontFamily={'NanumSquareNeo'}
+            fontFamily={'NanumSquareNeo variable'}
           >
             로그아웃
           </SText>

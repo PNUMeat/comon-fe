@@ -73,7 +73,7 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
         <SText
           fontSize={isMobile ? '12px' : '16px'}
           fontWeight={500}
-          fontFamily={'NanumSquareNeo'}
+          fontFamily={'NanumSquareNeo variable'}
           lineHeight={isMobile ? '' : '48px'}
           color="#333"
         >

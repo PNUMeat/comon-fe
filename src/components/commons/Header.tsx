@@ -8,26 +8,31 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
-import LogoEng from '@/assets/Header/logo_eng.png';
-import LogoKo from '@/assets/Header/logo_ko.png';
+import headerLogo from '@/assets/Header/header_logo.png';
+import user from '@/assets/Header/user.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
-const HeaderContainer = styled(Flex)<HeightInNumber>`
+const HeaderContainer = styled.header<HeightInNumber>`
   height: ${(props) => props.h}px;
   align-items: center;
   justify-content: space-between;
-  margin: 54px 0;
+  margin-bottom: ${(props) => props.h}px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 40px;
   box-sizing: border-box;
-  border: 1px solid transparent;
-  background-image: linear-gradient(#333333, #333333),
-    linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
+  padding-left: 69px;
+  padding-right: 48.5px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  display: flex;
+  align-items: center;
+  // border: 1px solid transparent;
+  // background-image: linear-gradient(#333333, #333333),
+  //   linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
+  // background-origin: border-box;
+  // background-clip: content-box, border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
@@ -38,12 +43,12 @@ const HeaderContainer = styled(Flex)<HeightInNumber>`
 
 const NavMenu = styled.div`
   display: flex;
-  gap: 52px;
+  gap: 30px;
   margin-left: 106px;
   align-items: center;
 
   a {
-    color: white;
+    // color: white;
     text-decoration: none;
     font-size: 18px;
     font-weight: 600;
@@ -79,7 +84,7 @@ const UserMenu = styled.div`
   button {
     background: none;
     border: none;
-    color: white;
+    // color: white;
     font-size: 18px;
     cursor: pointer;
     font-weight: 800;
@@ -101,25 +106,11 @@ const ComonLogoWrap = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-left: 56px;
+  // margin-left: 56px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-left: 32px;
+    // margin-left: 32px;
   }
-`;
-
-const LogoEngImg = styled.img`
-  height: 15px;
-  margin-right: 6px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    display: none;
-    margin-right: 0px;
-  }
-`;
-
-const LogoKoImg = styled.img`
-  height: 18px;
 `;
 
 type ModalControl = {
@@ -187,42 +178,99 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       .catch((err) => console.error(err));
 
   return (
-    <Flex justify="center">
-      <HeaderContainer h={h} ref={containerRef}>
-        <Flex align="center">
-          <ComonLogoWrap onClick={onClickHome}>
-            <LogoEngImg src={LogoEng} />
-            <LogoKoImg src={LogoKo} />
-          </ComonLogoWrap>
-          <NavMenu>
-            <a href={PATH.HOME}>서비스 소개</a>
-            <a href={PATH.TEAMS}>활동 팀</a>
-          </NavMenu>
-        </Flex>
-        <UserMenu>
-          <Fragment>
-            <button
+    <HeaderContainer h={h} ref={containerRef}>
+      <Flex align="center" width={'368px'} gap={'57px'}>
+        <ComonLogoWrap onClick={onClickHome}>
+          <img
+            src={headerLogo}
+            alt={'코몬 헤더 로고'}
+            width={'120px'}
+            height={'18px'}
+          />
+        </ComonLogoWrap>
+        <NavMenu>
+          <a href={PATH.HOME}>서비스 소개</a>
+          <a href={PATH.TEAMS}>활동 팀</a>
+        </NavMenu>
+      </Flex>
+      <UserMenu>
+        <Fragment>
+          {!isLoggedIn && (
+            <LoginButton
               onClick={() => {
-                if (isLoggedIn) {
-                  modalControlRef.current.isClicked =
-                    !modalControlRef.current.isClicked;
-                } else {
-                  navigate(PATH.LOGIN, {
-                    state: { redirect: location.pathname },
-                  });
-                }
+                navigate(PATH.LOGIN, {
+                  state: { redirect: location.pathname },
+                });
               }}
             >
-              {isLoggedIn ? '내정보' : '로그인'}
-            </button>
-            <HeaderInfoModal
-              isLoggedIn={isLoggedIn}
-              setModalRef={setModalRef}
-              onClickLogout={onClickLogout}
-            />
-          </Fragment>
-        </UserMenu>
-      </HeaderContainer>
-    </Flex>
+              로그인
+            </LoginButton>
+          )}
+          {isLoggedIn && (
+            <MyPageButton
+              onClick={() => {
+                modalControlRef.current.isClicked =
+                  !modalControlRef.current.isClicked;
+              }}
+            >
+              <img src={user} alt={'user icon'} />
+              내정보
+            </MyPageButton>
+          )}
+
+          <HeaderInfoModal
+            isLoggedIn={isLoggedIn}
+            setModalRef={setModalRef}
+            onClickLogout={onClickLogout}
+          />
+        </Fragment>
+      </UserMenu>
+    </HeaderContainer>
   );
 };
+
+const LoginButton = styled.div`
+  width: 98px;
+  height: 42px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #f15ca7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 140%;
+`;
+
+const MyPageButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  width: 97px;
+  height: 42px;
+  padding-right: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+
+  color: #636363;
+
+  text-align: center;
+  leading-trim: both;
+
+  text-edge: cap;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+`;
