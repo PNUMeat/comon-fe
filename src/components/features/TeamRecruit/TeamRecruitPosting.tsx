@@ -1,43 +1,107 @@
 import { SText } from "@/components/commons/SText";
 import styled from "@emotion/styled";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PostEditor from "@/components/features/Post/PostEditor";
 import { Spacer } from "@/components/commons/Spacer";
 import { colors } from "@/constants/colors";
 import { breakpoints } from "@/constants/breakpoints";
 import click from '@/assets/TeamJoin/click.png';
-import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
+import { TeamRecruitSubject } from "@/components/features/TeamRecruit/RecruitExampleData";
 import { getRecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
 import sendIcon from '@/assets/TeamRecruit/send.svg';
 import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
-import { createRecruitPost } from "@/api/recruitment";
-import { useParams } from "react-router-dom";
+import { createRecruitPost, modifyRecruitPost } from "@/api/recruitment";
+import { useLocation } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
 import { alertAtom } from "@/store/modal";
 import { postImagesAtom } from "@/store/posting";
+import { navigate } from "@/api/apiInstance";
+import { usePrompt } from "@/hooks/usePrompt";
+import { PostSubjectViewer } from "@/pages/Posting/PostSubjectViewer";
+import { PATH } from "@/routes/path";
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
-  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
-  const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
-  const [chatUrl, setChatUrl] = useState('');
+  const location = useLocation();
+  const { teamRecruitBody, teamRecruitTitle, chatUrl, teamId, recruitId} = location?.state ?? {
+    teamRecruitBody: getRecruitDefaultData(isMobile ? "14px" : "18px"),
+    teamRecruitTitle: '',
+    chatUrl: '',
+    teamId: null,
+    recruitId: null,
+  };
+
+
+  const [content, setContent] = useState(teamRecruitBody ?? getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [title, setTitle] = useState(teamRecruitTitle ?? '');
+  const [url, setUrl] = useState(chatUrl ?? '');
   const [postImages, setPostImages] = useAtom(postImagesAtom);
   const chatUrlRef = useRef<HTMLTextAreaElement>(null);
-  const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
   const setAlert = useSetAtom(alertAtom);
+  const [disablePrompt, setDisablePrompt] = useState(false);
+  
+  const isButtonDisabled = !title.trim() || !content.trim() || !url.trim();
 
-  const isButtonDisabled = !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setChatUrl(e.target.value);
+    setUrl(e.target.value);
   }
 
-  const onClick = () => {
+  usePrompt(!disablePrompt);
+
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const teamRecruitBodyTrim = content.trim();
+
+    const teamRecruitBody =
+      postImages.length > 0
+      ? teamRecruitBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : teamRecruitBodyTrim;
+
+    if (recruitId) {
+      console.log('recruitId', recruitId);
+      modifyRecruitPost({
+        teamRecruitTitle: title,
+        teamRecruitBody: teamRecruitBody,
+        image: 
+        postImages.length > 0
+        ? postImages
+            .sort((a, b) => {
+              if (a.line !== b.line) {
+                return a.line - b.line;
+              }
+              return a.idx - b.idx;
+            })
+            .map((imgObj) => imgObj.img)
+        : null,
+        chatUrl: url,
+        recruitmentId: recruitId,
+      })
+      .then(() => {
+        setPostImages([]);
+        setDisablePrompt(true);
+        setAlert({
+          message: '모집글을 수정했어요',
+          isVisible: true,
+          onConfirm: () => {
+            navigate(`${PATH.TEAM_RECRUIT}/detail/${recruitId}`);
+          },
+        });
+      })
+      .catch((err) => {
+        setAlert({
+          message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
+          isVisible: true,
+          onConfirm: () => {},
+        });
+      });
+      return;
+    } else {
+  
     createRecruitPost({
-      teamId:
-      id ? id : null,
-      teamRecruitTitle : teamRecruitTitle,
+      teamId: teamId,
+      teamRecruitTitle : title,
       teamRecruitBody : teamRecruitBody,
       image : 
       postImages.length > 0
@@ -50,12 +114,18 @@ export const TeamRecruitPosting = () => {
           })
           .map((imgObj) => imgObj.img)
       : null,
-      chatUrl: chatUrl,
+      chatUrl: url,
     })
     .then((res) => {
       setPostImages([]);
-      console.log(res);
-      // 게시글 상세 이동해야함
+      setDisablePrompt(true);
+      setAlert({
+        message: '모집글을 생성했어요',
+        isVisible: true,
+        onConfirm: () => {
+          navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
+        },
+      });
     })
     .catch((err) => {
       setAlert({
@@ -64,17 +134,22 @@ export const TeamRecruitPosting = () => {
         onConfirm: () => {},
       });
     });
+  }
   };
 
   
   return (
     <ContentWrapper>
-      <PostSubjectViewer />
+      <PostSubjectViewer
+        data={TeamRecruitSubject}
+        commentClose="예시 접기"
+        titlePrefix=""
+      />
         <PostEditor
-            forwardContent={setTeamRecruitBody}
-            forwardTitle={setTeamRecruitTitle}
-            content={teamRecruitBody}
-            title={teamRecruitTitle}
+            forwardContent={setContent}
+            forwardTitle={setTitle}
+            content={content}
+            title={title}
           />
           <Spacer h={10} />
           <ContactWrapper>
@@ -85,7 +160,8 @@ export const TeamRecruitPosting = () => {
               </IconTitleWrapper>
               <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
             </Contact>
-            <TeamRecruitInput 
+            <TeamRecruitInput
+              value={url}
               ref={chatUrlRef}
               onChange={onChange}
             />
@@ -99,7 +175,7 @@ export const TeamRecruitPosting = () => {
           <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
           <ActionText>
             <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
-              작성 완료
+              {recruitId ? '수정 완료' : '작성 완료'}
             </SText>
           </ActionText>
         </ConfirmButtonWrap>
@@ -121,13 +197,13 @@ const Contact = styled.div`
 
 const IconTitleWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: center;
 `;
 
 const SendIconStyle = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 14px;
@@ -158,133 +234,11 @@ const ContactText = styled.div`
   }
 `;
 
-
-const PostSubjectViewer: React.FC = () => {
-  const [show, setShow] = useState(false);
-  const [height, setHeight] = useState(57);
-  const contentRef = useRef<{getHeight: () => number}>(null);
-  const isMobile = window.innerWidth < breakpoints.mobile;
-
-  useEffect(() => {
-    if (show && contentRef.current) {
-      const content = contentRef.current;
-      const resizeObserver = new ResizeObserver(() => {
-        // 제목 57 + 하단 57
-        setHeight(content.getHeight() + 114);
-      });
-      resizeObserver.observe(document.body);
-
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }
-  }, [show]);
-
-  return (
-    <PostSubjectViewWrap
-      height={height}
-      show={show}
-    >
-      <GapFlex gap={20}>
-        <SText
-          color={show ? "#E5E6ED" : "#333"}
-          fontSize={isMobile ? '18px' : '20px'}
-          fontWeight={700}
-          fontFamily={'Pretendard'}
-        >
-          작성 예시
-        </SText>
-        <SText
-          color={'#333'}
-          fontSize={'20px'}
-          fontWeight={700}
-          fontFamily={'Pretendard'}
-          whiteSpace={'normal'}
-          wordBreak={'break-word'}
-        >
-        </SText>
-      </GapFlex>
-      {show && <RecruitExampleData ref={contentRef}/>}
-      <GapFlex
-        gap={12}
-        padding={'0 10px'}
-        cursor={'pointer'}
-        onClick={() => setShow((prev) => !prev)}
-        justifyContent={'end'}
-      >
-        <SText
-          color={'#D9D9D9'}
-          fontSize={isMobile ? '14px' : '16px'}
-          fontWeight={400}
-          fontFamily={'Pretendard'}
-        >
-          {show ? '예시 접기' : '펼쳐서 확인하기'}
-        </SText>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={isMobile ? '13' : '17'}
-          height={isMobile ? '6.5' : '10'}
-          viewBox="0 0 17 10"
-          fill="none"
-          style={{
-            transform: show ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.3s ease',
-          }}
-        >
-          <path d="M0 0 L8.5 10 L17 0" stroke="#CCCCCC" strokeWidth="1.5" />
-        </svg>
-      </GapFlex>
-    </PostSubjectViewWrap>
-  );
-};
-
 const ContentWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`;
-
-const PostSubjectViewWrap = styled.div<{
-  height: string | number;
-  show: boolean;
-}>`
-  display: grid;
-  grid-template-columns: ${({ show }) => (show ? '1fr' : 'auto auto')};
-  grid-template-rows: ${({ show }) => (show ? '1fr auto' : '1fr')};
-
-  justify-content: space-between;
-
-  width: 100%;
-  min-height: 57px;
-  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')}; 
-  border: 1px solid #f15ca7;
-  border-radius: 10px;
-  margin: 20px 0;
-  padding: 0 40px;
-  box-sizing: border-box;
-  transition: max-height 0.5s ease-in-out;
-  overflow: hidden;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    padding: 0 20px;
-  }
-`;
-
-const GapFlex = styled.div<{
-  gap?: number;
-  padding?: string;
-  cursor?: string;
-  justifyContent?: string;
-}>`
-  display: flex;
-  align-items: center;
-  justify-content: ${(props) => props.justifyContent ?? 'start'};
-  gap: ${(props) => props.gap ?? 0}px;
-  ${(props) => (props.padding ? `padding: ${props.padding};` : '')}
-  ${(props) => (props.cursor ? `cursor: ${props.cursor};` : '')}
-  height: 57px;
-  width: 100%;
 `;
 
 const ContactWrapper = styled.div`

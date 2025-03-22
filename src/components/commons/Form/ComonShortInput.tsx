@@ -1,6 +1,7 @@
+import { CSSObject} from '@emotion/react';
 import styled from '@emotion/styled';
 
-const ShortInput = styled.input`
+const ShortInput = styled.input<{ customStyle?: CSSObject}>`
   display: flex;
   padding: 10px 19px;
   height: 20px;
@@ -22,6 +23,8 @@ const ShortInput = styled.input`
   &::placeholder {
     color: #cccccc;
   }
+
+  ${(props) => props.customStyle}
 `;
 
 /**
@@ -31,13 +34,15 @@ export const ComonShortInput: React.FC<{
   type: string;
   placeholder: string;
   value: string | number;
+  css?: CSSObject;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ type, placeholder, value, onChange }) => {
+}> = ({ type, placeholder, value, css: customStyle, onChange }) => {
   return (
     <ShortInput
       type={type}
       placeholder={placeholder}
       value={value}
+      customStyle={customStyle}
       onChange={onChange}
     />
   );

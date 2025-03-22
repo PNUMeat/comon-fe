@@ -20,6 +20,7 @@ const categories: DashboardCategories[] = [
 const TeamSetting = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = window.innerWidth < breakpoints.mobile;
 
   const category = location.pathname.split('/')[2];
 
@@ -50,13 +51,19 @@ const TeamSetting = () => {
           </Category>
         ))}
       </DSidebar>
+      { isMobile && <BackgroundGradient
+          count={1}
+          positions={[{ top: '-50%', left: '50%' }]}
+          height="470px"
+          transform="translate(-50%, -50%)"
+        /> }
       <DContent>
-        <BackgroundGradient
+        { !isMobile && <BackgroundGradient
           count={1}
           positions={[{ top: '50%', left: '50%' }]}
           height="470px"
           transform="translate(-50%, -50%)"
-        />
+        /> }
         <Outlet />
         <Spacer h={312} />
       </DContent>
@@ -88,8 +95,9 @@ const DSidebar = styled.aside`
   display: flex;
   flex-direction: column;
   gap: 13px;
-
+  
   @media (max-width: ${breakpoints.mobile}px) {
+    background-color: #fff;
     min-height: fit-content;
     gap: 4px;
     border-radius: 8px;

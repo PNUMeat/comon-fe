@@ -8,7 +8,7 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { LoginPrompt } from '@/components/features/TeamRecruit/LoginPrompt';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -350,6 +350,13 @@ export const TeamRecruitDetail = () => {
     enabled: !!recruitId,
   });
 
+  const updatedTeamRecruitBody = useMemo(() => {
+    if (data?.imageUrl) {
+      return data.teamRecruitBody.replace(/src="\?"/g, `src="${data.imageUrl}"`);
+    }
+    return data?.teamRecruitBody;
+  }, [data?.imageUrl, data?.teamRecruitBody]);
+
   // 팀 지원글 생성
   const [applyText, setApplyText] = useState('');
   const setAlert = useSetAtom(alertAtom);
@@ -461,9 +468,20 @@ export const TeamRecruitDetail = () => {
             >
               {data.isRecruiting ? '모집중단' : '모집재개'}
             </StyledButton>
+              <Link
+                to={`${PATH.TEAM_RECRUIT}/posting`}
+                style={{ textDecoration: 'none' }}
+                state={{
+                  recruitId: recruitId,
+                  teamRecruitTitle: data.teamRecruitTitle,
+                  teamRecruitBody: updatedTeamRecruitBody,
+                  chatUrl: data.chatUrl,
+                }}
+              >
             <StyledButton backgroundColor="#e5e6ed" color="#333">
               수정
             </StyledButton>
+          </Link>
             <StyledButton
               backgroundColor="#e5e6ed"
               color="#333"
@@ -539,7 +557,7 @@ export const TeamRecruitDetail = () => {
         </SText>
         <Spacer h={isMobile ? 0 : 20} />
         <div
-          dangerouslySetInnerHTML={{ __html: data?.teamRecruitBody ?? '' }}
+          dangerouslySetInnerHTML={{ __html: updatedTeamRecruitBody ?? '' }}
           style={{ lineHeight: 'normal' }}
         />
       </ContentBox>
