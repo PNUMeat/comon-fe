@@ -199,7 +199,10 @@ const ApplicantList = ({
                 >
                   {applicant.teamApplyBody}
                 </SText>
-                <Flex justify="flex-end">
+                <Flex
+                  justify="flex-end"
+                  style={{ width: isMobile ? '60px' : '80px' }}
+                >
                   <StyledButton
                     backgroundColor="#FB676A"
                     color="#fff"
