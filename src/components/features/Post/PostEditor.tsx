@@ -1,7 +1,5 @@
 import { viewStyle } from '@/utils/viewStyle';
 
-import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
-
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
 import { ClipboardPlugin } from '@/components/features/Post/plugins/ClipboardPlugin';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
@@ -27,13 +25,11 @@ import {
   memo,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 
 import { requestPresignedUrl, toS3 } from '@/api/presignedurl.ts';
 import { breakpoints } from '@/constants/breakpoints';
-import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
@@ -50,11 +46,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
-import { useAtom } from 'jotai';
 import {
-  $getNearestNodeFromDOMNode,
-  $getNodeByKey,
-  $getRoot,
   $isLineBreakNode,
   DOMExportOutput,
   EditorThemeClasses,
@@ -318,205 +310,207 @@ const EditorPlaceholder = styled.div`
   }
 `;
 
-const blobUrlToFile = async (blobUrl: string, fileName: string) => {
-  return await fetch(blobUrl, {
-    mode: 'cors',
-    // headers: {
-    //   'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
-    //   Origin: 'https://test.codemonster.site/',
-    // },
-  })
-    .then((res) => res.blob())
-    .then((blob) => new File([blob], fileName, { type: blob.type }));
-};
+// TODO: 사용자 이벤트 추적하면서 이미지 순서 변경, 삭제, 추가를 트래킹하는 로직인데 나중에 필요할 수도
+// const blobUrlToFile = async (blobUrl: string, fileName: string) => {
+//   return await fetch(blobUrl, {
+//     mode: 'cors',
+//     // headers: {
+//     //   'Access-Control-Allow-Origin': 'https://test.codemonster.site/',
+//     //   Origin: 'https://test.codemonster.site/',
+//     // },
+//   })
+//     .then((res) => res.blob())
+//     .then((blob) => new File([blob], fileName, { type: blob.type }));
+// };
+//
+// const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
+//   return new Promise((resolve, reject) => {
+//     const maxAttempts = 10; // 10 * 100ms
+//     let attempts = 0;
+//
+//     const intervalId = setInterval(() => {
+//       attempts++;
+//       const img = element.querySelector('img');
+//
+//       if (img) {
+//         clearInterval(intervalId);
+//         resolve(img);
+//       } else if (attempts >= maxAttempts) {
+//         clearInterval(intervalId);
+//         reject(new Error('Failed to find img element after max attempts'));
+//       }
+//     }, 100);
+//   });
+// };
 
-const findImgElement = (element: HTMLElement): Promise<HTMLImageElement> => {
-  return new Promise((resolve, reject) => {
-    const maxAttempts = 10; // 10 * 100ms
-    let attempts = 0;
-
-    const intervalId = setInterval(() => {
-      attempts++;
-      const img = element.querySelector('img');
-
-      if (img) {
-        clearInterval(intervalId);
-        resolve(img);
-      } else if (attempts >= maxAttempts) {
-        clearInterval(intervalId);
-        reject(new Error('Failed to find img element after max attempts'));
-      }
-    }, 100);
-  });
-};
-
-const useDetectImageMutation = () => {
-  const [editor] = useLexicalComposerContext();
-  const [images, setImages] = useAtom(postImagesAtom);
-  const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
-  const firstNodeKey = useRef('');
-
-  useEffect(() => {
-    Promise.resolve().then(() => {
-      // if (firstNodeKey.current !== '') {
-      editor.read(() => {
-        const rootElement = editor.getRootElement();
-        if (!rootElement) {
-          return;
-        }
-        const imgs = rootElement.querySelectorAll('.editor-image');
-        const imgNodes = Array.from(imgs)
-          .map((img) => $getNearestNodeFromDOMNode(img))
-          .filter((imgNode) => imgNode !== null);
-
-        if (imgNodes.length > 0) {
-          firstNodeKey.current = imgNodes[0]?.getKey();
-        }
-      });
-      // }
-    });
-  }, [editor]);
-
-  useEffect(() => {
-    const unregisterMutationListener = editor.registerMutationListener(
-      ImageNode,
-      (mutations) => {
-        mutations.forEach((mutation, nodeKey) => {
-          if (mutation === 'created') {
-            editor.update(() => {
-              const element = editor.getElementByKey(nodeKey);
-              if (!element) {
-                return;
-              }
-
-              const node = $getNodeByKey(nodeKey);
-              if (!node) {
-                return;
-              }
-
-              console.log('nodeKey', firstNodeKey.current, images);
-              // if (images.length === 0 && firstNodeKey.current === '') {
-              if (firstNodeKey.current === '') {
-                firstNodeKey.current = nodeKey;
-              }
-              // 이미지 최대 하나로 제한
-              else {
-                if (nodeKey !== firstNodeKey.current) {
-                  node.remove();
-                  alert('이미지는 최대 하나 까지만 넣을 수 있어요');
-                }
-                return;
-              }
-
-              const parentNodeKey = node
-                .getParentKeys()
-                .filter((key) => key !== 'root')[0];
-              const parent = editor.getElementByKey(parentNodeKey);
-              if (!parent) {
-                return;
-              }
-
-              const imgs = parent.querySelectorAll('.editor-image');
-              const line = $getRoot()
-                .getChildren()
-                .findIndex((node) => node.getKey() === parentNodeKey);
-
-              // 이거 아직 이미지가 하나
-              Promise.all(
-                [...imgs].map((img) =>
-                  findImgElement(img as HTMLElement).then((foundImg) => {
-                    let myNodeKey = '';
-                    editor.read(() => {
-                      const node = $getNearestNodeFromDOMNode(img);
-                      if (node) {
-                        myNodeKey = node.getKey();
-                      }
-                    });
-                    return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
-                  })
-                )
-              )
-                .then(async (results) => {
-                  const compressedImg = [];
-
-                  for (const imgFile of results) {
-                    const requestId = `${imgFile.name}-${Date.now()}.jpg`;
-                    const res = await compressImage(requestId, imgFile);
-                    compressedImg.push(res);
-                  }
-
-                  const imgObjs = compressedImg.map((img, idx) => ({
-                    key: img.name.split('-')[1].split('.')[0],
-                    img: img,
-                    line: line,
-                    idx: idx,
-                  }));
-
-                  setImages((prev) => {
-                    const filteredNewImages = imgObjs.filter(
-                      (newImg) =>
-                        !prev.some(
-                          (img) =>
-                            img.line === newImg.line && img.idx === newImg.idx
-                        )
-                    );
-                    if (filteredNewImages.length === 0) {
-                      return prev;
-                    }
-
-                    const targetNewLine = line;
-                    const rearrangedArr = prev.map((imgObj) => {
-                      if (imgObj.line > targetNewLine) {
-                        return { ...imgObj, line: imgObj.line + 1 };
-                      }
-                      return imgObj;
-                    });
-                    return [...rearrangedArr, ...filteredNewImages];
-                  });
-                })
-                .catch((err) => {
-                  console.error('Promise.all error', err);
-                  editor.update(() => {
-                    const node = $getNodeByKey(nodeKey);
-                    if (node) {
-                      node.remove();
-                      setTimeout(() => {
-                        alert('이미지 파일로 전환을 실패했습니다.');
-                      }, 300);
-                    }
-                  });
-                });
-            });
-            return;
-          }
-
-          if (mutation === 'destroyed') {
-            setImages((prev) =>
-              prev.filter((imgObj) => imgObj.key !== nodeKey)
-            );
-            if (firstNodeKey.current === nodeKey) {
-              firstNodeKey.current = '';
-            }
-          }
-        });
-      }
-    );
-
-    return () => {
-      // firstNodeKey.current = '';
-      unregisterMutationListener();
-    };
-  }, [editor, images]);
-};
+// const useDetectImageMutation = () => {
+//   const [editor] = useLexicalComposerContext();
+//   const [images, setImages] = useAtom(postImagesAtom);
+//   const { compressImage } = useImageCompressor({ quality: 1, maxSizeMb: 1 });
+//   const firstNodeKey = useRef('');
+//
+//   useEffect(() => {
+//     Promise.resolve().then(() => {
+//       // if (firstNodeKey.current !== '') {
+//       editor.read(() => {
+//         const rootElement = editor.getRootElement();
+//         if (!rootElement) {
+//           return;
+//         }
+//         const imgs = rootElement.querySelectorAll('.editor-image');
+//         const imgNodes = Array.from(imgs)
+//           .map((img) => $getNearestNodeFromDOMNode(img))
+//           .filter((imgNode) => imgNode !== null);
+//
+//         if (imgNodes.length > 0) {
+//           firstNodeKey.current = imgNodes[0]?.getKey();
+//         }
+//       });
+//       // }
+//     });
+//   }, [editor]);
+//
+//   useEffect(() => {
+//     const unregisterMutationListener = editor.registerMutationListener(
+//       ImageNode,
+//       (mutations) => {
+//         mutations.forEach((mutation, nodeKey) => {
+//           if (mutation === 'created') {
+//             editor.update(() => {
+//               const element = editor.getElementByKey(nodeKey);
+//               if (!element) {
+//                 return;
+//               }
+//
+//               const node = $getNodeByKey(nodeKey);
+//               if (!node) {
+//                 return;
+//               }
+//
+//               console.log('nodeKey', firstNodeKey.current, images);
+//               // if (images.length === 0 && firstNodeKey.current === '') {
+//               if (firstNodeKey.current === '') {
+//                 firstNodeKey.current = nodeKey;
+//               }
+//               // 이미지 최대 하나로 제한
+//               else {
+//                 if (nodeKey !== firstNodeKey.current) {
+//                   node.remove();
+//                   alert('이미지는 최대 하나 까지만 넣을 수 있어요');
+//                 }
+//                 return;
+//               }
+//
+//               const parentNodeKey = node
+//                 .getParentKeys()
+//                 .filter((key) => key !== 'root')[0];
+//               const parent = editor.getElementByKey(parentNodeKey);
+//               if (!parent) {
+//                 return;
+//               }
+//
+//               const imgs = parent.querySelectorAll('.editor-image');
+//               const line = $getRoot()
+//                 .getChildren()
+//                 .findIndex((node) => node.getKey() === parentNodeKey);
+//
+//               // 이거 아직 이미지가 하나
+//               Promise.all(
+//                 [...imgs].map((img) =>
+//                   findImgElement(img as HTMLElement).then((foundImg) => {
+//                     let myNodeKey = '';
+//                     editor.read(() => {
+//                       const node = $getNearestNodeFromDOMNode(img);
+//                       if (node) {
+//                         myNodeKey = node.getKey();
+//                       }
+//                     });
+//                     return blobUrlToFile(foundImg.src, `img-${myNodeKey}`);
+//                   })
+//                 )
+//               )
+//                 .then(async (results) => {
+//                   const compressedImg = [];
+//
+//                   for (const imgFile of results) {
+//                     const requestId = `${imgFile.name}-${Date.now()}.jpg`;
+//                     const res = await compressImage(requestId, imgFile);
+//                     compressedImg.push(res);
+//                   }
+//
+//                   const imgObjs = compressedImg.map((img, idx) => ({
+//                     key: img.name.split('-')[1].split('.')[0],
+//                     img: img,
+//                     line: line,
+//                     idx: idx,
+//                   }));
+//
+//                   setImages((prev) => {
+//                     const filteredNewImages = imgObjs.filter(
+//                       (newImg) =>
+//                         !prev.some(
+//                           (img) =>
+//                             img.line === newImg.line && img.idx === newImg.idx
+//                         )
+//                     );
+//                     if (filteredNewImages.length === 0) {
+//                       return prev;
+//                     }
+//
+//                     const targetNewLine = line;
+//                     const rearrangedArr = prev.map((imgObj) => {
+//                       if (imgObj.line > targetNewLine) {
+//                         return { ...imgObj, line: imgObj.line + 1 };
+//                       }
+//                       return imgObj;
+//                     });
+//                     return [...rearrangedArr, ...filteredNewImages];
+//                   });
+//                 })
+//                 .catch((err) => {
+//                   console.error('Promise.all error', err);
+//                   editor.update(() => {
+//                     const node = $getNodeByKey(nodeKey);
+//                     if (node) {
+//                       node.remove();
+//                       setTimeout(() => {
+//                         alert('이미지 파일로 전환을 실패했습니다.');
+//                       }, 300);
+//                     }
+//                   });
+//                 });
+//             });
+//             return;
+//           }
+//
+//           if (mutation === 'destroyed') {
+//             setImages((prev) =>
+//               prev.filter((imgObj) => imgObj.key !== nodeKey)
+//             );
+//             if (firstNodeKey.current === nodeKey) {
+//               firstNodeKey.current = '';
+//             }
+//           }
+//         });
+//       }
+//     );
+//
+//     return () => {
+//       // firstNodeKey.current = '';
+//       unregisterMutationListener();
+//     };
+//   }, [editor, images]);
+// };
 
 const PostWriteSection = forwardRef<
   HTMLDivElement,
   {
+    imageCategory: string;
     children: React.ReactNode;
   }
->(({ children }, ref) => {
+>(({ imageCategory, children }, ref) => {
   const [editor] = useLexicalComposerContext();
-  useDetectImageMutation();
+  // useDetectImageMutation();
 
   const onPaste = useCallback(
     (e: ClipboardEvent) => {
@@ -527,13 +521,39 @@ const PostWriteSection = forwardRef<
           if (items[i].type.startsWith('image/')) {
             const file = items[i].getAsFile();
             if (file) {
-              const imageURL = URL.createObjectURL(file);
-              const imgPayload: InsertImagePayload = {
-                altText: '붙여넣은 이미지',
-                maxWidth: 600,
-                src: imageURL,
-              };
-              editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+              if (file.type.startsWith('image/')) {
+                const contentType = file.type;
+                const fileName = file.name;
+                const req = {
+                  contentType: contentType,
+                  fileName: fileName,
+                };
+
+                requestPresignedUrl({
+                  imageCategory: imageCategory,
+                  requests: req,
+                })
+                  .then(async (data) => {
+                    const { contentType, presignedUrl } = data;
+                    await toS3({
+                      url: presignedUrl,
+                      contentType: contentType,
+                      body: file,
+                    });
+                    return presignedUrl;
+                  })
+                  .then((url) => {
+                    const imgPayload: InsertImagePayload = {
+                      altText: '붙여넣은 이미지',
+                      maxWidth: 600,
+                      src: url,
+                    };
+                    editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+                  })
+                  .catch((err) => {
+                    alert(err.response.message);
+                  });
+              }
             }
             break;
           }
@@ -712,7 +732,7 @@ const PostEditor: React.FC<{
           articleCategory={tag}
           imageCategory={imageCategory}
         />
-        <PostWriteSection ref={onRef}>
+        <PostWriteSection ref={onRef} imageCategory={imageCategory}>
           <RichTextPlugin
             contentEditable={<ContentEditable className={'content-editable'} />}
             ErrorBoundary={LexicalErrorBoundary}
