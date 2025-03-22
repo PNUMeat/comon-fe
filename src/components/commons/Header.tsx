@@ -34,6 +34,9 @@ const HeaderContainer = styled.header<HeightInNumber>`
   // background-origin: border-box;
   // background-clip: content-box, border-box;
 
+  box-shadow: 0px 6px 20px 0px rgba(48, 49, 67, 0.06);
+  border-radius: 2px;
+
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
     margin: 40px 0;
