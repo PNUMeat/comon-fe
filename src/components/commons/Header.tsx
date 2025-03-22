@@ -156,7 +156,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             setOpen(false);
             return;
           }
-          console.log('wtf');
 
           return;
         };
