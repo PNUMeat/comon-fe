@@ -42,7 +42,7 @@ export const CommonLayout: React.FC<{
   return (
     <Fragment>
       <Header h={headerHeight} />
-      <Container padding={'0'}>
+      <Container padding={'0'} margin={`${headerHeight + 12}px auto 0 auto`}>
         <Alert />
         <Confirm />
         <ScrollStart />
