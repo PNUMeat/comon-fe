@@ -138,7 +138,6 @@ export const Home = () => {
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
           margin={'0 auto 100px auto'}
-          transform={'translate(0, -30px)'}
         >
           <Flex direction={'column'} align={'center'}>
             <Suspense fallback={<BannerFallback />}>
