@@ -189,8 +189,27 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           />
         </ComonLogoWrap>
         <NavMenu>
-          <a href={PATH.HOME}>서비스 소개</a>
-          <a href={PATH.TEAMS}>활동 팀</a>
+          <a
+            style={{
+              color: location.pathname === PATH.TEAMS ? '#3D3D3D' : '#B0B0B0',
+              fontSize: '16px',
+              fontWeight: 700,
+            }}
+            href={PATH.TEAMS}
+          >
+            활동 중인 팀
+          </a>
+          <a
+            style={{
+              color:
+                location.pathname === PATH.TEAM_RECRUIT ? '#3D3D3D' : '#B0B0B0',
+              fontSize: '16px',
+              fontWeight: 700,
+            }}
+            href={PATH.TEAM_RECRUIT}
+          >
+            팀원 모집
+          </a>
         </NavMenu>
       </Flex>
       <UserMenu>
