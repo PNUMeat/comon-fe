@@ -37,10 +37,12 @@ import { StyledButton } from './TeamRecruitList';
 // 신청자 0명일 때
 const EmptyState = ({
   isAuthor,
+  teamId,
   isMobile,
 }: {
   isAuthor: boolean;
   isMobile: boolean;
+  teamId: number | null;
 }) => {
   return isAuthor ? (
     <>
@@ -51,11 +53,14 @@ const EmptyState = ({
         fontSize={isMobile ? '10px' : '12px'}
         textAlign="center"
       >
-        최소 1명의 사용자가 신청해야 팀을 생성할 수 있어요
+        {teamId === null
+          ? '최소 1명의 사용자가 신청해야 팀을 생성할 수 있어요'
+          : '대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요'}
       </SText>
       <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
-        <img src={Click} style={{ width: '24px', height: '24px' }} />팀 생성하기
+        <img src={Click} style={{ width: '24px', height: '24px' }} />
+        {teamId === null ? '팀 생성하기' : '팀 초대하기'}
       </RegistrationButton>
     </>
   ) : (
@@ -72,11 +77,13 @@ const EmptyState = ({
 const ApplicantList = ({
   data,
   isAuthor,
+  teamId,
   isMobile,
   recruitId,
 }: {
   data: ITeamRecruitDetailResponse;
   isAuthor: boolean;
+  teamId: number | null;
   isMobile: boolean;
   recruitId: string;
 }) => {
@@ -321,12 +328,14 @@ const ApplicantList = ({
             fontSize={isMobile ? '10px' : '12px'}
             textAlign="center"
           >
-            신청자들과 함께 팀을 시작할 준비가 되었다면,
+            {teamId === null
+              ? ' 신청자들과 함께 팀을 시작할 준비가 되었다면,'
+              : '대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요'}
           </SText>
           <Spacer h={14} />
           <RegistrationButton disabled={false} onClick={inviteAll}>
-            <img src={Click} style={{ width: '24px', height: '24px' }} />팀
-            생성하기
+            <img src={Click} style={{ width: '24px', height: '24px' }} />
+            {teamId === null ? '팀 생성하기' : '팀 초대하기'}
           </RegistrationButton>
         </>
       )}
@@ -683,11 +692,16 @@ export const TeamRecruitDetail = () => {
 
           {/* 신청자 */}
           {data.teamApplyResponses.length === 0 ? (
-            <EmptyState isAuthor={data.isAuthor} isMobile={isMobile} />
+            <EmptyState
+              isAuthor={data.isAuthor}
+              teamId={data.teamId}
+              isMobile={isMobile}
+            />
           ) : (
             <ApplicantList
               data={data}
               isAuthor={data.isAuthor}
+              teamId={data.teamId}
               isMobile={isMobile}
               recruitId={recruitId}
             />
