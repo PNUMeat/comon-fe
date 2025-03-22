@@ -124,17 +124,18 @@ const ComonLogoWrap = styled.div`
 
 type ModalControl = {
   modal: HTMLDivElement | null;
-  isClicked: boolean;
+  // isClicked: boolean;
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const [isLoggedIn] = useState<boolean>(
     checkRemainingCookies() || isDevMode()
   );
+  const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
-    isClicked: false,
+    // isClicked: false,
   });
   const location = useLocation();
   const navigate = useNavigate();
@@ -146,25 +147,18 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   };
 
   useEffect(() => {
-    if (modalControlRef && modalControlRef.current && isLoggedIn) {
+    if (modalControlRef.current && isLoggedIn) {
       const { modal } = modalControlRef.current;
       if (modal) {
         const onClick = (e: DocumentEventMap['click']) => {
           const target = e.target as HTMLElement;
           if (target && target.textContent !== '내정보') {
-            modal.style.opacity = '0';
-            modal.style.zIndex = '-100';
-            modalControlRef.current.isClicked = false;
+            setOpen(false);
             return;
           }
+          console.log('wtf');
 
-          if (modalControlRef.current.isClicked) {
-            modal.style.opacity = '1';
-            modal.style.zIndex = '100';
-            return;
-          }
-          modal.style.opacity = '0';
-          modal.style.zIndex = '-100';
+          return;
         };
         document.addEventListener('click', onClick);
 
@@ -173,7 +167,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         };
       }
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, open]);
 
   const onClickHome = () => navigate(PATH.HOME);
   const onClickLogout = () =>
@@ -235,22 +229,18 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             </LoginButton>
           )}
           {isLoggedIn && (
-            <MyPageButton
-              onClick={() => {
-                modalControlRef.current.isClicked =
-                  !modalControlRef.current.isClicked;
-              }}
-            >
+            <MyPageButton onClick={() => setOpen(true)}>
               <img src={user} alt={'user icon'} />
               내정보
             </MyPageButton>
           )}
-
-          <HeaderInfoModal
-            isLoggedIn={isLoggedIn}
-            setModalRef={setModalRef}
-            onClickLogout={onClickLogout}
-          />
+          {open && (
+            <HeaderInfoModal
+              isLoggedIn={isLoggedIn}
+              setModalRef={setModalRef}
+              onClickLogout={onClickLogout}
+            />
+          )}
         </Fragment>
       </UserMenu>
     </HeaderContainer>

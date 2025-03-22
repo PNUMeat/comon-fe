@@ -32,7 +32,6 @@ const InfoModal = styled.div`
   position: absolute;
   top: 46px;
   right: -26px;
-  opacity: 0;
   z-index: -100;
   box-sizing: border-box;
   padding: 9px 0;
@@ -108,7 +107,12 @@ export const HeaderInfoModal: React.FC<{
   }
 
   return (
-    <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>
+    <InfoModal
+      ref={setModalRef}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
         <MyPageButton onClick={() => navigate(`${PATH.MY_PAGE}/profile`)}>
