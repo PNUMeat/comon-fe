@@ -1,25 +1,29 @@
-import { SText } from "@/components/commons/SText";
-import styled from "@emotion/styled";
-import { useEffect, useRef, useState } from "react";
-import PostEditor from "@/components/features/Post/PostEditor";
-import { Spacer } from "@/components/commons/Spacer";
-import { colors } from "@/constants/colors";
-import { breakpoints } from "@/constants/breakpoints";
+import { SText } from '@/components/commons/SText';
+import { Spacer } from '@/components/commons/Spacer';
+import PostEditor from '@/components/features/Post/PostEditor';
+import { RecruitExampleData } from '@/components/features/TeamRecruit/RecruitExampleData';
+import { getRecruitDefaultData } from '@/components/features/TeamRecruit/RecruitExampleData';
+import TeamRecruitInput from '@/components/features/TeamRecruit/TeamRecruitInput';
+
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { createRecruitPost } from '@/api/recruitment';
 import click from '@/assets/TeamJoin/click.png';
-import { RecruitExampleData } from "@/components/features/TeamRecruit/RecruitExampleData";
-import { getRecruitDefaultData } from "@/components/features/TeamRecruit/RecruitExampleData";
-import sendIcon from '@/assets/TeamRecruit/send.svg';
-import TeamRecruitInput from "@/components/features/TeamRecruit/TeamRecruitInput";
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
-import { createRecruitPost } from "@/api/recruitment";
-import { useParams } from "react-router-dom";
-import { useAtom, useSetAtom } from "jotai";
-import { alertAtom } from "@/store/modal";
-import { postImagesAtom } from "@/store/posting";
+import sendIcon from '@/assets/TeamRecruit/send.svg';
+import { breakpoints } from '@/constants/breakpoints';
+import { colors } from '@/constants/colors';
+import { alertAtom } from '@/store/modal';
+import { postImagesAtom } from '@/store/posting';
+import styled from '@emotion/styled';
+import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
-  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(getRecruitDefaultData(isMobile ? "14px" : "18px"));
+  const [teamRecruitBody, setTeamRecruitBody] = useState<string>(
+    getRecruitDefaultData(isMobile ? '14px' : '18px')
+  );
   const [teamRecruitTitle, setTeamRecruitTitle] = useState('');
   const [chatUrl, setChatUrl] = useState('');
   const [postImages, setPostImages] = useAtom(postImagesAtom);
@@ -27,85 +31,84 @@ export const TeamRecruitPosting = () => {
   const { id } = useParams(); // 팀 아이디 우선 파라미터로 들어온다고 생각
   const setAlert = useSetAtom(alertAtom);
 
-  const isButtonDisabled = !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
+  const isButtonDisabled =
+    !teamRecruitTitle.trim() || !teamRecruitBody.trim() || !chatUrl.trim();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setChatUrl(e.target.value);
-  }
+  };
 
   const onClick = () => {
     createRecruitPost({
-      teamId:
-      id ? id : null,
-      teamRecruitTitle : teamRecruitTitle,
-      teamRecruitBody : teamRecruitBody,
-      image : 
-      postImages.length > 0
-      ? postImages
-          .sort((a, b) => {
-            if (a.line !== b.line) {
-              return a.line - b.line;
-            }
-            return a.idx - b.idx;
-          })
-          .map((imgObj) => imgObj.img)
-      : null,
+      teamId: id ? id : null,
+      teamRecruitTitle: teamRecruitTitle,
+      teamRecruitBody: teamRecruitBody,
+      image:
+        postImages.length > 0
+          ? postImages
+              .sort((a, b) => {
+                if (a.line !== b.line) {
+                  return a.line - b.line;
+                }
+                return a.idx - b.idx;
+              })
+              .map((imgObj) => imgObj.img)
+          : null,
       chatUrl: chatUrl,
     })
-    .then((res) => {
-      setPostImages([]);
-      console.log(res);
-      // 게시글 상세 이동해야함
-    })
-    .catch((err) => {
-      setAlert({
-        message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
-        isVisible: true,
-        onConfirm: () => {},
+      .then((res) => {
+        setPostImages([]);
+        console.log(res);
+        // 게시글 상세 이동해야함
+      })
+      .catch((err) => {
+        setAlert({
+          message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
+          isVisible: true,
+          onConfirm: () => {},
+        });
       });
-    });
   };
 
-  
   return (
     <ContentWrapper>
       <PostSubjectViewer />
-        <PostEditor
-            forwardContent={setTeamRecruitBody}
-            forwardTitle={setTeamRecruitTitle}
-            content={teamRecruitBody}
-            title={teamRecruitTitle}
-          />
-          <Spacer h={10} />
-          <ContactWrapper>
-            <Contact>
-              <IconTitleWrapper>
-                <SendIconStyle src={sendIcon} />
-                <ContactTitle>연락 방법</ContactTitle>
-              </IconTitleWrapper>
-              <ContactText>(필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요</ContactText>
-            </Contact>
-            <TeamRecruitInput 
-              ref={chatUrlRef}
-              onChange={onChange}
-            />
-            </ContactWrapper>
-            <Spacer h={30} />
-            <ConfirmButtonWrap
-            disabled={isButtonDisabled}
-            isPending={false}
-            onClick={onClick}
-          >
-          <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
-          <ActionText>
-            <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
-              작성 완료
-            </SText>
-          </ActionText>
-        </ConfirmButtonWrap>
+      <PostEditor
+        forwardContent={setTeamRecruitBody}
+        forwardTitle={setTeamRecruitTitle}
+        content={teamRecruitBody}
+        title={teamRecruitTitle}
+        imageCategory={'TEAM_RECRUIT'}
+      />
+      <Spacer h={10} />
+      <ContactWrapper>
+        <Contact>
+          <IconTitleWrapper>
+            <SendIconStyle src={sendIcon} />
+            <ContactTitle>연락 방법</ContactTitle>
+          </IconTitleWrapper>
+          <ContactText>
+            (필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요
+          </ContactText>
+        </Contact>
+        <TeamRecruitInput ref={chatUrlRef} onChange={onChange} />
+      </ContactWrapper>
+      <Spacer h={30} />
+      <ConfirmButtonWrap
+        disabled={isButtonDisabled}
+        isPending={false}
+        onClick={onClick}
+      >
+        <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
+        <ActionText>
+          <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
+            작성 완료
+          </SText>
+        </ActionText>
+      </ConfirmButtonWrap>
     </ContentWrapper>
   );
-}
+};
 
 const Contact = styled.div`
   display: flex;
@@ -138,7 +141,7 @@ const SendIconStyle = styled.img`
 const ContactTitle = styled.div`
   font-size: 18px;
   font-weight: 600;
-  color: #333; 
+  color: #333;
   margin-top: 5px;
 
   @media (max-width: ${breakpoints.mobile}px) {
@@ -150,7 +153,7 @@ const ContactTitle = styled.div`
 const ContactText = styled.div`
   font-size: 12px;
   font-weight: 400;
-  color: #B5B5B5;
+  color: #b5b5b5;
   margin-top: 5px;
 
   @media (max-width: ${breakpoints.mobile}px) {
@@ -158,11 +161,10 @@ const ContactText = styled.div`
   }
 `;
 
-
 const PostSubjectViewer: React.FC = () => {
   const [show, setShow] = useState(false);
   const [height, setHeight] = useState(57);
-  const contentRef = useRef<{getHeight: () => number}>(null);
+  const contentRef = useRef<{ getHeight: () => number }>(null);
   const isMobile = window.innerWidth < breakpoints.mobile;
 
   useEffect(() => {
@@ -181,13 +183,10 @@ const PostSubjectViewer: React.FC = () => {
   }, [show]);
 
   return (
-    <PostSubjectViewWrap
-      height={height}
-      show={show}
-    >
+    <PostSubjectViewWrap height={height} show={show}>
       <GapFlex gap={20}>
         <SText
-          color={show ? "#E5E6ED" : "#333"}
+          color={show ? '#E5E6ED' : '#333'}
           fontSize={isMobile ? '18px' : '20px'}
           fontWeight={700}
           fontFamily={'Pretendard'}
@@ -201,10 +200,9 @@ const PostSubjectViewer: React.FC = () => {
           fontFamily={'Pretendard'}
           whiteSpace={'normal'}
           wordBreak={'break-word'}
-        >
-        </SText>
+        ></SText>
       </GapFlex>
-      {show && <RecruitExampleData ref={contentRef}/>}
+      {show && <RecruitExampleData ref={contentRef} />}
       <GapFlex
         gap={12}
         padding={'0 10px'}
@@ -257,7 +255,7 @@ const PostSubjectViewWrap = styled.div<{
 
   width: 100%;
   min-height: 57px;
-  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')}; 
+  max-height: ${({ show, height }) => (show ? `${height}px` : '57px')};
   border: 1px solid #f15ca7;
   border-radius: 10px;
   margin: 20px 0;
@@ -297,7 +295,7 @@ const ContactWrapper = styled.div`
   width: calc(100% - 12px);
   border-radius: 16px;
   box-sizing: border-box;
-  border: 1px solid #CDCFFF;
+  border: 1px solid #cdcfff;
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 14px 15px;
@@ -305,7 +303,10 @@ const ContactWrapper = styled.div`
   }
 `;
 
-const ConfirmButtonWrap = styled.button<{ disabled: boolean, isPending: boolean }>`
+const ConfirmButtonWrap = styled.button<{
+  disabled: boolean;
+  isPending: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,7 +320,8 @@ const ConfirmButtonWrap = styled.button<{ disabled: boolean, isPending: boolean 
   width: 712px;
   height: 80px;
   padding: 0;
-  border: ${({ disabled }) => (disabled ? "none" : `3px solid ${colors.borderPurple}`)};
+  border: ${({ disabled }) =>
+    disabled ? 'none' : `3px solid ${colors.borderPurple}`};
   font-size: 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {

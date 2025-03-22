@@ -3,8 +3,8 @@ import { viewStyle } from '@/utils/viewStyle';
 import { useImageCompressor } from '@/hooks/useImageCompressor.ts';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
-import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { ClipboardPlugin } from '@/components/features/Post/plugins/ClipboardPlugin';
+import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
 import { GrabContentPlugin } from '@/components/features/Post/plugins/GrabContentPlugin';
@@ -31,6 +31,7 @@ import {
   useState,
 } from 'react';
 
+import { requestPresignedUrl, toS3 } from '@/api/presignedurl.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
@@ -592,8 +593,9 @@ const TitleInput = styled.input`
 
 const PostSectionWrap: React.FC<{
   shouldHighlight?: boolean;
+  imageCategory: string;
   children: ReactNode;
-}> = ({ shouldHighlight, children }) => {
+}> = ({ shouldHighlight, imageCategory, children }) => {
   const [editor] = useLexicalComposerContext();
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -602,13 +604,46 @@ const PostSectionWrap: React.FC<{
     if (files.length > 0) {
       const file = files[0];
       if (file.type.startsWith('image/')) {
-        const imageURL = URL.createObjectURL(file);
-        const imgPayload: InsertImagePayload = {
-          altText: '붙여넣은 이미지',
-          maxWidth: 600,
-          src: imageURL,
+        const contentType = file.type;
+        const fileName = file.name;
+        const req = {
+          contentType: contentType,
+          fileName: fileName,
         };
-        editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+
+        requestPresignedUrl({
+          imageCategory: imageCategory,
+          requests: req,
+        })
+          .then(async (data) => {
+            const { contentType, presignedUrl } = data;
+            await toS3({
+              url: presignedUrl,
+              contentType: contentType,
+              body: file,
+            });
+            return presignedUrl;
+          })
+          .then((url) => {
+            const imgPayload: InsertImagePayload = {
+              altText: '붙여넣은 이미지',
+              maxWidth: 600,
+              src: url,
+            };
+            editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
+          })
+          .catch((err) => {
+            alert(err.response.message);
+          });
+
+        // console.log('contentType', req);
+        // const imageURL = URL.createObjectURL(file);
+        // const imgPayload: InsertImagePayload = {
+        //   altText: '붙여넣은 이미지',
+        //   maxWidth: 600,
+        //   src: imageURL,
+        // };
+        // editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
       }
     }
   }, []);
@@ -629,13 +664,22 @@ const PostSectionWrap: React.FC<{
 };
 
 const PostEditor: React.FC<{
+  imageCategory: string;
   forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
   content?: string;
   title?: string;
   tag?: string;
   setTag?: (tag: string) => void;
-}> = ({ forwardContent, forwardTitle, content, setTag, title, tag }) => {
+}> = ({
+  imageCategory,
+  forwardContent,
+  forwardTitle,
+  content,
+  setTag,
+  title,
+  tag,
+}) => {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -647,7 +691,10 @@ const PostEditor: React.FC<{
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PostSectionWrap shouldHighlight={Boolean(setTag)}>
+      <PostSectionWrap
+        shouldHighlight={Boolean(setTag)}
+        imageCategory={imageCategory}
+      >
         <TitleInput
           type={'text'}
           placeholder={setTag ? '문제를 입력하세요' : '제목을 입력하세요'}
@@ -663,6 +710,7 @@ const PostEditor: React.FC<{
           setIsLinkEditMode={setIsLinkEditMode}
           setTag={setTag}
           articleCategory={tag}
+          imageCategory={imageCategory}
         />
         <PostWriteSection ref={onRef}>
           <RichTextPlugin

@@ -241,6 +241,7 @@ const Posting = () => {
           forwardTitle={setPostTitle}
           content={article}
           title={articleTitle}
+          imageCategory={'ARTICLE'}
         />
         <Spacer h={spacing} />
         <ConfirmButtonWrap

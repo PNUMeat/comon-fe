@@ -228,6 +228,7 @@ const TeamDailySubject = () => {
           content={regroupedArticleContent}
           title={articleTitle}
           tag={articleCategory}
+          imageCategory={'ARTICLE'}
         />
         <Spacer h={38} />
         <ConfirmButtonWrap
