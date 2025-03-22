@@ -5,8 +5,9 @@ import { useEffect } from 'react';
 import { teamSubjectAtom } from '@/store/form';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
+import { CSSObject } from '@emotion/react';
 
-const TeamSubjectButton = styled.button<{ isSelected: boolean }>`
+const TeamSubjectButton = styled.button<{ isSelected: boolean, customStyle?: CSSObject}>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -19,13 +20,16 @@ const TeamSubjectButton = styled.button<{ isSelected: boolean }>`
   color: ${({ isSelected }) => (isSelected ? '#fff' : '#333333')};
   cursor: pointer;
   transition: all 0.2s;
+
+  ${(props) => props.customStyle}
 `;
 
 const options = ['코딩테스트', '스터디'];
 
 export const TeamSubjectRadio: React.FC<{
   defaultValue?: string;
-}> = ({ defaultValue }) => {
+  css?: CSSObject;
+}> = ({ defaultValue, css}) => {
   const [subject, setSubject] = useAtom(teamSubjectAtom);
 
   useEffect(() => {
@@ -42,6 +46,7 @@ export const TeamSubjectRadio: React.FC<{
           key={option}
           onClick={() => setSubject(option)}
           type="button"
+          customStyle={css}
         >
           {option}
         </TeamSubjectButton>

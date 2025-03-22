@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import searchIcon from '@/assets/TeamDashboard/search.png';
 import closeIcon from '@/assets/TeamInfo/close.svg';
 import styled from '@emotion/styled';
+import { breakpoints } from '@/constants/breakpoints';
 
 interface MemberExplainModalProps {
   memberExplain: string;
@@ -66,6 +67,11 @@ const SearchIcon = styled.img`
   width: 16px;
   height: 16px;
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const ModalWrapper = styled.div`

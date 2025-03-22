@@ -53,7 +53,8 @@ export interface ITeamRecruitDetailResponse {
   isRecruiting: boolean;
   memberNickName: string;
   isAuthor: boolean;
-  createdAt: string;
+  imageUrl: string | null;
+  createdAt: string; 
   teamId: number | null;
   teamApplyResponses: ITeamRecruitApplyResponse[];
   teamMemberUuids: string[];
@@ -108,6 +109,36 @@ export const createRecruitPost = async ({
   );
 
   return res.data.data;
+}
+
+export const modifyRecruitPost = async ({
+  teamRecruitTitle,
+  teamRecruitBody,
+  image,
+  chatUrl,
+  recruitmentId,
+}: ICreateRecuitmentRequest & {
+    recruitmentId: number;
+  }) => {
+  const formData = new FormData();
+  formData.append('teamRecruitTitle', teamRecruitTitle);
+  formData.append('teamRecruitBody', teamRecruitBody);
+  formData.append('chatUrl', chatUrl);
+  if (image) {
+    image.forEach((img) => {
+      formData.append('image', img);
+    });
+  }
+
+  const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
+    `v1/recruitments/${recruitmentId}`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  return res.data.data;
 };
 
 export const getTeamRecruitList = async (
@@ -128,6 +159,7 @@ export const getTeamRecruitList = async (
 
   return res.data.data;
 };
+
 
 export const getTeamRecruitById = async (
   recruitId: number

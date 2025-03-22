@@ -6,10 +6,12 @@ export const alertAtom = atom<{ message: string; isVisible: boolean; onConfirm: 
   onConfirm: () => {},
 });
 
-export const confirmAtom = atom<{ message: string; description: string; isVisible: boolean; onConfirm: () => void; onCancel: () => void }>({
+export const confirmAtom = atom<{ message: string; description: string; isVisible: boolean; cancleText?: string; confirmText?: string; onConfirm: () => void; onCancel: () => void }>({
   message: '',
   description: '',
   isVisible: false,
+  cancleText: '취소',
+  confirmText: '나가기',
   onConfirm: () => {},
   onCancel: () => {},
 });

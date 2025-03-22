@@ -1,4 +1,4 @@
-import { isLoggedIn } from '@/utils/cookie.ts';
+import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -12,28 +12,36 @@ import { Spacer } from '@/components/commons/Spacer';
 import { Suspense, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { ITeamInfo, joinTeam } from '@/api/team';
+import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
+import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
+import LockIcon from '@/assets/TeamDashboard/lock.png';
+import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
+import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
+import toast, { Toaster } from 'react-hot-toast';
+import { confirmAtom } from '@/store/modal';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
   isTeamManager: boolean;
   isMyTeam: boolean;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
   isMyTeam,
+  setIsModalOpen,
 }) => {
   const { teamId } = useParams<{ teamId: string }>();
   const setSelectedId = useSetAtom(selectedPostIdAtom);
@@ -43,9 +51,66 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const setConfirm = useSetAtom(confirmAtom);
+
+  const onClick = () => {
+    if (isMyTeam) {
+      navigate(`/posting/${teamId}`, {
+        state: {
+          article: null,
+          articleId: null,
+          articleTitle: null,
+        },
+      });
+    } else {
+      setIsDropdownOpen((prev) => !prev);
+    }
+  };
+
+  const joinTeam = () => {
+    if (!isLoggedIn() && !isDevMode()) {
+      sessionStorage.setItem('redirect', location.pathname);
+      navigate(PATH.LOGIN, {
+        state: {
+          redirect: location.pathname,
+        },
+      });
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const goRecruitPage = () => {
+    if (teamInfo.teamRecruitId) {
+      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+    } else {
+      toast.error('참가할 수 없는 상태입니다.');
+    }
+  }
+
+  const handleClick = () => {
+    if (teamInfo.teamRecruitId) {
+      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+    } else {
+      setConfirm({
+        message: '현재 모집글이 없습니다.',
+        description: '새로 작성하시겠어요?',
+        isVisible: true,
+        cancleText: '취소',
+        confirmText: '작성하기',
+        onConfirm: () => {
+          navigate(`${PATH.TEAM_RECRUIT}/posting`, { state: { teamId: teamId } });
+        },
+        onCancel: () => {},
+      });
+    }
+  }
+
 
   return (
     <>
+      <Toaster />
       <Sidebar>
         <Box
           width={isMobile ? '84px' : '100%'}
@@ -96,7 +161,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               >
                 {teamInfo.teamName}
               </SText>
-              <Spacer h={isMobile ? 4 : 6} />
+              <Spacer h={4} />
               <SText
                 fontSize={isMobile ? '10px' : '16px'}
                 color="#777"
@@ -154,7 +219,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 </>
               )}
               {isTeamManager && (
-                <>
+                <Flex direction='column' justify='flex-start' align='flex-start'>
                   <Link
                     to={`${PATH.TEAM_ADMIN}/${teamId}`}
                     style={{ textDecoration: 'none' }}
@@ -190,7 +255,24 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                       </SText>
                     </Flex>
                   </Link>
-                </>
+                  <Spacer h={2} />
+                    <Flex
+                      width={'auto'}
+                      justify={isMobile ? 'flex-start' : 'center'}
+                      align="center"
+                      onClick={handleClick}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <SettingImage src={SettingsPurpleIcon} />
+                      <SText
+                        color="#ccc"
+                        fontWeight={600}
+                        fontSize={isMobile ? '10px' : '14px'}
+                      >
+                        모집글
+                      </SText>
+                    </Flex>
+                </Flex>
               )}
             </div>
           </Flex>
@@ -246,44 +328,11 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             </SText>
           </Flex>
         </Box>
-        <NewPostButton
-          onClick={() => {
-            if (isMyTeam) {
-              navigate(`/posting/${teamId}`, {
-                state: {
-                  article: null,
-                  articleId: null,
-                  articleTitle: null,
-                },
-              });
-            } else {
-              if (!isLoggedIn()) {
-                // session redirect
-                sessionStorage.setItem('redirect', location.pathname);
-                navigate(PATH.LOGIN, {
-                  state: {
-                    redirect: location.pathname,
-                  },
-                });
-                return;
-              }
-              const pwd = prompt('팀 비밀번호');
-              if (!pwd || pwd.trim().length > 4) {
-                return;
-              }
 
-              joinTeam(parseInt(teamId as string), pwd)
-                .then(() => {
-                  window.location.reload();
-                })
-                .catch((err) => {
-                  alert('팀 가입 요청에 실패했습니다.');
-                  console.error(err);
-                });
-            }
-          }}
+        <NewPostButton
+          onClick={onClick}
         >
-          <AnnouncementImage src={PencilIcon} />
+          { isMyTeam && <AnnouncementImage src={PencilIcon} /> }
           <SText
             fontSize={isMobile ? '10px' : '18px'}
             color="#fff"
@@ -291,7 +340,20 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           >
             {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
           </SText>
+          { !isMyTeam && <MoreIcon src={TriangleIcon} /> }
         </NewPostButton>
+            {isDropdownOpen &&
+              <DropdownWrapper>
+                <DropdownList onClick={joinTeam}>
+                  <DropdownListIcon src={LockIcon} />
+                  <DropdownListText>비밀번호 입력</DropdownListText>
+                </DropdownList>
+                <DropdownList onClick={goRecruitPage}>
+                  <DropdownListIcon src={MessageIcon} />
+                  <DropdownListText>모집글 보러가기</DropdownListText>
+                </DropdownList>
+              </DropdownWrapper>
+            }
       </Announcement>
     </>
   );
@@ -332,6 +394,7 @@ const Announcement = styled.header`
   grid-area: announcement;
   display: flex;
   justify-content: space-between;
+  position: relative;
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin: 12px 0;
@@ -365,11 +428,20 @@ const AnnouncementImage = styled.img`
   }
 `;
 
+const MoreIcon = styled.img`
+  width: 15px;
+  height: 10px;
+  margin-left: 8px;
+  padding-top: 2px;
+`;
+
 const NewPostButton = styled.button`
   display: flex;
   align-items: center;
   height: 70px;
-  padding: 24px 72px;
+  width: 265px;
+  align-items: center;
+  justify-content: center;
   border-radius: 20px;
   background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
   box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
@@ -380,5 +452,63 @@ const NewPostButton = styled.button`
     height: 32px;
     padding: 12px;
     border-radius: 28px;
+  }
+`;
+
+const DropdownWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  right: 0;
+  bottom: -100px;
+  z-index: 1;
+  border: 1px solid #E5E5E5;
+  width: 265px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 52px;
+  box-sizing: border-box;
+  box-shadow: 2px 2px 20px 0px #5E609933;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 100px;
+    bottom: -50px;
+    right: 10px;
+    padding: 8px 4px;
+  }
+`;
+
+const DropdownList = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 8px;
+  }
+`;
+
+const DropdownListIcon = styled.img`
+  width: 18px;
+  height: 18px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 8px;
+    height: 8px;
+  }
+`;
+
+const DropdownListText = styled.div`
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 6px;
   }
 `;

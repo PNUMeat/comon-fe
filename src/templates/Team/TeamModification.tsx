@@ -12,12 +12,14 @@ import styled from '@emotion/styled';
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
+import { css } from '@emotion/react';
 
 interface ModificationProps {
   currentTeam: TeamAdminResponse;
 }
 
 const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
+  const isMobile = window.innerWidth < breakpoints.mobile;
   return (
     <TeamModificationContainer>
       <Row>
@@ -27,6 +29,7 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
           placeholder={'팀 이름을 입력해주세요'}
           value={currentTeam.teamName}
           minWidth="400px"
+          css={MobileInput}
         />
       </Row>
       <Row>
@@ -36,27 +39,28 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
           placeholder={'우리 팀에 대해 설명해주세요'}
           value={currentTeam.teamExplain}
           minWidth="400px"
+          css={MobileInput}
         />
       </Row>
       <Row>
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
         <ComonImageInput
           imageUrl={currentTeam.teamIconUrl}
-          h={140}
+          h={isMobile? 80 : 140}
           padding="0"
         />
       </Row>
       <Row>
         <FormFieldLabel>주제</FormFieldLabel>
-        <TeamSubjectRadio defaultValue={currentTeam.topic} />
+        <TeamSubjectRadio defaultValue={currentTeam.topic} css={MobileRadio} />
       </Row>
       <Row>
         <FormFieldLabel>인원 제한</FormFieldLabel>
-        <TeamMaxPeopleInput defaultValue={currentTeam.memberLimit} />
+        <TeamMaxPeopleInput defaultValue={currentTeam.memberLimit} css={MobileInput}/>
       </Row>
       <Row>
         <FormFieldLabel>입장 비밀번호</FormFieldLabel>
-        <TeamPasswordInput defaultValue={currentTeam.password} />
+        <TeamPasswordInput defaultValue={currentTeam.password} css={MobileInput}/>
       </Row>
     </TeamModificationContainer>
   );
@@ -75,17 +79,54 @@ const TeamModification: React.FC<ModificationProps> = ({ currentTeam }) => {
   );
 };
 
+const MobileInput = css`
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    border: none;
+    padding: 0;
+    color: #333;
+    font-size: 12px;
+    width: 100%;
+    height: 20px;
+    align-items: flex-start;
+    min-width: 200px;
+    width: 100%;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+`;
+
+const MobileRadio = css`
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    gap: 6px;
+    width: 72px;
+    height: 25px;
+    font-size: 10px;
+    padding: 0;
+  }
+`;
+
 const TeamModificationContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 63px 63px 150px 63px 63px 63px;
   width: 100%;
   gap: 10px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    grid-template-rows: 40px 60px 100px 40px 40px 40px;
+  }
 `;
 
 const Row = styled.div`
   display: flex;
   gap: 60px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 20px;
+  }
 `;
 
 const FormFieldLabel = styled.label`
@@ -98,8 +139,11 @@ const FormFieldLabel = styled.label`
   color: #333;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 16px;
+    font-size: 14px;
+    width: 80px;
   }
 `;
+
+
 
 export default TeamModification;

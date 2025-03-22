@@ -24,10 +24,11 @@ import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import MemberSettingIcon from '@/assets/TeamAdmin/member_settings.png';
 
 import { MemberExplainModal } from './segments/MemberExplainModal';
 
-const MemberTableGrid = () => {
+const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
   const { teamId } = useParams();
   const navigate = useNavigate();
 
@@ -170,20 +171,31 @@ const MemberTableGrid = () => {
 
   return (
     <Table>
-      <TableHeader />
+      <TableHeader isMobile={isMobile} />
 
       <GridContainer>
         {sortedTeamMembers.map((row, index) => (
           <React.Fragment key={index}>
             <NicknameCell {...row} />
-            <RoleCell isTeamManager={row.isTeamManager} />
-            <EnterDateCell dateString={row.registerDate} />
-            <MemberStatusChangeCell
+            { isMobile ? 
+              row.isTeamManager ? <RoleCell isTeamManager={row.isTeamManager} isStart={!isMobile}/> 
+              : <MemberStatusChangeCell
+              isManager={row.isTeamManager}
+              selected={statuses[index]}
+              onChange={(value) => handleStatusChange(index, value)}
+              shouldBeEmpty={row.memberName === memberInfo?.memberName}
+              />
+              :
+              <RoleCell isTeamManager={row.isTeamManager}/>
+            }
+            {!isMobile && <EnterDateCell dateString={row.registerDate} /> }
+            {!isMobile && <MemberStatusChangeCell
               isManager={row.isTeamManager}
               selected={statuses[index]}
               onChange={(value) => handleStatusChange(index, value)}
               shouldBeEmpty={row.memberName === memberInfo?.memberName}
             />
+            }
             <ExpelCell
               shouldBeEmpty={row.memberName === memberInfo?.memberName}
               isChecked={statuses[index] === '강퇴하기'}
@@ -203,32 +215,49 @@ const MemberTableGrid = () => {
   );
 };
 
-const MemberModification = () => {
+const MemberModification  = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoints.mobile);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < breakpoints.mobile);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <MemberModWrap>
-      <MemberSectionHeader />
+      <Spacer h={isMobile ? 40 : 0} />
+      <MemberSectionHeader src={isMobile ? MemberSettingIcon : noteIcon}/>
       <Spacer h={31} />
-      <MemberTableGrid />
+      <MemberTableGrid isMobile={isMobile}/>
     </MemberModWrap>
   );
 };
 
-const MemberSectionHeader = () => (
+const MemberSectionHeader: React.FC<{ src: string}> = ({src}) => (
   <ModeButton>
-    <img src={noteIcon} alt="note icon" />
+    <img src={src} alt="note icon" />
     멤버 관리
   </ModeButton>
 );
 
-const TableHeader = () => (
+const TableHeader: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
+  return (
   <Header>
     <HeaderCell>닉네임</HeaderCell>
     <HeaderCell>상태</HeaderCell>
-    <HeaderCell>팀 가입일</HeaderCell>
-    <HeaderCell>상태 변경</HeaderCell>
+    {!isMobile && <HeaderCell>팀 가입일</HeaderCell> }
+    {!isMobile && <HeaderCell>상태 변경</HeaderCell> }
     <HeaderCell>강퇴</HeaderCell>
   </Header>
-);
+  );
+};
 
 const NicknameCell: React.FC<IMemberCommon> = ({
   imageUrl,
@@ -246,9 +275,9 @@ const NicknameCell: React.FC<IMemberCommon> = ({
   </RowCell>
 );
 
-const RoleCell: React.FC<{ isTeamManager: boolean }> = ({ isTeamManager }) => {
+const RoleCell: React.FC<{ isTeamManager: boolean, isStart?: boolean }> = ({ isTeamManager, isStart = false }) => {
   return (
-    <RowCell isStart>
+    <RowCell isStart={isStart} >
       <StatusWrapper>
         {isTeamManager ? (
           <Fragment>
@@ -353,14 +382,24 @@ const GridContainer = styled.div`
   background-color: white;
   color: #333;
   padding: 20px 0;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 10px 0;
+    grid-template-columns: 40% 40% 20%;
+    box-shadow: 2px 2px 20px 0px #5E609933;
+    border-radius: 0 0 6px 6px;
+  }
 `;
 
 const Table = styled.div`
   justify-items: start;
   min-width: 700px;
   display: grid;
+  height: auto;
+  
   @media (max-width: ${breakpoints.mobile}px) {
-    min-width: 390px;
+    min-width: 100%;
   }
 `;
 
@@ -374,9 +413,11 @@ const Header = styled.div`
   font-size: 14px;
   color: #fff;
   width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    min-width: 390px;
+    grid-template-columns: 40% 40% 20%;
+    border-radius: 6px 6px 0 0;
   }
 `;
 
@@ -411,12 +452,21 @@ const RowCell = styled.div<{ isStart?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: ${(props) => (props.isStart ? 'flex-start' : 'center')};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 7px 8px;
+    box-sizing: border-box;
+  }
 `;
 
 const Avatar = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 6px;
+  }
 `;
 
 const AvatarImage = styled.img`
@@ -426,6 +476,13 @@ const AvatarImage = styled.img`
   min-width: 24px;
   min-height: 24px;
   position: relative;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
 `;
 
 const NicknameContainer = styled.div`
@@ -434,6 +491,11 @@ const NicknameContainer = styled.div`
   gap: 4px;
   font-size: 16px;
   font-weight: 600;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    gap: 2px;
+  }
 `;
 
 const Checkbox = styled.img<{ checked: boolean }>`
@@ -454,6 +516,11 @@ const Checkbox = styled.img<{ checked: boolean }>`
     font-size: 14px;
     color: #ffffff;
   }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 // const MemberModGrid = styled.div`
@@ -461,6 +528,7 @@ const MemberModWrap = styled.div`
   // gap: 31px;
   position: relative;
   height: 776px;
+  width: 100%;
 `;
 
 const ModeButton = styled.button`
@@ -483,7 +551,8 @@ const ModeButton = styled.button`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 14px;
-    padding: 2px 20px;
+    padding: 0px 12px;
+    gap: 8px;
   }
 `;
 
@@ -497,6 +566,11 @@ const StatusWrapper = styled.div`
   font-weight: 500;
   margin-left: 16px;
   white-space: nowrap;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    color: #777;
+  }
 `;
 
 const LeaderIcon = styled.img`
@@ -521,6 +595,10 @@ const SaveButton = styled.button<{ isModifying: boolean }>`
   &:disabled {
     background-color: #777777;
     cursor: not-allowed;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    bottom: -10px;
   }
 `;
 
