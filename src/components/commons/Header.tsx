@@ -23,8 +23,8 @@ const HeaderContainer = styled.header<HeightInNumber>`
   top: 0;
   left: 0;
   width: 100%;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   justify-content: space-between;
   margin-bottom: ${(props) => props.h}px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
