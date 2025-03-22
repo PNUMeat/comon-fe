@@ -10,10 +10,11 @@ import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
+import { TeamJoinModal } from '@/components/features/TeamDashboard/TeamJoinModal.tsx';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
@@ -42,6 +43,7 @@ const TeamDashboardPage = () => {
   const [page, setPage] = useAtom(pageAtom);
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
@@ -120,6 +122,7 @@ const TeamDashboardPage = () => {
           teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
           isTeamManager={isTeamManager}
           isMyTeam={isMyTeam}
+          setIsModalOpen={setIsModalOpen}
         />
         <CalendarSection>
           <CustomCalendar
@@ -160,6 +163,13 @@ const TeamDashboardPage = () => {
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
+        {isModalOpen && (
+          <TeamJoinModal
+            teamId={teamId as string}
+            teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
+            setIsModalOpen={setIsModalOpen}
+          />
+        )}
       </Grid>
     </Fragment>
   );

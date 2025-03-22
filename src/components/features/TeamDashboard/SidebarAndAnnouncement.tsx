@@ -10,25 +10,25 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Suspense, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
+import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
+import LockIcon from '@/assets/TeamDashboard/lock.png';
+import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
-import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
-import LockIcon from '@/assets/TeamDashboard/lock.png';
-import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
-import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
+import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { selectedPostIdAtom } from '@/store/dashboard';
+import { confirmAtom } from '@/store/modal';
 import styled from '@emotion/styled';
 import { useSetAtom } from 'jotai';
-import toast, { Toaster } from 'react-hot-toast';
-import { confirmAtom } from '@/store/modal';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
@@ -36,7 +36,7 @@ interface ISidebarAndAnnouncementProps {
   isMyTeam: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
+// modifyRecruitPost
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
@@ -87,7 +87,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
     } else {
       toast.error('참가할 수 없는 상태입니다.');
     }
-  }
+  };
 
   const handleClick = () => {
     if (teamInfo.teamRecruitId) {
@@ -100,13 +100,14 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         cancleText: '취소',
         confirmText: '작성하기',
         onConfirm: () => {
-          navigate(`${PATH.TEAM_RECRUIT}/posting`, { state: { teamId: teamId } });
+          navigate(`${PATH.TEAM_RECRUIT}/posting`, {
+            state: { teamId: teamId },
+          });
         },
         onCancel: () => {},
       });
     }
-  }
-
+  };
 
   return (
     <>
@@ -219,7 +220,11 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 </>
               )}
               {isTeamManager && (
-                <Flex direction='column' justify='flex-start' align='flex-start'>
+                <Flex
+                  direction="column"
+                  justify="flex-start"
+                  align="flex-start"
+                >
                   <Link
                     to={`${PATH.TEAM_ADMIN}/${teamId}`}
                     style={{ textDecoration: 'none' }}
@@ -256,22 +261,22 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                     </Flex>
                   </Link>
                   <Spacer h={2} />
-                    <Flex
-                      width={'auto'}
-                      justify={isMobile ? 'flex-start' : 'center'}
-                      align="center"
-                      onClick={handleClick}
-                      style={{ cursor: 'pointer' }}
+                  <Flex
+                    width={'auto'}
+                    justify={isMobile ? 'flex-start' : 'center'}
+                    align="center"
+                    onClick={handleClick}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <SettingImage src={SettingsPurpleIcon} />
+                    <SText
+                      color="#ccc"
+                      fontWeight={600}
+                      fontSize={isMobile ? '10px' : '14px'}
                     >
-                      <SettingImage src={SettingsPurpleIcon} />
-                      <SText
-                        color="#ccc"
-                        fontWeight={600}
-                        fontSize={isMobile ? '10px' : '14px'}
-                      >
-                        모집글
-                      </SText>
-                    </Flex>
+                      모집글
+                    </SText>
+                  </Flex>
                 </Flex>
               )}
             </div>
@@ -329,10 +334,8 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           </Flex>
         </Box>
 
-        <NewPostButton
-          onClick={onClick}
-        >
-          { isMyTeam && <AnnouncementImage src={PencilIcon} /> }
+        <NewPostButton onClick={onClick}>
+          {isMyTeam && <AnnouncementImage src={PencilIcon} />}
           <SText
             fontSize={isMobile ? '10px' : '18px'}
             color="#fff"
@@ -340,20 +343,20 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           >
             {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
           </SText>
-          { !isMyTeam && <MoreIcon src={TriangleIcon} /> }
+          {!isMyTeam && <MoreIcon src={TriangleIcon} />}
         </NewPostButton>
-            {isDropdownOpen &&
-              <DropdownWrapper>
-                <DropdownList onClick={joinTeam}>
-                  <DropdownListIcon src={LockIcon} />
-                  <DropdownListText>비밀번호 입력</DropdownListText>
-                </DropdownList>
-                <DropdownList onClick={goRecruitPage}>
-                  <DropdownListIcon src={MessageIcon} />
-                  <DropdownListText>모집글 보러가기</DropdownListText>
-                </DropdownList>
-              </DropdownWrapper>
-            }
+        {isDropdownOpen && (
+          <DropdownWrapper>
+            <DropdownList onClick={joinTeam}>
+              <DropdownListIcon src={LockIcon} />
+              <DropdownListText>비밀번호 입력</DropdownListText>
+            </DropdownList>
+            <DropdownList onClick={goRecruitPage}>
+              <DropdownListIcon src={MessageIcon} />
+              <DropdownListText>모집글 보러가기</DropdownListText>
+            </DropdownList>
+          </DropdownWrapper>
+        )}
       </Announcement>
     </>
   );
@@ -465,13 +468,13 @@ const DropdownWrapper = styled.div`
   right: 0;
   bottom: -100px;
   z-index: 1;
-  border: 1px solid #E5E5E5;
+  border: 1px solid #e5e5e5;
   width: 265px;
   background: #fff;
   border-radius: 10px;
   padding: 18px 52px;
   box-sizing: border-box;
-  box-shadow: 2px 2px 20px 0px #5E609933;
+  box-shadow: 2px 2px 20px 0px #5e609933;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100px;
