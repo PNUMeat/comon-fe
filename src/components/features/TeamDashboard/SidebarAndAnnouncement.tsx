@@ -36,7 +36,7 @@ interface ISidebarAndAnnouncementProps {
   isMyTeam: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-// modifyRecruitPost
+
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
   isTeamManager,
