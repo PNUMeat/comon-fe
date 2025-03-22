@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 import { getTeamRecruitList } from '@/api/recruitment';
 import click from '@/assets/TeamJoin/click.png';
 import { breakpoints } from '@/constants/breakpoints';
-import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
@@ -126,9 +125,7 @@ export const TeamRecruitListPage = () => {
               <Card>
                 <Flex gap={isMobile ? '8px' : '16px'} align="center">
                   <Label
-                    background={
-                      team.isRecruiting ? colors.buttonPurple : '#8E8E8E'
-                    }
+                    background={team.isRecruiting ? '#6E74FA' : '#8E8E8E'}
                     padding="4px 10px"
                     style={{
                       border: 'none',

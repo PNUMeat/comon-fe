@@ -201,7 +201,7 @@ const ApplicantList = ({
                 </SText>
                 <Flex
                   justify="flex-end"
-                  style={{ width: isMobile ? '60px' : '80px' }}
+                  style={{ width: isMobile ? '60px' : '100px' }}
                 >
                   <StyledButton
                     backgroundColor="#FB676A"
