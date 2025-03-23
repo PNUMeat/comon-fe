@@ -18,8 +18,12 @@ import {
   queryMyTeamInfo,
 } from '@/api/mypage';
 import { withdrawTeam } from '@/api/team';
+import DisabledDocumentIcon from '@/assets/MyDashboard/disabledDocument.svg';
+import DisabledSettingsIcon from '@/assets/MyDashboard/disabledSettings.svg';
+import DocumentIcon from '@/assets/MyDashboard/document.svg';
 import leftArrow from '@/assets/MyDashboard/leftArrow.png';
 import rightArrow from '@/assets/MyDashboard/rightArrow.png';
+import SettingsIcon from '@/assets/MyDashboard/settings.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -28,10 +32,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 const ModeButtonsWrapper = styled.div`
   margin-bottom: 54px;
   display: flex;
-  height: 30px;
+  height: 40px;
   align-items: center;
-  margin-left: 15px;
   position: relative;
+  gap: 30px;
 
   &::after {
     position: absolute;
@@ -39,21 +43,17 @@ const ModeButtonsWrapper = styled.div`
     color: transparent;
     display: inline-block;
     border-radius: 2px;
-    height: 3px;
+    height: 1px;
     bottom: 0;
-    width: 184px;
-    background-color: #c8c8c8;
-    transform: translateX(5px);
+    width: 100%;
+    background-color: #e5e6ed;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin-top: 50px;
     margin-bottom: 24px;
-    margin-left: 0px;
-
-    &::after {
-      width: 180px;
-    }
+    height: 30px;
+    gap: 10px;
   }
 `;
 
@@ -61,30 +61,31 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
   white-space: nowrap;
   box-sizing: border-box;
   display: inline-flex;
-  height: 30px;
-  padding: 2px 10px;
+  height: 40px;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
   position: relative;
+  padding: 0 10px;
 
   ${(props) =>
     props.isSelected
       ? `&::before {
-    width: 95%;
+    width: 100%;
     position: absolute;
     border-radius: 2px;
     content: '';
-    height: 3px;
+    height: 2px;
     bottom: 0;
     display: block;
     z-index: 2;
-    background-color: #8488ec;
+    background-color: #333;
+    transform: translateX(6px);
   }`
       : ''}
 
-  color: ${(props) => (props.isSelected ? '#333' : '#777')};
+  color: ${(props) => (props.isSelected ? '#333' : '#ccc')};
   font-family: 'Pretendard';
   font-size: 20px;
   font-style: normal;
@@ -93,13 +94,18 @@ const ModeButton = styled.button<{ isSelected: boolean }>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 14px;
-    padding: 2px 20px;
+    height: 30px;
+
+    img {
+      width: 14px;
+    }
   }
 `;
 
 const ArticleWrapper = styled.div<{
   height?: string;
 }>`
+  color: #777;
   margin-bottom: 20px;
   display: flex;
   width: 700px;
@@ -482,6 +488,7 @@ const ModeSwitcher: React.FC<{
           isSelected={m.value === mode}
           onClick={() => setMode(m.value)}
         >
+          <img src={m.value === mode ? m.icon : m.disabledIcon} alt="icon" />
           {m.label}
         </ModeButton>
       ))}
@@ -642,8 +649,18 @@ const ArticleDetailViewer: React.FC<{
 };
 
 const modes = [
-  { label: '내가 쓴 글', value: 'history' },
-  { label: '정보 관리', value: 'information' },
+  {
+    label: '내가 쓴 글',
+    value: 'history',
+    icon: DocumentIcon,
+    disabledIcon: DisabledDocumentIcon,
+  },
+  {
+    label: '정보 관리',
+    value: 'information',
+    icon: SettingsIcon,
+    disabledIcon: DisabledSettingsIcon,
+  },
 ];
 
 const TeamButtonWrap = styled.div<{ isSelected: boolean }>`
