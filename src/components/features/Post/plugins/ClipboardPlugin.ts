@@ -37,7 +37,6 @@ const CODE_KEYWORDS = [
   'var',
   'public',
   'private',
-  'void',
   'return',
   '=>',
   'not',
@@ -49,45 +48,66 @@ const CODE_KEYWORDS = [
   'None',
   'True',
   'False',
+  'static',
+  'while',
+  'for',
+  'if',
+  'else',
 ];
 
 const looksLikeCode = (text: string): boolean => {
   const lines = text.split('\n');
-  if (lines.length < 2) return false;
+  const lineCount = lines.length;
+  if (lineCount < 2) {
+    return false;
+  }
 
-  let hasIndent = false;
-  let hasSpecialChars = false;
+  let indentCount = 0;
+  let specialCharCount = 0;
   let keywordScore = 0;
+  let nonCodeLineCount = 0;
 
   for (const line of lines) {
-    if (/^\s{2,}|\t/.test(line)) {
-      hasIndent = true;
-    }
-    if (/[{}();=<>]/.test(line)) {
-      hasSpecialChars = true;
+    const trimmed = line.trim();
+    if (trimmed === '') {
+      continue;
     }
 
-    for (const keyword of CODE_KEYWORDS) {
-      if (line.includes(keyword)) {
-        keywordScore++;
+    if (/^\s{2,}|\t/.test(line)) {
+      indentCount++;
+    }
+
+    if (/[{}();=<>]/.test(line)) {
+      specialCharCount++;
+    }
+
+    const firstWord = trimmed.split(/\s+/)[0];
+    if (CODE_KEYWORDS.includes(firstWord)) {
+      keywordScore += 2;
+    } else {
+      for (const keyword of CODE_KEYWORDS) {
+        if (line.includes(keyword)) {
+          keywordScore += 1;
+        }
       }
+    }
+
+    if (/^[A-Z].*\.$/.test(trimmed)) {
+      nonCodeLineCount++;
     }
   }
 
-  const keywordThreshold = 4;
+  const lineRatio = lineCount - nonCodeLineCount;
 
-  return hasIndent || hasSpecialChars || keywordScore >= keywordThreshold;
+  return (
+    keywordScore >= 4 &&
+    (indentCount >= 1 || specialCharCount >= 2) &&
+    lineRatio / lineCount >= 0.6
+  );
 };
 
 const Prism = PrismLib;
-const LANGUAGE_PREFERENCE = [
-  'python',
-  'javascript',
-  'typescript',
-  'java',
-  'cpp',
-  'c',
-];
+const LANGUAGE_PREFERENCE = ['python', 'javascript', 'java', 'cpp', 'c'];
 
 const detectLanguageByPrism = (text: string): string => {
   const languages = Object.keys(Prism.languages).filter(
@@ -96,6 +116,8 @@ const detectLanguageByPrism = (text: string): string => {
 
   let bestMatch = DEFAULT_CODE_LANGUAGE;
   let bestScore = 0;
+
+  console.log('l', languages);
 
   for (const lang of languages) {
     try {
