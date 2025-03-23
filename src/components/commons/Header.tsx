@@ -241,7 +241,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
                 fontSize: isMobile ? '14px' : '16px',
                 fontWeight: 700,
               }}
-              href={PATH.TEAM_RECRUIT}
+              href={`${PATH.TEAM_RECRUIT}/list`}
             >
               팀원 모집
             </a>
