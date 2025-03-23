@@ -1,6 +1,6 @@
 import { HeightInNumber } from '@/components/types';
-import { breakpoints } from '@/constants/breakpoints';
 
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 export const ComonFormGrid = styled.div<HeightInNumber>`
@@ -15,5 +15,6 @@ export const ComonFormGrid = styled.div<HeightInNumber>`
     flex-direction: column;
     grid-gap: 10px;
     height: auto;
+    width: 90%;
   }
 `;

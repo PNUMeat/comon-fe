@@ -14,7 +14,7 @@ import {
   withdrawMember,
 } from '@/api/user';
 import comon from '@/assets/Home/comon500x500.png';
-import Alarm from '@/assets/Withdraw/alarm.svg';
+import Alarm from '@/assets/MyDashboard/alarm.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { imageAtom } from '@/store/form';
 import styled from '@emotion/styled';
@@ -56,7 +56,7 @@ const SubHeader = styled.div`
   margin-bottom: 50px;
   color: #333;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
   font-family: 'Pretendard';
   font-size: 20px;
@@ -64,11 +64,27 @@ const SubHeader = styled.div`
   font-weight: 700;
   line-height: normal;
 
+  .withdraw {
+    width: 21.5px;
+  }
+
+  .profile {
+    width: 14px;
+  }
+
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 14px;
     margin-top: 50px;
     margin-bottom: 20px;
     padding-left: 12px;
+
+    .withdraw {
+      width: 14px;
+    }
+
+    .profile {
+      width: 10px;
+    }
   }
 `;
 
