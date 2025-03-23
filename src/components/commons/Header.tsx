@@ -63,6 +63,7 @@ const NavMenu = styled.div`
     text-decoration: none;
     font-size: 18px;
     font-weight: 600;
+    white-space: nowrap;
 
     &:hover {
       text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.5);
@@ -71,6 +72,7 @@ const NavMenu = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 100%;
+    gap: 19px;
 
     a {
       font-size: 14px;
@@ -223,7 +225,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             <a
               style={{
                 color: location.pathname === PATH.TEAMS ? '#3D3D3D' : '#B0B0B0',
-                fontSize: '16px',
+                fontSize: isMobile ? '14px' : '16px',
                 fontWeight: 700,
               }}
               href={PATH.TEAMS}
@@ -236,7 +238,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
                   location.pathname === PATH.TEAM_RECRUIT
                     ? '#3D3D3D'
                     : '#B0B0B0',
-                fontSize: '16px',
+                fontSize: isMobile ? '14px' : '16px',
                 fontWeight: 700,
               }}
               href={PATH.TEAM_RECRUIT}
