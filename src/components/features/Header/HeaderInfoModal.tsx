@@ -152,7 +152,7 @@ export const HeaderInfoModal: React.FC<{
             color={'#CA2D2D'}
             fontSize={isMobile ? '8px' : '12px'}
             fontWeight={500}
-            fontFamily={'NanumSquareNeo variable'}
+            fontFamily={'NanumSquareNeo'}
           >
             로그아웃
           </SText>
