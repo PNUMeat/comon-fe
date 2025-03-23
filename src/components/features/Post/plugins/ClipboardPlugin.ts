@@ -117,8 +117,6 @@ const detectLanguageByPrism = (text: string): string => {
   let bestMatch = DEFAULT_CODE_LANGUAGE;
   let bestScore = 0;
 
-  console.log('l', languages);
-
   for (const lang of languages) {
     try {
       const tokens = Prism.tokenize(text, Prism.languages[lang]);
