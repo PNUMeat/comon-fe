@@ -235,7 +235,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             <a
               style={{
                 color:
-                  location.pathname === PATH.TEAM_RECRUIT
+                  location.pathname === `${PATH.TEAM_RECRUIT}/list`
                     ? '#3D3D3D'
                     : '#B0B0B0',
                 fontSize: isMobile ? '14px' : '16px',
