@@ -1,6 +1,7 @@
 import { viewStyle } from '@/utils/viewStyle';
 
 import { ImageNode } from '@/components/features/Post/nodes/ImageNode';
+import { ClipboardPlugin } from '@/components/features/Post/plugins/ClipboardPlugin.ts';
 import { CodeActionPlugin } from '@/components/features/Post/plugins/CodeActionPlugin';
 import { DraggablePlugin } from '@/components/features/Post/plugins/DraggablePlugin';
 import { FloatingLinkEditorPlugin } from '@/components/features/Post/plugins/FloatingLinkEditorPlugin';
@@ -765,6 +766,7 @@ const PostEditor: React.FC<{
           <TabIndentationPlugin />
           <MaxIndentPlugin />
           <HighlightCodePlugin />
+          <ClipboardPlugin />
         </PostWriteSection>
       </PostSectionWrap>
     </LexicalComposer>
