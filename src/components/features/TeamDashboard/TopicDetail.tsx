@@ -83,7 +83,6 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
-                    articleImageUrl: data?.imageUrl,
                   }}
                 >
                   <LazyImage
