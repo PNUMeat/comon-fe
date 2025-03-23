@@ -83,7 +83,11 @@ const looksLikeCode = (text: string): boolean => {
     }
   }
 
-  return (hasIndent || hasSpecialChars) && keywordScore >= lines.length;
+  return (
+    (hasIndent || hasSpecialChars) &&
+    keywordScore > 0 &&
+    keywordScore >= lines.length - 8
+  );
 };
 
 const Prism = PrismLib;
