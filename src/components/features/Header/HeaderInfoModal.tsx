@@ -32,7 +32,6 @@ const InfoModal = styled.div`
   position: absolute;
   top: 46px;
   right: -26px;
-  opacity: 0;
   z-index: -100;
   box-sizing: border-box;
   padding: 9px 0;
@@ -41,7 +40,14 @@ const InfoModal = styled.div`
   align-items: center;
   max-height: 500px;
   // overflow-x: hidden;
-  // overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border-radius: 10px;
+  border: 1px solid #8488ec;
+  background: #fff;
+
+  box-shadow: 0px 6px 20px 0px rgba(48, 49, 67, 0.06);
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 230px;
@@ -67,17 +73,17 @@ const MyPageImage = styled.img`
 `;
 
 export const HeaderInfoModal: React.FC<{
-  isModalOpen: boolean;
   isLoggedIn: boolean;
   setModalRef: (el: HTMLDivElement | null) => void;
   onClickLogout: () => void;
-}> = ({ isModalOpen, isLoggedIn, setModalRef, onClickLogout }) => {
+}> = ({ isLoggedIn, setModalRef, onClickLogout }) => {
   const navigate = useNavigate();
   const { data } = useQuery({
     queryFn: getMemberInfo,
     queryKey: ['membersInfo'],
-    staleTime: 1000 * 60 * 60,
-    enabled: isModalOpen,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn,
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
@@ -101,7 +107,12 @@ export const HeaderInfoModal: React.FC<{
   }
 
   return (
-    <InfoModal ref={setModalRef} onClick={(e) => e.stopPropagation()}>
+    <InfoModal
+      ref={setModalRef}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
         <MyPageButton onClick={() => navigate(`${PATH.MY_PAGE}/profile`)}>

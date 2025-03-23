@@ -3,7 +3,7 @@ import { Header } from '@/components/commons/Header';
 import { Alert } from '@/components/commons/Modal/Alert';
 import { Spacer } from '@/components/commons/Spacer';
 
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
@@ -11,7 +11,7 @@ import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
 
-const headerHeight = 66;
+const headerHeight = 58;
 
 export const CommonLayout: React.FC<{
   children: React.ReactNode;
@@ -40,14 +40,16 @@ export const CommonLayout: React.FC<{
   }, [navigate]);
 
   return (
-    <Container padding={'0'}>
-      <Alert />
-      <Confirm />
-      <ScrollStart />
+    <Fragment>
       <Header h={headerHeight} />
-      {children}
-      <Spacer h={200} />
-    </Container>
+      <Container padding={'0'} margin={`${headerHeight + 52}px auto 0 auto`}>
+        <Alert />
+        <Confirm />
+        <ScrollStart />
+        {children}
+        <Spacer h={200} />
+      </Container>
+    </Fragment>
   );
 };
 

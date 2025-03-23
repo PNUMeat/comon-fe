@@ -1,52 +1,69 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
+import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
+
 import { Flex } from '@/components/commons/Flex';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
 
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
-import LogoEng from '@/assets/Header/logo_eng.png';
-import LogoKo from '@/assets/Header/logo_ko.png';
+import logo from '@/assets/Header/header.png';
+import user from '@/assets/Header/user.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
-const HeaderContainer = styled(Flex)<HeightInNumber>`
-  height: ${(props) => props.h}px;
+const Blur = styled.div`
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 54px 0;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 40px;
+`;
+
+const HeaderContainer = styled.header<HeightInNumber>`
+  height: ${(props) => props.h}px;
+  align-items: center;
+  position: fixed;
+  z-index: 999999;
+  top: 0;
+  left: 0;
+  width: 100%;
   box-sizing: border-box;
-  border: 1px solid transparent;
-  background-image: linear-gradient(#333333, #333333),
-    linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
+  padding: 0 40px 0 40px;
+
+  // border: 1px solid transparent;
+  // background-image: linear-gradient(#333333, #333333),
+  //   linear-gradient(to right, #5f419f 0%, ${colors.buttonPink} 100%);
+  // background-origin: border-box;
+  // background-clip: content-box, border-box;
+
+  box-shadow: 0px 6px 20px 0px rgba(48, 49, 67, 0.06);
+  border-radius: 2px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
-    margin: 40px 0;
-    max-width: 90%;
+    padding: 0 5px 0 20px;
   }
 `;
 
 const NavMenu = styled.div`
   display: flex;
-  gap: 52px;
-  margin-left: 106px;
+  gap: 32px;
   align-items: center;
 
   a {
-    color: white;
     text-decoration: none;
     font-size: 18px;
     font-weight: 600;
+    white-space: nowrap;
 
     &:hover {
       text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.5);
@@ -54,32 +71,31 @@ const NavMenu = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-left: 30px;
     height: 100%;
+    gap: 19px;
 
     a {
       font-size: 14px;
-    }
-
-    a:first-of-type {
-      display: none;
     }
   }
 `;
 
 const UserMenu = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
   white-space: nowrap;
-  margin-right: 53px;
   position: relative;
+  display: flex;
+  width: 97px;
+  height: 42px;
+  padding-right: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 
   a,
   button {
     background: none;
     border: none;
-    color: white;
     font-size: 18px;
     cursor: pointer;
     font-weight: 800;
@@ -87,8 +103,6 @@ const UserMenu = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-right: 32px;
-
     a,
     button {
       font-size: 14px;
@@ -101,39 +115,53 @@ const ComonLogoWrap = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-left: 56px;
+  height: 100%;
+`;
 
+const LogoImage = styled.img`
+  height: 18.5px;
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-left: 32px;
+    transform: translateX(-84px);
   }
 `;
 
-const LogoEngImg = styled.img`
-  height: 15px;
-  margin-right: 6px;
-
+const LogoWrap = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 124px;
+  box-sizing: border-box;
   @media (max-width: ${breakpoints.mobile}px) {
-    display: none;
-    margin-right: 0px;
+    width: 41px;
   }
 `;
 
-const LogoKoImg = styled.img`
-  height: 18px;
-`;
+const Logo: React.FC<{
+  src: string;
+  alt: string;
+}> = ({ src, alt }) => {
+  return (
+    <LogoWrap>
+      <LogoImage src={src} alt={alt} />
+    </LogoWrap>
+  );
+};
 
 type ModalControl = {
   modal: HTMLDivElement | null;
+  // isClicked: boolean;
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const [isLoggedIn] = useState<boolean>(
     checkRemainingCookies() || isDevMode()
   );
-  const [isClicked, setIsClicked] = useState(false);
+  const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({
     modal: null,
+    // isClicked: false,
   });
   const location = useLocation();
   const navigate = useNavigate();
@@ -145,25 +173,17 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   };
 
   useEffect(() => {
-    if (modalControlRef && modalControlRef.current && isLoggedIn) {
+    if (modalControlRef.current && isLoggedIn) {
       const { modal } = modalControlRef.current;
       if (modal) {
         const onClick = (e: DocumentEventMap['click']) => {
           const target = e.target as HTMLElement;
           if (target && target.textContent !== '내정보') {
-            modal.style.opacity = '0';
-            modal.style.zIndex = '-100';
-            setIsClicked(false);
+            setOpen(false);
             return;
           }
 
-          if (isClicked) {
-            modal.style.opacity = '1';
-            modal.style.zIndex = '100';
-            return;
-          }
-          modal.style.opacity = '0';
-          modal.style.zIndex = '-100';
+          return;
         };
         document.addEventListener('click', onClick);
 
@@ -172,7 +192,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
         };
       }
     }
-  }, [isLoggedIn, isClicked]);
+  }, [isLoggedIn, open]);
 
   const onClickHome = () => navigate(PATH.HOME);
   const onClickLogout = () =>
@@ -185,43 +205,145 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       })
       .catch((err) => console.error(err));
 
+  const width = useWindowWidth();
+  const isMobile = width < breakpoints.mobile;
+
   return (
-    <Flex justify="center">
-      <HeaderContainer h={h} ref={containerRef}>
-        <Flex align="center">
+    <HeaderContainer h={h} ref={containerRef}>
+      <Blur>
+        <Flex
+          align="center"
+          style={{ width: '396px' }}
+          gap={isMobile ? '24px' : '80px'}
+          height={24}
+          padding={isMobile ? '' : '0 8px'}
+        >
           <ComonLogoWrap onClick={onClickHome}>
-            <LogoEngImg src={LogoEng} />
-            <LogoKoImg src={LogoKo} />
+            <Logo src={logo} alt={'코몬 헤더 로고'} />
           </ComonLogoWrap>
           <NavMenu>
-            <a href={PATH.HOME}>서비스 소개</a>
-            <a href={PATH.TEAMS}>활동 팀</a>
+            <a
+              style={{
+                color: location.pathname === PATH.TEAMS ? '#3D3D3D' : '#B0B0B0',
+                fontSize: isMobile ? '14px' : '16px',
+                fontWeight: 700,
+              }}
+              href={PATH.TEAMS}
+            >
+              활동 중인 팀
+            </a>
+            <a
+              style={{
+                color:
+                  location.pathname === PATH.TEAM_RECRUIT
+                    ? '#3D3D3D'
+                    : '#B0B0B0',
+                fontSize: isMobile ? '14px' : '16px',
+                fontWeight: 700,
+              }}
+              href={`${PATH.TEAM_RECRUIT}/list`}
+            >
+              팀원 모집
+            </a>
           </NavMenu>
         </Flex>
         <UserMenu>
-          <Fragment>
-            <button
+          {!isLoggedIn && (
+            <LoginButton
               onClick={() => {
-                if (isLoggedIn) {
-                  setIsClicked(true);
-                } else {
-                  navigate(PATH.LOGIN, {
-                    state: { redirect: location.pathname },
-                  });
-                }
+                navigate(PATH.LOGIN, {
+                  state: { redirect: location.pathname },
+                });
               }}
             >
-              {isLoggedIn ? '내정보' : '로그인'}
-            </button>
+              로그인
+            </LoginButton>
+          )}
+          {isLoggedIn && (
+            <MyPageButton onClick={() => setOpen(true)}>
+              <img src={user} alt={'user icon'} />
+              내정보
+            </MyPageButton>
+          )}
+          {open && (
             <HeaderInfoModal
               isLoggedIn={isLoggedIn}
-              isModalOpen={isClicked}
               setModalRef={setModalRef}
               onClickLogout={onClickLogout}
             />
-          </Fragment>
+          )}
         </UserMenu>
-      </HeaderContainer>
-    </Flex>
+      </Blur>
+    </HeaderContainer>
   );
 };
+
+const LoginButton = styled.div`
+  width: 98px;
+  height: 42px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #f15ca7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 140%;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    width: 78px;
+    height: 32px;
+    padding: 11px 20px;
+    font-size: 14px;
+
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const MyPageButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  width: 97px;
+  height: 42px;
+  padding-right: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+
+  color: #636363;
+
+  text-align: center;
+  leading-trim: both;
+
+  text-edge: cap;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    width: 78px;
+    height: 32px;
+    padding: 11px 20px;
+    font-size: 14px;
+
+    justify-content: center;
+    align-items: center;
+  }
+`;
