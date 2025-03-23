@@ -1,5 +1,7 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
+import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
+
 import { Flex } from '@/components/commons/Flex';
 import { HeaderInfoModal } from '@/components/features/Header/HeaderInfoModal';
 import { HeightInNumber } from '@/components/types';
@@ -20,7 +22,6 @@ const Blur = styled.div`
   height: 100%;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  // margin-right: 25px;
 
   display: flex;
   align-items: center;
@@ -36,7 +37,7 @@ const HeaderContainer = styled.header<HeightInNumber>`
   left: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 40px 8px 40px;
+  padding: 0 40px 0 40px;
 
   // border: 1px solid transparent;
   // background-image: linear-gradient(#333333, #333333),
@@ -49,8 +50,7 @@ const HeaderContainer = styled.header<HeightInNumber>`
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 50px;
-    margin: 40px 0;
-    max-width: 90%;
+    padding: 0 5px 0 20px;
   }
 `;
 
@@ -70,15 +70,10 @@ const NavMenu = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-left: 30px;
     height: 100%;
 
     a {
       font-size: 14px;
-    }
-
-    a:first-of-type {
-      display: none;
     }
   }
 `;
@@ -106,8 +101,6 @@ const UserMenu = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    margin-right: 32px;
-
     a,
     button {
       font-size: 14px;
@@ -120,12 +113,38 @@ const ComonLogoWrap = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  // margin-left: 56px;
+  height: 100%;
+`;
 
+const LogoImage = styled.img`
+  height: 18.5px;
   @media (max-width: ${breakpoints.mobile}px) {
-    // margin-left: 32px;
+    transform: translateX(-84px);
   }
 `;
+
+const LogoWrap = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 124px;
+  box-sizing: border-box;
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 41px;
+  }
+`;
+
+const Logo: React.FC<{
+  src: string;
+  alt: string;
+}> = ({ src, alt }) => {
+  return (
+    <LogoWrap>
+      <LogoImage src={src} alt={alt} />
+    </LogoWrap>
+  );
+};
 
 type ModalControl = {
   modal: HTMLDivElement | null;
@@ -184,17 +203,21 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       })
       .catch((err) => console.error(err));
 
+  const width = useWindowWidth();
+  const isMobile = width < breakpoints.mobile;
+
   return (
     <HeaderContainer h={h} ref={containerRef}>
       <Blur>
-        <Flex align="center" width={'368px'} gap={'80px'}>
+        <Flex
+          align="center"
+          style={{ width: '396px' }}
+          gap={isMobile ? '24px' : '80px'}
+          height={24}
+          padding={isMobile ? '' : '0 8px'}
+        >
           <ComonLogoWrap onClick={onClickHome}>
-            <img
-              src={logo}
-              alt={'코몬 헤더 로고'}
-              width={'120px'}
-              height={'18px'}
-            />
+            <Logo src={logo} alt={'코몬 헤더 로고'} />
           </ComonLogoWrap>
           <NavMenu>
             <a
@@ -273,6 +296,18 @@ const LoginButton = styled.div`
   font-style: normal;
   font-weight: 800;
   line-height: 140%;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    width: 78px;
+    height: 32px;
+    padding: 11px 20px;
+    font-size: 14px;
+
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const MyPageButton = styled.div`
@@ -297,4 +332,16 @@ const MyPageButton = styled.div`
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    width: 78px;
+    height: 32px;
+    padding: 11px 20px;
+    font-size: 14px;
+
+    justify-content: center;
+    align-items: center;
+  }
 `;
