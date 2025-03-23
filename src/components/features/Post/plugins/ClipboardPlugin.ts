@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
 
+import { $createCodeNode, DEFAULT_CODE_LANGUAGE } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
+  $createLineBreakNode,
   $createRangeSelection,
+  $createTextNode,
   $getRoot,
   $getSelection,
+  $insertNodes,
   $isElementNode,
   $isRangeSelection,
   $setSelection,
@@ -15,8 +19,109 @@ import {
   LexicalNode,
   PASTE_COMMAND,
 } from 'lexical';
+import PrismLib from 'prismjs';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-typescript';
 
 const LEXICAL_CLIPBOARD_TYPE = 'application/x-lexical-editor';
+const CODE_KEYWORDS = [
+  'null',
+  '#include',
+  'function',
+  'class',
+  'def',
+  'import',
+  'const',
+  'let',
+  'var',
+  'public',
+  'private',
+  'void',
+  'return',
+  '=>',
+  'not',
+  'and',
+  'or',
+  'self',
+  'lambda',
+  'pass',
+  'None',
+  'True',
+  'False',
+];
+
+const looksLikeCode = (text: string): boolean => {
+  const lines = text.split('\n');
+  if (lines.length < 2) return false;
+
+  let hasIndent = false;
+  let hasSpecialChars = false;
+  let keywordScore = 0;
+
+  for (const line of lines) {
+    if (/^\s{2,}|\t/.test(line)) {
+      hasIndent = true;
+    }
+    if (/[{}();=<>]/.test(line)) {
+      hasSpecialChars = true;
+    }
+
+    for (const keyword of CODE_KEYWORDS) {
+      if (line.includes(keyword)) {
+        keywordScore++;
+      }
+    }
+  }
+
+  const keywordThreshold = 4;
+
+  return hasIndent || hasSpecialChars || keywordScore >= keywordThreshold;
+};
+
+const Prism = PrismLib;
+const LANGUAGE_PREFERENCE = [
+  'python',
+  'javascript',
+  'typescript',
+  'java',
+  'cpp',
+  'c',
+];
+
+const detectLanguageByPrism = (text: string): string => {
+  const languages = Object.keys(Prism.languages).filter(
+    (lang) => typeof Prism.languages[lang] === 'object' && lang !== 'meta'
+  );
+
+  let bestMatch = DEFAULT_CODE_LANGUAGE;
+  let bestScore = 0;
+
+  for (const lang of languages) {
+    try {
+      const tokens = Prism.tokenize(text, Prism.languages[lang]);
+      const tokenScore = tokens.filter((t) => typeof t !== 'string').length;
+
+      if (tokenScore > bestScore) {
+        bestScore = tokenScore;
+        bestMatch = lang;
+      } else if (tokenScore === bestScore) {
+        const currentIndex = LANGUAGE_PREFERENCE.indexOf(lang);
+        const bestIndex = LANGUAGE_PREFERENCE.indexOf(bestMatch);
+        if (
+          currentIndex !== -1 &&
+          (bestIndex === -1 || currentIndex < bestIndex)
+        ) {
+          bestMatch = lang;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return bestMatch;
+};
 
 const copyNodesToClipboard = async (
   nodes: Array<LexicalNode>,
@@ -299,17 +404,40 @@ const registerPasteCommand = (editor: LexicalEditor) => {
       }
 
       try {
-        const formats = event.clipboardData.types;
-        console.log('clipboard format', formats);
-
         const lexicalData = event.clipboardData.getData(LEXICAL_CLIPBOARD_TYPE);
-        console.log('???wtf', lexicalData);
         if (lexicalData) {
           return false;
         }
 
         const plainText = event.clipboardData.getData('text/plain');
         if (plainText) {
+          const isProbablyCode = looksLikeCode(plainText);
+          if (isProbablyCode) {
+            event.preventDefault();
+            const language = detectLanguageByPrism(plainText);
+
+            editor.update(() => {
+              const codeNode = $createCodeNode();
+              codeNode.setLanguage(language);
+              codeNode.append(
+                ...plainText
+                  .split('\n')
+                  .map((line, index) => {
+                    const nodes = [];
+                    if (index !== 0) {
+                      nodes.push($createLineBreakNode());
+                    }
+                    nodes.push($createTextNode(line));
+                    return nodes;
+                  })
+                  .flat()
+              );
+              $insertNodes([codeNode]);
+            });
+
+            return true;
+          }
+
           editor.update(() => {
             const selection = $getSelection();
             if (!$isRangeSelection(selection)) return;
