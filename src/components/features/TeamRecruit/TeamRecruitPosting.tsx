@@ -194,7 +194,7 @@ const ContactTitle = styled.div`
 `;
 
 const ContactText = styled.div`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   color: #b5b5b5;
   margin-top: 5px;
