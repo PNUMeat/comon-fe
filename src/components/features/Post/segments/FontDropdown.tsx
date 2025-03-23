@@ -237,7 +237,7 @@ const TextFlex = styled.div`
   gap: 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    gap: 10px;
+    gap: 8px;
   }
 `;
 
