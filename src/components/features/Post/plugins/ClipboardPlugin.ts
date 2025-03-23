@@ -53,57 +53,37 @@ const CODE_KEYWORDS = [
   'for',
   'if',
   'else',
+  '&&',
+  '||',
+  'print',
+  'console.log',
+  ';',
 ];
 
 const looksLikeCode = (text: string): boolean => {
   const lines = text.split('\n');
-  const lineCount = lines.length;
-  if (lineCount < 2) {
-    return false;
-  }
+  if (lines.length < 2) return false;
 
-  let indentCount = 0;
-  let specialCharCount = 0;
+  let hasIndent = false;
+  let hasSpecialChars = false;
   let keywordScore = 0;
-  let nonCodeLineCount = 0;
 
   for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed === '') {
-      continue;
-    }
-
     if (/^\s{2,}|\t/.test(line)) {
-      indentCount++;
+      hasIndent = true;
     }
-
     if (/[{}();=<>]/.test(line)) {
-      specialCharCount++;
+      hasSpecialChars = true;
     }
 
-    const firstWord = trimmed.split(/\s+/)[0];
-    if (CODE_KEYWORDS.includes(firstWord)) {
-      keywordScore += 2;
-    } else {
-      for (const keyword of CODE_KEYWORDS) {
-        if (line.includes(keyword)) {
-          keywordScore += 1;
-        }
+    for (const keyword of CODE_KEYWORDS) {
+      if (line.includes(keyword)) {
+        keywordScore++;
       }
-    }
-
-    if (/^[A-Z].*\.$/.test(trimmed)) {
-      nonCodeLineCount++;
     }
   }
 
-  const lineRatio = lineCount - nonCodeLineCount;
-
-  return (
-    keywordScore >= 4 &&
-    (indentCount >= 1 || specialCharCount >= 2) &&
-    lineRatio / lineCount >= 0.6
-  );
+  return (hasIndent || hasSpecialChars) && keywordScore >= lines.length;
 };
 
 const Prism = PrismLib;
