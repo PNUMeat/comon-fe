@@ -1,5 +1,6 @@
 import { usePrompt } from '@/hooks/usePrompt';
 
+import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
@@ -156,15 +157,21 @@ export const TeamRecruitPosting = () => {
       <Spacer h={10} />
       <ContactWrapper>
         <Contact>
-          <SendIconStyle src={sendIcon} />
-          <SText
-            color="#333"
-            fontSize={isMobile ? '14px' : '18px'}
-            fontWeight={600}
-            fontFamily="Pretendard"
+          <Flex
+            align="center"
+            gap={isMobile ? '6px' : '10px'}
+            style={{ width: 'auto' }}
           >
-            연락 방법
-          </SText>
+            <SendIconStyle src={sendIcon} />
+            <SText
+              color="#333"
+              fontSize={isMobile ? '14px' : '18px'}
+              fontWeight={600}
+              fontFamily="Pretendard"
+            >
+              연락 방법
+            </SText>
+          </Flex>
           <ContactText>
             (필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요
           </ContactText>
@@ -190,7 +197,7 @@ export const TeamRecruitPosting = () => {
 
 const Contact = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
   align-items: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
@@ -229,7 +236,7 @@ const ContactWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   gap: 12px;
-  padding: 20px 40px;
+  padding: 24px 36px;
   height: auto;
   width: calc(100% - 12px);
   border-radius: 16px;
@@ -237,8 +244,8 @@ const ContactWrapper = styled.div`
   border: 1px solid #cdcfff;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 14px 15px;
-    gap: 8px;
+    padding: 20px 24px;
+    gap: 10px;
   }
 `;
 
