@@ -346,7 +346,7 @@ const CardBody = styled.div`
   text-overflow: ellipsis;
 
   * {
-    all: unset;
+    // all: unset;
     color: #000 !important;
     font-size: 16px !important;
     font-weight: 500 !important;
