@@ -584,20 +584,38 @@ export const TeamRecruitDetail = () => {
           align={isMobile ? 'flex-start' : 'center'}
           direction={isMobile ? 'column' : 'row'}
         >
-          <Label
-            background={data?.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
-            padding="4px 10px"
-            style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
-          >
-            <SText
-              color="#fff"
-              fontSize={isMobile ? '10px' : '14px'}
-              fontWeight={700}
-              fontFamily="Pretendard"
+          <div style={{ display: 'flex', gap: isMobile ? '4px' : '8px' }}>
+            <Label
+              background={data?.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
+              padding="4px 10px"
+              style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
             >
-              {data?.isRecruiting ? '모집중' : '모집완료'}
-            </SText>
-          </Label>
+              <SText
+                color="#fff"
+                fontSize={isMobile ? '10px' : '14px'}
+                fontWeight={700}
+                fontFamily="Pretendard"
+              >
+                {data?.isRecruiting ? '모집중' : '모집완료'}
+              </SText>
+            </Label>
+            {data?.teamId !== null && (
+              <Label
+                background="#FF5780"
+                padding="4px 10px"
+                style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
+              >
+                <SText
+                  color="#fff"
+                  fontSize={isMobile ? '10px' : '14px'}
+                  fontWeight={700}
+                  fontFamily="Pretendard"
+                >
+                  운영중
+                </SText>
+              </Label>
+            )}
+          </div>
           <SText
             fontSize={isMobile ? '14px' : '18px'}
             fontWeight={700}
