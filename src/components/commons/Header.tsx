@@ -232,19 +232,19 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
             >
               활동 중인 팀
             </a>
-            <a
-              style={{
-                color:
-                  location.pathname === PATH.TEAM_RECRUIT
-                    ? '#3D3D3D'
-                    : '#B0B0B0',
-                fontSize: isMobile ? '14px' : '16px',
-                fontWeight: 700,
-              }}
-              href={`${PATH.TEAM_RECRUIT}/list`}
-            >
-              팀원 모집
-            </a>
+            {/*<a*/}
+            {/*  style={{*/}
+            {/*    color:*/}
+            {/*      location.pathname === PATH.TEAM_RECRUIT*/}
+            {/*        ? '#3D3D3D'*/}
+            {/*        : '#B0B0B0',*/}
+            {/*    fontSize: isMobile ? '14px' : '16px',*/}
+            {/*    fontWeight: 700,*/}
+            {/*  }}*/}
+            {/*  href={`${PATH.TEAM_RECRUIT}/list`}*/}
+            {/*>*/}
+            {/*  팀원 모집*/}
+            {/*</a>*/}
           </NavMenu>
         </Flex>
         <UserMenu>
