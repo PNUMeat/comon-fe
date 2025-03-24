@@ -54,7 +54,7 @@ export interface ITeamRecruitDetailResponse {
   memberNickName: string;
   isAuthor: boolean;
   imageUrl: string | null;
-  createdAt: string; 
+  createdAt: string;
   teamId: number | null;
   teamApplyResponses: ITeamRecruitApplyResponse[];
   teamMemberUuids: string[];
@@ -74,6 +74,13 @@ interface ITeamApplyRequest {
 // 팀 지원글 수정
 interface IUpdateTeamApplicationRequest {
   teamApplyBody: string;
+}
+
+// 팀 모집글에서 팀원 초대
+interface IInviteTeamMembersRequest {
+  teamId: number;
+  recruitId: number;
+  memberUuids: string[];
 }
 
 // 모집글 관련
@@ -109,7 +116,7 @@ export const createRecruitPost = async ({
   );
 
   return res.data.data;
-}
+};
 
 export const modifyRecruitPost = async ({
   teamRecruitTitle,
@@ -118,8 +125,8 @@ export const modifyRecruitPost = async ({
   chatUrl,
   recruitmentId,
 }: ICreateRecuitmentRequest & {
-    recruitmentId: number;
-  }) => {
+  recruitmentId: number;
+}) => {
   const formData = new FormData();
   formData.append('teamRecruitTitle', teamRecruitTitle);
   formData.append('teamRecruitBody', teamRecruitBody);
@@ -137,7 +144,8 @@ export const modifyRecruitPost = async ({
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
+    }
+  );
   return res.data.data;
 };
 
@@ -159,7 +167,6 @@ export const getTeamRecruitList = async (
 
   return res.data.data;
 };
-
 
 export const getTeamRecruitById = async (
   recruitId: number
@@ -206,4 +213,17 @@ export const updateTeamApplication = async (
   requestData: IUpdateTeamApplicationRequest
 ): Promise<void> => {
   await apiInstance.patch(`/v1/apply/${applyId}`, requestData);
+};
+
+// 신청자 초대 관련
+export const inviteTeamMembers = async ({
+  teamId,
+  recruitId,
+  memberUuids,
+}: IInviteTeamMembersRequest): Promise<void> => {
+  await apiInstance.post('/v1/recruitments/invite', {
+    teamId,
+    recruitId,
+    memberUuids,
+  });
 };

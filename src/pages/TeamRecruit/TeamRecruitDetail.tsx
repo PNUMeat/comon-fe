@@ -17,6 +17,7 @@ import {
   deleteTeamApplication,
   deleteTeamRecruit,
   getTeamRecruitById,
+  inviteTeamMembers,
   updateRecruitmentStatus,
   updateTeamApplication,
 } from '@/api/recruitment';
@@ -132,7 +133,7 @@ const ApplicantList = ({
     }) => updateTeamApplication(applyId, { teamApplyBody }),
     onSuccess: () => {
       setAlert({
-        message: '신청글이 수정되었어요.',
+        message: '신청글이 수정되었어요',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -153,15 +154,51 @@ const ApplicantList = ({
     },
   });
 
+  // 팀 모집글에서 팀원 초대하기
+  const { mutate: inviteApplicants } = useMutation({
+    mutationFn: inviteTeamMembers,
+    onSuccess: () => {
+      setAlert({
+        message: '신청자들을 팀에 성공적으로 초대했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['teamRecruitDetail', recruitId],
+      });
+    },
+    onError: (error) => {
+      console.error('신청자 초대 실패:', error);
+      setAlert({
+        message: '신청자 초대 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
+
   const navigate = useNavigate();
 
-  const inviteAll = () => {
-    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+  // 운영 중인 팀이 없는 경우 (팀 최초 생성)
+  const createTeamWithApplicants = () => {
+    if (window.confirm('신청자과 함께 팀을 생성하시겠어요?')) {
       navigate(PATH.TEAM_REGISTRATION, {
         state: {
           teamMemberUuids: data.teamMemberUuids,
           teamRecruitId: data.teamRecruitId,
         },
+      });
+    }
+  };
+
+  // 운영 중인 팀이 있는 경우 (팀에 신청자 초대)
+  const inviteApplicantsToTeam = (teamId: number, recruitId: number) => {
+    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+      inviteApplicants({
+        teamId: teamId,
+        recruitId: recruitId,
+        memberUuids: data.teamMemberUuids,
       });
     }
   };
@@ -336,7 +373,14 @@ const ApplicantList = ({
               : '대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요'}
           </SText>
           <Spacer h={14} />
-          <RegistrationButton disabled={false} onClick={inviteAll}>
+          <RegistrationButton
+            disabled={false}
+            onClick={
+              teamId === null
+                ? createTeamWithApplicants
+                : () => inviteApplicantsToTeam(teamId, Number(recruitId))
+            }
+          >
             <img src={Click} style={{ width: '24px', height: '24px' }} />
             {teamId === null ? '팀 생성하기' : '팀 초대하기'}
           </RegistrationButton>
