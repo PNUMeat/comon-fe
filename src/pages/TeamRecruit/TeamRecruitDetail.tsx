@@ -62,7 +62,7 @@ const EmptyState = ({
       <Spacer h={isMobile ? 12 : 14} />
       <RegistrationButton disabled={true}>
         <img src={Click} style={{ width: '24px', height: '24px' }} />
-        {teamId === null ? '팀 생성하기' : '팀 초대하기'}
+        {teamId === null ? '팀 생성하기' : '팀에 초대하기'}
       </RegistrationButton>
     </>
   ) : (
@@ -383,7 +383,7 @@ const ApplicantList = ({
             }
           >
             <img src={Click} style={{ width: '24px', height: '24px' }} />
-            {teamId === null ? '팀 생성하기' : '팀 초대하기'}
+            {teamId === null ? '팀 생성하기' : '팀에 초대하기'}
           </RegistrationButton>
         </>
       )}
@@ -510,6 +510,8 @@ export const TeamRecruitDetail = () => {
     checkRemainingCookies() || isDevMode()
   );
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -548,6 +550,7 @@ export const TeamRecruitDetail = () => {
               onClick={() => {
                 if (window.confirm('정말로 삭제하시겠습니까?')) {
                   deleteRecruit(recruitId);
+                  navigate(`${PATH.TEAM_RECRUIT}/list`);
                 }
               }}
             >
