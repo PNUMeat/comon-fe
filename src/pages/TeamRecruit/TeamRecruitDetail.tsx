@@ -1,4 +1,5 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+import { viewStyle } from '@/utils/viewStyle';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -615,9 +616,8 @@ export const TeamRecruitDetail = () => {
           {data?.createdAt}
         </SText>
         <Spacer h={isMobile ? 0 : 20} />
-        <div
+        <TeamRecruitBody
           dangerouslySetInnerHTML={{ __html: updatedTeamRecruitBody ?? '' }}
-          style={{ lineHeight: 'normal' }}
         />
       </ContentBox>
       <Spacer h={24} />
@@ -773,6 +773,12 @@ const ContentBox = styled.div<{ padding?: string }>`
     padding: 20px 24px;
     border-radius: 12px;
   }
+`;
+
+const TeamRecruitBody = styled.div`
+  line-height: 1.5;
+
+  ${viewStyle}
 `;
 
 const ChatLink = styled.a`
