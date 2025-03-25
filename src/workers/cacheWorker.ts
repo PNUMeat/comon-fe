@@ -4,7 +4,7 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheFirst } from 'workbox-strategies';
 
 export type {};
 
@@ -12,7 +12,6 @@ precacheAndRoute(self.__WB_MANIFEST || []);
 
 declare const self: ServiceWorkerGlobalScope;
 
-// Cache First (폰트 & 이미지)
 registerRoute(
   ({ request, url }) =>
     request.destination === 'font' ||
@@ -28,20 +27,7 @@ registerRoute(
       new ExpirationPlugin({
         maxEntries: 50,
         maxAgeSeconds: 60 * 60 * 24 * 30,
-      }),
-    ],
-  })
-);
-
-// Stale While Revalidate (CSS, JS)
-registerRoute(
-  ({ request }) => ['style', 'script', 'worker'].includes(request.destination),
-  new StaleWhileRevalidate({
-    cacheName: 'dynamic-cache',
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 100,
-        maxAgeSeconds: 60 * 60 * 24, // 1일
+        purgeOnQuotaError: true,
       }),
     ],
   })
