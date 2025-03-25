@@ -599,7 +599,7 @@ export const TeamRecruitDetail = () => {
                 {data?.isRecruiting ? '모집중' : '모집완료'}
               </SText>
             </Label>
-            {data?.teamId !== null && (
+            {data?.teamId !== null && data?.isRecruiting && (
               <Label
                 background="#FF5780"
                 padding="4px 10px"
