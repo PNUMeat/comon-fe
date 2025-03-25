@@ -123,25 +123,53 @@ export const TeamRecruitListPage = () => {
               key={team.teamRecruitId}
             >
               <Card>
-                <Flex gap={isMobile ? '8px' : '16px'} align="center">
-                  <Label
-                    background={team.isRecruiting ? '#6E74FA' : '#8E8E8E'}
-                    padding="4px 10px"
+                <Flex gap={isMobile ? '8px' : '18px'} align="center">
+                  <div
                     style={{
-                      border: 'none',
-                      height: isMobile ? '18px' : '24px',
-                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      gap: isMobile ? '4px' : '8px',
                     }}
                   >
-                    <SText
-                      color="#fff"
-                      fontSize={isMobile ? '10px' : '14px'}
-                      fontWeight={700}
-                      fontFamily="Pretendard"
+                    <Label
+                      background={team.isRecruiting ? '#6E74FA' : '#8E8E8E'}
+                      padding="4px 10px"
+                      style={{
+                        width: isMobile ? '46px' : '',
+                        border: 'none',
+                        height: isMobile ? '18px' : '24px',
+                        whiteSpace: 'nowrap',
+                      }}
                     >
-                      {team.isRecruiting ? '모집중' : '모집완료'}
-                    </SText>
-                  </Label>
+                      <SText
+                        color="#fff"
+                        fontSize={isMobile ? '10px' : '14px'}
+                        fontWeight={700}
+                        fontFamily="Pretendard"
+                      >
+                        {team.isRecruiting ? '모집중' : '모집완료'}
+                      </SText>
+                    </Label>
+                    {team.teamId !== null && team.isRecruiting && (
+                      <Label
+                        background="#FF5780"
+                        padding="4px 10px"
+                        style={{
+                          width: isMobile ? '46px' : '60px',
+                          border: 'none',
+                          height: isMobile ? '18px' : '24px',
+                        }}
+                      >
+                        <SText
+                          color="#fff"
+                          fontSize={isMobile ? '10px' : '14px'}
+                          fontWeight={700}
+                          fontFamily="Pretendard"
+                        >
+                          운영중
+                        </SText>
+                      </Label>
+                    )}
+                  </div>
                   <SText
                     color="#000"
                     fontSize={isMobile ? '14px' : '18px'}

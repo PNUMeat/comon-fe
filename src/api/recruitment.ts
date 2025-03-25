@@ -24,6 +24,7 @@ interface ITeamRecruitPost {
   teamRecruitBody: string;
   memberNickName: string;
   isRecruiting: boolean;
+  teamId: number | null;
   createdAt: string;
 }
 
