@@ -142,8 +142,9 @@ export const TeamRecruitPosting = () => {
     <ContentWrapper>
       <PostSubjectViewer
         data={TeamRecruitSubject}
-        commentClose="예시 접기"
-        titlePrefix=""
+        commentOpen="예시 접기"
+        commentClose="펼쳐서 확인하기"
+        titlePrefix="작성 예시"
       />
         <PostEditor
             forwardContent={setContent}
