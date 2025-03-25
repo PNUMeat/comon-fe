@@ -132,10 +132,16 @@ const TeamJoinPage = () => {
   return (
     <>
       <TeamData />
-      <SText color="#777" fontSize="14px" textAlign="center">
+      <SText
+        color="#777"
+        fontWeight={isMobile ? 400 : 500}
+        fontSize={isMobile ? '10px' : '12px'}
+        textAlign="center"
+        fontFamily="Pretendard"
+      >
         혹은, 새로운 팀을 생성하시겠나요?
       </SText>
-      <Spacer h={48} />
+      <Spacer h={14} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
         <Box
           width="100%"
