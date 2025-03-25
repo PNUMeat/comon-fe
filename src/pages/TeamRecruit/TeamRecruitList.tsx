@@ -230,9 +230,10 @@ export const TeamRecruitListPage = () => {
       <Spacer h={isMobile ? 36 : 56} />
       <SText
         color="#777"
-        fontWeight={400}
-        fontSize={isMobile ? '10px' : '14px'}
+        fontWeight={isMobile ? 400 : 500}
+        fontSize={isMobile ? '10px' : '12px'}
         textAlign="center"
+        fontFamily="Pretendard"
       >
         모집글 없이 이미 정해진 팀원들과 팀 생성하기
       </SText>
@@ -243,17 +244,18 @@ export const TeamRecruitListPage = () => {
       >
         <Box
           width="100%"
-          height={isMobile ? '48px' : '80px'}
+          height={isMobile ? '40px' : '54px'}
           padding="0"
           borderWidth="1px"
-          borderRadius={isMobile ? '40px' : '20px'}
+          borderRadius={isMobile ? '32px' : '16px'}
           style={{ gap: '8px' }}
         >
           <img src={click} style={{ width: '24px', height: '24px' }} />
           <SText
             color="#333"
-            fontSize={isMobile ? '16px' : '18px'}
+            fontSize={isMobile ? '14px' : '16px'}
             fontWeight={700}
+            fontFamily="Pretendard"
           >
             팀 생성하기
           </SText>
