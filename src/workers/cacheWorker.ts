@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 /// <reference lib="es2015" />
+import { ManifestEntry } from 'workbox-build';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute } from 'workbox-precaching';
@@ -8,7 +9,14 @@ import { CacheFirst } from 'workbox-strategies';
 
 export type {};
 
-precacheAndRoute(self.__WB_MANIFEST || []);
+const filteredManifest = (self.__WB_MANIFEST as ManifestEntry[]).filter(
+  (entry) =>
+    !entry.url.endsWith('.js') &&
+    !entry.url.endsWith('.css') &&
+    !entry.url.endsWith('.html')
+);
+
+precacheAndRoute(filteredManifest);
 
 declare const self: ServiceWorkerGlobalScope;
 
