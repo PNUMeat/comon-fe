@@ -1,4 +1,5 @@
 import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+import { viewStyle } from '@/utils/viewStyle';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -17,6 +18,7 @@ import {
   deleteTeamApplication,
   deleteTeamRecruit,
   getTeamRecruitById,
+  inviteTeamMembers,
   updateRecruitmentStatus,
   updateTeamApplication,
 } from '@/api/recruitment';
@@ -57,10 +59,10 @@ const EmptyState = ({
           ? '최소 1명의 사용자가 신청해야 팀을 생성할 수 있어요'
           : '대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요'}
       </SText>
-      <Spacer h={isMobile ? 12 : 14} />
+      <Spacer h={14} />
       <RegistrationButton disabled={true}>
         <img src={Click} style={{ width: '24px', height: '24px' }} />
-        {teamId === null ? '팀 생성하기' : '팀 초대하기'}
+        {teamId === null ? '팀 생성하기' : '팀에 초대하기'}
       </RegistrationButton>
     </>
   ) : (
@@ -132,7 +134,7 @@ const ApplicantList = ({
     }) => updateTeamApplication(applyId, { teamApplyBody }),
     onSuccess: () => {
       setAlert({
-        message: '신청글이 수정되었어요.',
+        message: '신청글이 수정되었어요',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -153,15 +155,51 @@ const ApplicantList = ({
     },
   });
 
+  // 팀 모집글에서 팀원 초대하기
+  const { mutate: inviteApplicants } = useMutation({
+    mutationFn: inviteTeamMembers,
+    onSuccess: () => {
+      setAlert({
+        message: '신청자들을 팀에 성공적으로 초대했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['teamRecruitDetail', recruitId],
+      });
+    },
+    onError: (error) => {
+      console.error('신청자 초대 실패:', error);
+      setAlert({
+        message: '신청자 초대 중 오류가 발생했어요',
+        isVisible: true,
+        onConfirm: () => {},
+      });
+    },
+  });
+
   const navigate = useNavigate();
 
-  const inviteAll = () => {
-    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+  // 운영 중인 팀이 없는 경우 (팀 최초 생성)
+  const createTeamWithApplicants = () => {
+    if (window.confirm('신청자과 함께 팀을 생성하시겠어요?')) {
       navigate(PATH.TEAM_REGISTRATION, {
         state: {
           teamMemberUuids: data.teamMemberUuids,
           teamRecruitId: data.teamRecruitId,
         },
+      });
+    }
+  };
+
+  // 운영 중인 팀이 있는 경우 (팀에 신청자 초대)
+  const inviteApplicantsToTeam = (teamId: number, recruitId: number) => {
+    if (window.confirm('신청자 모두를 팀에 초대하시겠어요?')) {
+      inviteApplicants({
+        teamId: teamId,
+        recruitId: recruitId,
+        memberUuids: data.teamMemberUuids,
       });
     }
   };
@@ -336,9 +374,16 @@ const ApplicantList = ({
               : '대기 중인 모든 신청자를 팀에 바로 초대할 수 있어요'}
           </SText>
           <Spacer h={14} />
-          <RegistrationButton disabled={false} onClick={inviteAll}>
+          <RegistrationButton
+            disabled={false}
+            onClick={
+              teamId === null
+                ? createTeamWithApplicants
+                : () => inviteApplicantsToTeam(teamId, Number(recruitId))
+            }
+          >
             <img src={Click} style={{ width: '24px', height: '24px' }} />
-            {teamId === null ? '팀 생성하기' : '팀 초대하기'}
+            {teamId === null ? '팀 생성하기' : '팀에 초대하기'}
           </RegistrationButton>
         </>
       )}
@@ -465,6 +510,8 @@ export const TeamRecruitDetail = () => {
     checkRemainingCookies() || isDevMode()
   );
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ padding: isMobile ? '16px 20px' : '30px 20px' }}>
       <Flex height={isMobile ? 26 : 36}>
@@ -503,6 +550,7 @@ export const TeamRecruitDetail = () => {
               onClick={() => {
                 if (window.confirm('정말로 삭제하시겠습니까?')) {
                   deleteRecruit(recruitId);
+                  navigate(`${PATH.TEAM_RECRUIT}/list`);
                 }
               }}
             >
@@ -536,20 +584,38 @@ export const TeamRecruitDetail = () => {
           align={isMobile ? 'flex-start' : 'center'}
           direction={isMobile ? 'column' : 'row'}
         >
-          <Label
-            background={data?.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
-            padding="4px 10px"
-            style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
-          >
-            <SText
-              color="#fff"
-              fontSize={isMobile ? '10px' : '14px'}
-              fontWeight={700}
-              fontFamily="Pretendard"
+          <div style={{ display: 'flex', gap: isMobile ? '4px' : '8px' }}>
+            <Label
+              background={data?.isRecruiting ? colors.buttonPurple : '#8E8E8E'}
+              padding="4px 10px"
+              style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
             >
-              {data?.isRecruiting ? '모집중' : '모집완료'}
-            </SText>
-          </Label>
+              <SText
+                color="#fff"
+                fontSize={isMobile ? '10px' : '14px'}
+                fontWeight={700}
+                fontFamily="Pretendard"
+              >
+                {data?.isRecruiting ? '모집중' : '모집완료'}
+              </SText>
+            </Label>
+            {data?.teamId !== null && data?.isRecruiting && (
+              <Label
+                background="#FF5780"
+                padding="4px 10px"
+                style={{ border: 'none', height: isMobile ? '18px' : '24px' }}
+              >
+                <SText
+                  color="#fff"
+                  fontSize={isMobile ? '10px' : '14px'}
+                  fontWeight={700}
+                  fontFamily="Pretendard"
+                >
+                  운영중
+                </SText>
+              </Label>
+            )}
+          </div>
           <SText
             fontSize={isMobile ? '14px' : '18px'}
             fontWeight={700}
@@ -571,9 +637,8 @@ export const TeamRecruitDetail = () => {
           {data?.createdAt}
         </SText>
         <Spacer h={isMobile ? 0 : 20} />
-        <div
+        <TeamRecruitBody
           dangerouslySetInnerHTML={{ __html: updatedTeamRecruitBody ?? '' }}
-          style={{ lineHeight: 'normal' }}
         />
       </ContentBox>
       <Spacer h={24} />
@@ -731,6 +796,12 @@ const ContentBox = styled.div<{ padding?: string }>`
   }
 `;
 
+const TeamRecruitBody = styled.div`
+  line-height: 1.5;
+
+  ${viewStyle}
+`;
+
 const ChatLink = styled.a`
   color: #333;
   font-size: 16px;
@@ -830,7 +901,8 @@ const RegistrationButton = styled.div<{ disabled: boolean }>`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    height: 48px;
-    border-radius: 40px;
+    height: 40px;
+    border-radius: 32px;
+    font-size: 14px;
   }
 `;
