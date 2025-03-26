@@ -139,7 +139,7 @@ const TeamJoinPage = () => {
         textAlign="center"
         fontFamily="Pretendard"
       >
-        혹은, 새로운 팀을 생성하시겠나요?
+        기존 팀원들과 새로운 스터디 팀을 만들어보세요
       </SText>
       <Spacer h={14} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
