@@ -213,7 +213,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       <Blur>
         <Flex
           align="center"
-          style={{ width: '396px' }}
+          style={{ width: isMobile ? '100%' : '396px' }}
           gap={isMobile ? '24px' : '80px'}
           height={24}
           padding={isMobile ? '' : '0 8px'}
