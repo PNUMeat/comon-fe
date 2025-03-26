@@ -10,10 +10,7 @@ import { CacheFirst } from 'workbox-strategies';
 export type {};
 
 const filteredManifest = (self.__WB_MANIFEST as ManifestEntry[]).filter(
-  (entry) =>
-    !entry.url.endsWith('.js') &&
-    !entry.url.endsWith('.css') &&
-    !entry.url.endsWith('.html')
+  (entry) => !/\.(js|css|html)(\?.*)?$/.test(entry.url)
 );
 
 precacheAndRoute(filteredManifest);
