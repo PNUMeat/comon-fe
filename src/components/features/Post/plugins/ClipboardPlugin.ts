@@ -58,35 +58,34 @@ const CODE_KEYWORDS = [
   'print',
   'console.log',
   ';',
+  '*',
+  '>>',
+  '<<',
 ];
 
 const looksLikeCode = (text: string): boolean => {
   const lines = text.split('\n');
   if (lines.length < 2) return false;
 
-  let hasIndent = false;
-  let hasSpecialChars = false;
-  let keywordScore = 0;
+  let indentCnt = 0;
+  let keywordCnt = 0;
 
   for (const line of lines) {
     if (/^\s{2,}|\t/.test(line)) {
-      hasIndent = true;
-    }
-    if (/[{}();=<>]/.test(line)) {
-      hasSpecialChars = true;
+      indentCnt++;
     }
 
     for (const keyword of CODE_KEYWORDS) {
       if (line.includes(keyword)) {
-        keywordScore++;
+        keywordCnt++;
       }
     }
   }
 
   return (
-    (hasIndent || hasSpecialChars) &&
-    keywordScore > 0 &&
-    keywordScore >= lines.length - 8
+    keywordCnt > 0 &&
+    indentCnt >= lines.length / 2 &&
+    keywordCnt >= lines.length / 3
   );
 };
 
@@ -102,25 +101,21 @@ const detectLanguageByPrism = (text: string): string => {
   let bestScore = 0;
 
   for (const lang of languages) {
-    try {
-      const tokens = Prism.tokenize(text, Prism.languages[lang]);
-      const tokenScore = tokens.filter((t) => typeof t !== 'string').length;
+    const tokens = Prism.tokenize(text, Prism.languages[lang]);
+    const tokenScore = tokens.filter((t) => typeof t !== 'string').length;
 
-      if (tokenScore > bestScore) {
-        bestScore = tokenScore;
+    if (tokenScore > bestScore) {
+      bestScore = tokenScore;
+      bestMatch = lang;
+    } else if (tokenScore === bestScore) {
+      const currentIndex = LANGUAGE_PREFERENCE.indexOf(lang);
+      const bestIndex = LANGUAGE_PREFERENCE.indexOf(bestMatch);
+      if (
+        currentIndex !== -1 &&
+        (bestIndex === -1 || currentIndex < bestIndex)
+      ) {
         bestMatch = lang;
-      } else if (tokenScore === bestScore) {
-        const currentIndex = LANGUAGE_PREFERENCE.indexOf(lang);
-        const bestIndex = LANGUAGE_PREFERENCE.indexOf(bestMatch);
-        if (
-          currentIndex !== -1 &&
-          (bestIndex === -1 || currentIndex < bestIndex)
-        ) {
-          bestMatch = lang;
-        }
       }
-    } catch {
-      continue;
     }
   }
 
@@ -415,8 +410,7 @@ const registerPasteCommand = (editor: LexicalEditor) => {
 
         const plainText = event.clipboardData.getData('text/plain');
         if (plainText) {
-          const isProbablyCode = looksLikeCode(plainText);
-          if (isProbablyCode) {
+          if (looksLikeCode(plainText)) {
             event.preventDefault();
             const language = detectLanguageByPrism(plainText);
 

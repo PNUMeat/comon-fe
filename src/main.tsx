@@ -24,7 +24,7 @@ const registerFileCacheWorker = async (): Promise<void> => {
         registration
       );
     } catch (error) {
-      console.error('FileCacher ServiceWorker registration failed:', error);
+      console.log('FileCacher ServiceWorker registration failed:', error);
     }
   }
 };

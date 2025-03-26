@@ -23,9 +23,9 @@ const Blur = styled.div`
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
+  grid-template-columns: 1fr 98px;
 `;
 
 const HeaderContainer = styled.header<HeightInNumber>`
@@ -315,7 +315,7 @@ const LoginButton = styled.div`
 const MyPageButton = styled.div`
   cursor: pointer;
   display: flex;
-  width: 97px;
+  width: 98px;
   height: 42px;
   padding-right: 5px;
   justify-content: center;
