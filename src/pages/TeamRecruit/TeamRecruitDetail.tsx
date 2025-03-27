@@ -275,6 +275,7 @@ const ApplicantList = ({
                           <ApplyInput
                             value={editingText}
                             onChange={(e) => setEditingText(e.target.value)}
+                            maxLength={300}
                             style={{ height: 'auto' }}
                           />
                           <Flex justify="flex-end">
@@ -717,6 +718,7 @@ export const TeamRecruitDetail = () => {
                     value={applyText}
                     onChange={(e) => setApplyText(e.target.value)}
                     disabled={!isLoggedIn}
+                    maxLength={300}
                   />
                   <Flex justify="flex-end">
                     <StyledButton

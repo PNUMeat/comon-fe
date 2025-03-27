@@ -119,6 +119,7 @@ const TeamData = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         currentPageProp={currPage}
+        hideShadow={true}
       />
       <Spacer h={34} />
     </KeywordPageControlContext.Provider>
@@ -139,26 +140,27 @@ const TeamJoinPage = () => {
         textAlign="center"
         fontFamily="Pretendard"
       >
-        혹은, 새로운 팀을 생성하시겠나요?
+        기존 팀원들과 새로운 스터디 팀을 만들어보세요
       </SText>
       <Spacer h={14} />
       <Link to={PATH.TEAM_REGISTRATION} style={{ textDecoration: 'none' }}>
         <Box
           width="100%"
-          height={isMobile ? '48px' : '80px'}
+          height={isMobile ? '40px' : '54px'}
           padding="0"
-          borderWidth={isMobile ? '1.5px' : '3px'}
+          borderWidth="1px"
+          borderRadius={isMobile ? '32px' : '16px'}
+          style={{ gap: '8px' }}
         >
           <ClickImage src={click} />
-          <ActionText>
-            <SText
-              color="#333"
-              fontSize={isMobile ? '16px' : '20px'}
-              fontWeight={700}
-            >
-              팀 생성하기
-            </SText>
-          </ActionText>
+          <SText
+            color="#333"
+            fontSize={isMobile ? '14px' : '16px'}
+            fontWeight={700}
+            fontFamily="Pretendard"
+          >
+            팀 생성하기
+          </SText>
         </Box>
       </Link>
       <Spacer h={100} />
@@ -169,10 +171,6 @@ const TeamJoinPage = () => {
 const ClickImage = styled.img`
   width: 24px;
   height: 24px;
-`;
-
-const ActionText = styled.div`
-  margin-left: 8px;
 `;
 
 export default TeamJoinPage;

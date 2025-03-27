@@ -124,7 +124,7 @@ const aims = [
 
 export const Home = () => {
   const navigate = useNavigate();
-  const onClickStart = () => navigate(PATH.TEAMS);
+  const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
 
   const { bottomRef, effectRef } = useBottomBound();
   const width = useWindowWidth();
