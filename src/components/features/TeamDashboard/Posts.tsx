@@ -73,7 +73,7 @@ export const Posts: React.FC<PostsProps> = ({
       <Box width="100%" padding={padding} style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex
-            width={"100%"}
+            width={'100%'}
             justify="space-between"
             align="center"
             gap="10px"
@@ -151,7 +151,7 @@ export const Posts: React.FC<PostsProps> = ({
                       color="#777"
                       fontSize={isMobile ? '10px' : '12px'}
                       fontWeight={400}
-                      whiteSpace='nowrap'
+                      whiteSpace="nowrap"
                     >
                       {article.createdDate.slice(0, -3)}
                     </SText>
@@ -265,7 +265,7 @@ const ContentWrapper = styled.div`
     grid-template-columns: repeat(2, calc(50% - 4px));
     gap: 8px;
     width: calc(100% - 40px);
-    height: auto;
+    height: 278px;
   }
 `;
 
