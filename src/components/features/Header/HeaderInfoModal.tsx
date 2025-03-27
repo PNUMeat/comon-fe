@@ -50,6 +50,7 @@ const InfoModal = styled.div`
   box-shadow: 0px 6px 20px 0px rgba(48, 49, 67, 0.06);
 
   @media (max-width: ${breakpoints.mobile}px) {
+    right: 2px;
     width: 230px;
   }
 `;

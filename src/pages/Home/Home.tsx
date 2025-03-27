@@ -9,7 +9,7 @@ import { Wrap } from '@/components/commons/Wrap';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 import { HeightInNumber } from '@/components/types';
 
-import { ReactNode, Suspense } from 'react';
+import { Fragment, ReactNode, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import comon from '@/assets/Home/comonBanner.png';
@@ -124,20 +124,19 @@ const aims = [
 
 export const Home = () => {
   const navigate = useNavigate();
-  const onClickStart = () => navigate(PATH.TEAMS);
+  const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
 
   const { bottomRef, effectRef } = useBottomBound();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
   return (
-    <ScrollSnapContainer>
-      <ScrollStart />
+    <Fragment>
       <CommonLayout>
         <Container
           maxW={isMobile ? 310 : 1002}
           scrollSnapAlign={'end'}
-          margin={'0 auto 100px auto'}
+          margin={'0 auto 0 auto'}
           transform={'translate(0, -30px)'}
         >
           <Flex direction={'column'} align={'center'}>
@@ -219,22 +218,9 @@ export const Home = () => {
           </SText>
         </WaitBox>
       </div>
-    </ScrollSnapContainer>
+    </Fragment>
   );
 };
-
-const ScrollSnapContainer = styled.div`
-  height: 100vh;
-  width: 100vw;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  position: relative;
-`;
-
-const ScrollStart = styled.div`
-  scroll-snap-align: start;
-`;
 
 const WaitBox = styled.div`
   width: 100%;

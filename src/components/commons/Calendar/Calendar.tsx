@@ -1,6 +1,6 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -51,6 +51,9 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   isPending = false,
 }) => {
   const [showPending, setShowPending] = useState(false);
+  const apiRef = useRef<{
+    onChange: (date: Date, e: React.MouseEvent<HTMLButtonElement>) => void;
+  } | null>(null);
 
   useEffect(() => {
     if (isPending) {
@@ -63,11 +66,11 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
     }
   }, [isPending]);
 
-  const handleTodayClick = () => {
+  const handleTodayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const today = new Date();
-    const formattedToday = formatDate(today);
-
-    onDateSelect(formattedToday);
+    if (apiRef.current !== null) {
+      apiRef.current?.onChange(today, e);
+    }
   };
 
   const width = useWindowWidth();
@@ -81,6 +84,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
       {showPending && <PendingState>정보를 가져오는 중…</PendingState>}
 
       <StyledCalendar
+        ref={apiRef}
         calendarType="gregory"
         formatDay={(_locale, date) => date.getDate().toString()}
         next2Label={null}
@@ -135,7 +139,7 @@ const CalendarWrapper = styled.div`
   }
 `;
 
-const StyledDate = styled.div`
+const StyledDate = styled.button`
   position: absolute;
   top: 16px;
   right: 20px;

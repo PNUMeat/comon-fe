@@ -1,5 +1,23 @@
 import { useEffect, useRef } from 'react';
 
+function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+      timeoutId = null;
+    }, delay);
+  };
+}
+
 export const useBottomBound = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const effectRef = useRef<HTMLDivElement | null>(null);
@@ -16,6 +34,31 @@ export const useBottomBound = () => {
     let startTime: number | null = null;
     let fadeOutStartTime: number | null = null;
 
+    const debouncedSmoothScroll = debounce(
+      (target: number, duration: number = 500) => {
+        const start = window.pageYOffset;
+        const startTime = performance.now();
+
+        const scroll = (currentTime: number) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const linear = (t: number) => t;
+
+          const currentPosition = start + (target - start) * linear(progress);
+
+          // window.scrollTo(0, targetScrollPosition);
+          window.scrollTo(0, currentPosition);
+
+          if (elapsed < duration) {
+            requestAnimationFrame(scroll);
+          }
+        };
+
+        requestAnimationFrame(scroll);
+      },
+      350
+    );
+
     const animate = (pos: number) => (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -30,6 +73,9 @@ export const useBottomBound = () => {
           (child as HTMLElement).style.opacity = '1';
         });
         fadeOutStartTime = timestamp;
+
+        const currentScrollPosition = window.pageYOffset;
+        debouncedSmoothScroll(currentScrollPosition - 100);
       }
 
       if (fadeOutStartTime) {

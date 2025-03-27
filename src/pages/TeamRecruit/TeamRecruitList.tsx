@@ -123,25 +123,53 @@ export const TeamRecruitListPage = () => {
               key={team.teamRecruitId}
             >
               <Card>
-                <Flex gap={isMobile ? '8px' : '16px'} align="center">
-                  <Label
-                    background={team.isRecruiting ? '#6E74FA' : '#8E8E8E'}
-                    padding="4px 10px"
+                <Flex gap={isMobile ? '8px' : '18px'} align="center">
+                  <div
                     style={{
-                      border: 'none',
-                      height: isMobile ? '18px' : '24px',
-                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      gap: isMobile ? '4px' : '8px',
                     }}
                   >
-                    <SText
-                      color="#fff"
-                      fontSize={isMobile ? '10px' : '14px'}
-                      fontWeight={700}
-                      fontFamily="Pretendard"
+                    <Label
+                      background={team.isRecruiting ? '#6E74FA' : '#8E8E8E'}
+                      padding="4px 10px"
+                      style={{
+                        width: isMobile ? '46px' : '',
+                        border: 'none',
+                        height: isMobile ? '18px' : '24px',
+                        whiteSpace: 'nowrap',
+                      }}
                     >
-                      {team.isRecruiting ? '모집중' : '모집완료'}
-                    </SText>
-                  </Label>
+                      <SText
+                        color="#fff"
+                        fontSize={isMobile ? '10px' : '14px'}
+                        fontWeight={700}
+                        fontFamily="Pretendard"
+                      >
+                        {team.isRecruiting ? '모집중' : '모집완료'}
+                      </SText>
+                    </Label>
+                    {team.teamId !== null && team.isRecruiting && (
+                      <Label
+                        background="#FF5780"
+                        padding="4px 10px"
+                        style={{
+                          width: isMobile ? '46px' : '60px',
+                          border: 'none',
+                          height: isMobile ? '18px' : '24px',
+                        }}
+                      >
+                        <SText
+                          color="#fff"
+                          fontSize={isMobile ? '10px' : '14px'}
+                          fontWeight={700}
+                          fontFamily="Pretendard"
+                        >
+                          운영중
+                        </SText>
+                      </Label>
+                    )}
+                  </div>
                   <SText
                     color="#000"
                     fontSize={isMobile ? '14px' : '18px'}
@@ -202,9 +230,10 @@ export const TeamRecruitListPage = () => {
       <Spacer h={isMobile ? 36 : 56} />
       <SText
         color="#777"
-        fontWeight={400}
-        fontSize={isMobile ? '10px' : '14px'}
+        fontWeight={isMobile ? 400 : 500}
+        fontSize={isMobile ? '10px' : '12px'}
         textAlign="center"
+        fontFamily="Pretendard"
       >
         모집글 없이 이미 정해진 팀원들과 팀 생성하기
       </SText>
@@ -215,17 +244,18 @@ export const TeamRecruitListPage = () => {
       >
         <Box
           width="100%"
-          height={isMobile ? '48px' : '80px'}
+          height={isMobile ? '40px' : '54px'}
           padding="0"
           borderWidth="1px"
-          borderRadius={isMobile ? '40px' : '20px'}
+          borderRadius={isMobile ? '32px' : '16px'}
           style={{ gap: '8px' }}
         >
           <img src={click} style={{ width: '24px', height: '24px' }} />
           <SText
             color="#333"
-            fontSize={isMobile ? '16px' : '18px'}
+            fontSize={isMobile ? '14px' : '16px'}
             fontWeight={700}
+            fontFamily="Pretendard"
           >
             팀 생성하기
           </SText>
@@ -346,7 +376,7 @@ const CardBody = styled.div`
   text-overflow: ellipsis;
 
   * {
-    all: unset;
+    // all: unset;
     color: #000 !important;
     font-size: 16px !important;
     font-weight: 500 !important;
