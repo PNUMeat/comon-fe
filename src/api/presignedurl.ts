@@ -22,11 +22,8 @@ export const requestPresignedUrl = async ({
   imageCategory,
 }: RequestPresignedUrlParam) => {
   const res = await apiInstance.post<ServerResponse<PresignedUrlRes>>(
-    'v1/image/presigned-url',
-    {
-      requests: requests,
-      imageCategory: imageCategory,
-    }
+    `v1/image/presigned-url?imageCategory=${imageCategory}`,
+    { ...requests }
   );
 
   return res.data.data;
