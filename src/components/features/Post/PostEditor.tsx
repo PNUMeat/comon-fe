@@ -656,7 +656,7 @@ const PostSectionWrap: React.FC<{
             editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
           })
           .catch((err) => {
-            alert(err);
+            alert('이미지 업로드중 에러가 발생했습니다');
             console.error(err);
           });
 
