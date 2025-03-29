@@ -1,6 +1,5 @@
 import apiInstance from '@/api/apiInstance.ts';
 import { ServerResponse } from '@/api/types.ts';
-import axios from 'axios';
 
 export type PresignedUrlRequest = {
   fileName: string;
@@ -37,10 +36,17 @@ type S3RequestParam = {
 };
 
 export const toS3 = async ({ url, contentType, body }: S3RequestParam) => {
-  const res = await axios.put(url, body, {
+  // const res = await axios.put(url, body, {
+  //   headers: {
+  //     'Content-Type': contentType,
+  //   },
+  // });
+  const res = await fetch(url, {
+    method: 'PUT',
     headers: {
       'Content-Type': contentType,
     },
+    body: body,
   });
 
   return res;
