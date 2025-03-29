@@ -630,21 +630,23 @@ const PostSectionWrap: React.FC<{
           contentType: contentType,
           fileName: fileName,
         };
-
+        // 백엔드로 presigned url 요청
         requestPresignedUrl({
           imageCategory: imageCategory,
           requests: req,
         })
           .then(async (data) => {
+            // 위 api의 응답 데이터에서 contentType, presignedUrl 필드의 값 그대로 사용
             const { contentType, presignedUrl } = data;
             await toS3({
               url: presignedUrl,
               contentType: contentType,
-              body: file,
+              body: file, // 사람이 붙여넣은 이미지 파일
             });
             return presignedUrl;
           })
           .then((url) => {
+            // 200이나 204가 오면 put 성공했다는 뜻이므로 presigendUrl을 통해 이미지 생성
             const imgPayload: InsertImagePayload = {
               altText: '붙여넣은 이미지',
               maxWidth: 600,
