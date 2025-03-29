@@ -461,9 +461,10 @@ const registerClipboardShortcuts = (editor: LexicalEditor) => {
     const isCtrlOrCmd = event.ctrlKey || event.metaKey;
 
     if (isCtrlOrCmd) {
-      if (event.key === 'x') {
-        editor.dispatchCommand(CUT_COMMAND, {} as ClipboardEvent);
-      } else if (event.key === 'c') {
+      // if (event.key === 'x') {
+      //   editor.dispatchCommand(CUT_COMMAND, {} as ClipboardEvent);
+      // } else
+      if (event.key === 'c') {
         editor.dispatchCommand(COPY_COMMAND, {} as ClipboardEvent);
       } else if (event.key === 'v') {
         editor.dispatchCommand(PASTE_COMMAND, {} as ClipboardEvent);

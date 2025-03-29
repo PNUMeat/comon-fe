@@ -7,6 +7,7 @@ import React, { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setNavigator } from '@/api/apiInstance';
+import { breakpoints } from '@/constants/breakpoints.ts';
 import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
@@ -39,10 +40,16 @@ export const CommonLayout: React.FC<{
     setNavigator(navigate);
   }, [navigate]);
 
+  const width = window.innerWidth;
+  const isMobile = width <= breakpoints.mobile;
+
   return (
     <Fragment>
       <Header h={headerHeight} />
-      <Container padding={'0'} margin={`${headerHeight + 52}px auto 0 auto`}>
+      <Container
+        padding={'0'}
+        margin={`${headerHeight + (isMobile ? 14 : 52)}px auto 0 auto`}
+      >
         <Alert />
         <Confirm />
         <ScrollStart />
