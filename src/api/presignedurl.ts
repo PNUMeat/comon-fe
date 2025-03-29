@@ -15,18 +15,20 @@ type PresignedUrlRes = {
 type RequestPresignedUrlParam = {
   requests: PresignedUrlRequest;
   imageCategory: string;
+  file: File;
 };
 
 export const requestPresignedUrl = async ({
   requests,
   imageCategory,
+  file,
 }: RequestPresignedUrlParam) => {
   const res = await apiInstance.post<ServerResponse<PresignedUrlRes>>(
     `v1/image/presigned-url?imageCategory=${imageCategory}`,
     { ...requests }
   );
 
-  return res.data.data;
+  return { ...res.data.data, file: file };
 };
 
 type S3RequestParam = {

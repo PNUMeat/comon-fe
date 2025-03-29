@@ -532,9 +532,10 @@ const PostWriteSection = forwardRef<
                 requestPresignedUrl({
                   imageCategory: imageCategory,
                   requests: req,
+                  file: file,
                 })
                   .then(async (data) => {
-                    const { contentType, presignedUrl } = data;
+                    const { contentType, presignedUrl, file } = data;
                     await toS3({
                       url: presignedUrl,
                       contentType: contentType,
@@ -634,10 +635,11 @@ const PostSectionWrap: React.FC<{
         requestPresignedUrl({
           imageCategory: imageCategory,
           requests: req,
+          file: file,
         })
           .then(async (data) => {
             // 위 api의 응답 데이터에서 contentType, presignedUrl 필드의 값 그대로 사용
-            const { contentType, presignedUrl } = data;
+            const { contentType, presignedUrl, file } = data;
             console.error('??', file);
             await toS3({
               url: presignedUrl,
