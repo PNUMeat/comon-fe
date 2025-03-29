@@ -1,5 +1,6 @@
 import { usePrompt } from '@/hooks/usePrompt';
 
+import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
@@ -113,8 +114,9 @@ export const TeamRecruitPosting = () => {
     <ContentWrapper>
       <PostSubjectViewer
         data={TeamRecruitSubject}
-        commentClose="예시 접기"
-        titlePrefix=""
+        commentOpen="예시 접기"
+        commentClose="펼쳐서 확인하기"
+        titlePrefix="작성 예시"
       />
       <PostEditor
         forwardContent={setContent}
@@ -126,10 +128,65 @@ export const TeamRecruitPosting = () => {
       <Spacer h={10} />
       <ContactWrapper>
         <Contact>
-          <IconTitleWrapper>
+          <Flex
+            align="center"
+            gap={isMobile ? '6px' : '10px'}
+            style={{ width: 'auto' }}
+          >
             <SendIconStyle src={sendIcon} />
-            <ContactTitle>연락 방법</ContactTitle>
-          </IconTitleWrapper>
+            <SText
+              color="#333"
+              fontSize={isMobile ? '14px' : '18px'}
+              fontWeight={600}
+              fontFamily="Pretendard"
+            >
+              연락 방법
+            </SText>
+          </Flex>
+          <ContactText>
+            (필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요
+          </ContactText>
+        </Contact>
+        <TeamRecruitInput value={url} ref={chatUrlRef} onChange={onChange} />
+      </ContactWrapper>
+      <Spacer h={30} />
+      <ConfirmButtonWrap
+        disabled={isButtonDisabled}
+        isPending={false}
+        onClick={onClick}
+      >
+        <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
+        <ActionText>
+          <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
+            {recruitId ? '수정 완료' : '작성 완료'}
+          </SText>
+        </ActionText>
+      </ConfirmButtonWrap>
+      <PostEditor
+        forwardContent={setContent}
+        forwardTitle={setTitle}
+        content={content}
+        title={title}
+        imageCategory={'TEAM_RECRUIT'}
+      />
+      <Spacer h={10} />
+      <ContactWrapper>
+        <Contact>
+          <Flex
+            align="center"
+            gap={isMobile ? '6px' : '10px'}
+            style={{ width: 'auto' }}
+          >
+            <SendIconStyle src={sendIcon} />
+            <SText
+              color="#333"
+              fontSize={isMobile ? '14px' : '18px'}
+              fontWeight={600}
+              fontFamily="Pretendard"
+            >
+              연락 방법
+            </SText>
+          </Flex>
           <ContactText>
             (필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요
           </ContactText>
@@ -155,41 +212,20 @@ export const TeamRecruitPosting = () => {
 
 const Contact = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
   align-items: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     align-items: flex-start;
   }
 `;
 
-const IconTitleWrapper = styled.div`
-  display: flex;
-  gap: 9px;
-  align-items: center;
-`;
-
 const SendIconStyle = styled.img`
-  width: 18px;
-  height: 18px;
-
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 14px;
-    height: 14px;
-  }
-`;
-
-const ContactTitle = styled.div`
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin-top: 5px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 14px;
-    margin-top: 3px;
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -197,7 +233,6 @@ const ContactText = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: #b5b5b5;
-  margin-top: 5px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 10px;
@@ -216,7 +251,7 @@ const ContactWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   gap: 12px;
-  padding: 20px 40px;
+  padding: 24px 36px;
   height: auto;
   width: calc(100% - 12px);
   border-radius: 16px;
@@ -224,8 +259,8 @@ const ContactWrapper = styled.div`
   border: 1px solid #cdcfff;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    padding: 14px 15px;
-    gap: 8px;
+    padding: 20px 24px;
+    gap: 10px;
   }
 `;
 

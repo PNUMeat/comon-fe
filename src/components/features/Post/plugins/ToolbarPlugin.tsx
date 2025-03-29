@@ -242,7 +242,7 @@ export const ToolbarPlugin: React.FC<{
             width: '100%',
             justifyContent: 'space-between',
             alignItems: 'center',
-            gap: '20px',
+            gap: '10px',
             zIndex: 100,
           }}
         >
@@ -263,7 +263,7 @@ export const ToolbarPlugin: React.FC<{
               display: 'flex',
               width: '100%',
               justifyContent: 'flex-end',
-              gap: '10px',
+              gap: '8px',
             }}
           >
             <button onClick={insertLink}>

@@ -1,8 +1,6 @@
 name: Develop to Main 브랜치 동기화
 
 on:
-  schedule:
-    - cron: '0 17 * * *'  # UTC 17:00 = KST 02:00
   workflow_dispatch:  # 수동 실행 가능
 
 jobs:
@@ -27,19 +25,19 @@ jobs:
       - name: Develop 브랜치 변경사항 확인 및 동기화
         run: |
           git fetch origin develop
-          
+
           NEW_COMMITS=$(git log --since="@{24 hours ago}" --format="%H" origin/develop)
-          
+
           if [ ! -z "$NEW_COMMITS" ]; then
             echo "✨ develop 브랜치에 새로운 커밋이 발견되었습니다."
-          
+
             git checkout main
             git pull origin main
-          
+
             git merge origin/develop --no-ff -m "🔄 develop → main 자동 동기화"
-          
+
             git push origin main
-          
+
             echo "✅ main 브랜치 동기화가 완료되었습니다."
           else
             echo "💡 develop 브랜치에 새로운 변경사항이 없습니다."
