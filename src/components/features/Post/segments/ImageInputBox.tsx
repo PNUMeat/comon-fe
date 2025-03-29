@@ -130,7 +130,7 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
       uploadToS3(fileInput)
         .then((url) => {
           insertImage({
-            src: url,
+            src: url.split('?')[0],
             altText: altText || '이미지',
           });
           closeImageInput();

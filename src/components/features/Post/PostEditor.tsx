@@ -547,7 +547,7 @@ const PostWriteSection = forwardRef<
                     const imgPayload: InsertImagePayload = {
                       altText: '붙여넣은 이미지',
                       maxWidth: 600,
-                      src: url,
+                      src: url.split('?')[0],
                     };
                     editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
                   })
@@ -648,10 +648,11 @@ const PostSectionWrap: React.FC<{
             return presignedUrl;
           })
           .then((url) => {
+            const aa = url.split('?')[0];
             const imgPayload: InsertImagePayload = {
               altText: '붙여넣은 이미지',
               maxWidth: 600,
-              src: url,
+              src: aa,
             };
             editor.dispatchCommand(INSERT_IMAGE_COMMAND, imgPayload);
           })
