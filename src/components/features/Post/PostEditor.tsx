@@ -638,6 +638,7 @@ const PostSectionWrap: React.FC<{
           .then(async (data) => {
             // 위 api의 응답 데이터에서 contentType, presignedUrl 필드의 값 그대로 사용
             const { contentType, presignedUrl } = data;
+            console.error('??', file);
             await toS3({
               url: presignedUrl,
               contentType: contentType,
