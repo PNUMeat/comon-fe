@@ -15,12 +15,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
-import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
-import LockIcon from '@/assets/TeamDashboard/lock.png';
-import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
+import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import LockIcon from '@/assets/TeamDashboard/lock.svg';
 import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
 import MessageIcon from '@/assets/TeamDashboard/message_circle.svg';
