@@ -654,6 +654,7 @@ const PostSectionWrap: React.FC<{
           })
           .catch((err) => {
             alert(err.response.message);
+            console.error(err);
           });
 
         // console.log('contentType', req);
