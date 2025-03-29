@@ -118,11 +118,11 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
           file: file,
         });
 
-        const { contentType: contentTypeRes, presignedUrl, file: dFile } = data;
+        const { contentType: contentTypeRes, presignedUrl } = data;
         await toS3({
           url: presignedUrl,
           contentType: contentTypeRes,
-          body: dFile,
+          file: file,
         });
         return presignedUrl;
       };
