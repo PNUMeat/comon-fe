@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { $createCodeNode, DEFAULT_CODE_LANGUAGE } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
-  $createLineBreakNode,
   $createRangeSelection,
   $createTextNode,
   $getRoot,
@@ -417,19 +416,8 @@ const registerPasteCommand = (editor: LexicalEditor) => {
             editor.update(() => {
               const codeNode = $createCodeNode();
               codeNode.setLanguage(language);
-              codeNode.append(
-                ...plainText
-                  .split('\n')
-                  .map((line, index) => {
-                    const nodes = [];
-                    if (index !== 0) {
-                      nodes.push($createLineBreakNode());
-                    }
-                    nodes.push($createTextNode(line));
-                    return nodes;
-                  })
-                  .flat()
-              );
+              codeNode.append($createTextNode(plainText));
+
               $insertNodes([codeNode]);
             });
 
