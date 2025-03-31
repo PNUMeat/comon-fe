@@ -63,7 +63,7 @@ export const mutatePost = async ({
     return mutatePostMock.data;
   }
 
-  const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
+  const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     'v1/articles',
     {
       teamId,
