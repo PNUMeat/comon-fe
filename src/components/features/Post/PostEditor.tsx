@@ -173,7 +173,9 @@ const initialConfig = {
           const highlightNode = node as CodeHighlightNode;
           const element = document.createElement('span');
 
-          element.textContent = highlightNode.getTextContent();
+          element.textContent = highlightNode
+            .getTextContent()
+            .replace(/\r/g, '');
           const type = highlightNode.getHighlightType();
           if (type) {
             const highlights = editorTheme.codeHighlight as Record<
