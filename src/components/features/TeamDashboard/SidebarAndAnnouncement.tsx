@@ -54,8 +54,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const setConfirm = useSetAtom(confirmAtom);
 
-  isMyTeam = false;
-
   const onClick = () => {
     if (isMyTeam) {
       navigate(`/posting/${teamId}`, {
