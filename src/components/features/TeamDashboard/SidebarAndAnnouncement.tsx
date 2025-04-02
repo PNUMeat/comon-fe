@@ -15,13 +15,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
+import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
+import LockIcon from '@/assets/TeamDashboard/lock.svg';
+import MessageIcon from '@/assets/TeamDashboard/message_circle.svg';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
-import LockIcon from '@/assets/TeamDashboard/lock.svg';
-import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
-import MessageIcon from '@/assets/TeamDashboard/message_circle.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
@@ -84,12 +84,21 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   };
 
   const goRecruitPage = () => {
-    if (teamInfo.teamRecruitId) {
-      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+    if (isLoggedIn() || isDevMode()) {
+      if (teamInfo.teamRecruitId) {
+        navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
+      } else {
+        toast.error('참가할 수 없는 상태입니다.');
+      }
     } else {
-      toast.error('참가할 수 없는 상태입니다.');
-    }
-  };
+      sessionStorage.setItem('redirect', location.pathname);
+      navigate(PATH.LOGIN, {
+        state: {
+          redirect: location.pathname,
+        },
+      });
+    };
+  }
 
   const handleClick = () => {
     if (teamInfo.teamRecruitId) {
