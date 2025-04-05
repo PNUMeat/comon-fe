@@ -550,8 +550,14 @@ export const TeamRecruitDetail = () => {
               color="#333"
               onClick={() => {
                 if (window.confirm('정말로 삭제하시겠습니까?')) {
-                  deleteRecruit(recruitId);
-                  navigate(`${PATH.TEAM_RECRUIT}/list`);
+                  deleteRecruit(recruitId, {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries({
+                        queryKey: ['teamRecruits'],
+                      });
+                      navigate(`${PATH.TEAM_RECRUIT}/list`);
+                    },
+                  });
                 }
               }}
             >
