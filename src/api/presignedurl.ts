@@ -82,7 +82,8 @@ export const s3 = (
         contentType: contentType,
         file: file,
       });
-      return presignedUrl;
+
+      return presignedUrl.split('?')[0];
     })
     .then((url) => {
       onSuccess(url);
