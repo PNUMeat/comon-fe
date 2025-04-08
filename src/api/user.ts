@@ -12,7 +12,7 @@ type ProfileCommonArgs = {
 };
 
 type ProfileMutationArgs = ProfileCommonArgs & {
-  image: File | null;
+  imageUrl?: string;
 };
 
 export type ProfileQueryResp = ProfileCommonArgs & {
@@ -23,20 +23,12 @@ export type ProfileQueryResp = ProfileCommonArgs & {
 export const createProfile = async ({
   memberName,
   memberExplain,
-  image,
+  imageUrl,
 }: ProfileMutationArgs) => {
-  const formData = new FormData();
-
-  formData.append('memberName', memberName);
-  formData.append('memberExplain', memberExplain);
-  if (image) {
-    formData.append('image', image);
-  }
-
-  const res = await apiInstance.post('v1/members', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+  const res = await apiInstance.post('v1/members', {
+    memberName: memberName,
+    memberExplain: memberExplain,
+    imageUrl: imageUrl,
   });
 
   return res.data;
@@ -45,20 +37,12 @@ export const createProfile = async ({
 export const changeProfile = async ({
   memberName,
   memberExplain,
-  image,
+  imageUrl,
 }: ProfileMutationArgs) => {
-  const formData = new FormData();
-
-  formData.append('memberName', memberName);
-  formData.append('memberExplain', memberExplain);
-  if (image) {
-    formData.append('image', image);
-  }
-
-  const res = await apiInstance.put('v1/members', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+  const res = await apiInstance.put('v1/members', {
+    memberName: memberName,
+    memberExplain: memberExplain,
+    imageUrl: imageUrl,
   });
 
   return res.data;

@@ -57,3 +57,34 @@ export const toS3 = async ({ url, contentType, file }: S3RequestParam) => {
   });
   return res;
 };
+
+export const s3 = (
+  imageCategory: string,
+  file: File,
+  onSuccess: (url: string) => void
+) => {
+  const contentType = file.type;
+  const fileName = file.name;
+  const req = {
+    contentType: contentType,
+    fileName: fileName,
+  };
+
+  requestPresignedUrl({
+    imageCategory: imageCategory,
+    requests: req,
+    file: file,
+  })
+    .then(async (data) => {
+      const { contentType, presignedUrl } = data;
+      await toS3({
+        url: presignedUrl,
+        contentType: contentType,
+        file: file,
+      });
+      return presignedUrl;
+    })
+    .then((url) => {
+      onSuccess(url);
+    });
+};
