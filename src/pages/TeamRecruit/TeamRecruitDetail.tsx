@@ -808,6 +808,10 @@ const TeamRecruitBody = styled.div`
   line-height: 1.5;
 
   ${viewStyle}
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    line-height: 1.75;
+  }
 `;
 
 const ChatLink = styled.a`
