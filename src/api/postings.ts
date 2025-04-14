@@ -19,20 +19,7 @@ export const createPost = async ({
   teamId,
   articleTitle,
   articleBody,
-  // images,
 }: PostingMutationArg) => {
-  // const formData = new FormData();
-
-  // formData.append('teamId', teamId.toString());
-  // formData.append('articleTitle', articleTitle);
-  // formData.append('articleBody', articleBody);
-  // if (images) {
-  //   images.forEach((img) => {
-  //     // formData.append('images', img);
-  //     formData.append('image', img);
-  //   });
-  // }
-
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
     return createPostMock.data;

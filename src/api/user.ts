@@ -25,11 +25,16 @@ export const createProfile = async ({
   memberExplain,
   imageUrl,
 }: ProfileMutationArgs) => {
-  const res = await apiInstance.post('v1/members', {
-    memberName: memberName,
-    memberExplain: memberExplain,
-    imageUrl: imageUrl,
-  });
+  const payload: Record<string, string> = {
+    memberName,
+    memberExplain,
+  };
+
+  if (imageUrl && imageUrl.trim() !== '') {
+    payload.imageUrl = imageUrl;
+  }
+
+  const res = await apiInstance.post('v1/members', payload);
 
   return res.data;
 };
@@ -39,11 +44,16 @@ export const changeProfile = async ({
   memberExplain,
   imageUrl,
 }: ProfileMutationArgs) => {
-  const res = await apiInstance.put('v1/members', {
-    memberName: memberName,
-    memberExplain: memberExplain,
-    imageUrl: imageUrl,
-  });
+  const payload: Record<string, string> = {
+    memberName,
+    memberExplain,
+  };
+
+  if (imageUrl && imageUrl.trim() !== '') {
+    payload.imageUrl = imageUrl;
+  }
+
+  const res = await apiInstance.put('v1/members', payload);
 
   return res.data;
 };
