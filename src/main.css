@@ -114,12 +114,6 @@ body {
   font-family: Pretendard, sans-serif;
 }
 
-@media (min-width: 768px) {
-  body {
-    height: 1600px;
-  }
-}
-
 .member-dropdown {
   width: 131px;
   padding: 0 5px;
