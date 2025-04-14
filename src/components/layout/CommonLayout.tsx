@@ -11,8 +11,16 @@ import { breakpoints } from '@/constants/breakpoints.ts';
 import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
+import { ChannelService } from '../features/Header/ChannelService.ts';
 
 const headerHeight = 58;
+
+const channelServiceInstance = new ChannelService();
+channelServiceInstance.loadScript();
+// 어차피 F12하면 다보이고 원래 이렇게 설계됨
+channelServiceInstance.boot({
+  pluginKey: '41da2fbc-b746-410f-8481-a6bcb272d8e4',
+});
 
 export const CommonLayout: React.FC<{
   children: React.ReactNode;
@@ -22,6 +30,7 @@ export const CommonLayout: React.FC<{
 
   useLayoutEffect(() => {
     const currPath = location.pathname.split('/')[1];
+    channelServiceInstance.setPage(location.pathname);
     if (prevPathRef.current !== currPath) {
       if (prevPathRef.current !== null) {
         document.documentElement.scrollTo({
