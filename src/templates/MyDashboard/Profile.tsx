@@ -260,8 +260,7 @@ export const Profile = () => {
     });
 
     const image = (formValues['image'] ?? null) as File;
-
-    s3('PROFILE', image, (url: string) => {
+    const mutateProfile = (url: string) =>
       changeProfile({
         memberName: formValues['memberName'] as string,
         memberExplain: formValues['memberExplain'] as string,
@@ -282,7 +281,12 @@ export const Profile = () => {
             .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
         })
         .catch(() => alert('프로필 변환에 실패했습니다'));
-    });
+
+    if (image) {
+      s3('PROFILE', image, mutateProfile);
+    } else {
+      mutateProfile('');
+    }
   };
 
   return (
