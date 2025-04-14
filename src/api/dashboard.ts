@@ -22,9 +22,6 @@ export interface IArticle {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  // TODO: 이미지 하나 허용으로 롤백
-  // imageUrls: string[] | null;
-  imageUrl: string | null;
   memberName: string;
   memberImage: string;
   isAuthor: boolean;
@@ -46,9 +43,6 @@ export interface ITopicResponse {
   articleTitle: string;
   articleBody: string;
   createdDate: string;
-  // TODO: 이미지 하나 허용으로 롤백
-  // imageUrls: string[] | null;
-  imageUrl: string | null;
   authorName: string;
   authorImageUrl: string;
 }

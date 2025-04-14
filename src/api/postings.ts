@@ -8,7 +8,7 @@ type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  images: File[] | null;
+  // images: File[] | null;
 };
 
 type PostingMutationResp = {
@@ -19,23 +19,7 @@ export const createPost = async ({
   teamId,
   articleTitle,
   articleBody,
-  images,
 }: PostingMutationArg) => {
-  const formData = new FormData();
-
-  formData.append('teamId', teamId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
-    });
-  }
-  // else {
-  // formData.append('images', '');
-  // }
-
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
     return createPostMock.data;
@@ -43,11 +27,10 @@ export const createPost = async ({
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     'v1/articles',
-    formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamId,
+      articleTitle,
+      articleBody,
     }
   );
 
@@ -58,39 +41,22 @@ export const mutatePost = async ({
   teamId,
   articleTitle,
   articleBody,
-  images,
   articleId,
 }: PostingMutationArg & {
   articleId: number;
 }) => {
-  const formData = new FormData();
-
-  formData.append('teamId', teamId.toString());
-  formData.append('articleId', articleId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
-    });
-  }
-  // else {
-  //   formData.append('images', '');
-  // }
-
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
     return mutatePostMock.data;
   }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
-    `v1/articles/${articleId}`,
-    formData,
+    'v1/articles',
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamId,
+      articleId,
+      articleTitle,
+      articleBody,
     }
   );
 
