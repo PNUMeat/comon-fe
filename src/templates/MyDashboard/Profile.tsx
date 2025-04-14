@@ -281,8 +281,7 @@ export const Profile = () => {
             .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
         })
         .catch(() => alert('프로필 변환에 실패했습니다'));
-
-    if (image) {
+    if (image.size > 0) {
       s3('PROFILE', image, mutateProfile);
     } else {
       mutateProfile('');
