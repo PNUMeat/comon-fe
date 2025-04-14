@@ -15,6 +15,7 @@ interface ContainerProps {
 
 export const ContainerStyle = styled.div<ContainerProps>`
   width: 100%;
+  height: 100%;
   max-width: ${(props) => props.maxW || 1300}px;
   padding: ${(props) => props.padding || '0'};
   margin: ${(props) => props.margin || '0 auto'};
