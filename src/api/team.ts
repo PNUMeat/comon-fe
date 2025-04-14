@@ -105,7 +105,7 @@ export const createTeam = async ({
     topic,
     memberLimit,
     password,
-    teamIconUrl: image ?? null,
+    teamIconUrl: image && image?.length > 0 ? image : null,
     teamMemberUuids,
     teamRecruitId,
   };
@@ -133,7 +133,7 @@ export const modifyTeam = async ({
     topic,
     memberLimit,
     password,
-    teamIconUrl: image ?? null,
+    teamIconUrl: image && image?.length > 0 ? image : null,
   };
 
   const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
