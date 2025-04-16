@@ -63,8 +63,8 @@ export const formTextareaAtom = atom(
   }
 );
 
-const userPictureStorageAtom = atom<File | null>(null);
-const teamPictureStorageAtom = atom<File | null>(null);
+const userPictureStorageAtom = atom<string>('');
+const teamPictureStorageAtom = atom<string>('');
 
 export const MAX_IMAGE_SIZE = 10;
 export const isImageFitAtom = atom<boolean | null>(null);
@@ -73,23 +73,12 @@ export const imageAtom = atom(
     get(isOnUserFormAtom)
       ? get(userPictureStorageAtom)
       : get(teamPictureStorageAtom),
-  (get, set, file: File) => {
-    const allowedTypes = ['image/png', 'image/jpeg'];
-    if (!allowedTypes.includes(file.type)) {
-      return;
-    }
-
-    const fileSizeInMB = file.size / 1024 / 1024;
-    if (fileSizeInMB > MAX_IMAGE_SIZE) {
-      set(isImageFitAtom, false);
-      return;
-    } else {
-      set(isImageFitAtom, true);
-    }
+  (get, set, imgSrc: string) => {
+    set(isImageFitAtom, true);
 
     set(
       get(isOnUserFormAtom) ? userPictureStorageAtom : teamPictureStorageAtom,
-      file
+      imgSrc
     );
   }
 );

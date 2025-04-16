@@ -103,6 +103,30 @@ export const PostSubjectViewer: React.FC<{
 
   const { result } = useRegroupImageAndArticle(data);
 
+  const handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+
+    if (
+      !contentRef.current ||
+      !contentRef.current.contains(range.commonAncestorContainer)
+    )
+      return;
+
+    const fragment = range.cloneContents();
+    const div = document.createElement('div');
+    div.appendChild(fragment);
+    const html = div.innerHTML;
+    const text = selection.toString();
+
+    event.preventDefault();
+    event.clipboardData?.setData('text/html-viewer', html);
+    event.clipboardData?.setData('text/plain', text);
+  };
+
   return (
     <PostSubjectViewWrap
       height={show ? Math.max(height, minShowHeight) : 57}
@@ -133,6 +157,7 @@ export const PostSubjectViewer: React.FC<{
       {show && data ? (
         <TopicViewer
           ref={contentRef}
+          onCopy={handleCopy}
           dangerouslySetInnerHTML={{
             __html: result,
           }}

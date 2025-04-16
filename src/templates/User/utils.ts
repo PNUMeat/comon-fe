@@ -1,20 +1,12 @@
 export const serializeForm = (
   name: string,
   explain: string,
-  image: File | null,
+  image: string | null,
   topic?: string,
   memberLimit?: string | number
 ): string => {
   if (topic || memberLimit) {
-    return (
-      name +
-      explain +
-      image?.name +
-      image?.size +
-      image?.type +
-      topic +
-      memberLimit
-    );
+    return name + explain + image + topic + memberLimit;
   }
-  return name + explain + image?.name + image?.size + image?.type;
+  return name + explain + image;
 };
