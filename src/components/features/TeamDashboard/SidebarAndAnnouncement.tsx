@@ -106,7 +106,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         message: '현재 모집글이 없습니다.',
         description: '새로 작성하시겠어요?',
         isVisible: true,
-        cancleText: '취소',
+        cancelText: '취소',
         confirmText: '작성하기',
         onConfirm: () => {
           navigate(`${PATH.TEAM_RECRUIT}/posting`, {
