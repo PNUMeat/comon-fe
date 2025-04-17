@@ -546,7 +546,7 @@ const useDraggableBlockMenu = (
         anchorElem
       );
 
-      event.preventDefault();
+      event?.preventDefault?.();
       return true;
     };
 

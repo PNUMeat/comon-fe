@@ -517,7 +517,6 @@ const PostWriteSection = forwardRef<
   const onPaste = useCallback(
     (e: ClipboardEvent) => {
       const items = e.clipboardData?.items;
-
       if (items) {
         for (let i = 0; i < items.length; i++) {
           if (items[i].type.startsWith('image/')) {
@@ -561,8 +560,10 @@ const PostWriteSection = forwardRef<
             break;
           }
         }
+        return;
       }
     },
+
     [editor]
   );
 
@@ -622,7 +623,7 @@ const PostSectionWrap: React.FC<{
   const [editor] = useLexicalComposerContext();
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+    event?.preventDefault();
     const files = event.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
