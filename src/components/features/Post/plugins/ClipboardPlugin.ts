@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { $createCodeNode, DEFAULT_CODE_LANGUAGE } from '@lexical/code';
-import { $generateNodesFromDOM } from '@lexical/html';
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createRangeSelection,
@@ -123,59 +123,42 @@ const detectLanguageByPrism = (text: string): string => {
 };
 
 const copyNodesToClipboard = async (
+  editor: LexicalEditor,
   nodes: Array<LexicalNode>,
   plainText: string
 ): Promise<boolean> => {
-  if (!nodes.length) return Promise.resolve(false);
+  if (!nodes.length || !navigator.clipboard || !window.ClipboardItem) {
+    return false;
+  }
 
   try {
     const serializedNodes = nodes.map((node) => node.exportJSON());
     const serializedContent = JSON.stringify(serializedNodes);
 
-    return navigator.clipboard
-      .writeText(plainText)
-      .then(() => {
-        try {
-          const clipboardData = new ClipboardItem({
-            [LEXICAL_CLIPBOARD_TYPE]: new Blob([serializedContent], {
-              type: LEXICAL_CLIPBOARD_TYPE,
-            }),
-            'text/plain': new Blob([plainText], { type: 'text/plain' }),
-            'text/html': new Blob([serializedContent], { type: 'text/html' }),
-          });
+    const htmlString = $generateHtmlFromNodes(editor, null);
 
-          return navigator.clipboard
-            .write([clipboardData])
-            .then(() => {
-              return true;
-            })
-            .catch(() => {
-              return true;
-            });
-        } catch (error) {
-          console.warn('클립보드 API 오류:', error);
-          return true;
-        }
-      })
-      .catch(() => {
-        return false;
-      });
+    const clipboardItem = new ClipboardItem({
+      [LEXICAL_CLIPBOARD_TYPE]: new Blob([serializedContent], {
+        type: LEXICAL_CLIPBOARD_TYPE,
+      }),
+      'text/plain': new Blob([plainText], { type: 'text/plain' }),
+      'text/html': new Blob([htmlString], { type: 'text/html' }),
+    });
+
+    await navigator.clipboard.write([clipboardItem]);
+    return true;
   } catch (error) {
-    console.error('노드 직렬화 중 오류:', error);
-    return navigator.clipboard
-      .writeText(plainText)
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
+    console.warn('클립보드 복사 실패:', error);
+    return false;
   }
 };
 
 const copyCurrentLine = (editor: LexicalEditor): boolean => {
   selectCurrentLine(editor);
+  return copy(editor);
+};
 
+const copy = (editor: LexicalEditor) => {
   let selectedText = '';
   let nodesToCopy: Array<LexicalNode> = [];
 
@@ -184,18 +167,12 @@ const copyCurrentLine = (editor: LexicalEditor): boolean => {
     if (!$isRangeSelection(selection) || selection.isCollapsed()) {
       return;
     }
-
     selectedText = selection.getTextContent();
-
     nodesToCopy = selection.getNodes();
   });
 
   if (nodesToCopy.length > 0) {
-    copyNodesToClipboard(nodesToCopy, selectedText).then((success) => {
-      if (!success) {
-        navigator.clipboard.writeText(selectedText);
-      }
-    });
+    copyNodesToClipboard(editor, nodesToCopy, selectedText);
     return true;
   } else if (selectedText) {
     navigator.clipboard
@@ -371,11 +348,7 @@ const registerCopyCommand = (editor: LexicalEditor) => {
           });
 
           if (nodesToCopy.length > 0) {
-            copyNodesToClipboard(nodesToCopy, selectedText).then((success) => {
-              if (!success) {
-                navigator.clipboard.writeText(selectedText);
-              }
-            });
+            copyNodesToClipboard(editor, nodesToCopy, selectedText);
             shouldUseFallback = true;
           }
         } else if (!$isRangeSelection(selection)) {
@@ -426,7 +399,6 @@ const registerPasteCommand = (editor: LexicalEditor) => {
       try {
         const lexicalData = event.clipboardData.getData(LEXICAL_CLIPBOARD_TYPE);
         if (lexicalData) {
-          console.log('??', lexicalData);
           return false;
         }
 
