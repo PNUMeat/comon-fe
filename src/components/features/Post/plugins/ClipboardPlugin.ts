@@ -376,7 +376,7 @@ const registerCopyCommand = (editor: LexicalEditor) => {
                 navigator.clipboard.writeText(selectedText);
               }
             });
-            shouldUseFallback = false;
+            shouldUseFallback = true;
           }
         } else if (!$isRangeSelection(selection)) {
           shouldUseFallback = true;
