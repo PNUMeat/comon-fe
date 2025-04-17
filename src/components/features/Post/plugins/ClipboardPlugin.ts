@@ -9,6 +9,7 @@ import {
   $createTextNode,
   $getSelection,
   $insertNodes,
+  $isElementNode,
   $isRangeSelection,
   $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
@@ -214,8 +215,6 @@ const registerCutCommand = (editor: LexicalEditor) => {
           const first = topLevel.getFirstDescendant();
           const last = topLevel.getLastDescendant();
 
-          console.log('??', first, last);
-
           if ($isTextNode(first) && $isTextNode(last)) {
             selection.setTextNodeRange(
               first,
@@ -224,12 +223,36 @@ const registerCutCommand = (editor: LexicalEditor) => {
               last.getTextContentSize()
             );
 
-            const htmlString = $generateHtmlFromNodes(editor, selection);
+            const sanitizeHtml = (html: string): string => {
+              const container = document.createElement('div');
+              container.innerHTML = html;
 
-            console.log('??', htmlString);
+              container.querySelectorAll('a').forEach((a) => {
+                a.removeAttribute('target');
+              });
+
+              return container.innerHTML;
+            };
+            const htmlString = sanitizeHtml(
+              $generateHtmlFromNodes(editor, selection)
+            );
 
             event.clipboardData?.setData('text/html', htmlString);
             event.clipboardData?.setData('text/html-viewer', htmlString);
+
+            const target: LexicalNode | null = topLevel.getNextSibling();
+
+            if (target && $isElementNode(target)) {
+              const targetDescendant = target.getFirstDescendant();
+              if (targetDescendant && $isTextNode(targetDescendant)) {
+                selection.setTextNodeRange(
+                  targetDescendant,
+                  0,
+                  targetDescendant,
+                  0
+                );
+              }
+            }
             topLevel.remove();
           }
         }

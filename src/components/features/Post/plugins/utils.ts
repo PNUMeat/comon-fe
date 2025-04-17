@@ -53,9 +53,9 @@ const getFormatFromClasses = (classes: string[]): number => {
   return 0;
 };
 
-// 나중에 따로 뺌
 export const parseHtmlStrToLexicalNodes = (
-  htmlString: string
+  htmlString: string,
+  forceAnchor = false
 ): LexicalNode[] => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(htmlString, 'text/html');
@@ -93,7 +93,7 @@ export const parseHtmlStrToLexicalNodes = (
           const target = element.getAttribute('target');
           const linkNode = $createLinkNode(href);
 
-          if (target === '_blank') {
+          if (forceAnchor || target === '_blank') {
             linkNode.setTarget('_blank');
           }
 
@@ -108,9 +108,7 @@ export const parseHtmlStrToLexicalNodes = (
             }
           });
 
-          if (target === '_blank') {
-            linkNode.setRel('noopener noreferrer');
-          }
+          linkNode.setRel('noopener noreferrer');
 
           return linkNode;
         }

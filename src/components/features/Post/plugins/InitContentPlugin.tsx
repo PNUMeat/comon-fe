@@ -14,7 +14,7 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   useEffect(() => {
     if (!initialized) {
       return editor.update(() => {
-        const nodes = parseHtmlStrToLexicalNodes(content);
+        const nodes = parseHtmlStrToLexicalNodes(content, true);
         $getRoot().clear().select();
         const selection = $getSelection();
         if (selection) {
