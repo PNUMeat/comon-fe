@@ -4,7 +4,7 @@ import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 interface ContainerProps {
-  maxW?: number;
+  maxW?: number | string;
   padding?: string;
   scrollSnapType?: string;
   scrollSnapAlign?: string;
@@ -15,7 +15,12 @@ interface ContainerProps {
 
 export const ContainerStyle = styled.div<ContainerProps>`
   width: 100%;
-  max-width: ${(props) => props.maxW || 1300}px;
+  max-width: ${(props) => {
+    if (props.maxW !== undefined) {
+      return typeof props.maxW === 'number' ? `${props.maxW}px` : props.maxW;
+    }
+    return '1300px';
+  }};
   padding: ${(props) => props.padding || '0'};
   margin: ${(props) => props.margin || '0 auto'};
   ${(props) =>
