@@ -17,6 +17,7 @@ import instagram from '@/assets/Home/instagram.svg';
 import logoLight from '@/assets/Home/logo-light.svg';
 import name from '@/assets/Home/name-last.svg';
 import notion from '@/assets/Home/notion.svg';
+import UsageExample from '@/components/features/Landing/UsageExample';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
@@ -68,6 +69,7 @@ export const Home = () => {
 
         <Section>
           <SubHeader text="이렇게 사용해보세요!" theme="dark" />
+          <UsageExample />
         </Section>
 
         <Section backgroundColor="#000">
