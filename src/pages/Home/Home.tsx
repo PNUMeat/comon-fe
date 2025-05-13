@@ -4,6 +4,10 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
+import GroupIcon from '@/assets/Landing/group_icon.svg';
+import ManageIcon from '@/assets/Landing/manage_icon.svg';
+import RecordIcon from '@/assets/Landing/record_icon.svg';
+
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +22,7 @@ import logoLight from '@/assets/Home/logo-light.svg';
 import name from '@/assets/Home/name-last.svg';
 import notion from '@/assets/Home/notion.svg';
 import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
+import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
 import { PATH } from '@/routes/path';
@@ -69,6 +74,26 @@ export const Home = () => {
             풀이를 공유하며 지속적인 성장을 이끌어내는 커뮤니티입니다.
           </SText>
           <Spacer h={50} />
+          <div style={{ display: 'flex', gap: '27px' }}>
+          <Banner
+            title="팀 스터디 관리"
+            description1="팀원과 함께 목표를 설정하고, 매일"
+            description2="문제 풀이 현황을 공유해보세요."
+            src={ManageIcon}
+          />
+          <Banner
+            title="풀이 기록 & 회고"
+            description1="나만의 풀이를 기록하고, 팀원과 피드백을"
+            description2="주고받으며 회고 문화를 만들어갑니다."
+            src={RecordIcon}
+          />
+          <Banner
+            title="스터디 그룹"
+            description1="목표와 실력이 비슷한 동료들을 찾고,"
+            description2="직접 팀을 구성하거나 기존 팀에 참여할 수 있습니다."
+            src={GroupIcon}
+          />
+          </div>
           {/* TODO: 카드 3개 영역 */}
         </Section>
 
