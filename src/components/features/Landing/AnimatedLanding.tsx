@@ -1,8 +1,17 @@
+import RightArrowIcon from "@/assets/Landing/right_arrow.svg";
 import { Spacer } from "@/components/commons/Spacer";
+import { PATH } from "@/routes/path";
 import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
 import AnimatedImages from "./AnimatedImages";
 
 export const AnimatedLanding = () => {
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`${PATH.TEAM_RECRUIT}/list`);
+  }
   return (
     <Container>
       <AnimatedImages />
@@ -23,6 +32,10 @@ export const AnimatedLanding = () => {
     <div>
       <Content>함께 가면 더 멀리 갈 수 있으니까요!</Content>
     </div>
+    <Button onClick={handleClick}>
+      팀 찾아보기
+      <Icon src={RightArrowIcon} className="icon"/>  
+    </Button>
     </ContentContainer>
     </Container>
   );
@@ -43,6 +56,8 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  position: relative;
 `;
 
 const Content = styled.div`
@@ -51,4 +66,52 @@ const Content = styled.div`
   line-height: 1.4;
   color: #333;
   font-weight: 500;
+`;
+
+const Button = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 74px;
+  box-sizing: border-box;
+
+  padding: 20px 28px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background: #333;
+  border-radius: 9999px;
+
+  width: 180px;
+  transition: width 0.3s ease, background 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+
+  .icon {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s ease;
+    width: 0;
+    height: 0;
+  }
+
+  &:hover {
+    width: 220px;
+
+    .icon {
+      opacity: 1;
+      transform: translateX(0);
+      width: 24px;
+      height: 24px;
+    }
+  }
+`;
+
+const Icon = styled.img`
+  display: inline-flex;
 `;
