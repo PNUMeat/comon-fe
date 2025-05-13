@@ -17,6 +17,8 @@ import instagram from '@/assets/Home/instagram.svg';
 import logoLight from '@/assets/Home/logo-light.svg';
 import name from '@/assets/Home/name-last.svg';
 import notion from '@/assets/Home/notion.svg';
+import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
+import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
@@ -29,6 +31,9 @@ export const Home = () => {
     <Fragment>
       <CommonLayout>
         {/* 민경 */}
+        <Section backgroundColor="#fff">
+          <AnimatedLanding />
+        </Section>
         <Section backgroundColor="#fff">
           <Decoration src={bgZigzag} top="180px" left="20%" />
           <Decoration src={bgRing} top="150px" right="20%" />
@@ -74,6 +79,7 @@ export const Home = () => {
 
         <Section backgroundColor="#000">
           <SubHeader text="코드몬스터 서비스 소개!" theme="light" />
+          <ServiceStrength />
         </Section>
 
         {/* 지수 */}

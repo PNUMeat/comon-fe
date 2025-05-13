@@ -36,7 +36,7 @@ const usageExamples = [
       '원하는 팀에 참여하거나 직접 팀을 꾸려 함께 성장해봐요✨',
     ],
     image: exampleImage3,
-    style: { width: '650px', height: '357px' },
+    style: { width: '680px', height: '357px' },
   },
 ];
 
@@ -62,11 +62,11 @@ export const UsageExample = () => {
       <TitleBox>{title}</TitleBox>
       <MainBox>
         <ContentContainer>
-          <Spacer h={40} />
+          <Spacer h={14} />
           <ContentText>{content[0]}</ContentText>
           <ContentText>{content[1]}</ContentText>
         </ContentContainer>
-        <Spacer h={28} />
+        <Spacer h={12} />
         <img src={image} alt="example" style={style} />
       </MainBox>
       <ButtonStyle style={{top: '50%', left: -30, transform : 'translateY(-50%)' }} onClick={onLeftClick}><CaretIcon src={CaretLeftIcon} /></ButtonStyle> 
