@@ -3,7 +3,7 @@ import { SText } from '@/components/commons/SText';
 
 import { useRef } from 'react';
 
-import arrowLeftIcon from '@/assets/Home/arrow.svg';
+import arrowLeftIcon from '@/assets/Home/arrow-review.svg';
 import styled from '@emotion/styled';
 
 export const ReviewSlider = () => {
