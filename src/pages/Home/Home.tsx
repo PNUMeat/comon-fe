@@ -2,6 +2,7 @@
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { QnAList } from '@/components/features/Home/QnAList';
 import { ReviewSlider } from '@/components/features/Home/ReviewSlider';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
@@ -126,7 +127,7 @@ export const Home = () => {
           <Spacer h={10} />
           <img src={faq} alt="FAQ" />
           <Spacer h={32} />
-          {/* TODO: FAQ 카드 영역 */}
+          <QnAList />
         </Section>
 
         <Section backgroundColor="#fff">
