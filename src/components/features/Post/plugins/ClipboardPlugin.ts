@@ -84,8 +84,8 @@ const looksLikeCode = (text: string): boolean => {
 
   return (
     keywordCnt > 0 &&
-    indentCnt >= lines.length / 2 &&
-    keywordCnt >= lines.length / 3
+    indentCnt >= lines.length / 4 &&
+    keywordCnt >= lines.length / 4
   );
 };
 
@@ -459,7 +459,6 @@ const registerPasteCommand = (editor: LexicalEditor) => {
               const codeNode = $createCodeNode();
               codeNode.setLanguage(language);
               codeNode.append($createTextNode(plainText));
-
               $insertNodes([codeNode]);
             });
 
