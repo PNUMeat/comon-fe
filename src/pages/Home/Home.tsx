@@ -2,6 +2,8 @@
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { QnAList } from '@/components/features/Home/QnAList';
+import { ReviewSlider } from '@/components/features/Home/ReviewSlider';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import GroupIcon from '@/assets/Landing/group_icon.svg';
@@ -15,7 +17,6 @@ import logo from '@/assets/Header/logo.svg';
 import bgCurve from '@/assets/Home/bg-curve.svg';
 import bgRing from '@/assets/Home/bg-ring.svg';
 import bgZigzag from '@/assets/Home/bg-zigzag.svg';
-import discord from '@/assets/Home/discord.svg';
 import faq from '@/assets/Home/faq.svg';
 import instagram from '@/assets/Home/instagram.svg';
 import logoLight from '@/assets/Home/logo-light.svg';
@@ -131,9 +132,9 @@ export const Home = () => {
             코드몬스터와 함께 성장한 동료들의 생생한 후기✨
           </SText>
           <Spacer h={86} />
-          {/* TODO: 후기 카드 영역 */}
-          <Ellipse />
+          <ReviewSlider />
           <Spacer h={80} />
+          <Ellipse />
         </Section>
 
         <Section>
@@ -159,7 +160,7 @@ export const Home = () => {
           <Spacer h={10} />
           <img src={faq} alt="FAQ" />
           <Spacer h={32} />
-          {/* TODO: FAQ 카드 영역 */}
+          <QnAList />
         </Section>
 
         <Section backgroundColor="#fff">
@@ -183,9 +184,8 @@ export const Home = () => {
           <Spacer h={50} />
           <StartButton onClick={onClickStart}>시작하기 &rarr;</StartButton>
           <Spacer h={60} />
-          <Flex justify="space-between" style={{ width: '130px' }}>
+          <Flex justify="space-between" style={{ width: '80px' }}>
             <img src={instagram} alt="instagram" />
-            <img src={discord} alt="discord" />
             <img src={notion} alt="notion" />
           </Flex>
           <Spacer h={240} />
