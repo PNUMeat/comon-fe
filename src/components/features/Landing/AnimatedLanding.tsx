@@ -1,4 +1,4 @@
-import RightArrowIcon from "@/assets/Landing/right_arrow.svg";
+import RightArrowIcon from "@/assets/Landing/right_arrow.png";
 import { Spacer } from "@/components/commons/Spacer";
 import { PATH } from "@/routes/path";
 import styled from "@emotion/styled";
