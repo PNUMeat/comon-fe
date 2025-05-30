@@ -97,7 +97,7 @@ export const Home = () => {
           {/* TODO: 카드 3개 영역 */}
         </Section>
 
-        <Section>
+        <Section backgroundColor=" #FAFAFF">
           <SubHeader text="이렇게 사용해보세요!" theme="dark" />
           <UsageExample />
         </Section>
@@ -214,11 +214,11 @@ const SubHeader = ({
   return (
     <Flex direction="column">
       <Logo src={theme === 'dark' ? logo : logoLight} alt={'logo'} />
-      <Spacer h={10} />
+      <Spacer h={12} />
       <SText
         color={theme === 'dark' ? '#333' : '#D5D5D5'}
         fontFamily="Pretendard"
-        fontSize="24px"
+        fontSize="28px"
         fontWeight={900}
         textAlign="center"
       >

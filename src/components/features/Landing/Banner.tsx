@@ -1,3 +1,4 @@
+import { Spacer } from "@/components/commons/Spacer";
 import styled from "@emotion/styled";
 
 interface BannerProps {
@@ -11,7 +12,9 @@ export const Banner = ({title, description1, description2,  src}: BannerProps) =
   return (
     <Wrapper>
       <Icon src={src} alt="icon" />
+      <Spacer h={2} />
       <Title>{title}</Title>
+      <Spacer h={2} />
       <div>
         <Description>{description1}</Description>
         <Description>{description2}</Description>
@@ -22,7 +25,7 @@ export const Banner = ({title, description1, description2,  src}: BannerProps) =
 
 const Wrapper = styled.div`
   display: flex;
-  width: 316px;
+  width: 350px;
   height: 204px;
   padding: 33px 0;
   flex-direction: column;
@@ -43,7 +46,7 @@ const Icon = styled.img`
 const Title = styled.div`
   color: #333;
   text-align: center;
-  font-size: 16px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: 19px;
@@ -53,7 +56,7 @@ const Title = styled.div`
 const Description = styled.div`
   color: #767676;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 19px;

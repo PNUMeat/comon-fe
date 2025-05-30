@@ -8,7 +8,10 @@ import Twisted2 from '@/assets/Landing/twisted_2.png';
 import Twisted3 from '@/assets/Landing/twisted_3.png';
 import { Spacer } from '@/components/commons/Spacer';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useRef } from 'react';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 
 const usageExamples = [
   {
@@ -40,21 +43,7 @@ const usageExamples = [
   },
 ];
 
-
-
-
-export const UsageExample = () => {
-  const [index, setIndex] = useState(0);
-
-  const onRightClick = () => {
-    const nextIndex = index + 1;
-    setIndex(nextIndex > 2 ? 0 : nextIndex);
-  }
-  const onLeftClick = () => {
-    const prevIndex = index - 1;
-    setIndex(prevIndex < 0 ? 2 : prevIndex);
-  }
-
+const UsageExampleCard = ({ index }: { index: number }) => {
   const { title, content, image, style } = usageExamples[index];
 
   return (
@@ -69,14 +58,82 @@ export const UsageExample = () => {
         <Spacer h={12} />
         <img src={image} alt="example" style={style} />
       </MainBox>
-      <ButtonStyle style={{top: '50%', left: -30, transform : 'translateY(-50%)' }} onClick={onLeftClick}><CaretIcon src={CaretLeftIcon} /></ButtonStyle> 
-      <ButtonStyle style={{top: '50%', right: -30, transform : 'translateY(-50%)'}} onClick={onRightClick}><CaretIcon src={CaretRightIcon} /></ButtonStyle>
       <TwistedDecoration1 src={Twisted1} alt="twisted" />
       <TwistedDecoration2 src={Twisted2} alt="twisted" />
       <TwistedDecoration3 src={Twisted3} alt="twisted" />
     </Container>
   );
+};
+
+export const UsageExample = () => {
+  const sliderRef = useRef<Slider>(null);
+
+  return (
+    <SliderWrapper>
+      <div className="slider-container" style={{ position: 'relative', width: '950px' }}>
+      <StyledSlider
+        ref={sliderRef}
+        dots={false}
+        infinite={true}
+        speed={500}
+        slidesToShow={1}
+        slidesToScroll={1}
+        arrows={false}
+      >
+          <UsageExampleCard index={0} />
+          <UsageExampleCard index={1} />
+          <UsageExampleCard index={2} />
+      </StyledSlider>
+      </div>
+
+      <NavButton style={{ left: -10, top: 320}} onClick={() => sliderRef.current?.slickPrev()}>
+        <CaretIcon src={CaretLeftIcon} alt="prev" />
+      </NavButton>
+      <NavButton style={{ right: -10, top: 320 }} onClick={() => sliderRef.current?.slickNext()}>
+        <CaretIcon src={CaretRightIcon} alt="next" />
+      </NavButton>
+    </SliderWrapper>
+  );
+};
+
+const StyledSlider = styled(Slider)`
+  .slick-slide,
+  .slick-track {
+    width: 950px;
+    height: 600px;
 }
+  .slick-list {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+`;
+
+const SliderWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+`;
+
+const NavButton = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: #00000029;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+const CaretIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -85,6 +142,8 @@ const Container = styled.div`
   align-items: center;
   position: relative;
   margin-top: 64px;
+  width: 100%;
+  height: 100%;
 `;
 
 const MainBox = styled.div`
@@ -92,11 +151,10 @@ const MainBox = styled.div`
   flex-direction: column;
   width: 900px;
   height: 518px;
-  background-color: ##FFFFFF66;
+  background-color: #FFFFFF66;
   box-shadow: 2px 2px 20px 0px #5E609933;
   border-radius: 40px;
   border: 3px solid #FFFFFF;
-  display: flex;
   justify-content: center;
   align-items: center;
 `;
@@ -118,25 +176,7 @@ const TitleBox = styled.div`
   justify-content: center;
   align-items: center;
   display: flex;
-  background-blur: 4px;
 `;
-
-const ButtonStyle = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 100px;
-  background-color: #00000029;
-  box-sizing: border-box;
-`;
-
-const CaretIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  `;
 
 const ContentContainer = styled.div`
   display: flex;
@@ -151,15 +191,15 @@ const ContentText = styled.div`
   font-weight: 400;
   line-height: 1.4;
   text-align: center;
-  `;
+`;
 
-  const TwistedDecoration1 = styled.img`
+const TwistedDecoration1 = styled.img`
   position: absolute;
   top: 31px;
   left: 96px;
   width: 74px;
   height: 74px;
-  `;
+`;
 
 const TwistedDecoration2 = styled.img`
   position: absolute;
@@ -167,7 +207,7 @@ const TwistedDecoration2 = styled.img`
   right: 88px;
   width: 72px;
   height: 72px;
-  `;
+`;
 
 const TwistedDecoration3 = styled.img`
   position: absolute;
@@ -175,9 +215,6 @@ const TwistedDecoration3 = styled.img`
   right: 159px;
   width: 35px;
   height: 35px;
-  `;
-
-
-
+`;
 
 export default UsageExample;
