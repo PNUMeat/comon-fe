@@ -10,7 +10,6 @@ import ManageIcon from '@/assets/Landing/manage_icon.svg';
 import RecordIcon from '@/assets/Landing/record_icon.svg';
 
 import { Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/Header/logo.svg';
 import bgCurve from '@/assets/Home/bg-curve.svg';
@@ -22,12 +21,11 @@ import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
 import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
-import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 export const Home = () => {
-  const navigate = useNavigate();
-  const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
+  // const navigate = useNavigate();
+  // const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
 
   return (
     <Fragment>
@@ -228,14 +226,14 @@ const Logo = styled.img`
   height: 16px;
 `;
 
-const Ellipse = styled.div`
-  width: 900px;
-  height: 19px;
-  border-radius: 900px;
-  background: rgba(212, 212, 212, 0.4);
-  filter: blur(8px);
-  border-radius: 50%;
-`;
+// const Ellipse = styled.div`
+//   width: 900px;
+//   height: 19px;
+//   border-radius: 900px;
+//   background: rgba(212, 212, 212, 0.4);
+//   filter: blur(8px);
+//   border-radius: 50%;
+// `;
 
 const Decoration = styled.img<{
   top: string;
@@ -252,16 +250,16 @@ const Decoration = styled.img<{
   z-index: 1;
 `;
 
-const StartButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 74px;
-  padding: 24px 40px 24px 52px;
-  gap: 4px;
-  border-radius: 40px;
-  background: #333;
-  color: #fff;
-  font-size: 36px;
-  font-weight: 400;
-`;
+// const StartButton = styled.button`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 74px;
+//   padding: 24px 40px 24px 52px;
+//   gap: 4px;
+//   border-radius: 40px;
+//   background: #333;
+//   color: #fff;
+//   font-size: 36px;
+//   font-weight: 400;
+// `;
