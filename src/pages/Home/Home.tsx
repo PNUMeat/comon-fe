@@ -3,7 +3,6 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { QnAList } from '@/components/features/Home/QnAList';
-import { ReviewSlider } from '@/components/features/Home/ReviewSlider';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import GroupIcon from '@/assets/Landing/group_icon.svg';
@@ -18,10 +17,7 @@ import bgCurve from '@/assets/Home/bg-curve.svg';
 import bgRing from '@/assets/Home/bg-ring.svg';
 import bgZigzag from '@/assets/Home/bg-zigzag.svg';
 import faq from '@/assets/Home/faq.svg';
-import instagram from '@/assets/Home/instagram.svg';
 import logoLight from '@/assets/Home/logo-light.svg';
-import name from '@/assets/Home/name-last.svg';
-import notion from '@/assets/Home/notion.svg';
 import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
 import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
@@ -40,7 +36,7 @@ export const Home = () => {
         <Section backgroundColor="#fff">
           <AnimatedLanding />
         </Section>
-        <Section backgroundColor="#fff">
+        <Section backgroundColor="#FAFAFF">
           <Decoration src={bgZigzag} top="180px" left="20%" />
           <Decoration src={bgRing} top="150px" right="20%" />
           <Decoration src={bgCurve} top="270px" right="27%" width="60px" />
@@ -98,7 +94,7 @@ export const Home = () => {
           {/* TODO: 카드 3개 영역 */}
         </Section>
 
-        <Section backgroundColor=" #FAFAFF">
+        <Section backgroundColor="#fff">
           <SubHeader text="이렇게 사용해보세요!" theme="dark" />
           <UsageExample />
         </Section>
@@ -109,7 +105,7 @@ export const Home = () => {
         </Section>
 
         {/* 지수 */}
-        <Section>
+        {/* <Section>
           <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
           <Spacer h={40} />
           <SText
@@ -135,7 +131,7 @@ export const Home = () => {
           <ReviewSlider />
           <Spacer h={80} />
           <Ellipse />
-        </Section>
+        </Section> */}
 
         <Section>
           <SText
@@ -163,7 +159,7 @@ export const Home = () => {
           <QnAList />
         </Section>
 
-        <Section backgroundColor="#fff">
+        {/* <Section backgroundColor="#fff">
           <Decoration src={bgZigzag} top="140px" left="20%" />
           <Decoration src={bgRing} top="140px" right="20%" />
           <Decoration src={bgCurve} top="220px" right="27%" width="60px" />
@@ -189,7 +185,7 @@ export const Home = () => {
             <img src={notion} alt="notion" />
           </Flex>
           <Spacer h={240} />
-        </Section>
+        </Section> */}
       </CommonLayout>
     </Fragment>
   );
