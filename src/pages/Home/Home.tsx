@@ -58,7 +58,7 @@ export const Home = () => {
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="24px"
+            fontSize="20px"
             fontWeight={300}
             lineHeight="34px"
           >

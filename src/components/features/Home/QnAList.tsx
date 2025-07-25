@@ -45,17 +45,30 @@ export const QnAList = () => {
       {qnaData.map((item, index) => (
         <ItemWrapper key={index} onClick={() => toggle(index)}>
           <Header>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <SText
+                color={openIndex === index ? "#333" : "#767676"}
+                fontFamily="Pretendard"
+                fontSize="18px"
+                fontStyle="normal"
+                fontWeight={400}
+                lineHeight="normal"
+                letterSpacing="-0.18px"
+              >
+                Q.
+              </SText>
             <SText
-              color="#767676"
+              color={openIndex === index ? "#333" : "#767676"}
               fontFamily="Pretendard"
               fontSize="18px"
               fontStyle="normal"
-              fontWeight={500}
+              fontWeight={400}
               lineHeight="normal"
               letterSpacing="-0.18px"
             >
-              Q. {item.question}
+              {item.question}
             </SText>
+            </div>
             {openIndex === index ? (
               <img
                 src={arrowDownIcon}
@@ -67,7 +80,7 @@ export const QnAList = () => {
             )}
           </Header>
 
-          <Answer isOpen={openIndex === index}>A. {item.answer}</Answer>
+          <Answer isOpen={openIndex === index}><SText>A.</SText>{item.answer}</Answer>
         </ItemWrapper>
       ))}
     </div>
@@ -95,11 +108,13 @@ const Header = styled.div`
 `;
 
 const Answer = styled.div<{ isOpen: boolean }>`
+  display: flex;
+  gap: 12px;
   padding-right: 30px;
   font-size: 18px;
-  color: #333;
+  color: #767676;
   font-weight: 500;
-  line-height: 140%;
+  line-height: 150%;
   letter-spacing: -0.18px;
   max-height: ${({ isOpen }) => (isOpen ? '100px' : '0')};
   overflow: hidden;
