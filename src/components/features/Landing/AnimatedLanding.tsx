@@ -18,7 +18,7 @@ export const AnimatedLanding = () => {
       <Spacer h={80} />
     <ContentContainer>
     <div>
-      <Content>이미 약 100명의 개발자가</Content>
+      <Content>이미 약 200명의 개발자가</Content>
       <Content>코몬에서 팀원들과 풀이를 공유하고 있어요.</Content>
     </div>
     <div>
