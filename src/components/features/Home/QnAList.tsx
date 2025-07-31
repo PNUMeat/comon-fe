@@ -16,7 +16,7 @@ export const QnAList = () => {
     {
       question: '코드몬스터에서 자체적으로 코딩테스트 문제를 제공하나요?',
       answer:
-        '아쉽게도 서비스 자체적으로 코딩테스트 문제를 제공해 드리진 않고 있어요. 하지만 현재 코몬 팀에서 직접 스터디를 운영하며, 일주일에 많게는 6일까지 문제를 올려드리고 풀이를 공유하고 있어요. 약 100명의 팀원과 함께 코테 풀이를 시작해 보아요!',
+        '아쉽게도 서비스 자체적으로 코딩테스트 문제를 제공해 드리진 않고 있어요. 하지만 현재 코몬 팀에서 직접 스터디를 운영하며, 일주일에 많게는 6일까지 문제를 올려드리고 풀이를 공유하고 있어요. 약 200명의 팀원과 함께 코테 풀이를 시작해 보아요!',
     },
     {
       question: '팀원 없이 혼자 코테 문제를 풀고 풀이를 작성해도 되나요?',
@@ -45,17 +45,30 @@ export const QnAList = () => {
       {qnaData.map((item, index) => (
         <ItemWrapper key={index} onClick={() => toggle(index)}>
           <Header>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <SText
+                color={openIndex === index ? "#333" : "#767676"}
+                fontFamily="Pretendard"
+                fontSize="18px"
+                fontStyle="normal"
+                fontWeight={400}
+                lineHeight="normal"
+                letterSpacing="-0.18px"
+              >
+                Q.
+              </SText>
             <SText
-              color="#767676"
+              color={openIndex === index ? "#333" : "#767676"}
               fontFamily="Pretendard"
               fontSize="18px"
               fontStyle="normal"
-              fontWeight={500}
+              fontWeight={400}
               lineHeight="normal"
               letterSpacing="-0.18px"
             >
-              Q. {item.question}
+              {item.question}
             </SText>
+            </div>
             {openIndex === index ? (
               <img
                 src={arrowDownIcon}
@@ -67,7 +80,7 @@ export const QnAList = () => {
             )}
           </Header>
 
-          <Answer isOpen={openIndex === index}>A. {item.answer}</Answer>
+          <Answer isOpen={openIndex === index}><SText>A.</SText>{item.answer}</Answer>
         </ItemWrapper>
       ))}
     </div>
@@ -95,11 +108,13 @@ const Header = styled.div`
 `;
 
 const Answer = styled.div<{ isOpen: boolean }>`
+  display: flex;
+  gap: 12px;
   padding-right: 30px;
   font-size: 18px;
-  color: #333;
+  color: #767676;
   font-weight: 500;
-  line-height: 140%;
+  line-height: 150%;
   letter-spacing: -0.18px;
   max-height: ${({ isOpen }) => (isOpen ? '100px' : '0')};
   overflow: hidden;
