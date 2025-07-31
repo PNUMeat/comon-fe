@@ -117,6 +117,10 @@ export const viewStyle = `& {
 
     .editor-listitem {
       margin: 8px 32px 8px 32px;
+
+      @media (max-width: ${breakpoints.mobile}px) {
+        margin: 0;
+      }
     }
 
     .nested {

@@ -6,10 +6,10 @@ import { ServerResponse } from './types';
 
 // 팀 모집글 생성
 interface ICreateRecuitmentRequest {
-  teamId?: string | null;
+  teamId?: string;
   teamRecruitTitle: string;
   teamRecruitBody: string;
-  image?: File[] | null;
+  image?: string[] | undefined;
   chatUrl: string;
 }
 
@@ -89,30 +89,15 @@ export const createRecruitPost = async ({
   teamId,
   teamRecruitTitle,
   teamRecruitBody,
-  image,
   chatUrl,
 }: ICreateRecuitmentRequest) => {
-  const formData = new FormData();
-
-  if (teamId) {
-    formData.append('teamId', teamId);
-  }
-  formData.append('teamRecruitTitle', teamRecruitTitle);
-  formData.append('teamRecruitBody', teamRecruitBody);
-  formData.append('chatUrl', chatUrl);
-  if (image) {
-    image.forEach((img) => {
-      formData.append('image', img);
-    });
-  }
-
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
-    formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamId,
+      teamRecruitTitle,
+      teamRecruitBody,
+      chatUrl,
     }
   );
 
@@ -122,29 +107,17 @@ export const createRecruitPost = async ({
 export const modifyRecruitPost = async ({
   teamRecruitTitle,
   teamRecruitBody,
-  image,
   chatUrl,
   recruitmentId,
 }: ICreateRecuitmentRequest & {
   recruitmentId: number;
 }) => {
-  const formData = new FormData();
-  formData.append('teamRecruitTitle', teamRecruitTitle);
-  formData.append('teamRecruitBody', teamRecruitBody);
-  formData.append('chatUrl', chatUrl);
-  if (image) {
-    image.forEach((img) => {
-      formData.append('image', img);
-    });
-  }
-
   const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
     `v1/recruitments/${recruitmentId}`,
-    formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamRecruitBody,
+      teamRecruitTitle,
+      chatUrl,
     }
   );
   return res.data.data;
