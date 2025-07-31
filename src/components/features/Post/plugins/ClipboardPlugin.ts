@@ -459,7 +459,6 @@ const registerPasteCommand = (editor: LexicalEditor) => {
               const codeNode = $createCodeNode();
               codeNode.setLanguage(language);
               codeNode.append($createTextNode(plainText));
-
               $insertNodes([codeNode]);
             });
 
