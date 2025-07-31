@@ -27,6 +27,7 @@ export const CommonLayout: React.FC<{
 }> = ({ children }) => {
   const location = useLocation();
   const prevPathRef = useRef<string | null>(null);
+  const isHomePage = location.pathname === '/';
 
   useLayoutEffect(() => {
     const currPath = location.pathname.split('/')[1];
@@ -56,14 +57,15 @@ export const CommonLayout: React.FC<{
     <Fragment>
       <Header h={headerHeight} />
       <Container
+        maxW={isHomePage ? 'none' : ''}
         padding={'0'}
-        margin={`${headerHeight + (isMobile ? 14 : 52)}px auto 0 auto`}
+        margin={`${headerHeight + (isMobile ? 14 : isHomePage ? 0 : 52)}px auto 0 auto`}
       >
         <Alert />
         <Confirm />
         <ScrollStart />
         {children}
-        <Spacer h={200} />
+        {!isHomePage && <Spacer h={200} />}
       </Container>
     </Fragment>
   );

@@ -44,7 +44,7 @@ export const TeamModificationButton = () => {
     const pas = password ?? currPassword;
 
     const curr = `${currTeamName}-${currTeamExplain}-null-${currTopic}-${currMemberLimit}-${currPassword}`;
-    const changed = `${name}-${exp}-${image?.lastModified ?? null}-${top}-${mem}-${pas}`;
+    const changed = `${name}-${exp}-${image}-${top}-${mem}-${pas}`;
 
     setIsDirty(curr !== changed);
   }, [teamName, teamExplain, topic, memberLimit, image, password]);

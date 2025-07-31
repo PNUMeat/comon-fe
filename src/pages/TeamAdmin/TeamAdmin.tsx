@@ -162,7 +162,7 @@ const SubjectControlButton: React.FC<{
             articleCategory: data?.articleCategory ?? null,
             // TODO: 이미지 하나로 롤백
             // articleImageUrls: data?.imageUrls ?? null,
-            articleImageUrl: data?.imageUrl ?? null,
+            // articleImageUrl: data?.imageUrl ?? null,
           },
         })
       }
