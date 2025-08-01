@@ -106,15 +106,6 @@
     url(./assets/fonts/NanumSquareNeoTTF-bRg.woff2) format('woff2');
 }
 
-@font-face {
-  font-family: 'MoneygraphyPixel';
-  font-weight: 400;
-  font-display: swap;
-  src:
-    local('MoneygraphyPixel'),
-    url(./assets/fonts/Moneygraphy-Pixel.woff2) format('woff2');
-}
-
 /* * {
   font-family: serif;
 } */
