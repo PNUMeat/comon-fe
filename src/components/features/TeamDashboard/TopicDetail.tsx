@@ -9,7 +9,7 @@ import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
-import { Suspense, useRef } from 'react';
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getTeamTopic } from '@/api/dashboard';
@@ -57,32 +57,6 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
 
   const { result: selectedTopicBody } = useRegroupImageAndArticle(data);
 
-  const textRef = useRef<HTMLDivElement | null>(null);
-
-  const handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
-    const selection = window.getSelection();
-
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-
-    if (
-      !textRef.current ||
-      !textRef.current.contains(range.commonAncestorContainer)
-    )
-      return;
-
-    const fragment = range.cloneContents();
-    const div = document.createElement('div');
-    div.appendChild(fragment);
-    const html = div.innerHTML;
-    const text = selection.toString();
-
-    event.preventDefault();
-    event.clipboardData?.setData('text/html-viewer', html);
-    event.clipboardData?.setData('text/plain', text);
-  };
-
   return data ? (
     <Box width="100%" padding="30px 40px">
       <Flex direction="column" justify="center" align="flex-start">
@@ -109,6 +83,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
                     articleId: data?.articleId,
                     articleTitle: data?.articleTitle,
                     articleCategory: data?.articleCategory,
+                    articleImageUrl: data?.imageUrl,
                   }}
                 >
                   <LazyImage
@@ -156,8 +131,6 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
         <Spacer h={36} />
         {data ? (
           <TopicViewer
-            ref={textRef}
-            onCopy={handleCopy}
             dangerouslySetInnerHTML={{ __html: selectedTopicBody }}
           />
         ) : null}

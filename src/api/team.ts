@@ -18,14 +18,14 @@ interface ITeamCommon {
 
 interface ICreateTeamRequest extends ITeamCommon {
   password: string;
-  image: string | undefined;
+  image?: File | null;
   teamMemberUuids?: string[];
-  teamRecruitId: number | undefined;
+  teamRecruitId: number | null;
 }
 
 interface IMPutTeamRequest extends ITeamCommon {
   teamId: number;
-  image: string | undefined;
+  image?: File | null;
   password: string | null;
 }
 
@@ -99,20 +99,36 @@ export const createTeam = async ({
   teamMemberUuids,
   teamRecruitId,
 }: ICreateTeamRequest) => {
-  const req = {
-    teamName,
-    teamExplain,
-    topic,
-    memberLimit,
-    password,
-    teamIconUrl: image && image?.length > 0 ? image : null,
-    teamMemberUuids,
-    teamRecruitId,
-  };
+  const formData = new FormData();
+
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('password', password);
+  formData.append('memberLimit', memberLimit.toString());
+
+  if (image) {
+    formData.append('image', image);
+  }
+
+  if (teamMemberUuids) {
+    teamMemberUuids.forEach((uuid) => {
+      formData.append('teamMemberUuids', uuid);
+    });
+  }
+
+  if (teamRecruitId !== null) {
+    formData.append('teamRecruitId', teamRecruitId.toString());
+  }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
     'v1/teams',
-    req
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -127,18 +143,27 @@ export const modifyTeam = async ({
   image,
   teamId,
 }: IMPutTeamRequest) => {
-  const req = {
-    teamName,
-    teamExplain,
-    topic,
-    memberLimit,
-    password,
-    teamIconUrl: image && image?.length > 0 ? image : null,
-  };
+  const formData = new FormData();
+
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('memberLimit', memberLimit.toString());
+  if (image) {
+    formData.append('image', image);
+  }
+  if (password) {
+    formData.append('password', password);
+  }
 
   const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
     `v1/teams/${teamId}`,
-    req
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;

@@ -65,7 +65,6 @@ export const ModificationForm: React.FC<HeightInNumber> = ({ h }) => {
           key={`${data?.imageUrl}`}
           imageUrl={data?.imageUrl}
           isDisabled={isFetching}
-          imageCategory={'PROFILE'}
         />
 
         <FormFieldLabel>프로필 설명</FormFieldLabel>

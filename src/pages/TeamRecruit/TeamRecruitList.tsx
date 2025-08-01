@@ -368,7 +368,7 @@ const CardBody = styled.div`
   font-size: 16px;
   font-weight: 500;
   font-family: 'Pretendard';
-  line-height: 1.5 !important;
+  line-height: normal !important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -378,10 +378,10 @@ const CardBody = styled.div`
   * {
     // all: unset;
     color: #000 !important;
-    font-size: inherit !important;
+    font-size: 16px !important;
     font-weight: 500 !important;
     font-family: 'Pretendard' !important;
-    line-height: inherit !important;
+    line-height: normal !important;
   }
 
   img {

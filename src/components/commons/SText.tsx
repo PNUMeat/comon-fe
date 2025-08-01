@@ -30,7 +30,7 @@ export const SText = styled.div<TextProps>`
   word-break: ${(props) => props.wordBreak || 'inherit'};
   opacity: ${(props) => props.opacity || 'inherit'};
   cursor: ${(props) => props.cursor || 'inherit'};
-  font-style: ${(props) => props.fontStyle || 'normal'};
+  font-style: ${(props) => props.fontStyle || 'inherit'};
   text-decoration: ${(props) => props.textDecoration || 'inherit'};
 
   ${(props) =>
