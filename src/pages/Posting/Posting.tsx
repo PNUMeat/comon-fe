@@ -32,9 +32,10 @@ import {
   selectedPostIdAtom,
 } from '@/store/dashboard';
 import { alertAtom } from '@/store/modal';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 const Posting = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const Posting = () => {
   const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
   const [isPending, setIsPending] = useState(false);
   const [disablePrompt, setDisablePrompt] = useState(false);
+  const [postImages, setPostImages] = useAtom(postImagesAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
   const setAlert = useSetAtom(alertAtom);
@@ -84,13 +86,29 @@ const Posting = () => {
     }
     setIsPending(true);
 
-    const articleBody = content.trim();
+    const articleBodyTrim = content.trim();
+
+    const articleBody =
+      postImages.length > 0
+        ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        : articleBodyTrim;
 
     if (article && articleId && articleTitle) {
       mutatePost({
         teamId: parseInt(id),
+        images:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleId: parseInt(articleId),
-        articleBody: articleBody,
+        articleBody: postImages ? articleBody : content,
         articleTitle: postTitle,
       })
         .then(() => {
@@ -101,6 +119,7 @@ const Posting = () => {
             .then(() => {
               setDashboardView('article');
               setSelectedPostId(articleId);
+              setPostImages([]);
               setDisablePrompt(true);
               setAlert({
                 message: '게시글을 수정했어요',
@@ -146,6 +165,17 @@ const Posting = () => {
 
     createPost({
       teamId: parseInt(id),
+      images:
+        postImages.length > 0
+          ? postImages
+              .sort((a, b) => {
+                if (a.line !== b.line) {
+                  return a.line - b.line;
+                }
+                return a.idx - b.idx;
+              })
+              .map((imgObj) => imgObj.img)
+          : null,
       articleBody: articleBody,
       articleTitle: postTitle,
     })
@@ -158,7 +188,9 @@ const Posting = () => {
           .then(() => {
             setDashboardView('article');
             setSelectedPostId(articleId);
+            setPostImages([]);
             setDisablePrompt(true);
+            // navigate(`/team-dashboard/${id}`);
             setAlert({
               message: '글쓰기를 완료했어요',
               isVisible: true,
@@ -209,7 +241,6 @@ const Posting = () => {
           forwardTitle={setPostTitle}
           content={article}
           title={articleTitle}
-          imageCategory={'ARTICLE'}
         />
         <Spacer h={spacing} />
         <ConfirmButtonWrap

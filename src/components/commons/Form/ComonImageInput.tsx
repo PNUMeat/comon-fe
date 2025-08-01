@@ -5,9 +5,8 @@ import { SText } from '@/components/commons/SText';
 import { SimpleLoader } from '@/components/commons/SimpleLoader';
 import { HeightInNumber } from '@/components/types';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { s3 } from '@/api/presignedurl.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import { MAX_IMAGE_SIZE, imageAtom, isImageFitAtom } from '@/store/form';
 import styled from '@emotion/styled';
@@ -129,23 +128,50 @@ export const ComonImageInput: React.FC<{
   isDisabled?: boolean;
   h?: number;
   padding?: string;
-  imageCategory: string;
-}> = ({
-  imageCategory,
-  imageUrl,
-  isDisabled,
-  h = 200,
-  padding = '5px 14px',
-}) => {
+}> = ({ imageUrl, isDisabled, h = 200, padding = '5px 14px' }) => {
   const [image, setImage] = useAtom(imageAtom);
   const [imageStr, setImageStr] = useState<string | null>(imageUrl ?? null);
+  const workerRef = useRef<Worker | null>(null);
+
+  const loadCompressedImage = useCallback(
+    (file: File) => {
+      if (!workerRef.current) {
+        workerRef.current = new Worker(
+          new URL('@/workers/imageCompressor.ts', import.meta.url),
+          { type: 'module' }
+        );
+
+        workerRef.current.onmessage = (e) => {
+          const { compressedImage, error = undefined } = e.data;
+          if (compressedImage && !error) {
+            setImage(compressedImage);
+            return;
+          }
+          console.error('이미지 압축에 실패했습니다.', error);
+          setImage(file);
+        };
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const worker = workerRef.current;
+        worker?.postMessage({
+          src: e?.target?.result,
+          fileType: file.type,
+          fileName: '설정할 파일 이름',
+          quality: 0.8,
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+    [setImage]
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      s3(imageCategory, file, (url: string) => {
-        setImage(url);
-      });
+      loadCompressedImage(file);
     }
   };
 
@@ -153,18 +179,20 @@ export const ComonImageInput: React.FC<{
     e.preventDefault();
     if (!isDisabled && e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      s3(imageCategory, file, (url: string) => {
-        setImage(url);
-      });
+      loadCompressedImage(file);
     }
   };
 
-  useEffect(() => {
-    setImageStr(image);
-  }, [image]);
-
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
     e.preventDefault();
+
+  useEffect(() => {
+    if (image) {
+      const reader = new FileReader();
+      reader.onload = () => setImageStr(reader.result as string);
+      reader.readAsDataURL(image);
+    }
+  }, [image]);
 
   const fontSize = h === 80 ? '12px' : '14px';
 

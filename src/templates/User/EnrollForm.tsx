@@ -35,7 +35,7 @@ const EnrollFormContainer = styled.div<HeightInNumber>`
 const MobileComponent = () => (
   <>
     <FormFieldLabel>프로필 이미지</FormFieldLabel>
-    <ComonImageInput imageCategory={'PROFILE'} />
+    <ComonImageInput />
     <FormFieldLabel>닉네임</FormFieldLabel>
     <ComonTextInput maxLength={10} placeholder={'닉네임'} />
   </>
@@ -57,7 +57,7 @@ export const EnrollForm: React.FC<HeightInNumber> = ({ h }) => {
             <ComonTextInput maxLength={10} placeholder={'닉네임'} />
 
             <FormFieldLabel>프로필 이미지</FormFieldLabel>
-            <ComonImageInput imageCategory={'PROFILE'} />
+            <ComonImageInput />
           </>
         ) : (
           <MobileComponent />
