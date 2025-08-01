@@ -16,8 +16,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
-import LockIcon from '@/assets/TeamDashboard/lock.svg';
-import MessageIcon from '@/assets/TeamDashboard/message_circle.svg';
+import LockIcon from '@/assets/TeamDashboard/lock.png';
+import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
@@ -82,21 +82,12 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   };
 
   const goRecruitPage = () => {
-    if (isLoggedIn() || isDevMode()) {
-      if (teamInfo.teamRecruitId) {
-        navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
-      } else {
-        toast.error('참가할 수 없는 상태입니다.');
-      }
+    if (teamInfo.teamRecruitId) {
+      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
     } else {
-      sessionStorage.setItem('redirect', location.pathname);
-      navigate(PATH.LOGIN, {
-        state: {
-          redirect: location.pathname,
-        },
-      });
-    };
-  }
+      toast.error('참가할 수 없는 상태입니다.');
+    }
+  };
 
   const handleClick = () => {
     if (teamInfo.teamRecruitId) {
@@ -106,7 +97,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         message: '현재 모집글이 없습니다.',
         description: '새로 작성하시겠어요?',
         isVisible: true,
-        cancelText: '취소',
+        cancleText: '취소',
         confirmText: '작성하기',
         onConfirm: () => {
           navigate(`${PATH.TEAM_RECRUIT}/posting`, {
@@ -451,12 +442,6 @@ const MoreIcon = styled.img`
   height: 10px;
   margin-left: 8px;
   padding-top: 2px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 8px;
-    height: 5px;
-    margin-left: 4px;
-  }
 `;
 
 const NewPostButton = styled.button`
@@ -496,14 +481,12 @@ const DropdownWrapper = styled.div`
   padding: 18px 52px;
   box-sizing: border-box;
   box-shadow: 2px 2px 20px 0px #5e609933;
-  border: 1px solid var(--light-selection, #E5E5E5);
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 200px;
-    bottom: -96px;
+    width: 100px;
+    bottom: -50px;
     right: 10px;
-    padding: 11px 11px;
-    gap: 10px;
+    padding: 8px 4px;
   }
 `;
 
@@ -513,22 +496,20 @@ const DropdownList = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
-  box-sizing: border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    gap: 20px;
-    padding: 8px 22px;
-    border-radius: 5px;
-
-    &:hover {
-      background: #F8F8FF;
-    }
+    gap: 8px;
   }
 `;
 
 const DropdownListIcon = styled.img`
   width: 18px;
   height: 18px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 8px;
+    height: 8px;
+  }
 `;
 
 const DropdownListText = styled.div`
@@ -537,9 +518,6 @@ const DropdownListText = styled.div`
   font-weight: 600;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 90px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 6px;
   }
 `;

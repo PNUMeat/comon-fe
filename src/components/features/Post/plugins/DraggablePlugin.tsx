@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-// import { postImagesAtom } from '@/store/posting.ts';
+import { postImagesAtom } from '@/store/posting.ts';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { eventFiles } from '@lexical/rich-text';
 import {
@@ -9,7 +9,7 @@ import {
   isHTMLElement,
   mergeRegister,
 } from '@lexical/utils';
-// import { useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -482,7 +482,7 @@ const useDraggableBlockMenu = (
   const isDraggingBlockRef = useRef<boolean>(false);
   const [draggableBlockElem, setDraggableBlockElem] =
     useState<HTMLElement | null>(null);
-  // const setPostImages = useSetAtom(postImagesAtom);
+  const setPostImages = useSetAtom(postImagesAtom);
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
@@ -606,57 +606,57 @@ const useDraggableBlockMenu = (
           return;
         }
 
-        // const line = $getRoot()
-        //   .getChildren()
-        //   .findIndex((node) => node.getKey() === dragData);
-        // const imgNodeKeys = imgArray
-        //   .map((img) => $getNearestNodeFromDOMNode(img)?.getKey())
-        //   .filter((key) => key !== undefined);
+        const line = $getRoot()
+          .getChildren()
+          .findIndex((node) => node.getKey() === dragData);
+        const imgNodeKeys = imgArray
+          .map((img) => $getNearestNodeFromDOMNode(img)?.getKey())
+          .filter((key) => key !== undefined);
 
         // console.log('my img keys', imgArray, imgNodeKeys);
-        // 사용자 드래그 트래킹
-        // setPostImages((prev) => {
-        //   const targets = prev.filter((img) => imgNodeKeys.includes(img.key));
-        //   const targetOriginLine = targets[0].line;
-        //   const targetNewLine = line;
-        //   if (targetOriginLine === targetNewLine) {
-        //     return prev;
-        //   }
-        //
-        //   const rangeStart = Math.min(targetOriginLine, targetNewLine);
-        //   const rangeEnd = Math.max(targetOriginLine, targetNewLine);
-        //
-        //   const rearrangedArr = prev.map((imgObj) => {
-        //     if (imgNodeKeys.includes(imgObj.key)) {
-        //       // console.log('이동됨', imgObj.key);
-        //       return { ...imgObj, line: targetNewLine };
-        //     }
-        //
-        //     if (imgObj.line >= rangeStart && imgObj.line <= rangeEnd) {
-        //       if (
-        //         targetNewLine < targetOriginLine &&
-        //         imgObj.line >= targetNewLine
-        //         // && imgObj.line < targetOriginLine
-        //       ) {
-        //         // console.log('아래로 밀러남', imgObj.key);
-        //         return { ...imgObj, line: imgObj.line + 1 };
-        //       }
-        //
-        //       if (
-        //         targetNewLine > targetOriginLine &&
-        //         imgObj.line > targetOriginLine
-        //         // && imgObj.line <= targetNewLine
-        //       ) {
-        //         // console.log('위로 밀려남', imgObj.key);
-        //         return { ...imgObj, line: imgObj.line - 1 };
-        //       }
-        //     }
-        //     // console.log('그대로', imgObj.key);
-        //     return imgObj;
-        //   });
-        //   console.error('rearrange fin', rearrangedArr);
-        //   return rearrangedArr;
-        // });
+
+        setPostImages((prev) => {
+          const targets = prev.filter((img) => imgNodeKeys.includes(img.key));
+          const targetOriginLine = targets[0].line;
+          const targetNewLine = line;
+          if (targetOriginLine === targetNewLine) {
+            return prev;
+          }
+
+          const rangeStart = Math.min(targetOriginLine, targetNewLine);
+          const rangeEnd = Math.max(targetOriginLine, targetNewLine);
+
+          const rearrangedArr = prev.map((imgObj) => {
+            if (imgNodeKeys.includes(imgObj.key)) {
+              // console.log('이동됨', imgObj.key);
+              return { ...imgObj, line: targetNewLine };
+            }
+
+            if (imgObj.line >= rangeStart && imgObj.line <= rangeEnd) {
+              if (
+                targetNewLine < targetOriginLine &&
+                imgObj.line >= targetNewLine
+                // && imgObj.line < targetOriginLine
+              ) {
+                // console.log('아래로 밀러남', imgObj.key);
+                return { ...imgObj, line: imgObj.line + 1 };
+              }
+
+              if (
+                targetNewLine > targetOriginLine &&
+                imgObj.line > targetOriginLine
+                // && imgObj.line <= targetNewLine
+              ) {
+                // console.log('위로 밀려남', imgObj.key);
+                return { ...imgObj, line: imgObj.line - 1 };
+              }
+            }
+            // console.log('그대로', imgObj.key);
+            return imgObj;
+          });
+          console.error('rearrange fin', rearrangedArr);
+          return rearrangedArr;
+        });
       });
 
       setDraggableBlockElem(null);

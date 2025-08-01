@@ -7,7 +7,6 @@ import { SText } from '@/components/commons/SText';
 
 import { Fragment, Suspense, useState } from 'react';
 
-import { s3 } from '@/api/presignedurl.ts';
 import {
   ProfileQueryResp,
   changeProfile,
@@ -260,32 +259,27 @@ export const Profile = () => {
     });
 
     const image = (formValues['image'] ?? null) as File;
-    const mutateProfile = (url: string) =>
-      changeProfile({
-        memberName: formValues['memberName'] as string,
-        memberExplain: formValues['memberExplain'] as string,
-        imageUrl: url,
+
+    changeProfile({
+      memberName: formValues['memberName'] as string,
+      memberExplain: formValues['memberExplain'] as string,
+      image: image.size !== 0 ? image : null,
+    })
+      .then(() => {
+        queryClient
+          .refetchQueries({
+            queryKey: ['my-profile-query'],
+          })
+          .then(() => {
+            setMode('query');
+            if (image) {
+              setImage(image);
+            }
+            alert('프로필 변환에 성공했습니다');
+          })
+          .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
       })
-        .then(() => {
-          queryClient
-            .refetchQueries({
-              queryKey: ['my-profile-query'],
-            })
-            .then(() => {
-              setMode('query');
-              if (url) {
-                setImage(url);
-              }
-              alert('프로필 변환에 성공했습니다');
-            })
-            .catch(() => alert('변환된 프로필 조회를 실패했습니다'));
-        })
-        .catch(() => alert('프로필 변환에 실패했습니다'));
-    if (image.size > 0) {
-      s3('PROFILE', image, mutateProfile);
-    } else {
-      mutateProfile('');
-    }
+      .catch(() => alert('프로필 변환에 실패했습니다'));
   };
 
   return (
@@ -374,12 +368,7 @@ const ProfileModifier = () => {
   return (
     <ProfileInfoGrid>
       <PInfoLabel>이미지</PInfoLabel>
-      <ComonImageInput
-        key={`${imageUrl}`}
-        imageUrl={imageUrl}
-        h={80}
-        imageCategory={'PROFILE'}
-      />
+      <ComonImageInput key={`${imageUrl}`} imageUrl={imageUrl} h={80} />
 
       <PInfoLabel>이름</PInfoLabel>
       <TextInput
