@@ -8,7 +8,7 @@ type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  // images: File[] | null;
+  // images: File[];
 };
 
 type PostingMutationResp = {
@@ -25,12 +25,18 @@ export const createPost = async ({
     return createPostMock.data;
   }
 
+  const formData = new FormData();
+  formData.append('teamId', teamId.toString());
+  formData.append('articleTitle', articleTitle);
+  formData.append('articleBody', articleBody);
+
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     'v1/articles',
+    formData,
     {
-      teamId,
-      articleTitle,
-      articleBody,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     }
   );
 

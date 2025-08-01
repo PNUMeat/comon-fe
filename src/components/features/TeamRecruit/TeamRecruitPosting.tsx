@@ -4,8 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
-import { TeamRecruitSubject } from '@/components/features/TeamRecruit/RecruitExampleData';
-import { getRecruitDefaultData } from '@/components/features/TeamRecruit/RecruitExampleData';
+import { getRecruitDefaultData, TeamRecruitSubject } from '@/components/features/TeamRecruit/RecruitExampleData';
 import TeamRecruitInput from '@/components/features/TeamRecruit/TeamRecruitInput';
 
 import { useRef, useState } from 'react';
@@ -118,50 +117,6 @@ export const TeamRecruitPosting = () => {
         commentClose="펼쳐서 확인하기"
         titlePrefix="작성 예시"
       />
-      <PostEditor
-        forwardContent={setContent}
-        forwardTitle={setTitle}
-        content={content}
-        title={title}
-        imageCategory={'TEAM_RECRUIT'}
-      />
-      <Spacer h={10} />
-      <ContactWrapper>
-        <Contact>
-          <Flex
-            align="center"
-            gap={isMobile ? '6px' : '10px'}
-            style={{ width: 'auto' }}
-          >
-            <SendIconStyle src={sendIcon} />
-            <SText
-              color="#333"
-              fontSize={isMobile ? '14px' : '18px'}
-              fontWeight={600}
-              fontFamily="Pretendard"
-            >
-              연락 방법
-            </SText>
-          </Flex>
-          <ContactText>
-            (필수) 방장은 팀 관리와 운영을 위해 연락 방법을 반드시 기재해야 해요
-          </ContactText>
-        </Contact>
-        <TeamRecruitInput value={url} ref={chatUrlRef} onChange={onChange} />
-      </ContactWrapper>
-      <Spacer h={30} />
-      <ConfirmButtonWrap
-        disabled={isButtonDisabled}
-        isPending={false}
-        onClick={onClick}
-      >
-        <ClickImage src={isButtonDisabled ? grayClickIcon : click} />
-        <ActionText>
-          <SText fontSize={isMobile ? '16px' : '20px'} fontWeight={700}>
-            {recruitId ? '수정 완료' : '작성 완료'}
-          </SText>
-        </ActionText>
-      </ConfirmButtonWrap>
       <PostEditor
         forwardContent={setContent}
         forwardTitle={setTitle}
