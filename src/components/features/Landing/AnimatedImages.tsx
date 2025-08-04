@@ -4,6 +4,8 @@ import StarText from "@/assets/Landing/star_text.png";
 import FrontLeft from '@/assets/Landing/twisted_4.png';
 import FrontRight from '@/assets/Landing/twisted_5.png';
 import BackRight from '@/assets/Landing/twisted_6.png';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
 
@@ -12,6 +14,7 @@ const BackgroundGroup = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<'up' | 'down' | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   const isInViewport = (el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
@@ -23,7 +26,7 @@ const BackgroundGroup = () => {
       e.preventDefault();
     };
   
-    if (isAnimating) {
+    if (isAnimating && !isMobile) {
       window.addEventListener('wheel', preventScroll, { passive: false });
       window.addEventListener('touchmove', preventScroll, { passive: false });
     } else {
@@ -35,11 +38,12 @@ const BackgroundGroup = () => {
       window.removeEventListener('wheel', preventScroll);
       window.removeEventListener('touchmove', preventScroll);
     };
-  }, [isAnimating]);
+  }, [isAnimating, isMobile]);
   
   
 
   const onWheel = (e: WheelEvent) => {
+    if (isMobile) return;
     if (!wrapperRef.current || !isInViewport(wrapperRef.current)) return;
     if (isAnimating) {
       e.preventDefault();
@@ -56,9 +60,10 @@ const BackgroundGroup = () => {
   };
 
   useEffect(() => {
+    if (isMobile) return;
     window.addEventListener('wheel', onWheel, { passive: false });
     return () => window.removeEventListener('wheel', onWheel);
-  }, [isAnimating, ratio]);
+  }, [isAnimating, ratio, isMobile]);
 
   useEffect(() => {
     if (!direction) return;
@@ -90,6 +95,7 @@ const BackgroundGroup = () => {
     
 
   return (
+
     <Wrapper ref={wrapperRef}>
       <InteractionContainer>
         <ContentWrapper>
@@ -133,6 +139,11 @@ const Wrapper = styled.div`
   width: 100%;
   height: 300px;
   overflow: hidden;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 150px;
+    overflow: visible;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -154,6 +165,14 @@ const ContentWrapper = styled.div`
   justify-content: center;
   transition: opacity 0.5s ease;
   pointer-events: none;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 const AnimatedImage = styled.img<{ ratio: number }>`
@@ -169,7 +188,7 @@ const Image1 = styled(AnimatedImage)`
   transform: ${({ ratio }) =>
   ratio
     ? 'translateX(0) translateY(-62px) scale(0.8)'
-    : 'translateX(calc(-100vw + 144px + 410px)) translateY(0) scale(1)'};
+    : 'translateX(calc(-50vw)) translateY(0) scale(1)'};
   filter: ${({ ratio }) => (ratio ? 'blur(0)' : 'blur(0)')};
   opacity: ${({ ratio }) => (ratio ? 1 : 1)};
   transition:
@@ -177,6 +196,16 @@ const Image1 = styled(AnimatedImage)`
     filter 1s ease-in-out 0.5s,
     opacity 1s ease-in-out 0.5s;
   z-index: 2;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    filter: blur(0) !important;
+    opacity: 1 !important;
+    left: 50vw;
+    top: 50px;
+  }
 `;
 
 const Image2 = styled(AnimatedImage)`
@@ -192,6 +221,13 @@ const Image2 = styled(AnimatedImage)`
     transform 1s ease-in-out,
     filter 1s ease-in-out 0.5s,
     opacity 1s ease-in-out 0.5s;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 0px;
+    height: 0px;
+    filter: blur(0) !important;
+    opacity: 1 !important;
+  }
 `;
 
 const Image3 = styled(AnimatedImage)`
@@ -207,6 +243,15 @@ const Image3 = styled(AnimatedImage)`
     transform 1s ease-in-out,
     filter 1s ease-in-out 0.5s,
     opacity 1s ease-in-out 0.5s;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    left: 30px;
+    top: -15px;
+    width: 48px;
+    height: 52px;
+    filter: blur(3px) !important;
+    opacity: 1 !important;
+  }
 `;
 
 const Image4 = styled.img`
@@ -216,6 +261,14 @@ const Image4 = styled.img`
   width: 98px;
   height: 98px;
   z-index: 1;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: 44px;
+    right: 16px;
+    width: 35px;
+    height: 35px;
+    opacity: 1 !important;
+  }
 `;
 
 const InteractionContainer = styled.div`
@@ -236,17 +289,35 @@ const ImgContainer = styled.div`
   gap: 3px;
   align-items: flex-start;
   z-index: 10;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    transform: none;
+    left: 0;
+    top: 25px;
+    height: fit-content;
+  }
 `;
 
 const StarTextImg = styled.img`
   width: 45px;
   height: 20px;
   margin-top: 5px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 18px;
+    height: 8px;
+    margin-top: 0;
+  }
 `;
 
 const LogoBoxImg = styled.img`
   width: 70px;
   height: 40px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 26px;
+    height: 16px;
+  }
 `;
 
 const TextContainer = styled.div`
@@ -255,6 +326,12 @@ const TextContainer = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   height: 228px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 100px;
+    justify-content: center;
+    margin-left: 42px;
+  }
 `;
 
 const Title = styled.div`
@@ -262,6 +339,10 @@ const Title = styled.div`
   font-weight: 700;
   line-height: 1.4;
   color: #212529;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 20px;
+  }
 `;
 
 const CodeText = styled.span`

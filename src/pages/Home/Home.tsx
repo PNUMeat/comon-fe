@@ -21,6 +21,7 @@ import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
 import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from '@emotion/styled';
 
 export const Home = () => {
@@ -196,6 +197,10 @@ const Section = styled.section<{ backgroundColor?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 40px 0;
+  }
 `;
 
 const SubHeader = ({

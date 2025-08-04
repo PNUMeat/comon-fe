@@ -41,11 +41,6 @@ export const createPost = async ({
     return createPostMock.data;
   }
 
-  const formData = new FormData();
-  formData.append('teamId', teamId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     'v1/articles',
     formData,
