@@ -107,33 +107,6 @@ export const Home = () => {
         </Section>
 
         {/* 지수 */}
-        {/* <Section>
-          <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
-          <Spacer h={40} />
-          <SText
-            color="#111"
-            textAlign="center"
-            fontFamily="Pretendard"
-            fontSize="36px"
-            fontWeight={900}
-          >
-            함께한 사람들의 후기
-          </SText>
-          <Spacer h={20} />
-          <SText
-            color="#767676"
-            textAlign="center"
-            fontFamily="Pretendard"
-            fontSize="24px"
-            fontWeight={300}
-          >
-            코드몬스터와 함께 성장한 동료들의 생생한 후기✨
-          </SText>
-          <Spacer h={86} />
-          <ReviewSlider />
-          <Spacer h={80} />
-          <Ellipse />
-        </Section> */}
 
         <Section>
           <SText
