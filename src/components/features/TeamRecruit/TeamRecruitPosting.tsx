@@ -20,8 +20,9 @@ import { colors } from '@/constants/colors';
 import { PostSubjectViewer } from '@/pages/Posting/PostSubjectViewer';
 import { PATH } from '@/routes/path';
 import { alertAtom } from '@/store/modal';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 export const TeamRecruitPosting = () => {
   const isMobile = window.innerWidth < breakpoints.mobile;
@@ -40,6 +41,7 @@ export const TeamRecruitPosting = () => {
   );
   const [title, setTitle] = useState(teamRecruitTitle ?? '');
   const [url, setUrl] = useState(chatUrl ?? '');
+  const [postImages, setPostImages] = useAtom(postImagesAtom);
   const chatUrlRef = useRef<HTMLTextAreaElement>(null);
   const setAlert = useSetAtom(alertAtom);
   const [disablePrompt, setDisablePrompt] = useState(false);
@@ -54,17 +56,34 @@ export const TeamRecruitPosting = () => {
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const teamRecruitBody = content.trim();
+    const teamRecruitBodyTrim = content.trim();
+
+    const teamRecruitBody =
+      postImages.length > 0
+        ? teamRecruitBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        : teamRecruitBodyTrim;
 
     if (recruitId) {
       console.log('recruitId', recruitId);
       modifyRecruitPost({
         teamRecruitTitle: title,
         teamRecruitBody: teamRecruitBody,
+        image:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         chatUrl: url,
         recruitmentId: recruitId,
       })
         .then(() => {
+          setPostImages([]);
           setDisablePrompt(true);
           setAlert({
             message: '모집글을 수정했어요',
@@ -87,9 +106,21 @@ export const TeamRecruitPosting = () => {
         teamId: teamId,
         teamRecruitTitle: title,
         teamRecruitBody: teamRecruitBody,
+        image:
+          postImages.length > 0
+            ? postImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         chatUrl: url,
       })
         .then((res) => {
+          setPostImages([]);
           setDisablePrompt(true);
           setAlert({
             message: '모집글을 생성했어요',
@@ -122,7 +153,6 @@ export const TeamRecruitPosting = () => {
         forwardTitle={setTitle}
         content={content}
         title={title}
-        imageCategory={'TEAM_RECRUIT'}
       />
       <Spacer h={10} />
       <ContactWrapper>
