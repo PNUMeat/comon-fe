@@ -22,11 +22,13 @@ import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
 import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
 
 export const Home = () => {
   // const navigate = useNavigate();
   // const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   return (
     <Fragment>
@@ -36,9 +38,9 @@ export const Home = () => {
           <AnimatedLanding />
         </Section>
         <Section backgroundColor="#FAFAFF">
-          <Decoration src={bgZigzag} top="180px" left="20%" />
-          <Decoration src={bgRing} top="150px" right="20%" />
-          <Decoration src={bgCurve} top="270px" right="27%" width="60px" />
+          <Decoration src={bgZigzag} top={isMobile ? '130px' : '180px'} left={isMobile ? '5%' : '20%'} width={isMobile ? '60px' : '120px'} />
+          <Decoration src={bgRing} top={isMobile ? '100px' : '150px'} right={isMobile ? '5%' : '20%'} width={isMobile ? '80px' : '120px'} />
+          <Decoration src={bgCurve} top={isMobile ? '170px' : '270px'} right={isMobile ? '20%' : '27%'} width={isMobile ? '40px' : '60px'} />
 
           <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
           <Spacer h={44} />
@@ -46,9 +48,10 @@ export const Home = () => {
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="42px"
+            fontSize={isMobile ? '21px' : '42px'}
             fontWeight={700}
-            lineHeight="60px"
+            lineHeight={isMobile ? '30px' : '60px'}
+            style={{ zIndex: 10 }}
           >
             혼자서는 지치기 쉬운 코딩테스트,
             <br />
@@ -59,9 +62,9 @@ export const Home = () => {
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="20px"
+            fontSize={isMobile ? '12px' : '20px'}
             fontWeight={300}
-            lineHeight="34px"
+            lineHeight={isMobile ? '17px' : '34px'}
           >
             코드몬스터는 코딩테스트 준비를 위한 스터디 플랫폼입니다.
             <br />
@@ -70,7 +73,7 @@ export const Home = () => {
             풀이를 공유하며 지속적인 성장을 이끌어내는 커뮤니티입니다.
           </SText>
           <Spacer h={50} />
-          <div style={{ display: 'flex', gap: '27px' }}>
+          <div style={{ display: 'flex', gap: '27px', flexDirection: isMobile ? 'column' : 'row' }}>
           <Banner
             title="팀 스터디 관리"
             description1="팀원과 함께 목표를 설정하고, 매일"
@@ -210,14 +213,15 @@ const SubHeader = ({
   text: string;
   theme: 'dark' | 'light';
 }) => {
+  const isMobile = useWindowWidth() < breakpoints.mobile;
   return (
     <Flex direction="column">
       <Logo src={theme === 'dark' ? logo : logoLight} alt={'logo'} />
-      <Spacer h={12} />
+      <Spacer h={isMobile ? 6 : 12} />
       <SText
         color={theme === 'dark' ? '#333' : '#D5D5D5'}
         fontFamily="Pretendard"
-        fontSize="28px"
+        fontSize={ isMobile ? '14px' : '28px'}
         fontWeight={900}
         textAlign="center"
       >
@@ -229,6 +233,10 @@ const SubHeader = ({
 
 const Logo = styled.img`
   height: 16px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 8px;
+  }
 `;
 
 // const Ellipse = styled.div`
@@ -253,6 +261,7 @@ const Decoration = styled.img<{
   width: ${({ width }) => width || '120px'};
   opacity: 0.8;
   z-index: 1;
+
 `;
 
 // const StartButton = styled.button`
