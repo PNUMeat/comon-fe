@@ -21,6 +21,7 @@ import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
 import { Banner } from '@/components/features/Landing/Banner';
 import ServiceStrength from '@/components/features/Landing/ServiceStrength';
 import UsageExample from '@/components/features/Landing/UsageExample';
+import UserReviewSlider from '@/components/features/Landing/UserReviewSlider';
 import { breakpoints } from '@/constants/breakpoints';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
@@ -106,6 +107,15 @@ export const Home = () => {
           <ServiceStrength />
         </Section>
 
+        <Section backgroundColor="#FAFAFF">
+          <Spacer h={isMobile ? 20 : 44} />
+          <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
+          <Spacer h={isMobile ? 20 : 44} />
+          <UserReviewSlider />
+        </Section>
+
+        
+
         {/* 지수 */}
 
         <Section backgroundColor="#fff">
@@ -119,6 +129,7 @@ export const Home = () => {
             FAQ
           </SText>
           <Spacer h={isMobile ? 10 : 20} />
+          
           <SText
             color="#767676"
             textAlign="center"

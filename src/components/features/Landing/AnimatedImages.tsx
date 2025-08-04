@@ -292,7 +292,7 @@ const ImgContainer = styled.div`
 
   @media (max-width: ${breakpoints.mobile}px) {
     transform: none;
-    left: 0;
+    left: -5px;
     top: 25px;
     height: fit-content;
   }
