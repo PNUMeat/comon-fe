@@ -96,7 +96,7 @@ export const Home = () => {
           {/* TODO: 카드 3개 영역 */}
         </Section>
 
-        <Section backgroundColor="#fff">
+        <Section backgroundColor="linear-gradient(180deg, #FAFAFF 0%, #F2F2FF 100%)">
           <SubHeader text="이렇게 사용해보세요!" theme="dark" />
           <UsageExample />
         </Section>
