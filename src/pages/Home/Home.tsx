@@ -108,28 +108,28 @@ export const Home = () => {
 
         {/* 지수 */}
 
-        <Section>
+        <Section backgroundColor="#fff">
           <SText
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="36px"
+            fontSize={isMobile ? '18px' : '36px'}
             fontWeight={900}
           >
             FAQ
           </SText>
-          <Spacer h={20} />
+          <Spacer h={isMobile ? 10 : 20} />
           <SText
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="24px"
+            fontSize={isMobile ? '10px' : '24px'}
             fontWeight={300}
           >
             궁금한 점이 있으신가요? 자주 묻는 질문을 모아봤어요!
           </SText>
-          <Spacer h={10} />
-          <img src={faq} alt="FAQ" />
+          <Spacer h={isMobile ? 5 : 10} />
+          <img src={faq} alt="FAQ" style={{ width: isMobile ? '16px' : '32px' }}/>
           <Spacer h={32} />
           <QnAList />
         </Section>

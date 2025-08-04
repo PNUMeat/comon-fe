@@ -3,6 +3,8 @@ import { SText } from '@/components/commons/SText';
 import { useState } from 'react';
 
 import arrowDownIcon from '@/assets/Home/arrow-faq.svg';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
 
 export const QnAList = () => {
@@ -40,16 +42,18 @@ export const QnAList = () => {
     },
   ];
 
+  const isMobile = useWindowWidth() < breakpoints.mobile;
+
   return (
-    <div style={{ maxWidth: '840px' }}>
+    <div style={{ maxWidth: isMobile ? '340px' : '840px' }}>
       {qnaData.map((item, index) => (
         <ItemWrapper key={index} onClick={() => toggle(index)}>
           <Header>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '6px' : '12px' }}>
               <SText
                 color={openIndex === index ? "#333" : "#767676"}
                 fontFamily="Pretendard"
-                fontSize="18px"
+                fontSize={isMobile ? '9px' : '18px'}
                 fontStyle="normal"
                 fontWeight={400}
                 lineHeight="normal"
@@ -60,7 +64,7 @@ export const QnAList = () => {
             <SText
               color={openIndex === index ? "#333" : "#767676"}
               fontFamily="Pretendard"
-              fontSize="18px"
+              fontSize={isMobile ? '9px' : '18px'}
               fontStyle="normal"
               fontWeight={400}
               lineHeight="normal"
@@ -73,10 +77,10 @@ export const QnAList = () => {
               <img
                 src={arrowDownIcon}
                 alt="접기"
-                style={{ transform: 'rotate(180deg)' }}
+                style={{ transform: 'rotate(180deg)', width: isMobile ? '12px' : '24px' }}
               />
             ) : (
-              <img src={arrowDownIcon} alt="펼치기" />
+              <img src={arrowDownIcon} alt="펼치기" style={{ width: isMobile ? '12px' : '24px' }} />
             )}
           </Header>
 
@@ -95,6 +99,11 @@ const ItemWrapper = styled.div`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   margin-bottom: 20px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 10px 12px 10px 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 const Header = styled.div`
@@ -124,4 +133,11 @@ const Answer = styled.div<{ isOpen: boolean }>`
     max-height 0.3s ease,
     opacity 0.3s ease,
     margin-top 0.3s ease;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 9px;
+    line-height: 140%;
+    letter-spacing: -0.12px;
+    gap: 6px;
+  }
 `;
