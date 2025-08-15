@@ -1,5 +1,7 @@
 import RightArrowIcon from "@/assets/Landing/right_arrow.png";
 import { Spacer } from "@/components/commons/Spacer";
+import { breakpoints } from "@/constants/breakpoints";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { PATH } from "@/routes/path";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +10,7 @@ import AnimatedImages from "./AnimatedImages";
 export const AnimatedLanding = () => {
 
   const navigate = useNavigate();
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   const handleClick = () => {
     navigate(`${PATH.TEAM_RECRUIT}/list`);
@@ -15,7 +18,7 @@ export const AnimatedLanding = () => {
   return (
     <Container>
       <AnimatedImages />
-      <Spacer h={80} />
+      <Spacer h={isMobile ? 40 : 80} />
     <ContentContainer>
     <div>
       <Content>이미 약 200명의 개발자가</Content>
@@ -34,7 +37,7 @@ export const AnimatedLanding = () => {
     </div>
     <Button onClick={handleClick}>
       팀 찾아보기
-      <Icon src={RightArrowIcon} className="icon"/>  
+      {!isMobile ? <Icon src={RightArrowIcon} className="icon"/> : null}  
     </Button>
     </ContentContainer>
     </Container>
@@ -49,6 +52,10 @@ const Container = styled.div`
   justify-content: flex-start;
   padding: 0 195px;
   box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 0 36px;
+  }
 `;
 
 
@@ -58,6 +65,7 @@ const ContentContainer = styled.div`
   gap: 12px;
   width: 100%;
   position: relative;
+
 `;
 
 const Content = styled.div`
@@ -66,6 +74,11 @@ const Content = styled.div`
   line-height: 1.4;
   color: #333;
   font-weight: 500;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+    font-family: NanumSquareNeo;
+  }
 `;
 
 const Button = styled.div`
@@ -109,6 +122,17 @@ const Button = styled.div`
       width: 24px;
       height: 24px;
     }
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 105px;
+    height: 42px;
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 45px;
+    align-self: center;
+    padding: 10px 12px;
   }
 `;
 

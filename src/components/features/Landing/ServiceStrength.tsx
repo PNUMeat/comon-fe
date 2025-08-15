@@ -1,6 +1,8 @@
 import HalfComonImage from "@/assets/Landing/half_comon.png";
 import { Spacer } from "@/components/commons/Spacer";
 import FeatureCard from "@/components/features/Landing/FeatureCard";
+import { breakpoints } from "@/constants/breakpoints";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
 import styled from "@emotion/styled";
 
 const content = [
@@ -26,11 +28,12 @@ const content = [
 
 
 export const ServiceStrength = () => {
+  const isMobile = useWindowWidth() < breakpoints.mobile;
   return (
     <Container>
       <Spacer h={44} />
       <Title>"코드몬스터만의 강점"</Title>
-      <Spacer h={86} /> 
+      <Spacer h={isMobile ? 40 : 86} /> 
       <CardContainer>
         {content.map((item, index) => (
           <FeatureCard
@@ -58,12 +61,21 @@ const Title = styled.div`
   font-size: 42px;
   font-weight: 700;
   color: #fff;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 21px;
+  }
 `;
 
 const CardContainer = styled.div`
   display: flex;
   gap: 27px;
   margin-bottom: 200px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
 `;
 
 const HalfComonImg = styled.img`
@@ -74,6 +86,10 @@ const HalfComonImg = styled.img`
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 200px;
+  }
 `;
 
 export default ServiceStrength;

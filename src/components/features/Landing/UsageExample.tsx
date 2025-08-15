@@ -7,6 +7,8 @@ import Twisted1 from '@/assets/Landing/twisted_1.png';
 import Twisted2 from '@/assets/Landing/twisted_2.png';
 import Twisted3 from '@/assets/Landing/twisted_3.png';
 import { Spacer } from '@/components/commons/Spacer';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
 import { useRef } from 'react';
 import Slider from 'react-slick';
@@ -22,6 +24,7 @@ const usageExamples = [
     ],
     image: exampleImage1,
     style: { width: '476px', height: '357px' },
+    mobileStyle: { width: '238px', height: '178px' },
   },
   {
     title: '꾸준한 학습습관 만들기🏃',
@@ -31,6 +34,7 @@ const usageExamples = [
     ],
     image: exampleImage2,
     style: { width: '944px', height: '357px' },
+    mobileStyle: { width: '280px', height: '160px' },
   },
   {
     title: '나에게 맞는 팀을 찾아보세요!',
@@ -40,11 +44,13 @@ const usageExamples = [
     ],
     image: exampleImage3,
     style: { width: '680px', height: '357px' },
+    mobileStyle: { width: '280px', height: '160px' },
   },
 ];
 
 const UsageExampleCard = ({ index }: { index: number }) => {
-  const { title, content, image, style } = usageExamples[index];
+  const { title, content, image, style, mobileStyle } = usageExamples[index];
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   return (
     <Container>
@@ -56,7 +62,7 @@ const UsageExampleCard = ({ index }: { index: number }) => {
           <ContentText>{content[1]}</ContentText>
         </ContentContainer>
         <Spacer h={12} />
-        <img src={image} alt="example" style={style} />
+        <img src={image} alt="example" style={isMobile ? mobileStyle : style} />
       </MainBox>
       <TwistedDecoration1 src={Twisted1} alt="twisted" />
       <TwistedDecoration2 src={Twisted2} alt="twisted" />
@@ -67,10 +73,11 @@ const UsageExampleCard = ({ index }: { index: number }) => {
 
 export const UsageExample = () => {
   const sliderRef = useRef<Slider>(null);
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   return (
     <SliderWrapper>
-      <div className="slider-container" style={{ position: 'relative', width: '950px' }}>
+      <div className="slider-container" style={{ position: 'relative', width: isMobile ? '340px' : '950px' }}>
       <StyledSlider
         ref={sliderRef}
         dots={false}
@@ -86,10 +93,10 @@ export const UsageExample = () => {
       </StyledSlider>
       </div>
 
-      <NavButton style={{ left: -10, top: 320}} onClick={() => sliderRef.current?.slickPrev()}>
+      <NavButton style={{ left: isMobile ? 0 : -10, top: isMobile ? 220 : 320}} onClick={() => sliderRef.current?.slickPrev()}>
         <CaretIcon src={CaretLeftIcon} alt="prev" />
       </NavButton>
-      <NavButton style={{ right: -10, top: 320 }} onClick={() => sliderRef.current?.slickNext()}>
+      <NavButton style={{ right: isMobile ? 0 : -10, top: isMobile ? 220 : 320}} onClick={() => sliderRef.current?.slickNext()}>
         <CaretIcon src={CaretRightIcon} alt="next" />
       </NavButton>
     </SliderWrapper>
@@ -97,6 +104,7 @@ export const UsageExample = () => {
 };
 
 const StyledSlider = styled(Slider)`
+  width: 100%;
   .slick-slide,
   .slick-track {
     width: 950px;
@@ -106,6 +114,14 @@ const StyledSlider = styled(Slider)`
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+  }
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    .slick-slide,
+    .slick-track {
+      width: 340px;
+      height: 400px;
+    }
   }
 `;
 
@@ -128,11 +144,21 @@ const NavButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 28px;
+    height: 28px;
+  }
 `;
 
 const CaretIcon = styled.img`
   width: 24px;
   height: 24px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 const Container = styled.div`
@@ -157,6 +183,17 @@ const MainBox = styled.div`
   border: 3px solid #FFFFFF;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 314px;
+    height: 288px;
+    justify-content: flex-start;
+    padding-top: 30px;
+    box-sizing: border-box;
+    z-index: 1;
+    border: 1.5px solid #FFFFFF;
+    border-radius: 20px;
+  }
 `;
 
 const TitleBox = styled.div`
@@ -176,6 +213,13 @@ const TitleBox = styled.div`
   justify-content: center;
   align-items: center;
   display: flex;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    width: 188px;
+    height: 34px;
+    top: -20px;
+    font-size: 14px;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -191,6 +235,10 @@ const ContentText = styled.div`
   font-weight: 400;
   line-height: 1.4;
   text-align: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 9px;
+  }
 `;
 
 const TwistedDecoration1 = styled.img`
@@ -199,6 +247,13 @@ const TwistedDecoration1 = styled.img`
   left: 96px;
   width: 74px;
   height: 74px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: -30px;
+    left: 20px;
+    width: 62px;
+    height: 62px;
+  }
 `;
 
 const TwistedDecoration2 = styled.img`
@@ -207,6 +262,13 @@ const TwistedDecoration2 = styled.img`
   right: 88px;
   width: 72px;
   height: 72px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: -30px;
+    right: 20px;
+    width: 62px;
+    height: 62px;
+  }
 `;
 
 const TwistedDecoration3 = styled.img`
@@ -215,6 +277,13 @@ const TwistedDecoration3 = styled.img`
   right: 159px;
   width: 35px;
   height: 35px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    top: 20px;
+    right: 70px;
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 export default UsageExample;
