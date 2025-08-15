@@ -4,8 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
-import { TeamRecruitSubject } from '@/components/features/TeamRecruit/RecruitExampleData';
-import { getRecruitDefaultData } from '@/components/features/TeamRecruit/RecruitExampleData';
+import { getRecruitDefaultData, TeamRecruitSubject } from '@/components/features/TeamRecruit/RecruitExampleData';
 import TeamRecruitInput from '@/components/features/TeamRecruit/TeamRecruitInput';
 
 import { useRef, useState } from 'react';
