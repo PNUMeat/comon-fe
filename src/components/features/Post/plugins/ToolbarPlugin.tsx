@@ -3,7 +3,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { SText } from '@/components/commons/SText';
 import { Tag } from '@/components/commons/Tag';
 import { convertToKoreanIfIsKoreanFont } from '@/components/features/Post/constants';
-import { parseHtmlStrToLexicalNodes } from '@/components/features/Post/plugins/InitContentPlugin.tsx';
+import { parseHtmlStrToLexicalNodes } from '@/components/features/Post/plugins/utils.ts';
 import { FontDropdown } from '@/components/features/Post/segments/FontDropdown';
 import { InsertImageButton } from '@/components/features/Post/segments/InsertImageButton';
 import {

@@ -78,7 +78,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({
     const html = div.innerHTML;
     const text = selection.toString();
 
-    event.preventDefault();
+    event?.preventDefault?.();
     event.clipboardData?.setData('text/html-viewer', html);
     event.clipboardData?.setData('text/plain', text);
   };

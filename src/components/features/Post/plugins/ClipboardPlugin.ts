@@ -1,17 +1,17 @@
+import { parseHtmlStrToLexicalNodes } from '@/components/features/Post/plugins/utils.ts';
+
 import { useEffect } from 'react';
 
 import { $createCodeNode, DEFAULT_CODE_LANGUAGE } from '@lexical/code';
-import { $generateNodesFromDOM } from '@lexical/html';
+import { $generateHtmlFromNodes } from '@lexical/html';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
-  $createRangeSelection,
   $createTextNode,
-  $getRoot,
   $getSelection,
   $insertNodes,
   $isElementNode,
   $isRangeSelection,
-  $setSelection,
+  $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
   COPY_COMMAND,
   CUT_COMMAND,
@@ -50,6 +50,7 @@ const CODE_KEYWORDS = [
   'False',
   'static',
   'while',
+  'of',
   'for',
   'if',
   'else',
@@ -123,225 +124,35 @@ const detectLanguageByPrism = (text: string): string => {
 };
 
 const copyNodesToClipboard = async (
+  editor: LexicalEditor,
   nodes: Array<LexicalNode>,
   plainText: string
 ): Promise<boolean> => {
-  if (!nodes.length) return Promise.resolve(false);
+  if (!nodes.length || !navigator.clipboard || !window.ClipboardItem) {
+    return false;
+  }
 
   try {
     const serializedNodes = nodes.map((node) => node.exportJSON());
     const serializedContent = JSON.stringify(serializedNodes);
 
-    return navigator.clipboard
-      .writeText(plainText)
-      .then(() => {
-        try {
-          const clipboardData = new ClipboardItem({
-            [LEXICAL_CLIPBOARD_TYPE]: new Blob([serializedContent], {
-              type: LEXICAL_CLIPBOARD_TYPE,
-            }),
-            'text/plain': new Blob([plainText], { type: 'text/plain' }),
-            'text/html': new Blob([serializedContent], { type: 'text/html' }),
-          });
+    const htmlString = $generateHtmlFromNodes(editor, null);
 
-          return navigator.clipboard
-            .write([clipboardData])
-            .then(() => {
-              return true;
-            })
-            .catch(() => {
-              return true;
-            });
-        } catch (error) {
-          console.warn('클립보드 API 오류:', error);
-          return true;
-        }
-      })
-      .catch(() => {
-        return false;
-      });
-  } catch (error) {
-    console.error('노드 직렬화 중 오류:', error);
-    return navigator.clipboard
-      .writeText(plainText)
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
-  }
-};
-
-const copyCurrentLine = (editor: LexicalEditor): boolean => {
-  selectCurrentLine(editor);
-
-  let selectedText = '';
-  let nodesToCopy: Array<LexicalNode> = [];
-
-  editor.getEditorState().read(() => {
-    const selection = $getSelection();
-    if (!$isRangeSelection(selection) || selection.isCollapsed()) {
-      return;
-    }
-
-    selectedText = selection.getTextContent();
-
-    nodesToCopy = selection.getNodes();
-  });
-
-  if (nodesToCopy.length > 0) {
-    copyNodesToClipboard(nodesToCopy, selectedText).then((success) => {
-      if (!success) {
-        navigator.clipboard.writeText(selectedText);
-      }
+    const clipboardItem = new ClipboardItem({
+      [LEXICAL_CLIPBOARD_TYPE]: new Blob([serializedContent], {
+        type: LEXICAL_CLIPBOARD_TYPE,
+      }),
+      'text/plain': new Blob([plainText], { type: 'text/plain' }),
+      'text/html': new Blob([htmlString], { type: 'text/html' }),
+      'text/html-viewer': new Blob([htmlString], { type: 'text/html' }),
     });
+
+    await navigator.clipboard.write([clipboardItem]);
     return true;
-  } else if (selectedText) {
-    navigator.clipboard
-      .writeText(selectedText)
-      .then(() => {})
-      .catch(() => {});
-    return true;
+  } catch (error) {
+    console.warn('클립보드 복사 실패:', error);
+    return false;
   }
-
-  return false;
-};
-
-const selectCurrentLine = (editor: LexicalEditor): boolean => {
-  editor.update(() => {
-    const selection = $getSelection();
-    if (!$isRangeSelection(selection)) return;
-
-    let currentNode = selection.anchor.getNode();
-    if (!currentNode) return;
-
-    const rootNode = $getRoot();
-
-    while (currentNode && currentNode !== rootNode) {
-      const parent = currentNode.getParent();
-      if (!parent || parent === rootNode) break;
-      currentNode = parent;
-    }
-
-    if (currentNode === rootNode || !$isElementNode(currentNode)) return;
-
-    const children = currentNode.getChildren();
-    if (children.length === 1 && children[0].getType() === 'link') {
-      // const link = children[0];
-      //
-      // const newSelection = $createRangeSelection();
-      // newSelection.anchor.set(link.getKey(), 0, 'element');
-      // newSelection.focus.set(
-      //   link.getKey(),
-      //   link.getTextContentSize(),
-      //   'element'
-      // );
-      // $setSelection(newSelection);
-      return true;
-    }
-
-    if (currentNode.getType() === 'code') {
-      // const children = currentNode.getChildren();
-      // const cursorOffset = selection.anchor.offset;
-      // let totalOffset = 0;
-      let foundLine = false;
-
-      // for (const child of children) {
-      //   const nodeText = child.getTextContent();
-      //   if (!nodeText) continue;
-      //
-      //   if (totalOffset + nodeText.length < cursorOffset) {
-      //     totalOffset += nodeText.length;
-      //     continue;
-      //   }
-      //
-      //   const relativeOffset = cursorOffset - totalOffset;
-      //   const textBeforeCursor = nodeText.substring(0, relativeOffset);
-      //   const textAfterCursor = nodeText.substring(relativeOffset);
-      //
-      //   let lineStartOffset = 0;
-      //   const lastNewlineBeforeCursor = textBeforeCursor.lastIndexOf('\n');
-      //   if (lastNewlineBeforeCursor !== -1) {
-      //     lineStartOffset = lastNewlineBeforeCursor + 1;
-      //   }
-      //
-      //   let lineEndOffset = nodeText.length;
-      //   const firstNewlineAfterCursor = textAfterCursor.indexOf('\n');
-      //   if (firstNewlineAfterCursor !== -1) {
-      //     lineEndOffset = relativeOffset + firstNewlineAfterCursor;
-      //   }
-      //
-      //   const newSelection = $createRangeSelection();
-      //   newSelection.anchor.set(child.getKey(), lineStartOffset, 'text');
-      //   newSelection.focus.set(child.getKey(), lineEndOffset, 'text');
-      //   $setSelection(newSelection);
-      //
-      foundLine = true;
-      //   break;
-      // }
-
-      if (foundLine) {
-        return true;
-      }
-    }
-
-    let minLineStartOffset = Number.MAX_SAFE_INTEGER;
-    let maxLineEndOffset = 0;
-    let totalOffset = 0;
-
-    const cursorOffset = selection.anchor.offset;
-
-    for (const child of children) {
-      const nodeText = child.getTextContent();
-      if (nodeText) {
-        const textBeforeCursor = nodeText.substring(
-          0,
-          cursorOffset - totalOffset > 0 ? cursorOffset - totalOffset : 0
-        );
-        const lineStartOffset = textBeforeCursor.lastIndexOf('\n');
-        const currentLineStart =
-          lineStartOffset === -1 ? 0 : lineStartOffset + 1;
-
-        const lineEndOffset = nodeText.indexOf(
-          '\n',
-          Math.max(0, cursorOffset - totalOffset)
-        );
-        const currentLineEnd =
-          lineEndOffset === -1 ? nodeText.length : lineEndOffset;
-
-        minLineStartOffset = Math.min(
-          minLineStartOffset,
-          totalOffset + currentLineStart
-        );
-        maxLineEndOffset = Math.max(
-          maxLineEndOffset,
-          totalOffset + currentLineEnd
-        );
-      }
-
-      totalOffset += nodeText.length;
-    }
-
-    if (minLineStartOffset === Number.MAX_SAFE_INTEGER) {
-      minLineStartOffset = 0;
-    }
-
-    const parentTextLength = currentNode.getTextContentSize();
-    maxLineEndOffset = Math.min(maxLineEndOffset, parentTextLength);
-
-    const newSelection = $createRangeSelection();
-    newSelection.anchor.set(
-      currentNode.getKey(),
-      minLineStartOffset,
-      'element'
-    );
-    newSelection.focus.set(currentNode.getKey(), maxLineEndOffset, 'element');
-
-    $setSelection(newSelection);
-  });
-
-  return true;
 };
 
 const registerCopyCommand = (editor: LexicalEditor) => {
@@ -354,7 +165,7 @@ const registerCopyCommand = (editor: LexicalEditor) => {
         const selection = $getSelection();
 
         if ($isRangeSelection(selection) && selection.isCollapsed()) {
-          shouldUseFallback = !copyCurrentLine(editor);
+          // shouldUseFallback = !copyCurrentLine(editor);
         } else if ($isRangeSelection(selection) && !selection.isCollapsed()) {
           let selectedText = '';
           let nodesToCopy: Array<LexicalNode> = [];
@@ -371,12 +182,8 @@ const registerCopyCommand = (editor: LexicalEditor) => {
           });
 
           if (nodesToCopy.length > 0) {
-            copyNodesToClipboard(nodesToCopy, selectedText).then((success) => {
-              if (!success) {
-                navigator.clipboard.writeText(selectedText);
-              }
-            });
-            shouldUseFallback = false;
+            copyNodesToClipboard(editor, nodesToCopy, selectedText);
+            shouldUseFallback = true;
           }
         } else if (!$isRangeSelection(selection)) {
           shouldUseFallback = true;
@@ -390,22 +197,64 @@ const registerCopyCommand = (editor: LexicalEditor) => {
 };
 
 const registerCutCommand = (editor: LexicalEditor) => {
-  return editor.registerCommand(
+  return editor.registerCommand<ClipboardEvent>(
     CUT_COMMAND,
-    (): boolean => {
-      let shouldUseFallback = true;
+    (event: ClipboardEvent): boolean => {
+      const shouldUseFallback = true;
 
-      editor.getEditorState().read(() => {
+      editor.update(() => {
         const selection = $getSelection();
 
         if ($isRangeSelection(selection) && selection.isCollapsed()) {
-          selectCurrentLine(editor);
+          const anchor = selection.anchor;
+          const node = anchor.getNode();
+          const topLevel = $isTextNode(node)
+            ? node.getTopLevelElementOrThrow()
+            : node;
 
-          shouldUseFallback = false;
-        } else if ($isRangeSelection(selection) && !selection.isCollapsed()) {
-          shouldUseFallback = true;
-        } else if (!$isRangeSelection(selection)) {
-          shouldUseFallback = true;
+          const first = topLevel.getFirstDescendant();
+          const last = topLevel.getLastDescendant();
+
+          if ($isTextNode(first) && $isTextNode(last)) {
+            selection.setTextNodeRange(
+              first,
+              0,
+              last,
+              last.getTextContentSize()
+            );
+
+            const sanitizeHtml = (html: string): string => {
+              const container = document.createElement('div');
+              container.innerHTML = html;
+
+              container.querySelectorAll('a').forEach((a) => {
+                a.removeAttribute('target');
+              });
+
+              return container.innerHTML;
+            };
+            const htmlString = sanitizeHtml(
+              $generateHtmlFromNodes(editor, selection)
+            );
+
+            event.clipboardData?.setData('text/html', htmlString);
+            event.clipboardData?.setData('text/html-viewer', htmlString);
+
+            const target: LexicalNode | null = topLevel.getNextSibling();
+
+            if (target && $isElementNode(target)) {
+              const targetDescendant = target.getFirstDescendant();
+              if (targetDescendant && $isTextNode(targetDescendant)) {
+                selection.setTextNodeRange(
+                  targetDescendant,
+                  0,
+                  targetDescendant,
+                  0
+                );
+              }
+            }
+            topLevel.remove();
+          }
         }
       });
 
@@ -422,25 +271,25 @@ const registerPasteCommand = (editor: LexicalEditor) => {
       if (!event || !event.clipboardData) {
         return false;
       }
+      const html = event.clipboardData?.getData('text/html');
+      if (html) {
+        return false;
+      }
 
       try {
         const lexicalData = event.clipboardData.getData(LEXICAL_CLIPBOARD_TYPE);
         if (lexicalData) {
-          console.log('??', lexicalData);
           return false;
         }
 
         const viewerData = event.clipboardData.getData('text/html-viewer');
         if (viewerData) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(viewerData, 'text/html');
+          const nodes = parseHtmlStrToLexicalNodes(viewerData);
 
           editor.update(() => {
             const selection = $getSelection();
 
             if (!$isRangeSelection(selection)) return;
-
-            const nodes = $generateNodesFromDOM(editor, doc);
 
             if (nodes.length > 0) {
               selection.insertNodes(nodes);
@@ -452,7 +301,6 @@ const registerPasteCommand = (editor: LexicalEditor) => {
         const plainText = event.clipboardData.getData('text/plain');
         if (plainText) {
           if (looksLikeCode(plainText)) {
-            // event.preventDefault();
             const language = detectLanguageByPrism(plainText);
 
             editor.update(() => {
@@ -486,40 +334,6 @@ const registerPasteCommand = (editor: LexicalEditor) => {
   );
 };
 
-const registerClipboardShortcuts = (editor: LexicalEditor) => {
-  const onKeyDown = (event: KeyboardEvent) => {
-    const isCtrlOrCmd = event.ctrlKey || event.metaKey;
-
-    if (isCtrlOrCmd) {
-      // if (event.key === 'x') {
-      //   editor.dispatchCommand(CUT_COMMAND, {} as ClipboardEvent);
-      // } else
-      if (event.key === 'c') {
-        editor.dispatchCommand(COPY_COMMAND, {} as ClipboardEvent);
-      } else if (event.key === 'v') {
-        editor.dispatchCommand(PASTE_COMMAND, {} as ClipboardEvent);
-      }
-    }
-  };
-
-  const removeKeyDownListener = editor.registerRootListener(
-    (rootElement: HTMLElement | null, prevRootElement: HTMLElement | null) => {
-      if (rootElement !== null) {
-        rootElement.addEventListener('keydown', onKeyDown, { capture: true });
-      }
-      if (prevRootElement !== null) {
-        prevRootElement.removeEventListener('keydown', onKeyDown, {
-          capture: true,
-        });
-      }
-    }
-  );
-
-  return () => {
-    removeKeyDownListener();
-  };
-};
-
 export const ClipboardPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
 
@@ -527,13 +341,11 @@ export const ClipboardPlugin: React.FC = () => {
     const unregisterCopy = registerCopyCommand(editor);
     const unregisterCut = registerCutCommand(editor);
     const unregisterPaste = registerPasteCommand(editor);
-    const cleanup = registerClipboardShortcuts(editor);
 
     return () => {
       unregisterCopy();
       unregisterCut();
       unregisterPaste();
-      cleanup();
     };
   }, [editor]);
 
