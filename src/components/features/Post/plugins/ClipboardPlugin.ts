@@ -85,8 +85,8 @@ const looksLikeCode = (text: string): boolean => {
 
   return (
     keywordCnt > 0 &&
-    indentCnt >= lines.length / 2 &&
-    keywordCnt >= lines.length / 3
+    indentCnt >= lines.length / 4 &&
+    keywordCnt >= lines.length / 4
   );
 };
 

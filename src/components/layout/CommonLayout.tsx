@@ -11,17 +11,27 @@ import { breakpoints } from '@/constants/breakpoints.ts';
 import styled from '@emotion/styled';
 
 import { Confirm } from '../commons/Modal/Confirm';
+import { ChannelService } from '../features/Header/ChannelService.ts';
 
 const headerHeight = 58;
+
+const channelServiceInstance = new ChannelService();
+channelServiceInstance.loadScript();
+// 어차피 F12하면 다보이고 원래 이렇게 설계됨
+channelServiceInstance.boot({
+  pluginKey: '41da2fbc-b746-410f-8481-a6bcb272d8e4',
+});
 
 export const CommonLayout: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const location = useLocation();
   const prevPathRef = useRef<string | null>(null);
+  const isHomePage = location.pathname === '/';
 
   useLayoutEffect(() => {
     const currPath = location.pathname.split('/')[1];
+    channelServiceInstance.setPage(location.pathname);
     if (prevPathRef.current !== currPath) {
       if (prevPathRef.current !== null) {
         document.documentElement.scrollTo({
@@ -47,14 +57,15 @@ export const CommonLayout: React.FC<{
     <Fragment>
       <Header h={headerHeight} />
       <Container
+        maxW={isHomePage ? 'none' : ''}
         padding={'0'}
-        margin={`${headerHeight + (isMobile ? 14 : 52)}px auto 0 auto`}
+        margin={`${headerHeight + (isMobile ? 14 : isHomePage ? 0 : 52)}px auto 0 auto`}
       >
         <Alert />
         <Confirm />
         <ScrollStart />
         {children}
-        <Spacer h={200} />
+        {!isHomePage && <Spacer h={200} />}
       </Container>
     </Fragment>
   );

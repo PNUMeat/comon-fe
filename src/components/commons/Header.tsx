@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/api/user';
-import logo from '@/assets/Header/header.png';
+import logo from '@/assets/Header/logo.svg';
 import user from '@/assets/Header/user.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
@@ -119,7 +119,8 @@ const ComonLogoWrap = styled.div`
 `;
 
 const LogoImage = styled.img`
-  height: 18.5px;
+  height: 24px;
+
   @media (max-width: ${breakpoints.mobile}px) {
     transform: translateX(-84px);
   }
@@ -290,8 +291,6 @@ const LoginButton = styled.div`
   background-color: #333;
   color: #fff;
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: Pretendard;
   font-size: 16px;
   font-style: normal;
@@ -321,13 +320,8 @@ const MyPageButton = styled.div`
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-
   color: #636363;
-
   text-align: center;
-  leading-trim: both;
-
-  text-edge: cap;
   font-family: Pretendard;
   font-size: 16px;
   font-style: normal;

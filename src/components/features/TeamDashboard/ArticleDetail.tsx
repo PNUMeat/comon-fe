@@ -66,6 +66,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
     setConfirm({
       message: '게시글을 삭제하시겠습니까?',
       description: '삭제된 게시글은 복구되지 않아요',
+      confirmText: '삭제',
       isVisible: true,
       onConfirm: deleteArticle,
       onCancel: () => {},
