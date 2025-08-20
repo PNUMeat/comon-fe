@@ -184,6 +184,12 @@ const Section = styled.section<{ backgroundColor?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+  right: 50%;
+  margin-right: -50vw;
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 40px 0;
