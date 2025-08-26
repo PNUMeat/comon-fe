@@ -65,8 +65,8 @@ const ReviewCard = ({
           alignItems: 'center',
           gap: '8px',
           position: 'absolute',
-          bottom: isMobile ? '15px' : '30px',
-          left: isMobile ? '20px' : '40px',
+          bottom: isMobile ? '35px' : '30px',
+          left: isMobile ? '26px' : '40px',
         }}
       >
         <Circle style={{ backgroundColor: color }} />
@@ -103,7 +103,8 @@ export const UserReviewSlider = () => {
       {
         breakpoint: breakpoints.mobile,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 1,
+          centerPadding: '145px',
           centerMode: true,
           slidesToScroll: 1,
         },
@@ -121,8 +122,9 @@ export const UserReviewSlider = () => {
 
   return (
     <>
+    <Title>함께한 사람들의 후기</Title>
     <SubTitle>코드몬스터와 함께 성장한 동료들의 생생한 후기✨</SubTitle>
-    <Spacer h={isMobile ? 75 : 86} />
+    <Spacer h={isMobile ? 48 : 86} />
     <SliderWrapper>
       <div className="slider-container" style={{ position: 'relative', width: isMobile ? '390px' : '1440px', maxWidth: '1440px', overflow: 'hidden' }}>
         <StyledSlider ref={sliderRef} {...settings}>
@@ -148,13 +150,24 @@ export const UserReviewSlider = () => {
   );
 };
 
+const Title = styled.div`
+  font-size: 36px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 20px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+`;
 const SubTitle = styled.div`
   font-size: 24px;
   font-weight: 300;
   color: #111;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 12px;
+    font-size: 14px;
   }
 `;
 
@@ -214,7 +227,7 @@ const NavButtonPrev = styled(NavButton)`
   transform: translateY(-50%) translateX(-500px);
 
   @media (max-width: ${breakpoints.mobile}px) {
-    left: 0;
+    left: 15px;
     transform: translateY(-50%) translateX(-50%); 
   }
 `;
@@ -243,8 +256,8 @@ const CardContainer = styled.div`
   position: relative;
   padding: 30px 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 307px;
-  height: 204px;
+  width: 316px;
+  height: 180px;
   border-radius: 20px;
   background: #fff;
   display: flex;
@@ -262,9 +275,9 @@ const CardContainer = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 168px;
-    height: 102px;
-    padding: 15px 20px;
+    width: 316px;
+    height: 180px;
+    padding: 35px 26px;
   }
 `;
 
@@ -274,8 +287,8 @@ const Circle = styled.div`
   border-radius: 50%;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 10px;
-    height: 10px;
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -285,7 +298,7 @@ const Name = styled.div`
   color: #333;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 8px;
+    font-size: 14px;
   }
 `;
 
@@ -295,7 +308,7 @@ const Position = styled.div`
   font-weight: 400;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 7px;
+    font-size: 12px;
   }
 `;
 
@@ -313,8 +326,8 @@ const Content = styled.div`
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 7px;
-    line-height: 9.5px;
+    font-size: 12px;
+    line-height: 18px;
     min-height: 48px;
   }
 `;

@@ -44,14 +44,14 @@ export const Home = () => {
           <Decoration src={bgCurve} top={isMobile ? '170px' : '270px'} right={isMobile ? '20%' : '27%'} width={isMobile ? '40px' : '60px'} />
 
           <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
-          <Spacer h={44} />
+          <Spacer h={isMobile ? 24 : 44} />
           <SText
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize={isMobile ? '21px' : '42px'}
+            fontSize={isMobile ? '24px' : '42px'}
             fontWeight={700}
-            lineHeight={isMobile ? '30px' : '60px'}
+            lineHeight={isMobile ? '34px' : '60px'}
             style={{ zIndex: 10 }}
           >
             혼자서는 지치기 쉬운 코딩테스트,
@@ -63,9 +63,9 @@ export const Home = () => {
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize={isMobile ? '12px' : '20px'}
+            fontSize={isMobile ? '14px' : '20px'}
             fontWeight={300}
-            lineHeight={isMobile ? '17px' : '34px'}
+            lineHeight={isMobile ? '20px' : '34px'}
           >
             코드몬스터는 코딩테스트 준비를 위한 스터디 플랫폼입니다.
             <br />
@@ -123,7 +123,7 @@ export const Home = () => {
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize={isMobile ? '18px' : '36px'}
+            fontSize={isMobile ? '24px' : '36px'}
             fontWeight={900}
           >
             FAQ
@@ -134,7 +134,7 @@ export const Home = () => {
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize={isMobile ? '10px' : '24px'}
+            fontSize={isMobile ? '14px' : '24px'}
             fontWeight={300}
           >
             궁금한 점이 있으신가요? 자주 묻는 질문을 모아봤어요!
