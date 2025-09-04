@@ -61,11 +61,11 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 19px;
-  letter-spacing: -0.32px;
+  letter-spacing: -0.32px;  
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 10px;
-    line-height: 14px;
+    font-size: 14px;
+    line-height: 20px;
   }
 `;
 
@@ -79,7 +79,7 @@ const Description = styled.div`
   letter-spacing: -0.28px;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 10px;
-    line-height: 14px;
+    font-size: 12px;
+    line-height: 18px;
   }
 `;

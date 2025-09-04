@@ -18,7 +18,7 @@ export const AnimatedLanding = () => {
   return (
     <Container>
       <AnimatedImages />
-      <Spacer h={isMobile ? 40 : 80} />
+      <Spacer h={isMobile ? 20 : 80} />
     <ContentContainer>
     <div>
       <Content>이미 약 200명의 개발자가</Content>

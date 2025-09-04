@@ -31,9 +31,9 @@ export const ServiceStrength = () => {
   const isMobile = useWindowWidth() < breakpoints.mobile;
   return (
     <Container>
-      <Spacer h={44} />
+      <Spacer h={isMobile ? 24 : 44} />
       <Title>"코드몬스터만의 강점"</Title>
-      <Spacer h={isMobile ? 40 : 86} /> 
+      <Spacer h={isMobile ? 24 : 86} /> 
       <CardContainer>
         {content.map((item, index) => (
           <FeatureCard

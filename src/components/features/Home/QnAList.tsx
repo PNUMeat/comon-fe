@@ -53,7 +53,7 @@ export const QnAList = () => {
               <SText
                 color={openIndex === index ? "#333" : "#767676"}
                 fontFamily="Pretendard"
-                fontSize={isMobile ? '9px' : '18px'}
+                fontSize={isMobile ? '12px' : '18px'}
                 fontStyle="normal"
                 fontWeight={400}
                 lineHeight="normal"
@@ -64,7 +64,7 @@ export const QnAList = () => {
             <SText
               color={openIndex === index ? "#333" : "#767676"}
               fontFamily="Pretendard"
-              fontSize={isMobile ? '9px' : '18px'}
+              fontSize={isMobile ? '12px' : '18px'}
               fontStyle="normal"
               fontWeight={400}
               lineHeight="normal"

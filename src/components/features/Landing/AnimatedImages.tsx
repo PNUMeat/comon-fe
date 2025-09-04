@@ -341,7 +341,7 @@ const Title = styled.div`
   color: #212529;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 20px;
+    font-size: 24px;
   }
 `;
 
