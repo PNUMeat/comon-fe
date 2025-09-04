@@ -15,10 +15,14 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
-const usageExamples = [
+const usageExamples = (isMobile: boolean) => [
   {
     title: '코테 기록을 더 쉽게! ✨',
-    content: [
+    content: isMobile ? [
+      '오늘의 문제 풀이에서 바로 문제를 펼쳐보고 작성해보세요!',
+      '기본적인 마크다운 단축키와 코드블록으로',
+      '깔끔한 입력을 지원합니다 ✨'
+    ] : [
       '오늘의 문제 풀이에서 바로 문제를 펼쳐보고 작성해보세요!',
       '기본적인 마크다운 단축키와 코드블록으로 깔끔한 입력을 지원합니다 ✨',
     ],
@@ -28,7 +32,11 @@ const usageExamples = [
   },
   {
     title: '꾸준한 학습습관 만들기🏃',
-    content: [
+    content: isMobile ? [
+      '날마다 팀원들과 함께 활동을 기록하세요!',
+      '캘린더를 통해 문제를 확인하고,',
+      '하루에 한 문제를 함께 풀어보아요✨'
+    ] : [
       '날마다 팀원들과 함께 활동을 기록하세요!',
       '캘린더를 통해 문제를 확인하고, 하루에 한 문제를 함께 풀어보아요✨',
     ],
@@ -49,17 +57,18 @@ const usageExamples = [
 ];
 
 const UsageExampleCard = ({ index }: { index: number }) => {
-  const { title, content, image, style, mobileStyle } = usageExamples[index];
   const isMobile = useWindowWidth() < breakpoints.mobile;
+  const { title, content, image, style, mobileStyle } = usageExamples(isMobile)[index];
 
   return (
     <Container>
       <TitleBox>{title}</TitleBox>
       <MainBox>
         <ContentContainer>
-          <Spacer h={14} />
+          <Spacer h={isMobile ? 4 : 14} />
           <ContentText>{content[0]}</ContentText>
           <ContentText>{content[1]}</ContentText>
+          { content[2] && <ContentText>{content[2]}</ContentText> }
         </ContentContainer>
         <Spacer h={12} />
         <img src={image} alt="example" style={isMobile ? mobileStyle : style} />
@@ -146,6 +155,7 @@ const NavButton = styled.div`
   cursor: pointer;
 
   @media (max-width: ${breakpoints.mobile}px) {
+    transform: translateY(-100%);
     width: 28px;
     height: 28px;
   }
@@ -170,6 +180,10 @@ const Container = styled.div`
   margin-top: 64px;
   width: 100%;
   height: 100%;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    margin-top: 48px;
+  }
 `;
 
 const MainBox = styled.div`
@@ -218,7 +232,7 @@ const TitleBox = styled.div`
     width: 188px;
     height: 34px;
     top: -20px;
-    font-size: 14px;
+    font-size: 16px;
   }
 `;
 
@@ -237,7 +251,7 @@ const ContentText = styled.div`
   text-align: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 9px;
+    font-size: 12px;
   }
 `;
 
@@ -250,7 +264,7 @@ const TwistedDecoration1 = styled.img`
 
   @media (max-width: ${breakpoints.mobile}px) {
     top: -30px;
-    left: 20px;
+    left: 0px;
     width: 62px;
     height: 62px;
   }
@@ -265,7 +279,7 @@ const TwistedDecoration2 = styled.img`
 
   @media (max-width: ${breakpoints.mobile}px) {
     top: -30px;
-    right: 20px;
+    right: 0px;
     width: 62px;
     height: 62px;
   }
