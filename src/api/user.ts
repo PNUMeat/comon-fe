@@ -1,10 +1,11 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 import apiInstance from '@/api/apiInstance';
+import { API_BASE_URL } from '@/api/config.ts';
 import { membersInfoMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
-export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
+export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
 
 type ProfileCommonArgs = {
   memberName: string;
