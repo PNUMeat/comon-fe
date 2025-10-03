@@ -4,7 +4,7 @@ import apiInstance from '@/api/apiInstance';
 import { membersInfoMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
-export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
+export const kakaoOauth2LoginUrl = `https://api.codemonster.site/oauth2/authorization/kakao`;
 
 type ProfileCommonArgs = {
   memberName: string;
