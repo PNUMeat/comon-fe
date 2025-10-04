@@ -100,6 +100,9 @@ const FlipCardItem = ({
   profiles: string[];
   isDisabled: boolean;
 }) => {
+  const toggle = () => {
+    if (!isDisabled) setIsFlipped((v) => !v);
+  };
   const [isFlipped, setIsFlipped] = useState(false);
 
   const { boxRef, onPointerMove, onPointerLeave } = usePointerRotation({
@@ -111,43 +114,34 @@ const FlipCardItem = ({
   return (
     // <FlipCard onMouseLeave={() => setIsFlipped(false)}>
     <FlipCard>
-      <FlipCardInner isFlipped={isFlipped}>
-        {/* 앞면 */}
-        <FlipCardFront
+      <FlipCardInner isFlipped={isFlipped} onClick={toggle}>
+        <TiltLayer
           ref={boxRef}
-          onPointerMove={onPointerMove}
+          onPointerMove={(e) => {
+            if (!isFlipped) onPointerMove(e);
+          }}
           onPointerLeave={onPointerLeave}
-          isDisabled={isDisabled}
-          onClick={() => {
-            if (isDisabled) {
-              return;
-            }
-            const selection = window.getSelection()?.toString();
-            if (selection) {
-              return;
-            }
-            setIsFlipped(true);
-          }}
         >
-          <FlipCardContent
+          {/* 앞면 */}
+          <FlipCardFront
+            active={!isFlipped}
+            ref={boxRef}
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
             isDisabled={isDisabled}
-            team={team}
-            profiles={profiles}
-          />
-        </FlipCardFront>
+          >
+            <FlipCardContent
+              isDisabled={isDisabled}
+              team={team}
+              profiles={profiles}
+            />
+          </FlipCardFront>
 
-        {/* 뒷면 */}
-        <FlipCardBack
-          onClick={() => {
-            const selection = window.getSelection()?.toString();
-            if (selection) {
-              return;
-            }
-            setIsFlipped(false);
-          }}
-        >
-          <FlipCardContent team={team} isBack />
-        </FlipCardBack>
+          {/* 뒷면 */}
+          <FlipCardBack active={isFlipped}>
+            <FlipCardContent team={team} isBack />
+          </FlipCardBack>
+        </TiltLayer>
       </FlipCardInner>
     </FlipCard>
   );
@@ -170,10 +164,10 @@ const FlipCardContent = ({
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
 
-  const ignoreClick: React.MouseEventHandler = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
+  // const ignoreClick: React.MouseEventHandler = (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  // };
 
   return (
     <Box
@@ -189,7 +183,7 @@ const FlipCardContent = ({
           color="#333"
           fontSize={isMobile ? '10px' : '12px'}
           fontWeight={600}
-          onClick={ignoreClick}
+          // onClick={ignoreClick}
           cursor={'text'}
         >
           TEAM
@@ -199,7 +193,7 @@ const FlipCardContent = ({
           fontSize={isMobile ? '16px' : '24px'}
           color="#333"
           fontWeight={700}
-          onClick={ignoreClick}
+          // onClick={ignoreClick}
           cursor={'text'}
         >
           {team.teamName}
@@ -209,7 +203,7 @@ const FlipCardContent = ({
           fontSize={isMobile ? '10px' : '16px'}
           color="#777"
           fontWeight={400}
-          onClick={ignoreClick}
+          // onClick={ignoreClick}
           cursor={'text'}
         >
           since {team.createdAt}
@@ -219,7 +213,7 @@ const FlipCardContent = ({
           <SText
             fontSize="10px"
             fontWeight={600}
-            onClick={ignoreClick}
+            // onClick={ignoreClick}
             cursor={'text'}
           >
             {team.topic}
@@ -333,7 +327,21 @@ const FlipCardInner = styled.div<{ isFlipped: boolean }>`
   cursor: pointer;
 `;
 
-const FlipCardFront = styled.div<{ isDisabled: boolean }>`
+const FaceBase = styled.div`
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 20px;
+
+  /* 텍스트 선택 방지로 클릭/드래그 시 뒤집힘 방해 제거 */
+  -webkit-user-select: none;
+  user-select: none;
+`;
+
+const FlipCardFront = styled(FaceBase)<{
+  active: boolean;
+  isDisabled: boolean;
+}>`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -341,9 +349,18 @@ const FlipCardFront = styled.div<{ isDisabled: boolean }>`
   background: #fff;
   background: ${(props) => (props.isDisabled ? '#fdfdfd' : '#fff')};
   border-radius: 20px;
+  pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
 `;
 
-const FlipCardBack = styled.div`
+const TiltLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  border-radius: 20px;
+  will-change: transform;
+`;
+
+const FlipCardBack = styled(FaceBase)<{ active: boolean }>`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -356,6 +373,7 @@ const FlipCardBack = styled.div`
   align-items: center;
   border: 1px solid ${colors.buttonPurple};
   z-index: 999;
+  pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
 `;
 
 const Icon = styled.img`
