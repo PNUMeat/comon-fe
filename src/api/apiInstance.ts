@@ -1,5 +1,3 @@
-import { handleCookieOnRedirect } from '@/utils/cookie';
-
 import { NavigateFunction } from 'react-router-dom';
 
 import { ServerIntendedError } from '@/api/types';
@@ -28,7 +26,7 @@ const processQueue = (error: AxiosError | null): void => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(axios(prom.config));
+      prom.resolve(apiInstance(prom.config));
     }
   });
 
@@ -56,9 +54,9 @@ const apiInstance: AxiosInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('Authorization');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 헤더가 남아있을 경우 삭제
+    if (config.headers?.Authorization) {
+      delete config.headers.Authorization;
     }
     return config;
   },
@@ -113,14 +111,11 @@ apiInstance.interceptors.response.use(
           return apiInstance
             .post('v1/reissue')
             .then(() => {
-              handleCookieOnRedirect();
-
               processQueue(null);
               return apiInstance(originalRequest);
             })
             .catch((reissueError: AxiosError) => {
               processQueue(reissueError);
-              sessionStorage.removeItem('Authorization');
               navigate(PATH.LOGIN);
 
               console.error('reissue error', reissueError);
