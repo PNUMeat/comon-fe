@@ -1,5 +1,6 @@
 import { NavigateFunction } from 'react-router-dom';
 
+import { API_BASE_URL } from '@/api/config';
 import { ServerIntendedError } from '@/api/types';
 import { PATH } from '@/routes/path';
 import axios, {
@@ -44,7 +45,7 @@ export const navigate = (path: string) => {
 };
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: `/api/`,
+  baseURL: `${API_BASE_URL}/api/`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
