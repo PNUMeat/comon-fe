@@ -1,7 +1,7 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 import apiInstance from '@/api/apiInstance';
-import { teamAdminPageMock, teamSearchMock } from '@/api/mocks.ts';
+import { teamAdminPageMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 // 생성
@@ -47,6 +47,8 @@ export interface ITeamInfo extends ITeamCommon {
   streakDays: number;
   imageUrl: string;
   createdAt: string;
+  teamRecruitId?: number | null;
+  teamAnnouncement?: string;
   members?: ITeamMember[];
 }
 
@@ -216,10 +218,6 @@ export const searchTeams = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamSearchResponse> => {
-  if (isDevMode()) {
-    return teamSearchMock.data;
-  }
-
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
