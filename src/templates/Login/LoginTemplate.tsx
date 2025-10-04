@@ -1,4 +1,4 @@
-import { checkIfLoggedIn, handleCookieOnRedirect } from '@/utils/cookie';
+import { checkIfLoggedIn } from '@/utils/cookie';
 
 import { GradientGlassPanel } from '@/components/commons/GradientGlassPanel';
 import { Spacer } from '@/components/commons/Spacer';
@@ -14,7 +14,7 @@ export const LoginTemplate = () => {
   const location = useLocation();
 
   useEffect(() => {
-    handleCookieOnRedirect();
+    // handleCookieOnRedirect();
     if (checkIfLoggedIn()) {
       const sessionRedirect = sessionStorage.getItem('redirect');
       if (sessionRedirect) {
