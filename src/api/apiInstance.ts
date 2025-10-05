@@ -92,7 +92,6 @@ apiInstance.interceptors.response.use(
       if (error.response.status === 401) {
         if (code === 100) {
           navigate(PATH.ENROLL);
-
           return Promise.reject(error);
         }
 
@@ -129,7 +128,7 @@ apiInstance.interceptors.response.use(
 
         // 리프레시 토큰이 만료됨
         // sessionStorage.removeItem('Authorization');
-        // navigate(PATH.LOGIN);
+        navigate(PATH.LOGIN);
         return Promise.reject(error);
       }
     }
