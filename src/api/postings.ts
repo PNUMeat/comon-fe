@@ -1,7 +1,4 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
 import apiInstance from '@/api/apiInstance';
-import { createPostMock, mutatePostMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
@@ -84,10 +81,10 @@ export const createPost = async ({
     )
   );
 
-  if (isDevMode()) {
-    await new Promise((r) => setTimeout(r, 1000));
-    return createPostMock.data;
-  }
+  // if (isDevMode()) {
+  //   await new Promise((r) => setTimeout(r, 1000));
+  //   return createPostMock.data;
+  // }
 
   const imageUrls = items.map((it) =>
     toPublicUrlFromPresigned(it.presignedUrl)
@@ -131,10 +128,10 @@ export const mutatePost = async ({
   //   formData.append('images', '');
   // }
 
-  if (isDevMode()) {
-    await new Promise((r) => setTimeout(r, 1000));
-    return mutatePostMock.data;
-  }
+  // if (isDevMode()) {
+  //   await new Promise((r) => setTimeout(r, 1000));
+  //   return mutatePostMock.data;
+  // }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
