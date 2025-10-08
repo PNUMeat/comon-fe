@@ -1,11 +1,12 @@
-import CaretLeftIcon from '@/assets/Landing/caret_left.svg';
-import CaretRightIcon from '@/assets/Landing/caret_right.svg';
 import { Spacer } from '@/components/commons/Spacer';
-import { breakpoints } from '@/constants/breakpoints';
-import { useWindowWidth } from '@/hooks/useWindowWidth';
-import styled from '@emotion/styled';
+
 import { useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
+
+import CaretLeftIcon from '@/assets/Landing/caret_left.svg';
+import CaretRightIcon from '@/assets/Landing/caret_right.svg';
+import { breakpoints } from '@/constants/breakpoints';
+import styled from '@emotion/styled';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 
@@ -54,25 +55,14 @@ const ReviewCard = ({
   content: string;
   color: string;
 }) => {
-  const isMobile = useWindowWidth() < breakpoints.mobile;
   return (
     <CardContainer>
       <Content>{content}</Content>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: '8px',
-          position: 'absolute',
-          bottom: isMobile ? '35px' : '30px',
-          left: isMobile ? '26px' : '40px',
-        }}
-      >
+      <NameContainer>
         <Circle style={{ backgroundColor: color }} />
         <Name>{name}</Name>
         <Position>{position}</Position>
-      </div>
+      </NameContainer>
     </CardContainer>
   );
 };
@@ -80,7 +70,7 @@ const ReviewCard = ({
 export const UserReviewSlider = () => {
   const sliderRef = useRef<Slider>(null);
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' && window.innerWidth < breakpoints.mobile,
+    typeof window !== 'undefined' && window.innerWidth < breakpoints.mobile
   );
 
   useEffect(() => {
@@ -122,30 +112,34 @@ export const UserReviewSlider = () => {
 
   return (
     <>
-    <Title>함께한 사람들의 후기</Title>
-    <SubTitle>코드몬스터와 함께 성장한 동료들의 생생한 후기✨</SubTitle>
-    <Spacer h={isMobile ? 48 : 86} />
-    <SliderWrapper>
-      <div className="slider-container" style={{ position: 'relative', width: isMobile ? '390px' : '1440px', maxWidth: '1440px', overflow: 'hidden' }}>
-        <StyledSlider ref={sliderRef} {...settings}>
-          {reviewList.map((review, index) => (
-            <ReviewCard key={index} {...review} />
-          ))}
-        </StyledSlider>
-      </div>
-      <NavButtonPrev
-        onClick={() => sliderRef.current?.slickPrev()}
+      <Title>함께한 사람들의 후기</Title>
+      <SubTitle>코드몬스터와 함께 성장한 동료들의 생생한 후기✨</SubTitle>
+      <Spacer h={isMobile ? 48 : 86} />
+      <SliderWrapper>
+        <div
+          className="slider-container"
+          style={{
+            position: 'relative',
+            width: isMobile ? '390px' : '1440px',
+            maxWidth: '1440px',
+            overflow: 'hidden',
+          }}
         >
-        <CaretIcon src={CaretLeftIcon} alt="prev" />
-      </NavButtonPrev>
-      <NavButtonNext
-        onClick={() => sliderRef.current?.slickNext()}
-        >
-        <CaretIcon src={CaretRightIcon} alt="next" />
-      </NavButtonNext>
-    </SliderWrapper>
-    <Spacer h={isMobile ? 20 : 80} />
-    <Shadow />
+          <StyledSlider ref={sliderRef} {...settings}>
+            {reviewList.map((review, index) => (
+              <ReviewCard key={index} {...review} />
+            ))}
+          </StyledSlider>
+        </div>
+        <NavButtonPrev onClick={() => sliderRef.current?.slickPrev()}>
+          <CaretIcon src={CaretLeftIcon} alt="prev" />
+        </NavButtonPrev>
+        <NavButtonNext onClick={() => sliderRef.current?.slickNext()}>
+          <CaretIcon src={CaretRightIcon} alt="next" />
+        </NavButtonNext>
+      </SliderWrapper>
+      <Spacer h={isMobile ? 20 : 80} />
+      <Shadow />
     </>
   );
 };
@@ -186,7 +180,7 @@ const StyledSlider = styled(Slider)`
     padding: 10px 0;
     box-sizing: border-box;
   }
-  
+
   .slick-center .review-card {
     z-index: 10;
   }
@@ -215,7 +209,7 @@ const NavButton = styled.div`
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  
+
   @media (max-width: ${breakpoints.mobile}px) {
     width: 28px;
     height: 28px;
@@ -228,7 +222,7 @@ const NavButtonPrev = styled(NavButton)`
 
   @media (max-width: ${breakpoints.mobile}px) {
     left: 15px;
-    transform: translateY(-50%) translateX(-50%); 
+    transform: translateY(-50%) translateX(-50%);
   }
 `;
 
@@ -241,7 +235,6 @@ const NavButtonNext = styled(NavButton)`
     transform: translateY(-50%);
   }
 `;
-
 
 const CaretIcon = styled.img`
   width: 24px;
@@ -265,7 +258,9 @@ const CardContainer = styled.div`
   align-items: flex-start;
   text-align: left;
   box-sizing: border-box;
-  transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    border 0.3s ease-in-out;
   border: 1px solid transparent;
 
   .slick-center & {
@@ -316,24 +311,34 @@ const Content = styled.div`
   font-size: 14px;
   color: #767676;
   line-height: 19px;
-  min-height: 100px;
   font-weight: 400;
   overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 
   .slick-center & {
     color: #111 !important;
-    font-weight: 400 !important;
   }
 
   @media (max-width: ${breakpoints.mobile}px) {
     font-size: 12px;
     line-height: 18px;
-    min-height: 48px;
+    -webkit-line-clamp: 3;
   }
 `;
 
+const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+`;
+
 const Shadow = styled.div`
-  background: #D4D4D466;
+  background: #d4d4d466;
   filter: blur(4px);
   width: 60%;
   border-radius: 50%;
