@@ -30,6 +30,7 @@ export const Pagination = ({
     pagesPerView,
     currentPageProp
   );
+  const isShowingArrows = totalPages > 1;
 
   const handlePageChange = (page: number) => {
     onPageChange(page);
@@ -50,7 +51,9 @@ export const Pagination = ({
   return (
     <Flex justify="center">
       <PaginationContainer hideShadow={hideShadow} marginTop={marginTop}>
-        <LeftArrow src={ArrowButton} onClick={handlePrev} />
+        {isShowingArrows && (
+          <LeftArrow src={ArrowButton} onClick={handlePrev} />
+        )}
         <Spacer width={12} h={0} />
         <PageList>
           {visiblePageNumbers.map((page) => (
@@ -64,7 +67,9 @@ export const Pagination = ({
           ))}
         </PageList>
         <Spacer width={12} h={0} />
-        <RightArrow src={ArrowButton} onClick={handleNext} />
+        {isShowingArrows && (
+          <RightArrow src={ArrowButton} onClick={handleNext} />
+        )}
       </PaginationContainer>
     </Flex>
   );
