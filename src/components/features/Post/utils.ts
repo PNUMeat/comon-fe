@@ -134,7 +134,7 @@ export type MultilineElementTransformer = {
    */
   export?: (
     node: LexicalNode,
-     
+
     traverseChildren: (node: ElementNode) => string
   ) => string | null;
   /**
@@ -179,4 +179,22 @@ export type MultilineElementTransformer = {
     isImport: boolean
   ) => boolean | void;
   type: 'multiline-element';
+};
+
+export const getVisiblePageNumbers = (
+  totalPages: number,
+  pagesPerView: number,
+  currentPage: number
+) => {
+  if (totalPages <= pagesPerView)
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const currentBlock = Math.floor(currentPage / pagesPerView);
+  const startPage = currentBlock * pagesPerView;
+  const pagesToShow = Math.min(pagesPerView, totalPages - startPage);
+
+  return Array.from(
+    { length: pagesToShow },
+    (_, index) => startPage + index + 1
+  );
 };
