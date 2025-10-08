@@ -3,13 +3,16 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
+import { getVisiblePageNumbers } from '../features/Post/utils';
 import { Flex } from './Flex';
 import { Spacer } from './Spacer';
 
 interface IPaginationProps {
   totalPages: number;
+
   onPageChange: (page: number) => void;
   currentPageProp: number;
+  pagesPerView?: number;
   hideShadow?: boolean;
   marginTop?: string;
 }
@@ -18,9 +21,16 @@ export const Pagination = ({
   totalPages,
   onPageChange,
   currentPageProp,
+  pagesPerView = 5,
   hideShadow,
   marginTop,
 }: IPaginationProps) => {
+  const visiblePageNumbers = getVisiblePageNumbers(
+    totalPages,
+    pagesPerView,
+    currentPageProp
+  );
+
   const handlePageChange = (page: number) => {
     onPageChange(page);
   };
@@ -43,13 +53,13 @@ export const Pagination = ({
         <LeftArrow src={ArrowButton} onClick={handlePrev} />
         <Spacer width={12} h={0} />
         <PageList>
-          {Array.from({ length: totalPages }, (_, index) => (
+          {visiblePageNumbers.map((page) => (
             <PageNumber
-              key={index + 1}
-              isActive={index + 1 === currentPageProp + 1}
-              onClick={() => handlePageChange(index)}
+              key={page}
+              isActive={page === currentPageProp + 1}
+              onClick={() => handlePageChange(page - 1)}
             >
-              {index + 1}
+              {page}
             </PageNumber>
           ))}
         </PageList>
