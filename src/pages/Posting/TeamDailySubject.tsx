@@ -27,25 +27,38 @@ import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import { currentViewAtom, selectedPostIdAtom } from '@/store/dashboard';
 import { alertAtom } from '@/store/modal';
+import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 const TeamDailySubject = () => {
   const location = useLocation();
-  const { articleId, articleCategory, articleBody, articleTitle } =
-    location?.state ?? {
-      articleId: null,
-      articleCategory: null,
-      articleBody: null,
-      articleTitle: null,
-    };
+  const {
+    articleId,
+    articleCategory,
+    articleBody,
+    articleTitle,
+    // TODO: 이미지 하나 허용으로 롤백
+    // articleImageUrls,
+    articleImageUrl,
+  } = location?.state ?? {
+    articleId: null,
+    articleCategory: null,
+    articleBody: null,
+    articleTitle: null,
+    // articleImageUrls: null,
+    articleImageUrl: null,
+  };
 
   const locationData = {
     articleBody: articleBody,
     articleId: articleId,
     articleTitle: articleTitle,
     articleCategory: articleCategory,
+    // TODO: 이미지 하나 허용으로 롤백
+    // imageUrls: articleImageUrls,
+    imageUrl: articleImageUrl,
   } as ITopicResponse;
 
   const { result: regroupedArticleContent } =
@@ -56,6 +69,7 @@ const TeamDailySubject = () => {
   const [tag, setTag] = useState<string>(() => articleCategory ?? '');
   const [isPending, setIsPending] = useState(false);
   const [disablePrompt, setDisablePrompt] = useState(false);
+  const [subjectImages, setSubjectImages] = useAtom(postImagesAtom);
   const setAlert = useSetAtom(alertAtom);
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -87,7 +101,9 @@ const TeamDailySubject = () => {
     if (isPending) {
       return;
     }
-    const replacedArticleBody = content.trim();
+    const replacedArticleBody = subjectImages
+      ? content.trim().replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+      : content.trim();
 
     if (articleId && tag && articleBody && subjectTitle) {
       setIsPending(true);
@@ -96,6 +112,17 @@ const TeamDailySubject = () => {
         articleId: parseInt(articleId),
         articleTitle: subjectTitle,
         articleBody: replacedArticleBody,
+        images:
+          subjectImages.length > 0
+            ? subjectImages
+                .sort((a, b) => {
+                  if (a.line !== b.line) {
+                    return a.line - b.line;
+                  }
+                  return a.idx - b.idx;
+                })
+                .map((imgObj) => imgObj.img)
+            : null,
         articleCategory: tag,
       })
         .then(() => {
@@ -141,6 +168,14 @@ const TeamDailySubject = () => {
       articleTitle: subjectTitle,
       selectedDate: selectedDate,
       articleBody: replacedArticleBody,
+      images: subjectImages
+        .sort((a, b) => {
+          if (a.line !== b.line) {
+            return a.line - b.line;
+          }
+          return a.idx - b.idx;
+        })
+        .map((imgObj) => imgObj.img),
       articleCategory: tag,
     })
       .then((data) => {
@@ -157,6 +192,7 @@ const TeamDailySubject = () => {
             alert('최신 팀 상태 조회에 실패했습니다.');
           })
           .finally(() => {
+            setSubjectImages([]);
             setDashboardView('topic');
             setSelectedPostId(parseInt(articleId));
             setDisablePrompt(true);
@@ -192,7 +228,6 @@ const TeamDailySubject = () => {
           content={regroupedArticleContent}
           title={articleTitle}
           tag={articleCategory}
-          imageCategory={'ARTICLE'}
         />
         <Spacer h={38} />
         <ConfirmButtonWrap

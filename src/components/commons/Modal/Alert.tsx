@@ -1,9 +1,7 @@
-import { breakpoints } from '@/constants/breakpoints';
-import { alertAtom } from '@/store/modal';
-import styled from '@emotion/styled';
-import { useAtomValue, useSetAtom } from 'jotai';
-
-import Modal from './Modal';
+import { alertAtom } from "@/store/modal";
+import Modal from "./Modal";
+import { useAtomValue, useSetAtom } from "jotai";
+import styled from "@emotion/styled";
 
 export const Alert: React.FC = () => {
   const { message, isVisible, onConfirm } = useAtomValue(alertAtom);
@@ -12,7 +10,7 @@ export const Alert: React.FC = () => {
   const onClick = () => {
     onConfirm();
     setModal({ message: '', isVisible: false, onConfirm: () => {} });
-  };
+  }
 
   return (
     <Modal open={isVisible} onClose={() => {}}>
@@ -22,17 +20,13 @@ export const Alert: React.FC = () => {
       <AlertButton onClick={onClick}>확인</AlertButton>
     </Modal>
   );
-};
+}
 
 const AlertStyle = styled.div`
   font-size: 18px;
   font-weight: 600;
   margin: 50px auto;
   color: #333;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 12px;
-  }
 `;
 
 const AlertButton = styled.button`
@@ -41,14 +35,8 @@ const AlertButton = styled.button`
   right: 25px;
   width: 87px;
   height: 38px;
-  background-color: #8488ec;
+  background-color: #8488EC;
   color: #fff;
   border-radius: 40px;
   font-size: 16px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 12px;
-    width: 60px;
-    height: 30px;
-  }
 `;

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { $createCodeNode, DEFAULT_CODE_LANGUAGE } from '@lexical/code';
-import { $generateNodesFromDOM } from '@lexical/html';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createRangeSelection,
@@ -356,28 +355,7 @@ const registerCopyCommand = (editor: LexicalEditor) => {
         if ($isRangeSelection(selection) && selection.isCollapsed()) {
           shouldUseFallback = !copyCurrentLine(editor);
         } else if ($isRangeSelection(selection) && !selection.isCollapsed()) {
-          let selectedText = '';
-          let nodesToCopy: Array<LexicalNode> = [];
-
-          editor.getEditorState().read(() => {
-            const selection = $getSelection();
-            if (!$isRangeSelection(selection) || selection.isCollapsed()) {
-              return;
-            }
-
-            selectedText = selection.getTextContent();
-
-            nodesToCopy = selection.getNodes();
-          });
-
-          if (nodesToCopy.length > 0) {
-            copyNodesToClipboard(nodesToCopy, selectedText).then((success) => {
-              if (!success) {
-                navigator.clipboard.writeText(selectedText);
-              }
-            });
-            shouldUseFallback = false;
-          }
+          shouldUseFallback = true;
         } else if (!$isRangeSelection(selection)) {
           shouldUseFallback = true;
         }
@@ -426,40 +404,19 @@ const registerPasteCommand = (editor: LexicalEditor) => {
       try {
         const lexicalData = event.clipboardData.getData(LEXICAL_CLIPBOARD_TYPE);
         if (lexicalData) {
-          console.log('??', lexicalData);
           return false;
-        }
-
-        const viewerData = event.clipboardData.getData('text/html-viewer');
-        if (viewerData) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(viewerData, 'text/html');
-
-          editor.update(() => {
-            const selection = $getSelection();
-
-            if (!$isRangeSelection(selection)) return;
-
-            const nodes = $generateNodesFromDOM(editor, doc);
-
-            if (nodes.length > 0) {
-              selection.insertNodes(nodes);
-            }
-          });
-          return true;
         }
 
         const plainText = event.clipboardData.getData('text/plain');
         if (plainText) {
           if (looksLikeCode(plainText)) {
-            // event.preventDefault();
+            event.preventDefault();
             const language = detectLanguageByPrism(plainText);
 
             editor.update(() => {
               const codeNode = $createCodeNode();
               codeNode.setLanguage(language);
               codeNode.append($createTextNode(plainText));
-
               $insertNodes([codeNode]);
             });
 

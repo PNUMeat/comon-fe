@@ -33,11 +33,11 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
   }
 
   // if (!data.imageUrls || data.imageUrls.length === 0) {
-  // if (!data.imageUrl) {
-  return data.articleBody;
-  // } else {
-  //   return data.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
-  // }
+  if (!data.imageUrl) {
+    return data.articleBody;
+  } else {
+    return data.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
+  }
   // TODO: 이미지 하나
   // let imgIndex = 0;
   //

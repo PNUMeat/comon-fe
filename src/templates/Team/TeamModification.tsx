@@ -7,12 +7,12 @@ import { Fragment } from 'react';
 
 import { TeamAdminResponse } from '@/api/team';
 import { breakpoints } from '@/constants/breakpoints';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import { TeamMaxPeopleInput } from './segments/TeamMaxPeopleInput';
 import { TeamPasswordInput } from './segments/TeamPasswordInput';
 import { TeamSubjectRadio } from './segments/TeamSubjectRadio';
+import { css } from '@emotion/react';
 
 interface ModificationProps {
   currentTeam: TeamAdminResponse;
@@ -46,9 +46,8 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
         <FormFieldLabel>팀 아이콘</FormFieldLabel>
         <ComonImageInput
           imageUrl={currentTeam.teamIconUrl}
-          h={isMobile ? 80 : 140}
+          h={isMobile? 80 : 140}
           padding="0"
-          imageCategory={'TEAM'}
         />
       </Row>
       <Row>
@@ -57,17 +56,11 @@ const SuspenseTeamForm: React.FC<ModificationProps> = ({ currentTeam }) => {
       </Row>
       <Row>
         <FormFieldLabel>인원 제한</FormFieldLabel>
-        <TeamMaxPeopleInput
-          defaultValue={currentTeam.memberLimit}
-          css={MobileInput}
-        />
+        <TeamMaxPeopleInput defaultValue={currentTeam.memberLimit} css={MobileInput}/>
       </Row>
       <Row>
         <FormFieldLabel>입장 비밀번호</FormFieldLabel>
-        <TeamPasswordInput
-          defaultValue={currentTeam.password}
-          css={MobileInput}
-        />
+        <TeamPasswordInput defaultValue={currentTeam.password} css={MobileInput}/>
       </Row>
     </TeamModificationContainer>
   );
@@ -87,6 +80,7 @@ const TeamModification: React.FC<ModificationProps> = ({ currentTeam }) => {
 };
 
 const MobileInput = css`
+
   @media (max-width: ${breakpoints.mobile}px) {
     border: none;
     padding: 0;
@@ -103,6 +97,7 @@ const MobileInput = css`
 `;
 
 const MobileRadio = css`
+
   @media (max-width: ${breakpoints.mobile}px) {
     display: flex;
     gap: 6px;
@@ -148,5 +143,7 @@ const FormFieldLabel = styled.label`
     width: 80px;
   }
 `;
+
+
 
 export default TeamModification;

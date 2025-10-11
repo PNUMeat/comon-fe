@@ -1,6 +1,5 @@
 import { DragEventHandler, MutableRefObject, useState } from 'react';
 
-import { requestPresignedUrl, toS3 } from '@/api/presignedurl.ts';
 // import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 
@@ -68,14 +67,14 @@ interface ImageInputBoxProps {
   imageInputRef: MutableRefObject<HTMLDivElement | null>;
   insertImage: (payload: { altText: string; src: string }) => void;
   closeImageInput: () => void;
-  imageCategory: string;
 }
+
+const createImagePreviewUrl = (file: File) => URL.createObjectURL(file);
 
 export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
   imageInputRef,
   insertImage,
   closeImageInput,
-  imageCategory,
 }) => {
   const [fileInput, setFileInput] = useState<File | null>(null);
   const [urlInput, setUrlInput] = useState('');
@@ -102,47 +101,8 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
       });
       return;
     }
-
-    if (fileInput) {
-      const uploadToS3 = async (file: File) => {
-        const contentType = file.type;
-        const fileName = file.name;
-        const req = {
-          contentType: contentType,
-          fileName: fileName,
-        };
-
-        const data = await requestPresignedUrl({
-          imageCategory: imageCategory,
-          requests: req,
-          file: file,
-        });
-
-        const { contentType: contentTypeRes, presignedUrl } = data;
-        await toS3({
-          url: presignedUrl,
-          contentType: contentTypeRes,
-          file: file,
-        });
-        return presignedUrl;
-      };
-
-      uploadToS3(fileInput)
-        .then((url) => {
-          insertImage({
-            src: url.split('?')[0],
-            altText: altText || '이미지',
-          });
-          closeImageInput();
-        })
-        .catch((err) => {
-          alert(err.response.message);
-        });
-      return;
-    }
-
     insertImage({
-      src: urlInput,
+      src: fileInput ? createImagePreviewUrl(fileInput) : urlInput,
       altText: altText || '이미지',
     });
     // setPostImages((prev) => [...prev, fileInput]);

@@ -28,7 +28,7 @@ export const EnrollSubmitButton = () => {
     createProfile({
       memberName: memberName,
       memberExplain: memberExplain,
-      imageUrl: image,
+      image: image,
     })
       .then(() => {
         // const previousPath = location.state?.redirect ?? PATH.TEAMS;

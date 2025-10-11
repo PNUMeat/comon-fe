@@ -6,12 +6,21 @@ import { changeProfile } from '@/api/user';
 import { formTextInputAtom, formTextareaAtom, imageAtom } from '@/store/form';
 import { useAtomValue } from 'jotai';
 
+const serializeImage = (file: File | null): string => {
+  if (!file) return 'NULL';
+
+  return JSON.stringify({
+    name: file.name,
+    type: file.type,
+  });
+};
+
 const serializeProfile = (
-  image: string | null,
+  image: File | null,
   memberName: string,
   memberExplain: string
 ) => {
-  return '' + image + memberName + memberExplain;
+  return serializeImage(image) + memberName + memberExplain;
 };
 
 export const ModificationSubmitButton = () => {
@@ -25,7 +34,7 @@ export const ModificationSubmitButton = () => {
   );
 
   const onClick = () => {
-    changeProfile({ memberName, memberExplain, imageUrl: image })
+    changeProfile({ memberName, memberExplain, image })
       .then(() => alert('프로필 변환에 성공했습니다'))
       .catch(() => alert('프로필 변환에 실패했습니다'));
   };
