@@ -1,5 +1,3 @@
-import { isDevMode, isLoggedIn } from '@/utils/cookie.ts';
-
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -25,10 +23,11 @@ import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { isLoggedInAtom } from '@/store/auth';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import { confirmAtom } from '@/store/modal';
 import styled from '@emotion/styled';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
@@ -53,6 +52,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const toggleExpand = () => setIsExpanded((prev) => !prev);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const setConfirm = useSetAtom(confirmAtom);
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
 
   const onClick = () => {
     if (isMyTeam) {
@@ -69,7 +69,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   };
 
   const joinTeam = () => {
-    if (!isLoggedIn() && !isDevMode()) {
+    if (!isLoggedIn) {
       sessionStorage.setItem('redirect', location.pathname);
       navigate(PATH.LOGIN, {
         state: {

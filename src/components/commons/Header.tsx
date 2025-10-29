@@ -1,4 +1,3 @@
-import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
 
 import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
 
@@ -15,7 +14,9 @@ import user from '@/assets/Header/user.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
+import { isLoggedInAtom } from '@/store/auth';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 const Blur = styled.div`
   width: 100%;
@@ -154,9 +155,10 @@ type ModalControl = {
 };
 
 export const Header: React.FC<HeightInNumber> = ({ h }) => {
-  const [isLoggedIn] = useState<boolean>(
-    checkRemainingCookies() || isDevMode()
-  );
+  // const [isLoggedIn] = useState<boolean>(
+  //   checkRemainingCookies() || isDevMode()
+  // );
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalControlRef = useRef<ModalControl>({

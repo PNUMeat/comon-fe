@@ -49,7 +49,7 @@ const TeamData = () => {
     select: (data) => ({
       myTeams: data.myTeams,
       otherTeams: data.allTeams.content,
-      totalPages: data.allTeams.page.totalPages,
+      totalPages: data.allTeams.totalPages,
     }),
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
