@@ -8,12 +8,37 @@ type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  images: File[] | null;
+  images: File[] | null; // presigned
 };
 
 type PostingMutationResp = {
   articleId: number;
 };
+
+// TODO presigned url 요청할 때 요청 부분 타입 정의
+type PostingPresignItemArg = {
+  fileName: string;
+  contentType: string;
+};
+
+// TODO presigned url 요청 시 응답 받을 때 data 부분 타입 정의
+type PostingPresignItemResp = {
+  fileName: string;
+  presignedUrl: string;
+  contentType: string;
+};
+
+type PostingPresignBatchResp = {
+  items: PostingPresignItemResp[];
+};
+
+type ImageCategory = 'ARTICLE' | 'PROFILE' | 'TEAM' | 'TEAM_RECRUIT';
+
+const pickContentType = (f: File) =>
+  f.type && f.type.length > 0 ? f.type : 'application/octet-stream';
+
+const toPublicUrlFromPresigned = (presignedUrl: string) =>
+  presignedUrl.split('?')[0];
 
 export const createPost = async ({
   teamId,
@@ -21,33 +46,60 @@ export const createPost = async ({
   articleBody,
   images,
 }: PostingMutationArg) => {
-  const formData = new FormData();
-
-  formData.append('teamId', teamId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
+  if (!images || images.length === 0) {
+    const noImgArticleResp = await apiInstance.post<
+      ServerResponse<PostingMutationResp>
+    >('v1/article', {
+      teamId,
+      title: articleTitle,
+      body: articleBody,
+      images: [],
     });
+    return noImgArticleResp.data.data;
   }
-  // else {
-  // formData.append('images', '');
-  // }
+
+  const requests: PostingPresignItemArg[] = images.map((f) => ({
+    fileName: f.name,
+    contentType: pickContentType(f),
+  }));
+
+  const presignResp = await apiInstance.post<
+    ServerResponse<PostingPresignBatchResp>
+  >('v1/image/presigned-url', {
+    requests,
+    imageCategory: 'ARTICLE' as ImageCategory,
+  });
+
+  const items = presignResp.data.data.items;
+
+  await Promise.all(
+    items.map((item, i) =>
+      fetch(item.presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': pickContentType(images[i]) },
+        body: images[i],
+      }).then((res) => {
+        if (!res.ok) throw new Error(`S3 PUT failed: ${res.status}`);
+      })
+    )
+  );
 
   if (isDevMode()) {
     await new Promise((r) => setTimeout(r, 1000));
     return createPostMock.data;
   }
 
+  const imageUrls = items.map((it) =>
+    toPublicUrlFromPresigned(it.presignedUrl)
+  );
+
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
-    'v1/articles',
-    formData,
+    'v1/article',
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamId,
+      title: articleTitle,
+      body: articleBody,
+      images: imageUrls,
     }
   );
 
