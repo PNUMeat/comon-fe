@@ -3,46 +3,56 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { QnAList } from '@/components/features/Home/QnAList';
-import { ReviewSlider } from '@/components/features/Home/ReviewSlider';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
+import GroupIcon from '@/assets/Landing/group_icon.svg';
+import ManageIcon from '@/assets/Landing/manage_icon.svg';
+import RecordIcon from '@/assets/Landing/record_icon.svg';
+
 import { Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/Header/logo.svg';
 import bgCurve from '@/assets/Home/bg-curve.svg';
 import bgRing from '@/assets/Home/bg-ring.svg';
 import bgZigzag from '@/assets/Home/bg-zigzag.svg';
 import faq from '@/assets/Home/faq.svg';
-import instagram from '@/assets/Home/instagram.svg';
 import logoLight from '@/assets/Home/logo-light.svg';
-import name from '@/assets/Home/name-last.svg';
-import notion from '@/assets/Home/notion.svg';
-import { PATH } from '@/routes/path';
+import { AnimatedLanding } from '@/components/features/Landing/AnimatedLanding';
+import { Banner } from '@/components/features/Landing/Banner';
+import ServiceStrength from '@/components/features/Landing/ServiceStrength';
+import UsageExample from '@/components/features/Landing/UsageExample';
+import UserReviewSlider from '@/components/features/Landing/UserReviewSlider';
+import { breakpoints } from '@/constants/breakpoints';
+import { useWindowWidth } from '@/hooks/useWindowWidth';
 import styled from '@emotion/styled';
 
 export const Home = () => {
-  const navigate = useNavigate();
-  const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
+  // const navigate = useNavigate();
+  // const onClickStart = () => navigate(`${PATH.TEAM_RECRUIT}/list`);
+  const isMobile = useWindowWidth() < breakpoints.mobile;
 
   return (
     <Fragment>
       <CommonLayout>
         {/* 민경 */}
         <Section backgroundColor="#fff">
-          <Decoration src={bgZigzag} top="180px" left="20%" />
-          <Decoration src={bgRing} top="150px" right="20%" />
-          <Decoration src={bgCurve} top="270px" right="27%" width="60px" />
+          <AnimatedLanding />
+        </Section>
+        <Section backgroundColor="#FAFAFF">
+          <Decoration src={bgZigzag} top={isMobile ? '130px' : '180px'} left={isMobile ? '5%' : '20%'} width={isMobile ? '60px' : '120px'} />
+          <Decoration src={bgRing} top={isMobile ? '100px' : '150px'} right={isMobile ? '5%' : '20%'} width={isMobile ? '80px' : '120px'} />
+          <Decoration src={bgCurve} top={isMobile ? '170px' : '270px'} right={isMobile ? '20%' : '27%'} width={isMobile ? '40px' : '60px'} />
 
           <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
-          <Spacer h={44} />
+          <Spacer h={isMobile ? 24 : 44} />
           <SText
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="42px"
+            fontSize={isMobile ? '24px' : '42px'}
             fontWeight={700}
-            lineHeight="60px"
+            lineHeight={isMobile ? '34px' : '60px'}
+            style={{ zIndex: 10 }}
           >
             혼자서는 지치기 쉬운 코딩테스트,
             <br />
@@ -53,9 +63,9 @@ export const Home = () => {
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="24px"
+            fontSize={isMobile ? '14px' : '20px'}
             fontWeight={300}
-            lineHeight="34px"
+            lineHeight={isMobile ? '20px' : '34px'}
           >
             코드몬스터는 코딩테스트 준비를 위한 스터디 플랫폼입니다.
             <br />
@@ -64,73 +74,78 @@ export const Home = () => {
             풀이를 공유하며 지속적인 성장을 이끌어내는 커뮤니티입니다.
           </SText>
           <Spacer h={50} />
+          <div style={{ display: 'flex', gap: '27px', flexDirection: isMobile ? 'column' : 'row' }}>
+          <Banner
+            title="팀 스터디 관리"
+            description1="팀원과 함께 목표를 설정하고, 매일"
+            description2="문제 풀이 현황을 공유해보세요."
+            src={ManageIcon}
+          />
+          <Banner
+            title="풀이 기록 & 회고"
+            description1="나만의 풀이를 기록하고, 팀원과 피드백을"
+            description2="주고받으며 회고 문화를 만들어갑니다."
+            src={RecordIcon}
+          />
+          <Banner
+            title="스터디 그룹"
+            description1="목표와 실력이 비슷한 동료들을 찾고,"
+            description2="직접 팀을 구성하거나 기존 팀에 참여할 수 있습니다."
+            src={GroupIcon}
+          />
+          </div>
           {/* TODO: 카드 3개 영역 */}
         </Section>
 
-        <Section>
+        <Section backgroundColor="linear-gradient(180deg, #FAFAFF 0%, #F2F2FF 100%)">
           <SubHeader text="이렇게 사용해보세요!" theme="dark" />
+          <UsageExample />
         </Section>
 
         <Section backgroundColor="#000">
           <SubHeader text="코드몬스터 서비스 소개!" theme="light" />
+          <ServiceStrength />
         </Section>
+
+        <Section backgroundColor="#FAFAFF">
+          <Spacer h={isMobile ? 20 : 44} />
+          <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
+          <Spacer h={isMobile ? 20 : 44} />
+          <UserReviewSlider />
+        </Section>
+
+        
 
         {/* 지수 */}
-        <Section>
-          <SubHeader text="코드몬스터 서비스 소개!" theme="dark" />
-          <Spacer h={40} />
-          <SText
-            color="#111"
-            textAlign="center"
-            fontFamily="Pretendard"
-            fontSize="36px"
-            fontWeight={900}
-          >
-            함께한 사람들의 후기
-          </SText>
-          <Spacer h={20} />
-          <SText
-            color="#767676"
-            textAlign="center"
-            fontFamily="Pretendard"
-            fontSize="24px"
-            fontWeight={300}
-          >
-            코드몬스터와 함께 성장한 동료들의 생생한 후기✨
-          </SText>
-          <Spacer h={86} />
-          <ReviewSlider />
-          <Spacer h={80} />
-          <Ellipse />
-        </Section>
 
-        <Section>
+        <Section backgroundColor="#fff">
           <SText
             color="#111"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="36px"
+            fontSize={isMobile ? '24px' : '36px'}
             fontWeight={900}
           >
             FAQ
           </SText>
-          <Spacer h={20} />
+          <Spacer h={isMobile ? 10 : 20} />
+          
           <SText
             color="#767676"
             textAlign="center"
             fontFamily="Pretendard"
-            fontSize="24px"
+            fontSize={isMobile ? '14px' : '24px'}
             fontWeight={300}
           >
             궁금한 점이 있으신가요? 자주 묻는 질문을 모아봤어요!
           </SText>
-          <Spacer h={10} />
-          <img src={faq} alt="FAQ" />
+          <Spacer h={isMobile ? 5 : 10} />
+          <img src={faq} alt="FAQ" style={{ width: isMobile ? '16px' : '32px' }}/>
           <Spacer h={32} />
           <QnAList />
         </Section>
 
-        <Section backgroundColor="#fff">
+        {/* <Section backgroundColor="#fff">
           <Decoration src={bgZigzag} top="140px" left="20%" />
           <Decoration src={bgRing} top="140px" right="20%" />
           <Decoration src={bgCurve} top="220px" right="27%" width="60px" />
@@ -156,7 +171,7 @@ export const Home = () => {
             <img src={notion} alt="notion" />
           </Flex>
           <Spacer h={240} />
-        </Section>
+        </Section> */}
       </CommonLayout>
     </Fragment>
   );
@@ -169,6 +184,16 @@ const Section = styled.section<{ backgroundColor?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+  right: 50%;
+  margin-right: -50vw;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    padding: 40px 0;
+  }
 `;
 
 const SubHeader = ({
@@ -178,14 +203,15 @@ const SubHeader = ({
   text: string;
   theme: 'dark' | 'light';
 }) => {
+  const isMobile = useWindowWidth() < breakpoints.mobile;
   return (
     <Flex direction="column">
       <Logo src={theme === 'dark' ? logo : logoLight} alt={'logo'} />
-      <Spacer h={10} />
+      <Spacer h={isMobile ? 6 : 12} />
       <SText
         color={theme === 'dark' ? '#333' : '#D5D5D5'}
         fontFamily="Pretendard"
-        fontSize="24px"
+        fontSize={ isMobile ? '14px' : '28px'}
         fontWeight={900}
         textAlign="center"
       >
@@ -197,16 +223,20 @@ const SubHeader = ({
 
 const Logo = styled.img`
   height: 16px;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 8px;
+  }
 `;
 
-const Ellipse = styled.div`
-  width: 900px;
-  height: 19px;
-  border-radius: 900px;
-  background: rgba(212, 212, 212, 0.4);
-  filter: blur(8px);
-  border-radius: 50%;
-`;
+// const Ellipse = styled.div`
+//   width: 900px;
+//   height: 19px;
+//   border-radius: 900px;
+//   background: rgba(212, 212, 212, 0.4);
+//   filter: blur(8px);
+//   border-radius: 50%;
+// `;
 
 const Decoration = styled.img<{
   top: string;
@@ -221,18 +251,19 @@ const Decoration = styled.img<{
   width: ${({ width }) => width || '120px'};
   opacity: 0.8;
   z-index: 1;
+
 `;
 
-const StartButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 74px;
-  padding: 24px 40px 24px 52px;
-  gap: 4px;
-  border-radius: 40px;
-  background: #333;
-  color: #fff;
-  font-size: 36px;
-  font-weight: 400;
-`;
+// const StartButton = styled.button`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 74px;
+//   padding: 24px 40px 24px 52px;
+//   gap: 4px;
+//   border-radius: 40px;
+//   background: #333;
+//   color: #fff;
+//   font-size: 36px;
+//   font-weight: 400;
+// `;

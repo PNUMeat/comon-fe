@@ -1,10 +1,8 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
 import apiInstance from '@/api/apiInstance';
-import { membersInfoMock } from '@/api/mocks.ts';
+import { API_BASE_URL } from '@/api/config.ts';
 import { ServerResponse } from '@/api/types';
 
-export const kakaoOauth2LoginUrl = `/oauth2/authorization/kakao`;
+export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
 
 type ProfileCommonArgs = {
   memberName: string;
@@ -12,7 +10,7 @@ type ProfileCommonArgs = {
 };
 
 type ProfileMutationArgs = ProfileCommonArgs & {
-  imageUrl?: string;
+  image: File | null;
 };
 
 export type ProfileQueryResp = ProfileCommonArgs & {
@@ -23,18 +21,21 @@ export type ProfileQueryResp = ProfileCommonArgs & {
 export const createProfile = async ({
   memberName,
   memberExplain,
-  imageUrl,
+  image,
 }: ProfileMutationArgs) => {
-  const payload: Record<string, string> = {
-    memberName,
-    memberExplain,
-  };
+  const formData = new FormData();
 
-  if (imageUrl && imageUrl.trim() !== '') {
-    payload.imageUrl = imageUrl;
+  formData.append('memberName', memberName);
+  formData.append('memberExplain', memberExplain);
+  if (image) {
+    formData.append('image', image);
   }
 
-  const res = await apiInstance.post('v1/members', payload);
+  const res = await apiInstance.post('v1/members', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 
   return res.data;
 };
@@ -42,18 +43,21 @@ export const createProfile = async ({
 export const changeProfile = async ({
   memberName,
   memberExplain,
-  imageUrl,
+  image,
 }: ProfileMutationArgs) => {
-  const payload: Record<string, string> = {
-    memberName,
-    memberExplain,
-  };
+  const formData = new FormData();
 
-  if (imageUrl && imageUrl.trim() !== '') {
-    payload.imageUrl = imageUrl;
+  formData.append('memberName', memberName);
+  formData.append('memberExplain', memberExplain);
+  if (image) {
+    formData.append('image', image);
   }
 
-  const res = await apiInstance.put('v1/members', payload);
+  const res = await apiInstance.put('v1/members', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 
   return res.data;
 };
@@ -93,9 +97,9 @@ type MemberInfoResp = {
 };
 
 export const getMemberInfo = async () => {
-  if (isDevMode()) {
-    return membersInfoMock.data;
-  }
+  // if (isDevMode()) {
+  //   return membersInfoMock.data;
+  // }
 
   const res =
     await apiInstance.get<ServerResponse<MemberInfoResp>>('v1/members/info');

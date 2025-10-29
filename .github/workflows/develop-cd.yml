@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - test
+  pull_request:
+    branches:
+      - test
   workflow_dispatch:
     inputs:
       branch:
-        description: "Select the branch to build and deploy"
+        description: 'Select the branch to build and deploy'
         required: true
-        default: "main"
+        default: 'main'
         type: choice
         options:
           - test
@@ -24,7 +27,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch || github.ref_name }}
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref || github.event.inputs.branch || 'test' }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -55,13 +59,23 @@ jobs:
           echo "Building for branch: ${{ github.event.inputs.branch || github.ref_name }}"
           npm run build
 
-      - name: Deploy
+      - name: Deploy to s3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --delete
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.TEST_SSH_SECRETE }}
-          EC2_HOST: ${{ secrets.TEST_EC2_HOST }}
-          EC2_USERNAME: ${{ secrets.TEST_EC2_USERNAME }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: 'dist'
+
+      - name: Invalidate CloudFront Cache
         run: |
-          echo -e "$SSH_PRIVATE_KEY" > key.pem
-          chmod 600 key.pem
-          scp -o StrictHostKeyChecking=no -i key.pem -r dist/* $EC2_USERNAME@$EC2_HOST:/var/www/html/
-          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USERNAME@$EC2_HOST "sudo systemctl restart nginx"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} \
+            --paths "/*"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}

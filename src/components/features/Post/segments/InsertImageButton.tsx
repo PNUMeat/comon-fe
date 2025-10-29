@@ -7,8 +7,7 @@ import { createPortal } from 'react-dom';
 export const InsertImageButton: React.FC<{
   insertImage: (payload: InsertImagePayload) => void;
   buttonLabel: ReactNode;
-  imageCategory: string;
-}> = ({ insertImage, buttonLabel, imageCategory }) => {
+}> = ({ insertImage, buttonLabel }) => {
   const [showImageInsertBox, setShowImageInsertBox] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const imageInputRef = useRef<HTMLDivElement | null>(null);
@@ -56,7 +55,6 @@ export const InsertImageButton: React.FC<{
             imageInputRef={imageInputRef}
             insertImage={insertImage}
             closeImageInput={closeImageInputBox}
-            imageCategory={imageCategory}
           />,
           document.body
         )}

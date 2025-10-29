@@ -31,27 +31,31 @@ export const TeamForm: React.FC<
   const password = teamInfo?.password;
   const teamIconUrl = teamInfo?.teamIconUrl;
 
+  const MobileComponent = () => (
+    <>
+      <FormFieldLabel>팀 아이콘</FormFieldLabel>
+      <ComonImageInput imageUrl={teamIconUrl} />
+      <Spacer h={8} />
+      <FormFieldLabel>팀 이름</FormFieldLabel>
+      <ComonTextInput
+        maxLength={10}
+        placeholder={'팀 이름을 입력해주세요'}
+        value={teamName}
+      />
+
+      <FormFieldLabel>팀 설명</FormFieldLabel>
+      <ComonTextarea
+        maxLength={50}
+        placeholder={'우리 팀에 대해 설명해주세요'}
+        value={teamExplain}
+      />
+    </>
+  );
+
   return (
     <TeamFormLayout h={h} showButton>
       {isMobile ? (
-        <>
-          <FormFieldLabel>팀 아이콘</FormFieldLabel>
-          <ComonImageInput imageUrl={teamIconUrl} imageCategory={'TEAM'} />
-          <Spacer h={8} />
-          <FormFieldLabel>팀 이름</FormFieldLabel>
-          <ComonTextInput
-            maxLength={10}
-            placeholder={'팀 이름을 입력해주세요'}
-            value={teamName}
-          />
-
-          <FormFieldLabel>팀 설명</FormFieldLabel>
-          <ComonTextarea
-            maxLength={50}
-            placeholder={'우리 팀에 대해 설명해주세요'}
-            value={teamExplain}
-          />
-        </>
+        <MobileComponent />
       ) : (
         <>
           <FormFieldLabel>팀 이름</FormFieldLabel>
@@ -69,7 +73,7 @@ export const TeamForm: React.FC<
           />
 
           <FormFieldLabel>팀 아이콘</FormFieldLabel>
-          <ComonImageInput imageUrl={teamIconUrl} imageCategory={'TEAM'} />
+          <ComonImageInput imageUrl={teamIconUrl} />
         </>
       )}
 

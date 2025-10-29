@@ -71,11 +71,10 @@ const TAG_LIST: {
 ];
 
 export const ToolbarPlugin: React.FC<{
-  imageCategory: string;
   setIsLinkEditMode: Dispatch<boolean>;
   setTag?: (tag: string) => void;
   articleCategory?: string;
-}> = ({ imageCategory, setIsLinkEditMode, setTag, articleCategory }) => {
+}> = ({ setIsLinkEditMode, setTag, articleCategory }) => {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
 
@@ -223,18 +222,16 @@ export const ToolbarPlugin: React.FC<{
             <HorizontalLine />
           </>
         ) : (
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'flex-end',
-            }}
-          >
-            {!isRecruitPost && (
-              <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              { !isRecruitPost && <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton> }
+            </div>
             )}
-          </div>
-        )}
 
         <div
           style={{
@@ -275,7 +272,6 @@ export const ToolbarPlugin: React.FC<{
             </button>
             <InsertImageButton
               insertImage={insertImage}
-              imageCategory={imageCategory}
               buttonLabel={
                 <InsertIcon src={imgIcon} alt={'insert image button'} />
               }
@@ -344,7 +340,7 @@ export const ToolbarPlugin: React.FC<{
           justifyContent: 'flex-end',
         }}
       >
-        {!setTag && !isRecruitPost && (
+        { ( !setTag && !isRecruitPost) && (
           <TemplateButton onClick={insertTemplate}>탬플릿</TemplateButton>
         )}
         <div
@@ -366,7 +362,6 @@ export const ToolbarPlugin: React.FC<{
             buttonLabel={
               <InsertIcon src={imgIcon} alt={'insert image button'} />
             }
-            imageCategory={imageCategory}
           />
         </div>
       </div>
