@@ -1,41 +1,74 @@
 import apiInstance from '@/api/apiInstance';
-import { ServerResponse } from '@/api/types';
+import { ImageCategory, ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
-  images: File[] | null; // presigned
+  images: File[] | null;
 };
 
 type PostingMutationResp = {
   articleId: number;
 };
 
-// TODO presigned url 요청할 때 요청 부분 타입 정의
-type PostingPresignItemArg = {
-  fileName: string;
-  contentType: string;
+type FileItem = { fileName: string; contentType: string };
+
+type PresignItem = FileItem & { presignedUrl: string };
+
+type PostingPresignBatchArg = {
+  requests: FileItem[];
+  imageCategory: ImageCategory;
 };
 
-// TODO presigned url 요청 시 응답 받을 때 data 부분 타입 정의
-type PostingPresignItemResp = {
-  fileName: string;
-  presignedUrl: string;
-  contentType: string;
-};
-
-type PostingPresignBatchResp = {
-  items: PostingPresignItemResp[];
-};
-
-type ImageCategory = 'ARTICLE' | 'PROFILE' | 'TEAM' | 'TEAM_RECRUIT';
+type PostingPresignBatchResp = { items: PresignItem[] };
 
 const pickContentType = (f: File) =>
   f.type && f.type.length > 0 ? f.type : 'application/octet-stream';
 
 const toPublicUrlFromPresigned = (presignedUrl: string) =>
   presignedUrl.split('?')[0];
+
+export async function getPresignedUrls(
+  files: File[],
+  imageCategory: ImageCategory
+): Promise<PresignItem[]> {
+  const requests: FileItem[] = files.map((f) => ({
+    fileName: f.name,
+    contentType: pickContentType(f),
+  }));
+
+  const res = await apiInstance.post<ServerResponse<PostingPresignBatchResp>>(
+    'v1/image/presigned-url',
+    {
+      requests,
+      imageCategory,
+    } satisfies PostingPresignBatchArg
+  );
+
+  return res.data.data.items;
+}
+
+export async function uploadWithPresigned(
+  presigns: PresignItem[],
+  files: File[]
+): Promise<void> {
+  await Promise.all(
+    presigns.map((item, i) =>
+      fetch(item.presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': pickContentType(files[i]!) },
+        body: files[i]!,
+      }).then((r) => {
+        if (!r.ok) throw new Error(`S3 PUT failed: ${r.status}`);
+      })
+    )
+  );
+}
+
+export function makePublicUrls(presigns: PresignItem[]): string[] {
+  return presigns.map((it) => toPublicUrlFromPresigned(it.presignedUrl));
+}
 
 export const createPost = async ({
   teamId,
@@ -55,51 +88,20 @@ export const createPost = async ({
     return noImgArticleResp.data.data;
   }
 
-  const requests: PostingPresignItemArg[] = images.map((f) => ({
-    fileName: f.name,
-    contentType: pickContentType(f),
-  }));
-
-  const presignResp = await apiInstance.post<
-    ServerResponse<PostingPresignBatchResp>
-  >('v1/image/presigned-url', {
-    requests,
-    imageCategory: 'ARTICLE' as ImageCategory,
-  });
-
-  const items = presignResp.data.data.items;
-
-  await Promise.all(
-    items.map((item, i) =>
-      fetch(item.presignedUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': pickContentType(images[i]) },
-        body: images[i],
-      }).then((res) => {
-        if (!res.ok) throw new Error(`S3 PUT failed: ${res.status}`);
-      })
-    )
-  );
+  const presigns = await getPresignedUrls(images, 'ARTICLE');
+  await uploadWithPresigned(presigns, images);
 
   // if (isDevMode()) {
   //   await new Promise((r) => setTimeout(r, 1000));
   //   return createPostMock.data;
   // }
 
-  const imageUrls = items.map((it) =>
-    toPublicUrlFromPresigned(it.presignedUrl)
-  );
+  const imageUrls = makePublicUrls(presigns);
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     'v1/article',
-    {
-      teamId,
-      title: articleTitle,
-      body: articleBody,
-      images: imageUrls,
-    }
+    { teamId, title: articleTitle, body: articleBody, images: imageUrls }
   );
-
   return res.data.data;
 };
 
@@ -112,34 +114,18 @@ export const mutatePost = async ({
 }: PostingMutationArg & {
   articleId: number;
 }) => {
-  const formData = new FormData();
-
-  formData.append('teamId', teamId.toString());
-  formData.append('articleId', articleId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
-    });
-  }
-  // else {
-  //   formData.append('images', '');
-  // }
-
-  // if (isDevMode()) {
-  //   await new Promise((r) => setTimeout(r, 1000));
-  //   return mutatePostMock.data;
-  // }
+  const imageUrls =
+    images && images.length > 0
+      ? makePublicUrls(await getPresignedUrls(images, 'ARTICLE'))
+      : [];
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
-    formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      teamId,
+      title: articleTitle,
+      body: articleBody,
+      images: imageUrls,
     }
   );
 
