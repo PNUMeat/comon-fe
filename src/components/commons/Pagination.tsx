@@ -125,8 +125,10 @@ const RightArrow = styled.img`
 
 const PageList = styled.div`
   display: flex;
+  justify-content: space-around;
   align-items: center;
-  gap: 20px;
+  gap: 0.8rem;
+  width: clamp(120px, 20vw, 280px);
   margin: 0 16px;
 `;
 
