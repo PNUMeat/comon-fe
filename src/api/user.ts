@@ -23,18 +23,10 @@ export const createProfile = async ({
   memberExplain,
   image,
 }: ProfileMutationArgs) => {
-  const formData = new FormData();
-
-  formData.append('memberName', memberName);
-  formData.append('memberExplain', memberExplain);
-  if (image) {
-    formData.append('image', image);
-  }
-
-  const res = await apiInstance.post('v1/members', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+  const res = await apiInstance.post('v1/members', {
+    memberName,
+    memberExplain,
+    image,
   });
 
   return res.data;

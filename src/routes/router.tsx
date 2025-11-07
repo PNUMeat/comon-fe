@@ -30,12 +30,12 @@ import { useAtom } from 'jotai';
 
 const useAuth = () => {
   const [isLoggedIn] = useAtom(isLoggedInAtom);
+  console.log('useAuth isLoggedIn', isLoggedIn);
   // if (isDevMode()) {
   //   return {
   //     isAuthenticated: true,
   //   };
   // }
-  console.log('isLoggedIn', isLoggedIn);
   return {
     isAuthenticated: isLoggedIn,
   };
@@ -43,6 +43,7 @@ const useAuth = () => {
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
+  console.log('PrivateRoute isAuthenticated', isAuthenticated);
   const location = useLocation();
 
   if (!isAuthenticated) {
@@ -113,11 +114,9 @@ export const router = createBrowserRouter(
         {
           path: PATH.ENROLL,
           element: (
-            <PrivateRoute>
-              <Suspense fallback={<LazySkeleton />}>
-                <LazyEnrollTemplate />
-              </Suspense>
-            </PrivateRoute>
+            <Suspense fallback={<LazySkeleton />}>
+              <LazyEnrollTemplate />
+            </Suspense>
           ),
         },
         {
