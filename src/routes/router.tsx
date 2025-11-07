@@ -43,7 +43,6 @@ const useAuth = () => {
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
-  console.log('PrivateRoute isAuthenticated', isAuthenticated);
   const location = useLocation();
 
   if (!isAuthenticated) {
