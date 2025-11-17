@@ -3,12 +3,12 @@ import type { ProfileQueryResp } from '@/api/user';
 import { getMyProfile } from '@/api/user';
 import { atom } from 'jotai';
 
-export const authStatusAtom = atom<'authenticated' | 'guest'>('guest');
+export const authStatusAtom = atom<'loading' | 'authenticated' | 'guest'>('loading');
 export const profileAtom = atom<ProfileQueryResp | null>(null);
-export const authInitDoneAtom = atom(false);
 export const isLoggedInAtom = atom((get) => get(authStatusAtom) === 'authenticated');
 
 export const refreshAuthAtom = atom(null, async (_get, set) => {
+  set(authStatusAtom, 'loading');
   try {
     const data = await getMyProfile();
     set(profileAtom, data);
@@ -16,8 +16,6 @@ export const refreshAuthAtom = atom(null, async (_get, set) => {
   } catch {
     set(profileAtom, null);
     set(authStatusAtom, 'guest');
-  } finally {
-    set(authInitDoneAtom, true);
   }
 });
 

@@ -3,16 +3,21 @@
 import { RouterProvider } from 'react-router-dom';
 
 import { router } from '@/routes/router';
-import { refreshAuthAtom } from '@/store/auth';
-import { useSetAtom } from 'jotai';
+import { authStatusAtom, refreshAuthAtom } from '@/store/auth';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 export const App = () => {
-  const refreshAuth = useSetAtom(refreshAuthAtom);
+  const refresh = useSetAtom(refreshAuthAtom); 
+  const authStatus = useAtomValue(authStatusAtom);
 
   useEffect(() => {
-    refreshAuth();
+    refresh();
   }, []);
+
+  if (authStatus === 'loading') {
+    return null;
+  }
 
   return <RouterProvider router={router} />;
 };
