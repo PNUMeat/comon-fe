@@ -116,7 +116,7 @@ apiInstance.interceptors.response.use(
             })
             .catch((reissueError: AxiosError) => {
               processQueue(reissueError);
-              navigate(PATH.LOGIN);
+              // navigate(PATH.LOGIN);
 
               console.error('reissue error', reissueError);
               return Promise.reject(reissueError);
@@ -128,7 +128,6 @@ apiInstance.interceptors.response.use(
 
         // 리프레시 토큰이 만료됨
         // sessionStorage.removeItem('Authorization');
-        navigate(PATH.LOGIN);
         return Promise.reject(error);
       }
     }
