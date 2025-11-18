@@ -12,36 +12,21 @@ type GetPresignedArgs = {
   category: ImageCategory;
 };
 
-export const getImagePresigned = async ({
-  files,
+export const getSingleImagePresignedUrl = async ({
+  file,
   category,
-}: GetPresignedArgs) => {
-  if (files.length === 1) {
-    const file = files[0];
-    const imagePayload = {
-      fileName: file.name,
-      contentType: file.type,
-    };
-
-    const res = await apiInstance.post<ServerResponse<PresignedUrlResponse>>(
-      '/v1/image/presigned-url',
-      imagePayload,
-      {
-        params: { imageCategory: category },
-      }
-    );
-
-    return res.data.data;
-  }
-
-  const imagesPayload = files.map((file) => ({
+}: {
+  file: File;
+  category: ImageCategory;
+}) => {
+  const payload = {
     fileName: file.name,
     contentType: file.type,
-  }));
+  };
 
-  const res = await apiInstance.post<ServerResponse<PresignedUrlResponse[]>>(
-    '/v1/image/presigned-url/list',
-    imagesPayload,
+  const res = await apiInstance.post<ServerResponse<PresignedUrlResponse>>(
+    '/v1/image/presigned-url',
+    payload,
     {
       params: { imageCategory: category },
     }
@@ -50,27 +35,44 @@ export const getImagePresigned = async ({
   return res.data.data;
 };
 
-export const getImagePresignedUrls = async ({
+export const getMultiImagesPresignedUrl = async ({
   files,
   category,
-}: {
-  files: File[];
-  category: ImageCategory;
-}): Promise<PresignedUrlResponse[]> => {
-  const body = files.map((file) => ({
+}: GetPresignedArgs): Promise<PresignedUrlResponse[]> => {
+  const payload = files.map((file) => ({
     fileName: file.name,
     contentType: file.type,
   }));
 
   const res = await apiInstance.post<ServerResponse<PresignedUrlResponse[]>>(
     '/v1/image/presigned-url/list',
-    body,
+    payload,
     {
       params: { imageCategory: category },
     }
   );
 
   return res.data.data;
+};
+
+export const getImagePresignedUrl = async ({
+  files,
+  category,
+}: GetPresignedArgs) => {
+  if (files.length === 1) {
+    const presigned = await getSingleImagePresignedUrl({
+      file: files[0],
+      category,
+    });
+    return [presigned];
+  }
+
+  const presignedList = await getMultiImagesPresignedUrl({
+    files,
+    category,
+  });
+
+  return presignedList;
 };
 
 export const uploadWithPresigned = async ({
@@ -86,8 +88,26 @@ export const uploadWithPresigned = async ({
     body: file,
   });
   if (!res.ok) {
-    throw new Error(`S3 PUT failed: ${res.status}`);
+    throw new Error();
   }
+};
+
+export const uploadManyWithPresigned = async ({
+  presignedList,
+  files,
+}: {
+  presignedList: PresignedUrlResponse[];
+  files: File[];
+}): Promise<void> => {
+  if (presignedList.length !== files.length) {
+    throw new Error();
+  }
+
+  await Promise.all(
+    presignedList.map((p, i) =>
+      uploadWithPresigned({ presigned: p, file: files[i] })
+    )
+  );
 };
 
 export const getPublicUrlFromPresigned = (

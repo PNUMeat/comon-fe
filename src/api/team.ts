@@ -1,6 +1,11 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 import apiInstance from '@/api/apiInstance';
+import {
+  getPublicUrlFromPresigned,
+  getSingleImagePresignedUrl,
+  uploadWithPresigned,
+} from '@/api/image';
 import { teamAdminPageMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
@@ -104,6 +109,26 @@ export interface TeamAdminResponse {
   teamIconUrl: string;
 }
 
+interface CreateTeamBody {
+  teamName: string;
+  teamExplain: string;
+  topic: string;
+  password: string;
+  memberLimit: number;
+  teamRecruitId: number | null;
+  teamMemberUuids?: string[];
+  imageUrl?: string;
+}
+
+interface ModifyTeamBody {
+  teamName: string;
+  teamExplain: string;
+  topic: string;
+  memberLimit: number;
+  password?: string | null;
+  imageUrl?: string;
+}
+
 export const createTeam = async ({
   teamName,
   teamExplain,
@@ -114,36 +139,38 @@ export const createTeam = async ({
   teamMemberUuids,
   teamRecruitId,
 }: ICreateTeamRequest) => {
-  const formData = new FormData();
-
-  formData.append('teamName', teamName);
-  formData.append('teamExplain', teamExplain);
-  formData.append('topic', topic);
-  formData.append('password', password);
-  formData.append('memberLimit', memberLimit.toString());
+  let imageUrl: string | undefined;
 
   if (image) {
-    formData.append('image', image);
-  }
-
-  if (teamMemberUuids) {
-    teamMemberUuids.forEach((uuid) => {
-      formData.append('teamMemberUuids', uuid);
+    const presign = await getSingleImagePresignedUrl({
+      file: image,
+      category: 'TEAM',
     });
+    await uploadWithPresigned({ presigned: presign, file: image });
+    const [url] = getPublicUrlFromPresigned([presign]);
+    imageUrl = url;
   }
 
-  if (teamRecruitId !== null) {
-    formData.append('teamRecruitId', teamRecruitId.toString());
+  const body: CreateTeamBody = {
+    teamName,
+    teamExplain,
+    topic,
+    password,
+    memberLimit,
+    teamRecruitId,
+  };
+
+  if (teamMemberUuids && teamMemberUuids.length > 0) {
+    body.teamMemberUuids = teamMemberUuids;
+  }
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
     'v1/teams',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
 
   return res.data.data;
@@ -158,27 +185,36 @@ export const modifyTeam = async ({
   image,
   teamId,
 }: IMPutTeamRequest) => {
-  const formData = new FormData();
+  let imageUrl: string | undefined;
 
-  formData.append('teamName', teamName);
-  formData.append('teamExplain', teamExplain);
-  formData.append('topic', topic);
-  formData.append('memberLimit', memberLimit.toString());
   if (image) {
-    formData.append('image', image);
+    const presign = await getSingleImagePresignedUrl({
+      file: image,
+      category: 'TEAM',
+    });
+    await uploadWithPresigned({ presigned: presign, file: image });
+    const [url] = getPublicUrlFromPresigned([presign]);
+    imageUrl = url;
   }
-  if (password) {
-    formData.append('password', password);
+
+  const body: ModifyTeamBody = {
+    teamName,
+    teamExplain,
+    topic,
+    memberLimit,
+  };
+
+  if (password !== null) {
+    body.password = password;
+  }
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
   }
 
   const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
     `v1/teams/${teamId}`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
 
   return res.data.data;
