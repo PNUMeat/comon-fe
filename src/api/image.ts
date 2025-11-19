@@ -112,7 +112,6 @@ export const uploadManyWithPresigned = async ({
 
 export const getPublicUrlFromPresigned = (
   p: PresignedUrlResponse[]
-): string | string[] => {
-  if (p.length === 1) return p[0].presignedUrl.split('?')[0];
+): string[] => {
   return p.map((item) => item.presignedUrl.split('?')[0]);
 };

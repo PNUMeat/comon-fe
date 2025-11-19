@@ -38,8 +38,8 @@ export const createProfile = async ({
 
     await uploadWithPresigned({ presigned, file: image });
 
-    const [url] = getPublicUrlFromPresigned([presigned]);
-    imageUrl = url;
+    const url = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url[0];
   }
 
   const body: {
@@ -75,8 +75,8 @@ export const changeProfile = async ({
 
     await uploadWithPresigned({ presigned, file: image });
 
-    const [url] = getPublicUrlFromPresigned([presigned]);
-    imageUrl = url;
+    const url = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url[0];
   }
 
   const body: {
