@@ -1,7 +1,9 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
 import apiInstance from '@/api/apiInstance';
-import { createPostMock, mutatePostMock } from '@/api/mocks.ts';
+import {
+  getImagePresignedUrl,
+  getPublicUrlFromPresigned,
+  uploadManyWithPresigned,
+} from '@/api/image';
 import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
@@ -21,34 +23,29 @@ export const createPost = async ({
   articleBody,
   images,
 }: PostingMutationArg) => {
-  const formData = new FormData();
+  let imageUrls: string[] | undefined;
 
-  formData.append('teamId', teamId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
+  if (images && images.length > 0) {
+    const presignedList = await getImagePresignedUrl({
+      files: images,
+      category: 'ARTICLE',
     });
-  }
-  // else {
-  // formData.append('images', '');
-  // }
 
-  if (isDevMode()) {
-    await new Promise((r) => setTimeout(r, 1000));
-    return createPostMock.data;
+    await uploadManyWithPresigned({ presignedList, files: images });
+    const publicUrl = getPublicUrlFromPresigned(presignedList);
+    imageUrls = Array.isArray(publicUrl) ? publicUrl : [publicUrl];
   }
+
+  const body = {
+    teamId,
+    articleTitle,
+    articleBody,
+    images: imageUrls,
+  };
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
-    'v1/articles',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    '/v1/articles',
+    body
   );
 
   return res.data.data;
@@ -63,35 +60,29 @@ export const mutatePost = async ({
 }: PostingMutationArg & {
   articleId: number;
 }) => {
-  const formData = new FormData();
+  let imageUrls: string[] | undefined;
 
-  formData.append('teamId', teamId.toString());
-  formData.append('articleId', articleId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
+  if (images && images.length > 0) {
+    const presignedList = await getImagePresignedUrl({
+      files: images,
+      category: 'ARTICLE',
     });
-  }
-  // else {
-  //   formData.append('images', '');
-  // }
 
-  if (isDevMode()) {
-    await new Promise((r) => setTimeout(r, 1000));
-    return mutatePostMock.data;
+    await uploadManyWithPresigned({ presignedList, files: images });
+    const publicUrl = getPublicUrlFromPresigned(presignedList);
+    imageUrls = Array.isArray(publicUrl) ? publicUrl : [publicUrl];
   }
+
+  const body = {
+    teamId,
+    articleTitle,
+    articleBody,
+    images: imageUrls,
+  };
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
 
   return res.data.data;
