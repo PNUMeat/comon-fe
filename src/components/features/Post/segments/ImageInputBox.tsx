@@ -1,5 +1,3 @@
-import { uploadSingleImage } from '@/hooks/useUploadImage';
-
 import { DragEventHandler, MutableRefObject, useState } from 'react';
 
 // import { postImagesAtom } from '@/store/posting';
@@ -71,7 +69,7 @@ interface ImageInputBoxProps {
   closeImageInput: () => void;
 }
 
-// const createImagePreviewUrl = (file: File) => URL.createObjectURL(file);
+const createImagePreviewUrl = (file: File) => URL.createObjectURL(file);
 
 export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
   imageInputRef,
@@ -93,7 +91,7 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
     switchToFileImage(file);
   };
 
-  const onConfirm = async () => {
+  const onConfirm = () => {
     if (!fileInput) {
       console.error({
         title: '이미지 파일을 넣거나 이미지 url을 기입해주세요.',
@@ -103,19 +101,12 @@ export const ImageInputBox: React.FC<ImageInputBoxProps> = ({
       });
       return;
     }
-
-    try {
-      const s3Url = fileInput ? await uploadSingleImage(fileInput) : urlInput;
-
-      insertImage({
-        src: s3Url,
-        altText: altText || '이미지',
-      });
-      closeImageInput();
-    } catch (err) {
-      console.error(err);
-      alert('이미지 업로드에 실패했습니다.');
-    }
+    insertImage({
+      src: fileInput ? createImagePreviewUrl(fileInput) : urlInput,
+      altText: altText || '이미지',
+    });
+    // setPostImages((prev) => [...prev, fileInput]);
+    closeImageInput();
   };
 
   const onDrop: DragEventHandler<HTMLLabelElement> = (e) => {
