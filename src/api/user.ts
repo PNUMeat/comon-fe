@@ -1,5 +1,10 @@
 import apiInstance from '@/api/apiInstance';
 import { API_BASE_URL } from '@/api/config.ts';
+import {
+  getPublicUrlFromPresigned,
+  getSingleImagePresignedUrl,
+  uploadWithPresigned,
+} from '@/api/image';
 import { ServerResponse } from '@/api/types';
 
 export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
@@ -23,11 +28,34 @@ export const createProfile = async ({
   memberExplain,
   image,
 }: ProfileMutationArgs) => {
-  const res = await apiInstance.post('v1/members', {
+  let imageUrl: string | undefined;
+
+  if (image) {
+    const presigned = await getSingleImagePresignedUrl({
+      file: image,
+      category: 'PROFILE',
+    });
+
+    await uploadWithPresigned({ presigned, file: image });
+
+    const [url] = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url;
+  }
+
+  const body: {
+    memberName: string;
+    memberExplain: string;
+    imageUrl?: string;
+  } = {
     memberName,
     memberExplain,
-    image,
-  });
+  };
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
+  }
+
+  const res = await apiInstance.post('/v1/members', body);
 
   return res.data;
 };
@@ -37,19 +65,34 @@ export const changeProfile = async ({
   memberExplain,
   image,
 }: ProfileMutationArgs) => {
-  const formData = new FormData();
+  let imageUrl: string | undefined;
 
-  formData.append('memberName', memberName);
-  formData.append('memberExplain', memberExplain);
   if (image) {
-    formData.append('image', image);
+    const presigned = await getSingleImagePresignedUrl({
+      file: image,
+      category: 'PROFILE',
+    });
+
+    await uploadWithPresigned({ presigned, file: image });
+
+    const [url] = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url;
   }
 
-  const res = await apiInstance.put('v1/members', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const body: {
+    memberName: string;
+    memberExplain: string;
+    imageUrl?: string;
+  } = {
+    memberName,
+    memberExplain,
+  };
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
+  }
+
+  const res = await apiInstance.put('/v1/members', body);
 
   return res.data;
 };
