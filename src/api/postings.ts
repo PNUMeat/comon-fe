@@ -32,8 +32,8 @@ export const createPost = async ({
     });
 
     await uploadManyWithPresigned({ presignedList, files: images });
-    const publicUrl = getPublicUrlFromPresigned(presignedList);
-    imageUrls = Array.isArray(publicUrl) ? publicUrl : [publicUrl];
+    const urls = getPublicUrlFromPresigned(presignedList);
+    imageUrls = urls;
   }
 
   const body = {
@@ -69,8 +69,8 @@ export const mutatePost = async ({
     });
 
     await uploadManyWithPresigned({ presignedList, files: images });
-    const publicUrl = getPublicUrlFromPresigned(presignedList);
-    imageUrls = Array.isArray(publicUrl) ? publicUrl : [publicUrl];
+    const urls = getPublicUrlFromPresigned(presignedList);
+    imageUrls = urls;
   }
 
   const body = {

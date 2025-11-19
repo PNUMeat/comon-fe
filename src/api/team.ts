@@ -147,8 +147,8 @@ export const createTeam = async ({
       category: 'TEAM',
     });
     await uploadWithPresigned({ presigned: presign, file: image });
-    const [url] = getPublicUrlFromPresigned([presign]);
-    imageUrl = url;
+    const url = getPublicUrlFromPresigned([presign]);
+    imageUrl = url[0];
   }
 
   const body: CreateTeamBody = {
@@ -193,8 +193,8 @@ export const modifyTeam = async ({
       category: 'TEAM',
     });
     await uploadWithPresigned({ presigned: presign, file: image });
-    const [url] = getPublicUrlFromPresigned([presign]);
-    imageUrl = url;
+    const url = getPublicUrlFromPresigned([presign]);
+    imageUrl = url[0];
   }
 
   const body: ModifyTeamBody = {
