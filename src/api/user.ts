@@ -1,8 +1,11 @@
 import apiInstance from '@/api/apiInstance';
 import { API_BASE_URL } from '@/api/config.ts';
+import {
+  getPublicUrlFromPresigned,
+  getSingleImagePresignedUrl,
+  uploadWithPresigned,
+} from '@/api/image';
 import { ServerResponse } from '@/api/types';
-
-import { uploadImages } from './image';
 
 export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
 
@@ -28,11 +31,15 @@ export const createProfile = async ({
   let imageUrl: string | undefined;
 
   if (image) {
-    const uploadedUrls = await uploadImages({
-      files: [image],
+    const presigned = await getSingleImagePresignedUrl({
+      file: image,
       category: 'PROFILE',
     });
-    imageUrl = uploadedUrls[0];
+
+    await uploadWithPresigned({ presigned, file: image });
+
+    const url = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url[0];
   }
 
   const body: {
@@ -42,8 +49,11 @@ export const createProfile = async ({
   } = {
     memberName,
     memberExplain,
-    ...(imageUrl && { imageUrl }),
   };
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
+  }
 
   const res = await apiInstance.post('/v1/members', body);
 
@@ -58,11 +68,15 @@ export const changeProfile = async ({
   let imageUrl: string | undefined;
 
   if (image) {
-    const uploadedUrls = await uploadImages({
-      files: [image],
+    const presigned = await getSingleImagePresignedUrl({
+      file: image,
       category: 'PROFILE',
     });
-    imageUrl = uploadedUrls[0];
+
+    await uploadWithPresigned({ presigned, file: image });
+
+    const url = getPublicUrlFromPresigned([presigned]);
+    imageUrl = url[0];
   }
 
   const body: {
@@ -72,8 +86,11 @@ export const changeProfile = async ({
   } = {
     memberName,
     memberExplain,
-    ...(imageUrl && { imageUrl }),
   };
+
+  if (imageUrl) {
+    body.imageUrl = imageUrl;
+  }
 
   const res = await apiInstance.put('/v1/members', body);
 

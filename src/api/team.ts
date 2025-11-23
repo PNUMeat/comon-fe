@@ -1,10 +1,13 @@
 import { isDevMode } from '@/utils/cookie.ts';
 
 import apiInstance from '@/api/apiInstance';
+import {
+  getPublicUrlFromPresigned,
+  getSingleImagePresignedUrl,
+  uploadWithPresigned,
+} from '@/api/image';
 import { teamAdminPageMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
-
-import { uploadImages } from './image';
 
 // 생성
 interface ITeamCommon {
@@ -139,11 +142,13 @@ export const createTeam = async ({
   let imageUrl: string | undefined;
 
   if (image) {
-    const uploadedUrl = await uploadImages({
-      files: [image],
+    const presign = await getSingleImagePresignedUrl({
+      file: image,
       category: 'TEAM',
     });
-    imageUrl = uploadedUrl[0];
+    await uploadWithPresigned({ presigned: presign, file: image });
+    const url = getPublicUrlFromPresigned([presign]);
+    imageUrl = url[0];
   }
 
   const body: CreateTeamBody = {
@@ -183,11 +188,13 @@ export const modifyTeam = async ({
   let imageUrl: string | undefined;
 
   if (image) {
-    const uploadedUrl = await uploadImages({
-      files: [image],
+    const presign = await getSingleImagePresignedUrl({
+      file: image,
       category: 'TEAM',
     });
-    imageUrl = uploadedUrl[0];
+    await uploadWithPresigned({ presigned: presign, file: image });
+    const url = getPublicUrlFromPresigned([presign]);
+    imageUrl = url[0];
   }
 
   const body: ModifyTeamBody = {

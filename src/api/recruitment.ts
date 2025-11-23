@@ -1,7 +1,6 @@
 import { isDevMode } from '@/utils/cookie';
 
 import apiInstance from './apiInstance';
-import { uploadImages } from './image';
 import { teamRecruitDetailMock, teamRecruitListMock } from './mocks';
 import { ServerResponse } from './types';
 
@@ -93,27 +92,28 @@ export const createRecruitPost = async ({
   image,
   chatUrl,
 }: ICreateRecuitmentRequest) => {
-  let imageUrl: string | undefined;
+  const formData = new FormData();
 
-  if (image) {
-    const uploadedUrl = await uploadImages({
-      files: image,
-      category: 'TEAM_RECRUIT',
-    });
-    imageUrl = uploadedUrl[0];
+  if (teamId) {
+    formData.append('teamId', teamId);
   }
-
-  const body = {
-    teamId,
-    teamRecruitTitle,
-    teamRecruitBody,
-    chatUrl,
-    image: imageUrl,
-  };
+  formData.append('teamRecruitTitle', teamRecruitTitle);
+  formData.append('teamRecruitBody', teamRecruitBody);
+  formData.append('chatUrl', chatUrl);
+  if (image) {
+    image.forEach((img) => {
+      formData.append('image', img);
+    });
+  }
 
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
-    body
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -128,28 +128,25 @@ export const modifyRecruitPost = async ({
 }: ICreateRecuitmentRequest & {
   recruitmentId: number;
 }) => {
-  let imageUrl: string | undefined;
-
+  const formData = new FormData();
+  formData.append('teamRecruitTitle', teamRecruitTitle);
+  formData.append('teamRecruitBody', teamRecruitBody);
+  formData.append('chatUrl', chatUrl);
   if (image) {
-    const uploadedUrl = await uploadImages({
-      files: image,
-      category: 'TEAM_RECRUIT',
+    image.forEach((img) => {
+      formData.append('image', img);
     });
-    imageUrl = uploadedUrl[0];
   }
-
-  const body = {
-    teamRecruitTitle,
-    teamRecruitBody,
-    chatUrl,
-    image: imageUrl,
-  };
 
   const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
     `v1/recruitments/${recruitmentId}`,
-    body
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
-
   return res.data.data;
 };
 
