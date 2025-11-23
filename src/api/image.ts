@@ -7,111 +7,83 @@ type PresignedUrlResponse = {
   contentType: string;
 };
 
-type GetPresignedArgs = {
+type UploadArgs = {
   files: File[];
   category: ImageCategory;
 };
 
-export const getSingleImagePresignedUrl = async ({
-  file,
-  category,
-}: {
-  file: File;
-  category: ImageCategory;
-}) => {
-  const payload = {
-    fileName: file.name,
-    contentType: file.type,
-  };
+class ImageUploader {
+  private category: ImageCategory;
 
-  const res = await apiInstance.post<ServerResponse<PresignedUrlResponse>>(
-    '/v1/image/presigned-url',
-    payload,
-    {
-      params: { imageCategory: category },
-    }
-  );
+  constructor(category: ImageCategory) {
+    this.category = category;
+  }
 
-  return res.data.data;
-};
-
-export const getMultiImagesPresignedUrl = async ({
-  files,
-  category,
-}: GetPresignedArgs): Promise<PresignedUrlResponse[]> => {
-  const payload = files.map((file) => ({
-    fileName: file.name,
-    contentType: file.type,
-  }));
-
-  const res = await apiInstance.post<ServerResponse<PresignedUrlResponse[]>>(
-    '/v1/image/presigned-url/list',
-    payload,
-    {
-      params: { imageCategory: category },
-    }
-  );
-
-  return res.data.data;
-};
-
-export const getImagePresignedUrl = async ({
-  files,
-  category,
-}: GetPresignedArgs) => {
-  if (files.length === 1) {
-    const presigned = await getSingleImagePresignedUrl({
-      file: files[0],
-      category,
+  private async createPresignedUrls(
+    files: File[]
+  ): Promise<PresignedUrlResponse[]> {
+    const isSingle = files.length === 1;
+    const payload = files.map((file) => ({
+      fileName: file.name,
+      contentType: file.type,
+    }));
+    const endpoint = isSingle
+      ? '/v1/image/presigned-url'
+      : '/v1/image/presigned-url/list';
+    const res = await apiInstance.post<
+      ServerResponse<PresignedUrlResponse | PresignedUrlResponse[]>
+    >(endpoint, payload, {
+      params: { imageCategory: this.category },
     });
-    return [presigned];
+
+    const data = res.data.data;
+    return Array.isArray(data) ? data : [data];
   }
 
-  const presignedList = await getMultiImagesPresignedUrl({
-    files,
-    category,
-  });
-
-  return presignedList;
-};
-
-export const uploadWithPresigned = async ({
-  presigned,
-  file,
-}: {
-  presigned: PresignedUrlResponse;
-  file: File;
-}): Promise<void> => {
-  const res = await fetch(presigned.presignedUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': presigned.contentType },
-    body: file,
-  });
-  if (!res.ok) {
-    throw new Error();
+  private async uploadSingleFile(
+    presigned: PresignedUrlResponse,
+    file: File
+  ): Promise<void> {
+    const res = await fetch(presigned.presignedUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': presigned.contentType },
+      body: file,
+    });
+    if (!res.ok) {
+      throw new Error(`${presigned.fileName} 업로드에 실패했습니다.`);
+    }
   }
-};
 
-export const uploadManyWithPresigned = async ({
-  presignedList,
+  private async uploadFiles(
+    presignedList: PresignedUrlResponse[],
+    files: File[]
+  ): Promise<void> {
+    if (presignedList.length !== files.length) {
+      throw new Error('URL과 파일의 개수가 일치하지 않습니다.');
+    }
+    await Promise.all(
+      presignedList.map((presigned, index) =>
+        this.uploadSingleFile(presigned, files[index])
+      )
+    );
+  }
+
+  private getPublicUrls(presignedList: PresignedUrlResponse[]): string[] {
+    return presignedList.map((item) => item.presignedUrl.split('?')[0]);
+  }
+
+  public async processUpload(files: File[]): Promise<string[]> {
+    if (files.length === 0) return [];
+    const presignedList = await this.createPresignedUrls(files);
+    await this.uploadFiles(presignedList, files);
+    return this.getPublicUrls(presignedList);
+  }
+}
+
+export const uploadImages = async ({
   files,
-}: {
-  presignedList: PresignedUrlResponse[];
-  files: File[];
-}): Promise<void> => {
-  if (presignedList.length !== files.length) {
-    throw new Error();
-  }
-
-  await Promise.all(
-    presignedList.map((p, i) =>
-      uploadWithPresigned({ presigned: p, file: files[i] })
-    )
-  );
-};
-
-export const getPublicUrlFromPresigned = (
-  p: PresignedUrlResponse[]
-): string[] => {
-  return p.map((item) => item.presignedUrl.split('?')[0]);
+  category,
+}: UploadArgs): Promise<string[]> => {
+  const uploader = new ImageUploader(category);
+  return uploader.processUpload(files);
 };
