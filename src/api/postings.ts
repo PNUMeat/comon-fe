@@ -1,10 +1,7 @@
 import apiInstance from '@/api/apiInstance';
-import {
-  getImagePresignedUrl,
-  getPublicUrlFromPresigned,
-  uploadManyWithPresigned,
-} from '@/api/image';
 import { ServerResponse } from '@/api/types';
+
+import { uploadImages } from './image';
 
 type PostingMutationArg = {
   teamId: number;
@@ -26,14 +23,11 @@ export const createPost = async ({
   let imageUrls: string[] | undefined;
 
   if (images && images.length > 0) {
-    const presignedList = await getImagePresignedUrl({
+    const uploadedUrls = await uploadImages({
       files: images,
       category: 'ARTICLE',
     });
-
-    await uploadManyWithPresigned({ presignedList, files: images });
-    const urls = getPublicUrlFromPresigned(presignedList);
-    imageUrls = urls;
+    imageUrls = uploadedUrls;
   }
 
   const body = {
@@ -63,14 +57,11 @@ export const mutatePost = async ({
   let imageUrls: string[] | undefined;
 
   if (images && images.length > 0) {
-    const presignedList = await getImagePresignedUrl({
+    const uploadedUrls = await uploadImages({
       files: images,
       category: 'ARTICLE',
     });
-
-    await uploadManyWithPresigned({ presignedList, files: images });
-    const urls = getPublicUrlFromPresigned(presignedList);
-    imageUrls = urls;
+    imageUrls = uploadedUrls;
   }
 
   const body = {
