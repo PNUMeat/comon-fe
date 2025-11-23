@@ -12,7 +12,7 @@ type UploadArgs = {
   category: ImageCategory;
 };
 
-class ImageUploader {
+export class ImageUploader {
   private category: ImageCategory;
 
   constructor(category: ImageCategory) {
@@ -23,13 +23,20 @@ class ImageUploader {
     files: File[]
   ): Promise<PresignedUrlResponse[]> {
     const isSingle = files.length === 1;
-    const payload = files.map((file) => ({
+    const fileInfos = files.map((file) => ({
       fileName: file.name,
       contentType: file.type,
     }));
-    const endpoint = isSingle
-      ? '/v1/image/presigned-url'
-      : '/v1/image/presigned-url/list';
+    let payload;
+    let endpoint: string;
+
+    if (isSingle) {
+      payload = fileInfos[0];
+      endpoint = '/v1/image/presigned-url';
+    } else {
+      payload = fileInfos;
+      endpoint = '/v1/image/presigned-url/list';
+    }
     const res = await apiInstance.post<
       ServerResponse<PresignedUrlResponse | PresignedUrlResponse[]>
     >(endpoint, payload, {
