@@ -1,6 +1,7 @@
 import { isDevMode } from '@/utils/cookie';
 
 import apiInstance from './apiInstance';
+import { uploadImages } from './image';
 import { teamRecruitDetailMock, teamRecruitListMock } from './mocks';
 import { ServerResponse } from './types';
 
@@ -92,28 +93,27 @@ export const createRecruitPost = async ({
   image,
   chatUrl,
 }: ICreateRecuitmentRequest) => {
-  const formData = new FormData();
+  let imageUrl: string | undefined;
 
-  if (teamId) {
-    formData.append('teamId', teamId);
-  }
-  formData.append('teamRecruitTitle', teamRecruitTitle);
-  formData.append('teamRecruitBody', teamRecruitBody);
-  formData.append('chatUrl', chatUrl);
   if (image) {
-    image.forEach((img) => {
-      formData.append('image', img);
+    const uploadedUrl = await uploadImages({
+      files: image,
+      category: 'TEAM_RECRUIT',
     });
+    imageUrl = uploadedUrl[0];
   }
+
+  const body = {
+    teamId,
+    teamRecruitTitle,
+    teamRecruitBody,
+    chatUrl,
+    image: imageUrl,
+  };
 
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
 
   return res.data.data;
@@ -128,25 +128,28 @@ export const modifyRecruitPost = async ({
 }: ICreateRecuitmentRequest & {
   recruitmentId: number;
 }) => {
-  const formData = new FormData();
-  formData.append('teamRecruitTitle', teamRecruitTitle);
-  formData.append('teamRecruitBody', teamRecruitBody);
-  formData.append('chatUrl', chatUrl);
+  let imageUrl: string | undefined;
+
   if (image) {
-    image.forEach((img) => {
-      formData.append('image', img);
+    const uploadedUrl = await uploadImages({
+      files: image,
+      category: 'TEAM_RECRUIT',
     });
+    imageUrl = uploadedUrl[0];
   }
+
+  const body = {
+    teamRecruitTitle,
+    teamRecruitBody,
+    chatUrl,
+    image: imageUrl,
+  };
 
   const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
     `v1/recruitments/${recruitmentId}`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
+
   return res.data.data;
 };
 
