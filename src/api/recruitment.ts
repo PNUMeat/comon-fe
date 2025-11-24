@@ -1,8 +1,4 @@
-import { isDevMode } from '@/utils/cookie';
-
 import apiInstance from './apiInstance';
-import { uploadImages } from './image';
-import { teamRecruitDetailMock, teamRecruitListMock } from './mocks';
 import { ServerResponse } from './types';
 
 // 팀 모집글 생성
@@ -93,23 +89,15 @@ export const createRecruitPost = async ({
   image,
   chatUrl,
 }: ICreateRecuitmentRequest) => {
-  let imageUrl: string | undefined;
-
-  if (image) {
-    const uploadedUrl = await uploadImages({
-      files: image,
-      category: 'TEAM_RECRUIT',
-    });
-    imageUrl = uploadedUrl[0];
-  }
-
   const body = {
     teamId,
     teamRecruitTitle,
     teamRecruitBody,
     chatUrl,
-    image: imageUrl,
+    image,
   };
+
+  console.log('teamRecruitBody: ', teamRecruitBody);
 
   const res = await apiInstance.post<ServerResponse<ICreateRecuitmentResponse>>(
     'v1/recruitments',
@@ -128,21 +116,11 @@ export const modifyRecruitPost = async ({
 }: ICreateRecuitmentRequest & {
   recruitmentId: number;
 }) => {
-  let imageUrl: string | undefined;
-
-  if (image) {
-    const uploadedUrl = await uploadImages({
-      files: image,
-      category: 'TEAM_RECRUIT',
-    });
-    imageUrl = uploadedUrl[0];
-  }
-
   const body = {
     teamRecruitTitle,
     teamRecruitBody,
     chatUrl,
-    image: imageUrl,
+    image,
   };
 
   const res = await apiInstance.put<ServerResponse<ICreateRecuitmentResponse>>(
@@ -158,10 +136,6 @@ export const getTeamRecruitList = async (
   page: number = 0,
   size: number = 5
 ): Promise<ITeamRecruitListResponse> => {
-  if (isDevMode()) {
-    return teamRecruitListMock.data;
-  }
-
   const res = await apiInstance.get<ServerResponse<ITeamRecruitListResponse>>(
     `/v1/recruitments`,
     {
@@ -169,16 +143,13 @@ export const getTeamRecruitList = async (
     }
   );
 
+  console.log(res.data.data);
   return res.data.data;
 };
 
 export const getTeamRecruitById = async (
   recruitId: number
 ): Promise<ITeamRecruitDetailResponse> => {
-  if (isDevMode()) {
-    return teamRecruitDetailMock.data;
-  }
-
   const res = await apiInstance.get<ServerResponse<ITeamRecruitDetailResponse>>(
     `/v1/recruitments/${recruitId}`
   );
