@@ -3,13 +3,11 @@ import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
-import { getVisiblePageNumbers } from '../features/Post/utils';
 import { Flex } from './Flex';
 import { Spacer } from './Spacer';
 
 interface IPaginationProps {
   totalPages: number;
-
   onPageChange: (page: number) => void;
   currentPageProp: number;
   pagesPerView?: number;
@@ -25,11 +23,11 @@ export const Pagination = ({
   hideShadow,
   marginTop,
 }: IPaginationProps) => {
-  const visiblePageNumbers = getVisiblePageNumbers(
-    totalPages,
-    pagesPerView,
-    currentPageProp
-  );
+  const currentPage = currentPageProp + 1;
+  const start = Math.max(1, currentPage - pagesPerView + 1);
+  const end = Math.min(start + pagesPerView - 1, totalPages);
+  const visiblePageNumbers = [];
+  for (let p = start; p <= end; p++) visiblePageNumbers.push(p);
   const isShowingArrows = totalPages > 1;
 
   const handlePageChange = (page: number) => {
