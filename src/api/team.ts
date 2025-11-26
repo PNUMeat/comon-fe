@@ -1,7 +1,4 @@
-import { isDevMode } from '@/utils/cookie.ts';
-
 import apiInstance from '@/api/apiInstance';
-import { teamAdminPageMock } from '@/api/mocks.ts';
 import { ServerResponse } from '@/api/types';
 
 import { uploadImages } from './image';
@@ -114,7 +111,7 @@ interface CreateTeamBody {
   memberLimit: number;
   teamRecruitId: number | null;
   teamMemberUuids?: string[];
-  imageUrl?: string;
+  teamIconUrl?: string;
 }
 
 interface ModifyTeamBody {
@@ -123,7 +120,7 @@ interface ModifyTeamBody {
   topic: string;
   memberLimit: number;
   password?: string | null;
-  imageUrl?: string;
+  teamIconUrl?: string;
 }
 
 export const createTeam = async ({
@@ -136,14 +133,14 @@ export const createTeam = async ({
   teamMemberUuids,
   teamRecruitId,
 }: ICreateTeamRequest) => {
-  let imageUrl: string | undefined;
+  let teamIconUrl: string | undefined;
 
   if (image) {
     const uploadedUrl = await uploadImages({
       files: [image],
       category: 'TEAM',
     });
-    imageUrl = uploadedUrl[0];
+    teamIconUrl = uploadedUrl[0];
   }
 
   const body: CreateTeamBody = {
@@ -153,14 +150,15 @@ export const createTeam = async ({
     password,
     memberLimit,
     teamRecruitId,
+    teamIconUrl,
   };
 
   if (teamMemberUuids && teamMemberUuids.length > 0) {
     body.teamMemberUuids = teamMemberUuids;
   }
 
-  if (imageUrl) {
-    body.imageUrl = imageUrl;
+  if (teamIconUrl) {
+    body.teamIconUrl = teamIconUrl;
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
@@ -180,14 +178,14 @@ export const modifyTeam = async ({
   image,
   teamId,
 }: IMPutTeamRequest) => {
-  let imageUrl: string | undefined;
+  let teamIconUrl: string | undefined;
 
   if (image) {
     const uploadedUrl = await uploadImages({
       files: [image],
       category: 'TEAM',
     });
-    imageUrl = uploadedUrl[0];
+    teamIconUrl = uploadedUrl[0];
   }
 
   const body: ModifyTeamBody = {
@@ -201,8 +199,8 @@ export const modifyTeam = async ({
     body.password = password;
   }
 
-  if (imageUrl) {
-    body.imageUrl = imageUrl;
+  if (teamIconUrl) {
+    body.teamIconUrl = teamIconUrl;
   }
 
   const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
@@ -266,10 +264,6 @@ export const withdrawTeam = async (teamId: number) => {
 };
 
 export const getTeamInfoAdmin = async (teamId: string) => {
-  if (isDevMode()) {
-    return teamAdminPageMock.data;
-  }
-
   const res = await apiInstance.get<ServerResponse<TeamAdminResponse>>(
     `v1/teams/${teamId}`
   );

@@ -115,10 +115,6 @@ type MemberInfoResp = {
 };
 
 export const getMemberInfo = async () => {
-  // if (isDevMode()) {
-  //   return membersInfoMock.data;
-  // }
-
   const res =
     await apiInstance.get<ServerResponse<MemberInfoResp>>('v1/members/info');
 
