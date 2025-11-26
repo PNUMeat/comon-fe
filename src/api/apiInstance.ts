@@ -1,7 +1,6 @@
-import { handleCookieOnRedirect } from '@/utils/cookie';
-
 import { NavigateFunction } from 'react-router-dom';
 
+import { API_BASE_URL } from '@/api/config';
 import { ServerIntendedError } from '@/api/types';
 import { PATH } from '@/routes/path';
 import axios, {
@@ -28,7 +27,7 @@ const processQueue = (error: AxiosError | null): void => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(axios(prom.config));
+      prom.resolve(apiInstance(prom.config));
     }
   });
 
@@ -46,7 +45,8 @@ export const navigate = (path: string) => {
 };
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: `/api/`,
+  baseURL: `${API_BASE_URL}/api/`,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -55,9 +55,9 @@ const apiInstance: AxiosInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('Authorization');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 헤더가 남아있을 경우 삭제
+    if (config.headers?.Authorization) {
+      delete config.headers.Authorization;
     }
     return config;
   },
@@ -92,7 +92,6 @@ apiInstance.interceptors.response.use(
       if (error.response.status === 401) {
         if (code === 100) {
           navigate(PATH.ENROLL);
-
           return Promise.reject(error);
         }
 
@@ -112,15 +111,12 @@ apiInstance.interceptors.response.use(
           return apiInstance
             .post('v1/reissue')
             .then(() => {
-              handleCookieOnRedirect();
-
               processQueue(null);
               return apiInstance(originalRequest);
             })
             .catch((reissueError: AxiosError) => {
               processQueue(reissueError);
-              sessionStorage.removeItem('Authorization');
-              navigate(PATH.LOGIN);
+              // navigate(PATH.LOGIN);
 
               console.error('reissue error', reissueError);
               return Promise.reject(reissueError);
@@ -132,7 +128,6 @@ apiInstance.interceptors.response.use(
 
         // 리프레시 토큰이 만료됨
         // sessionStorage.removeItem('Authorization');
-        // navigate(PATH.LOGIN);
         return Promise.reject(error);
       }
     }
