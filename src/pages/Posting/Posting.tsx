@@ -1,3 +1,5 @@
+import injectImageUrlsIntoHtml from '@/utils/injectImageUrlsIntoHtml';
+
 import { usePrompt } from '@/hooks/usePrompt';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -18,6 +20,7 @@ import {
 } from 'react-router-dom';
 
 import { ITopicResponse, getTeamTopic } from '@/api/dashboard.ts';
+import { uploadImages } from '@/api/image';
 import { createPost, mutatePost } from '@/api/postings';
 import write from '@/assets/Posting/write.svg';
 import click from '@/assets/TeamJoin/click.png';
@@ -80,138 +83,136 @@ const Posting = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const onClick = () => {
-    if (isPending) {
-      return;
-    }
+  const onClick = async () => {
+    if (isPending) return;
     setIsPending(true);
 
-    const articleBodyTrim = content.trim();
+    try {
+      const articleBodyTrim = content.trim();
 
-    const articleBody =
-      postImages.length > 0
-        ? articleBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
-        : articleBodyTrim;
+      const sortedImages =
+        postImages.length > 0
+          ? [...postImages].sort((a, b) => {
+              if (a.line !== b.line) return a.line - b.line;
+              return a.idx - b.idx;
+            })
+          : [];
 
-    if (article && articleId && articleTitle) {
-      mutatePost({
-        teamId: parseInt(id),
-        images:
-          postImages.length > 0
-            ? postImages
-                .sort((a, b) => {
-                  if (a.line !== b.line) {
-                    return a.line - b.line;
-                  }
-                  return a.idx - b.idx;
-                })
-                .map((imgObj) => imgObj.img)
-            : null,
-        articleId: parseInt(articleId),
-        articleBody: postImages ? articleBody : content,
-        articleTitle: postTitle,
-      })
-        .then(() => {
-          queryClient
-            .refetchQueries({
-              queryKey: ['articles-by-date', id, selectedDate, page],
-            })
-            .then(() => {
-              setDashboardView('article');
-              setSelectedPostId(articleId);
-              setPostImages([]);
-              setDisablePrompt(true);
-              setAlert({
-                message: '게시글을 수정했어요',
-                isVisible: true,
-                onConfirm: () => {
-                  navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
-                },
-              });
-            })
-            .catch((err) => {
-              setAlert({
-                message:
-                  err.response.data.message ??
-                  '최신 게시글 조회를 실패했습니다.',
-                isVisible: true,
-                onConfirm: () => {},
-              });
-              setIsPending(false);
-            });
-        })
-        .catch((err) => {
+      let uploadedUrls: string[] = [];
+      if (sortedImages.length > 0) {
+        const files = sortedImages.map((imgObj) => imgObj.img);
+        try {
+          uploadedUrls = await uploadImages({
+            files,
+            category: 'ARTICLE',
+          });
+        } catch (err: any) {
           setAlert({
-            message: err.response.data.message ?? '게시글 수정에 실패했어요',
+            message:
+              err?.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
             isVisible: true,
             onConfirm: () => {},
           });
-          setIsPending(false);
-        });
-      return;
-    }
+          return;
+        }
+      }
 
-    if (!postTitle) {
-      alert('제목을 작성해주세요');
-      setIsPending(false);
-      return;
-    }
-
-    if (!content) {
-      alert('게시글 본문을 작성해주세요');
-      setIsPending(false);
-      return;
-    }
-
-    createPost({
-      teamId: parseInt(id),
-      images:
+      const articleBody =
         postImages.length > 0
-          ? postImages
-              .sort((a, b) => {
-                if (a.line !== b.line) {
-                  return a.line - b.line;
-                }
-                return a.idx - b.idx;
-              })
-              .map((imgObj) => imgObj.img)
-          : null,
-      articleBody: articleBody,
-      articleTitle: postTitle,
-    })
-      .then((data) => {
-        const articleId = data.articleId;
-        queryClient
-          .refetchQueries({
-            queryKey: ['articles-by-date', id, selectedDate, page],
-          })
-          .then(() => {
-            setDashboardView('article');
-            setSelectedPostId(articleId);
-            setPostImages([]);
-            setDisablePrompt(true);
-            // navigate(`/team-dashboard/${id}`);
-            setAlert({
-              message: '글쓰기를 완료했어요',
-              isVisible: true,
-              onConfirm: () => {
-                navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
-              },
-            });
-          })
-          .catch((err) => {
-            setAlert({
-              message:
-                err?.response?.data?.message ??
-                '최신 게시글 조회에 실패했습니다.',
-              isVisible: true,
-              onConfirm: () => {},
-            });
-            setIsPending(false);
+          ? injectImageUrlsIntoHtml(articleBodyTrim, uploadedUrls)
+          : articleBodyTrim;
+
+      // 수정(존재하는 게시글) 처리
+      if (article && articleId && articleTitle) {
+        try {
+          await mutatePost({
+            teamId: parseInt(id as string),
+            images:
+              postImages.length > 0
+                ? postImages
+                    .sort((a, b) => {
+                      if (a.line !== b.line) return a.line - b.line;
+                      return a.idx - b.idx;
+                    })
+                    .map((imgObj) => imgObj.img)
+                : null,
+            articleId: parseInt(articleId as string),
+            articleBody: articleBody,
+            articleTitle: postTitle,
           });
-      })
-      .catch((err) => {
-        // 작성중 강퇴시
+
+          await queryClient.refetchQueries({
+            queryKey: ['articles-by-date', id, selectedDate, page],
+          });
+
+          setDashboardView('article');
+          setSelectedPostId(parseInt(articleId as string));
+          setPostImages([]);
+          setDisablePrompt(true);
+          setAlert({
+            message: '게시글을 수정했어요',
+            isVisible: true,
+            onConfirm: () => {
+              navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
+            },
+          });
+          return;
+        } catch (err: any) {
+          setAlert({
+            message: err?.response?.data?.message ?? '게시글 수정에 실패했어요',
+            isVisible: true,
+            onConfirm: () => {},
+          });
+          return;
+        }
+      }
+
+      // 새 글 작성 전 검증
+      if (!postTitle) {
+        alert('제목을 작성해주세요');
+        return;
+      }
+
+      if (!content) {
+        alert('게시글 본문을 작성해주세요');
+        return;
+      }
+
+      // 새 글 작성
+      try {
+        const res = await createPost({
+          teamId: parseInt(id as string),
+          images:
+            postImages.length > 0
+              ? postImages
+                  .sort((a, b) => {
+                    if (a.line !== b.line) return a.line - b.line;
+                    return a.idx - b.idx;
+                  })
+                  .map((imgObj) => imgObj.img)
+              : null,
+          articleBody: articleBody,
+          articleTitle: postTitle,
+        });
+
+        const newArticleId = res.articleId;
+        await queryClient.refetchQueries({
+          queryKey: ['articles-by-date', id, selectedDate, page],
+        });
+
+        setDashboardView('article');
+        setSelectedPostId(newArticleId);
+        setPostImages([]);
+        setDisablePrompt(true);
+        setAlert({
+          message: '글쓰기를 완료했어요',
+          isVisible: true,
+          onConfirm: () => {
+            navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
+          },
+        });
+      } catch (err: any) {
+        // 작성 중 강퇴 등 서버 에러 처리
         if (err?.response?.data?.message === '팀에 멤버가 존재하지않습니다.') {
           navigate(PATH.TEAMS);
           return;
@@ -221,8 +222,11 @@ const Posting = () => {
           isVisible: true,
           onConfirm: () => {},
         });
-        setIsPending(false);
-      });
+        return;
+      }
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const padding = isMobile ? '0 10px' : '0 105px';

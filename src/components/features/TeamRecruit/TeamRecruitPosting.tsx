@@ -1,16 +1,22 @@
+import injectImageUrlsIntoHtml from '@/utils/injectImageUrlsIntoHtml';
+
 import { usePrompt } from '@/hooks/usePrompt';
 
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import PostEditor from '@/components/features/Post/PostEditor';
-import { getRecruitDefaultData, TeamRecruitSubject } from '@/components/features/TeamRecruit/RecruitExampleData';
+import {
+  TeamRecruitSubject,
+  getRecruitDefaultData,
+} from '@/components/features/TeamRecruit/RecruitExampleData';
 import TeamRecruitInput from '@/components/features/TeamRecruit/TeamRecruitInput';
 
 import { useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { navigate } from '@/api/apiInstance';
+import { uploadImages } from '@/api/image';
 import { createRecruitPost, modifyRecruitPost } from '@/api/recruitment';
 import click from '@/assets/TeamJoin/click.png';
 import grayClickIcon from '@/assets/TeamRecruit/grayClick.svg';
@@ -54,89 +60,109 @@ export const TeamRecruitPosting = () => {
 
   usePrompt(!disablePrompt);
 
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+
     const teamRecruitBodyTrim = content.trim();
 
-    const teamRecruitBody =
+    if (!title.trim() || !teamRecruitBodyTrim || !url.trim()) return;
+
+    const sortedImages =
       postImages.length > 0
-        ? teamRecruitBodyTrim.replace(/(<img[^>]*src=")[^"]*(")/g, '$1?$2')
+        ? [...postImages].sort((a, b) => {
+            if (a.line !== b.line) return a.line - b.line;
+            return a.idx - b.idx;
+          })
+        : [];
+
+    let uploadedUrls: string[] = [];
+    if (sortedImages.length > 0) {
+      const files = sortedImages.map((imgObj) => imgObj.img);
+      try {
+        uploadedUrls = await uploadImages({
+          files,
+          category: 'TEAM_RECRUIT',
+        });
+      } catch (err: any) {
+        setAlert({
+          message:
+            err?.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
+          isVisible: true,
+          onConfirm: () => {},
+        });
+        return;
+      }
+    }
+
+    const teamRecruitBody =
+      uploadedUrls.length > 0
+        ? injectImageUrlsIntoHtml(teamRecruitBodyTrim, uploadedUrls)
         : teamRecruitBodyTrim;
 
-    if (recruitId) {
-      console.log('recruitId', recruitId);
-      modifyRecruitPost({
-        teamRecruitTitle: title,
-        teamRecruitBody: teamRecruitBody,
-        image:
-          postImages.length > 0
-            ? postImages
-                .sort((a, b) => {
-                  if (a.line !== b.line) {
-                    return a.line - b.line;
-                  }
-                  return a.idx - b.idx;
-                })
-                .map((imgObj) => imgObj.img)
-            : null,
-        chatUrl: url,
-        recruitmentId: recruitId,
-      })
-        .then(() => {
-          setPostImages([]);
-          setDisablePrompt(true);
-          setAlert({
-            message: '모집글을 수정했어요',
-            isVisible: true,
-            onConfirm: () => {
-              navigate(`${PATH.TEAM_RECRUIT}/detail/${recruitId}`);
-            },
-          });
-        })
-        .catch((err) => {
-          setAlert({
-            message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
-            isVisible: true,
-            onConfirm: () => {},
-          });
+    try {
+      if (recruitId) {
+        await modifyRecruitPost({
+          teamRecruitTitle: title,
+          teamRecruitBody: teamRecruitBody,
+          image:
+            postImages.length > 0
+              ? postImages
+                  .sort((a, b) => {
+                    if (a.line !== b.line) {
+                      return a.line - b.line;
+                    }
+                    return a.idx - b.idx;
+                  })
+                  .map((imgObj) => imgObj.img)
+              : null,
+          chatUrl: url,
+          recruitmentId: recruitId,
         });
-      return;
-    } else {
-      createRecruitPost({
-        teamId: teamId,
-        teamRecruitTitle: title,
-        teamRecruitBody: teamRecruitBody,
-        image:
-          postImages.length > 0
-            ? postImages
-                .sort((a, b) => {
-                  if (a.line !== b.line) {
-                    return a.line - b.line;
-                  }
-                  return a.idx - b.idx;
-                })
-                .map((imgObj) => imgObj.img)
-            : null,
-        chatUrl: url,
-      })
-        .then((res) => {
-          setPostImages([]);
-          setDisablePrompt(true);
-          setAlert({
-            message: '모집글을 생성했어요',
-            isVisible: true,
-            onConfirm: () => {
-              navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
-            },
-          });
-        })
-        .catch((err) => {
-          setAlert({
-            message: err.response.data.message ?? '포스팅 작성에 실패했습니다.',
-            isVisible: true,
-            onConfirm: () => {},
-          });
+
+        setPostImages([]);
+        setDisablePrompt(true);
+        setAlert({
+          message: '모집글을 수정했어요',
+          isVisible: true,
+          onConfirm: () => {
+            navigate(`${PATH.TEAM_RECRUIT}/detail/${recruitId}`);
+          },
         });
+      } else {
+        const res = await createRecruitPost({
+          teamId: teamId,
+          teamRecruitTitle: title,
+          teamRecruitBody: teamRecruitBody,
+          image:
+            postImages.length > 0
+              ? postImages
+                  .sort((a, b) => {
+                    if (a.line !== b.line) {
+                      return a.line - b.line;
+                    }
+                    return a.idx - b.idx;
+                  })
+                  .map((imgObj) => imgObj.img)
+              : null,
+          chatUrl: url,
+        });
+
+        setPostImages([]);
+        setDisablePrompt(true);
+        setAlert({
+          message: '모집글을 생성했어요',
+          isVisible: true,
+          onConfirm: () => {
+            navigate(`${PATH.TEAM_RECRUIT}/detail/${res.teamRecruitId}`);
+          },
+        });
+      }
+    } catch (err: any) {
+      setAlert({
+        message: err?.response?.data?.message ?? '포스팅 작성에 실패했습니다.',
+        isVisible: true,
+        onConfirm: () => {},
+      });
     }
   };
 
