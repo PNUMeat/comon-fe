@@ -106,10 +106,11 @@ const Posting = () => {
             files,
             category: 'ARTICLE',
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const e = err as { response?: { data?: { message?: string } } };
           setAlert({
             message:
-              err?.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
+              e.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
             isVisible: true,
             onConfirm: () => {},
           });
@@ -157,9 +158,10 @@ const Posting = () => {
             },
           });
           return;
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const e = err as { response?: { data?: { message?: string } } };
           setAlert({
-            message: err?.response?.data?.message ?? '게시글 수정에 실패했어요',
+            message: e.response?.data?.message ?? '게시글 수정에 실패했어요',
             isVisible: true,
             onConfirm: () => {},
           });
@@ -211,14 +213,15 @@ const Posting = () => {
             navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
           },
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const e = err as { response?: { data?: { message?: string } } };
         // 작성 중 강퇴 등 서버 에러 처리
-        if (err?.response?.data?.message === '팀에 멤버가 존재하지않습니다.') {
+        if (e.response?.data?.message === '팀에 멤버가 존재하지않습니다.') {
           navigate(PATH.TEAMS);
           return;
         }
         setAlert({
-          message: err?.response?.data?.message ?? '글쓰기에 실패했어요',
+          message: e.response?.data?.message ?? '글쓰기에 실패했어요',
           isVisible: true,
           onConfirm: () => {},
         });

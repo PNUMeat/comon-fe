@@ -83,10 +83,10 @@ export const TeamRecruitPosting = () => {
           files,
           category: 'TEAM_RECRUIT',
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const e = err as { response?: { data?: { message?: string } } };
         setAlert({
-          message:
-            err?.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
+          message: e.response?.data?.message ?? '이미지 업로드에 실패했습니다.',
           isVisible: true,
           onConfirm: () => {},
         });
@@ -157,9 +157,10 @@ export const TeamRecruitPosting = () => {
           },
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } } };
       setAlert({
-        message: err?.response?.data?.message ?? '포스팅 작성에 실패했습니다.',
+        message: e.response?.data?.message ?? '포스팅 작성에 실패했습니다.',
         isVisible: true,
         onConfirm: () => {},
       });
