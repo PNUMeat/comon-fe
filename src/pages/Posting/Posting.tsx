@@ -280,17 +280,21 @@ const Posting = () => {
                 {feedback ? 'GPT 피드백 재요청' : 'GPT 피드백 요청'}
               </SText>
             </GptFeedbackButton>
-            <Spacer h={8} />
-            <GptGuideBox>
-              <SText fontSize="16px">
-                <SText as="span" color="#6E74FA" fontWeight={700}>
-                  새로운 기능:
-                </SText>{' '}
-                이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요.
-                <br />
-                버튼을 클릭하고 조금만 기다려 주세요.
-              </SText>
-            </GptGuideBox>
+            {!feedback && (
+              <>
+                <Spacer h={8} />
+                <GptGuideBox>
+                  <SText fontSize="16px">
+                    <SText as="span" color="#6E74FA" fontWeight={700}>
+                      새로운 기능:
+                    </SText>{' '}
+                    이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요.
+                    <br />
+                    버튼을 클릭하고 조금만 기다려 주세요.
+                  </SText>
+                </GptGuideBox>
+              </>
+            )}
           </div>
           <ConfirmButtonWrap
             disabled={isPending}
