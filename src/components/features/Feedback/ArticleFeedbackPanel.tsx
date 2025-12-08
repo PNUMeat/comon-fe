@@ -19,20 +19,22 @@ const ArticleFeedbackPanel = ({
   return (
     <Box width="100%" borderRadius="10px" padding="30px">
       <Flex direction="column" align="flex-start" justify="center">
-        <SText fontSize="24px" fontWeight={700}>
-          GPT 코드 리뷰
-        </SText>
+        <Flex direction="row" align="center" justify="space-between">
+          <SText fontSize="24px" fontWeight={700}>
+            GPT 코드 리뷰
+          </SText>
 
-        {isStreaming && (
-          <StreamingBadge>
-            <Dot />
-            <Dot />
-            <Dot />
-            <SText fontSize="11px" style={{ marginLeft: 6 }}>
-              코드를 분석하는 중이에요...
-            </SText>
-          </StreamingBadge>
-        )}
+          {isStreaming && (
+            <StreamingBadge>
+              <Dot />
+              <Dot />
+              <Dot />
+              <SText fontSize="11px" style={{ marginLeft: 6 }}>
+                코드를 분석하는 중이에요...
+              </SText>
+            </StreamingBadge>
+          )}
+        </Flex>
 
         <Spacer h={12} />
         {feedback ? (
