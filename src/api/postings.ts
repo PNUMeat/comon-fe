@@ -1,6 +1,8 @@
 import apiInstance from '@/api/apiInstance';
 import { ServerResponse } from '@/api/types';
 
+import { uploadImages } from './image';
+
 type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
@@ -18,34 +20,26 @@ export const createPost = async ({
   articleBody,
   images,
 }: PostingMutationArg) => {
-  const formData = new FormData();
+  let imageUrls: string[] | undefined;
 
-  formData.append('teamId', teamId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
+  if (images && images.length > 0) {
+    const uploadedUrls = await uploadImages({
+      files: images,
+      category: 'ARTICLE',
     });
+    imageUrls = uploadedUrls;
   }
-  // else {
-  // formData.append('images', '');
-  // }
 
-  // if (isDevMode()) {
-  //   await new Promise((r) => setTimeout(r, 1000));
-  //   return createPostMock.data;
-  // }
+  const body = {
+    teamId,
+    articleTitle,
+    articleBody,
+    images: imageUrls,
+  };
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
-    'v1/articles',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    '/v1/articles',
+    body
   );
 
   return res.data.data;
@@ -60,35 +54,26 @@ export const mutatePost = async ({
 }: PostingMutationArg & {
   articleId: number;
 }) => {
-  const formData = new FormData();
+  let imageUrls: string[] | undefined;
 
-  formData.append('teamId', teamId.toString());
-  formData.append('articleId', articleId.toString());
-  formData.append('articleTitle', articleTitle);
-  formData.append('articleBody', articleBody);
-  if (images) {
-    images.forEach((img) => {
-      // formData.append('images', img);
-      formData.append('image', img);
+  if (images && images.length > 0) {
+    const uploadedUrls = await uploadImages({
+      files: images,
+      category: 'ARTICLE',
     });
+    imageUrls = uploadedUrls;
   }
-  // else {
-  //   formData.append('images', '');
-  // }
 
-  // if (isDevMode()) {
-  //   await new Promise((r) => setTimeout(r, 1000));
-  //   return mutatePostMock.data;
-  // }
+  const body = {
+    teamId,
+    articleTitle,
+    articleBody,
+    images: imageUrls,
+  };
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    body
   );
 
   return res.data.data;

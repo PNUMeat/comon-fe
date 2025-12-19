@@ -10,6 +10,7 @@ import {
   getTeamInfoAdmin,
   modifyTeam,
 } from '@/api/team';
+import InfoIcon from '@/assets/TeamAdmin/info_square.png';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
@@ -24,7 +25,6 @@ import {
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
-import InfoIcon from '@/assets/TeamAdmin/info_square.png';
 
 import TeamModification from './TeamModification';
 
@@ -105,6 +105,8 @@ const ImgContent = styled.img`
   border-radius: 20px;
   box-sizing: border-box;
   padding: 10px;
+  object-fit: contain;
+  object-position: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 80px;
@@ -334,9 +336,9 @@ const ContentWrapper = styled.div`
     padding: 30px 28px;
     box-sizing: border-box;
     min-width: 100%;
-    border: 1px solid #F0F1FF;
+    border: 1px solid #f0f1ff;
     backdrop-filter: blur(40px);
-    box-shadow: 5px 7px 11.6px 0px #3F3F4D12;
+    box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
     height: 450px;
   }
 `;

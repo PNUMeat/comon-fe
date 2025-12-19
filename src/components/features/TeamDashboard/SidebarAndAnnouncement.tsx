@@ -135,6 +135,7 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
               w={isMobile ? 70 : 200}
               h={isMobile ? 70 : 200}
               maxW={isMobile ? 70 : 200}
+              objectFit="contain"
             />
           </Suspense>
         </Box>

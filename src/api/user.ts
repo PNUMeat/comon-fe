@@ -2,6 +2,8 @@ import apiInstance from '@/api/apiInstance';
 import { API_BASE_URL } from '@/api/config.ts';
 import { ServerResponse } from '@/api/types';
 
+import { uploadImages } from './image';
+
 export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
 
 type ProfileCommonArgs = {
@@ -23,11 +25,27 @@ export const createProfile = async ({
   memberExplain,
   image,
 }: ProfileMutationArgs) => {
-  const res = await apiInstance.post('v1/members', {
+  let imageUrl: string | undefined;
+
+  if (image) {
+    const uploadedUrls = await uploadImages({
+      files: [image],
+      category: 'PROFILE',
+    });
+    imageUrl = uploadedUrls[0];
+  }
+
+  const body: {
+    memberName: string;
+    memberExplain: string;
+    imageUrl?: string;
+  } = {
     memberName,
     memberExplain,
-    image,
-  });
+    ...(imageUrl && { imageUrl }),
+  };
+
+  const res = await apiInstance.post('/v1/members', body);
 
   return res.data;
 };
@@ -37,19 +55,27 @@ export const changeProfile = async ({
   memberExplain,
   image,
 }: ProfileMutationArgs) => {
-  const formData = new FormData();
+  let imageUrl: string | undefined;
 
-  formData.append('memberName', memberName);
-  formData.append('memberExplain', memberExplain);
   if (image) {
-    formData.append('image', image);
+    const uploadedUrls = await uploadImages({
+      files: [image],
+      category: 'PROFILE',
+    });
+    imageUrl = uploadedUrls[0];
   }
 
-  const res = await apiInstance.put('v1/members', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const body: {
+    memberName: string;
+    memberExplain: string;
+    imageUrl?: string;
+  } = {
+    memberName,
+    memberExplain,
+    ...(imageUrl && { imageUrl }),
+  };
+
+  const res = await apiInstance.put('/v1/members', body);
 
   return res.data;
 };
@@ -89,10 +115,6 @@ type MemberInfoResp = {
 };
 
 export const getMemberInfo = async () => {
-  // if (isDevMode()) {
-  //   return membersInfoMock.data;
-  // }
-
   const res =
     await apiInstance.get<ServerResponse<MemberInfoResp>>('v1/members/info');
 
