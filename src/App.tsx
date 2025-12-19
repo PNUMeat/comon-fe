@@ -7,17 +7,23 @@ import { authStatusAtom, refreshAuthAtom } from '@/store/auth';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
-export const App = () => {
+const AuthChecker = () => {
   const refresh = useSetAtom(refreshAuthAtom); 
-  const authStatus = useAtomValue(authStatusAtom);
 
   useEffect(() => {
     refresh();
   }, []);
+  
+  return null;
+}
 
-  if (authStatus === 'loading') {
-    return null;
-  }
+export const App = () => {
+  const authStatus = useAtomValue(authStatusAtom);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <AuthChecker />
+      {authStatus === 'loading' ? null : <RouterProvider router={router} />}
+    </>
+  );
 };
