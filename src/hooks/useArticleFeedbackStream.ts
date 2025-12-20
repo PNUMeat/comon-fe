@@ -41,6 +41,7 @@ export const useArticleFeedbackStream = (initialArticleId: number | null) => {
           const chunk = parsed.content;
 
           setFeedback((prev) => prev + chunk);
+          console.log(chunk);
         } catch (err) {
           console.log(err);
         }

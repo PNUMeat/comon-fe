@@ -1,8 +1,10 @@
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
+import { ProgressBar } from '@/components/commons/ProgressBar/ProgressBar';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
+import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import styled from '@emotion/styled';
@@ -16,38 +18,81 @@ const ArticleFeedbackPanel = ({
   feedback,
   isStreaming,
 }: ArticleFeedbackPanelArgs) => {
-  return (
-    <Box width="100%" borderRadius="10px" padding="30px">
-      <Flex direction="column" align="flex-start" justify="center">
-        <Flex direction="row" align="center" justify="space-between">
-          <SText fontSize="24px" fontWeight={700}>
-            GPT 코드 리뷰
-          </SText>
+  const [progress, setProgress] = useState(0);
+  const hasStaerted = useRef(false);
 
-          {isStreaming && (
-            <StreamingBadge>
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isStreaming) {
+      hasStaerted.current = true;
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev;
+          return prev + Math.random() * 5;
+        });
+      }, 400);
+    } else if (!isStreaming && hasStaerted.current) {
+      setProgress(100);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isStreaming]);
+
+  return (
+    <>
+      <Box width="100%" borderRadius="10px" padding="30px">
+        <Flex direction="column" align="flex-start" justify="center">
+          <Flex direction="row" align="center" justify="space-between">
+            <SText fontSize="24px" fontWeight={700}>
+              GPT 코드 리뷰
+            </SText>
+            <Flex
+              direction="column"
+              align="center"
+              justify="center"
+              width="100%"
+              gap="8px"
+            >
+              <SText fontSize="16px" color="#636363">
+                풀이를 분석하고 있어요
+              </SText>
+              <ProgressBar progress={progress} width="400px" height="8px" />
+              <SText fontSize="14px" color="#7D8E9F">
+                loading...
+              </SText>
+            </Flex>
+
+            {/* {isStreaming && ( */}
+            {/* <StreamingBadge>
               <Dot />
               <Dot />
               <Dot />
               <SText fontSize="11px" style={{ marginLeft: 6 }}>
                 코드를 분석하는 중이에요...
               </SText>
-            </StreamingBadge>
+            </StreamingBadge> */}
+            {/* )} */}
+          </Flex>
+
+          <Spacer h={12} />
+          {feedback ? (
+            <MarkdownWrapper>
+              <ReactMarkdown>{feedback}</ReactMarkdown>
+            </MarkdownWrapper>
+          ) : (
+            <SText fontSize="13px" color="#999">
+              아직 도착한 피드백이 없어요. 잠시만 기다려 주세요.
+            </SText>
           )}
         </Flex>
-
-        <Spacer h={12} />
-        {feedback ? (
-          <MarkdownWrapper>
-            <ReactMarkdown>{feedback}</ReactMarkdown>
-          </MarkdownWrapper>
-        ) : (
-          <SText fontSize="13px" color="#999">
-            아직 도착한 피드백이 없어요. 잠시만 기다려 주세요.
-          </SText>
-        )}
-      </Flex>
-    </Box>
+      </Box>
+    </>
   );
 };
 
