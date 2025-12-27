@@ -4,8 +4,10 @@ import { useArticleFeedbackStream } from '@/hooks/useArticleFeedbackStream';
 import { usePrompt } from '@/hooks/usePrompt';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
+import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { ProgressBar } from '@/components/commons/ProgressBar/ProgressBar';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Title } from '@/components/commons/Title';
@@ -13,7 +15,7 @@ import ArticleFeedbackPanel from '@/components/features/Feedback/ArticleFeedback
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Navigate,
   useLocation,
@@ -75,8 +77,12 @@ const Posting = () => {
   const queryClient = useQueryClient();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-  const buttonFontSize = isMobile ? '16px' : '20px';
+  const buttonFontSize = isMobile ? '12px' : '16px';
   const { id } = useParams();
+  const [progress, setProgress] = useState(0);
+  const hasStaerted = useRef(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   usePrompt(!disablePrompt);
 
@@ -87,6 +93,34 @@ const Posting = () => {
       behavior: 'instant',
     });
   }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isFeedbackStreaming) {
+      setIsLoading(true);
+      hasStaerted.current = true;
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev;
+          return prev + Math.random() * 5;
+        });
+      }, 400);
+    } else if (!isFeedbackStreaming && hasStaerted.current) {
+      setProgress(100);
+      setTimeout(() => {
+        setIsComplete(true);
+        setIsLoading(false);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isFeedbackStreaming]);
 
   const { data } = useQuery<ITopicResponse>({
     queryKey: ['team-topic', id, selectedDate],
@@ -217,6 +251,7 @@ const Posting = () => {
   };
 
   const handleFeedbackClick = async () => {
+    setIsComplete(false);
     if (feedbackStatus === 'streaming') {
       setAlert({
         message: '이미 GPT가 코드를 분석하는 중이에요.',
@@ -251,51 +286,86 @@ const Posting = () => {
           title={articleTitle}
         />
 
-        {(feedback || isFeedbackStreaming) && (
-          <>
-            <Spacer h={spacing} />
-            <ArticleFeedbackPanel
-              feedback={feedback}
-              isStreaming={isFeedbackStreaming}
-            />
-            <Spacer h={spacing} />
-          </>
-        )}
-
         <Spacer h={spacing} />
         <Flex
-          direction={'row'}
+          direction={'column'}
           justify={'center'}
-          align={'flex-start'}
+          align={'center'}
           gap={'16px'}
         >
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <GptFeedbackButton
-              disabled={isPending || isFeedbackStreaming}
-              isPending={isPending || isFeedbackStreaming}
-              hasFeedback={!!feedback}
-              onClick={handleFeedbackClick}
-            >
-              <SText fontSize={buttonFontSize} fontWeight={700}>
-                {feedback ? 'GPT 피드백 재요청' : 'GPT 피드백 요청'}
-              </SText>
-            </GptFeedbackButton>
-            {!feedback && (
-              <>
-                <Spacer h={8} />
-                <GptGuideBox>
-                  <SText fontSize="16px">
-                    <SText as="span" color="#6E74FA" fontWeight={700}>
-                      새로운 기능:
-                    </SText>{' '}
-                    이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요.
-                    <br />
-                    버튼을 클릭하고 조금만 기다려 주세요.
-                  </SText>
-                </GptGuideBox>
-              </>
-            )}
-          </div>
+          <Box width="100%" borderRadius="10px" padding="30px">
+            <Flex direction="column" align="flex-start" justify="center">
+              <Flex direction="row" align="center" justify="space-between">
+                <SText fontSize="24px" fontWeight={800}>
+                  GPT 코드 리뷰
+                </SText>
+                {isLoading && (
+                  <Flex
+                    direction="column"
+                    align="center"
+                    justify="center"
+                    width="100%"
+                    gap="8px"
+                  >
+                    <SText fontSize="16px" color="#636363">
+                      풀이를 분석하고 있어요
+                    </SText>
+                    <ProgressBar
+                      progress={progress}
+                      width="400px"
+                      height="8px"
+                    />
+                    <SText fontSize="14px" color="#7D8E9F">
+                      loading...
+                    </SText>
+                  </Flex>
+                )}
+                <Flex
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  width="100%"
+                  gap="8px"
+                >
+                  <GptFeedbackButton
+                    disabled={isPending || isFeedbackStreaming}
+                    isPending={isPending || isFeedbackStreaming}
+                    hasFeedback={!!feedback}
+                    onClick={handleFeedbackClick}
+                  >
+                    <SText fontSize={buttonFontSize} fontWeight={700}>
+                      {feedback ? 'GPT 피드백 재요청' : 'GPT 피드백 요청'}
+                    </SText>
+                  </GptFeedbackButton>
+                </Flex>
+              </Flex>
+              {isComplete && (
+                <>
+                  <Spacer h={spacing} />
+                  <ArticleFeedbackPanel
+                    feedback={feedback}
+                    isStreaming={isFeedbackStreaming}
+                    isComplete={isComplete}
+                  />
+                  <Spacer h={spacing} />
+                </>
+              )}
+            </Flex>
+          </Box>
+          {!hasStaerted && (
+            <>
+              <GptGuideBox>
+                <SText fontSize="16px" color="#7D8E9F">
+                  <SText as="span" color="#6E74FA" fontWeight={700}>
+                    새로운 기능:
+                  </SText>{' '}
+                  이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요. 버튼을
+                  클릭하고 조금만 기다려 주세요.
+                </SText>
+              </GptGuideBox>
+            </>
+          )}
+          <Spacer h={12} />
           <ConfirmButtonWrap
             disabled={isPending}
             isPending={isPending}
@@ -325,9 +395,9 @@ const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
-  width: 712px;
+  width: 532px;
   height: 80px;
-  padding: 0;
+  padding: 18px 0;
   border: 3px solid ${colors.borderPurple};
   cursor: ${(props) => (props.isPending ? 'not-allowed' : 'pointer')};
 
@@ -351,8 +421,8 @@ const GptFeedbackButton = styled.button<{
   isPending: boolean;
   hasFeedback: boolean;
 }>`
-  width: 100%;
-  height: 80px;
+  width: 170px;
+  height: 55px;
   border-radius: 10px;
   border: none;
   cursor: ${(props) => (props.isPending ? 'not-allowed' : 'pointer')};
@@ -378,6 +448,7 @@ const GptGuideBox = styled.div`
   display: flex;
   line-height: 1.5em;
   align-items: center;
+  justify-content: center;
   margin-top: 4px;
   padding: 10px 30px;
   border-radius: 10px;
