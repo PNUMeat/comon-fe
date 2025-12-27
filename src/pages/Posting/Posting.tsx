@@ -299,7 +299,7 @@ const Posting = () => {
                 <SText fontSize="24px" fontWeight={800}>
                   GPT 코드 리뷰
                 </SText>
-                {isLoading && (
+                {isLoading && feedbackStatus !== 'error' && (
                   <Flex
                     direction="column"
                     align="center"
@@ -352,18 +352,46 @@ const Posting = () => {
               )}
             </Flex>
           </Box>
-          {!hasStaerted && (
-            <>
-              <GptGuideBox>
-                <SText fontSize="16px" color="#7D8E9F">
-                  <SText as="span" color="#6E74FA" fontWeight={700}>
-                    새로운 기능:
-                  </SText>{' '}
-                  이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요. 버튼을
-                  클릭하고 조금만 기다려 주세요.
-                </SText>
-              </GptGuideBox>
-            </>
+          {(!hasStaerted.current || feedbackStatus === 'error') && (
+            <GptGuideBox>
+              {feedbackStatus === 'error' && (
+                <>
+                  <Box
+                    width="24px"
+                    height="24px"
+                    borderRadius="100%"
+                    style={{ background: '#FF5557' }}
+                  >
+                    <SText
+                      fontSize="24px"
+                      color="#FFFFFF"
+                      textAlign="center"
+                      fontWeight={600}
+                    >
+                      !
+                    </SText>
+                  </Box>
+                  <Spacer width={10} h={1} />
+                </>
+              )}
+              <SText
+                fontSize="16px"
+                color={feedbackStatus === 'error' ? '#F19395' : '#7D8E9F'}
+              >
+                <SText
+                  as="span"
+                  color={feedbackStatus === 'error' ? '#FF5557' : '#6E74FA'}
+                  fontWeight={700}
+                >
+                  {feedbackStatus === 'error'
+                    ? '피드백 작성 실패:'
+                    : '새로운 기능:'}
+                </SText>{' '}
+                {feedbackStatus === 'error'
+                  ? '다시 시도해주세요. 문제가 계속되면 코몬 운영진에게 알려주세요'
+                  : '이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요. 버튼을 클릭하고 조금만 기다려 주세요.'}
+              </SText>
+            </GptGuideBox>
           )}
           <Spacer h={12} />
           <ConfirmButtonWrap
@@ -454,6 +482,7 @@ const GptGuideBox = styled.div`
   border-radius: 10px;
   background: rgba(127, 92, 255, 0.06);
   box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;

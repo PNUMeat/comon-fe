@@ -49,7 +49,10 @@ export const useArticleFeedbackStream = (initialArticleId: number | null) => {
 
       es.onerror = () => {
         closeStream();
-        setStatus('completed');
+        setFeedback((prev) => {
+          setStatus(prev.length > 0 ? 'completed' : 'error');
+          return prev;
+        });
       };
     },
     [initialArticleId, closeStream]

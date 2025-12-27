@@ -13,25 +13,12 @@ interface ArticleFeedbackPanelArgs {
 
 const ArticleFeedbackPanel = ({
   feedback,
-  isStreaming,
   isComplete,
 }: ArticleFeedbackPanelArgs) => {
   return (
     <>
-      {/* <Box width="100%" borderRadius="10px" padding="30px"> */}
       <Flex direction="column" align="flex-start" justify="center">
-        <Flex direction="row" align="center" justify="space-between">
-          {/* {isStreaming && ( */}
-          {/* <StreamingBadge>
-              <Dot />
-              <Dot />
-              <Dot />
-              <SText fontSize="11px" style={{ marginLeft: 6 }}>
-                코드를 분석하는 중이에요...
-              </SText>
-            </StreamingBadge> */}
-          {/* )} */}
-        </Flex>
+        <Flex direction="row" align="center" justify="space-between"></Flex>
 
         <Spacer h={12} />
         {isComplete && (
@@ -40,7 +27,6 @@ const ArticleFeedbackPanel = ({
           </MarkdownWrapper>
         )}
       </Flex>
-      {/* </Box> */}
     </>
   );
 };
@@ -100,42 +86,6 @@ const MarkdownWrapper = styled.div`
       background-color: transparent;
       padding: 0;
       color: inherit;
-    }
-  }
-`;
-
-const StreamingBadge = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(127, 92, 255, 0.08);
-`;
-
-const Dot = styled.span`
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #7f5cff;
-  margin-right: 2px;
-  animation: blink 1.2s infinite ease-in-out;
-
-  &:nth-of-type(2) {
-    animation-delay: 0.15s;
-  }
-  &:nth-of-type(3) {
-    animation-delay: 0.3s;
-  }
-
-  @keyframes blink {
-    0% {
-      opacity: 0.2;
-    }
-    20% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.2;
     }
   }
 `;
