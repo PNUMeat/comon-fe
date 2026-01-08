@@ -267,7 +267,7 @@ const PostWrap = styled.div<{ shouldHighlight?: boolean }>`
   width: 100%;
   min-height: 867px;
   flex-shrink: 0;
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid #cdcfff;
   padding: 0 30px;
   box-sizing: border-box;
