@@ -219,7 +219,7 @@ const Posting = () => {
   const handleFeedbackClick = async () => {
     if (feedbackStatus === 'streaming') {
       setAlert({
-        message: '이미 GPT가 코드를 분석하는 중이에요.',
+        message: '이미 Ai가 코드를 분석하는 중이에요.',
         isVisible: true,
         onConfirm: () => {},
       });
@@ -261,61 +261,69 @@ const Posting = () => {
             <Spacer h={spacing} />
           </>
         )}
-
-        <Spacer h={spacing} />
+        <Spacer h={20} />
         <Flex
           direction={'row'}
           justify={'center'}
           align={'flex-start'}
           gap={'16px'}
         >
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <GptFeedbackButton
-              disabled={isPending || isFeedbackStreaming}
-              isPending={isPending || isFeedbackStreaming}
-              hasFeedback={!!feedback}
-              onClick={handleFeedbackClick}
-            >
+          <ArticleButtonWrapper>
+            <AiFeedbackButtonWrapper>
               <SText fontSize={buttonFontSize} fontWeight={700}>
-                {feedback ? 'GPT 피드백 재요청' : 'GPT 피드백 요청'}
+                AI 코드 리뷰
               </SText>
-            </GptFeedbackButton>
+              <AiFeedbackButton
+                disabled={isPending || isFeedbackStreaming}
+                isPending={isPending || isFeedbackStreaming}
+                hasFeedback={!!feedback}
+                onClick={handleFeedbackClick}
+              >
+                <SText as="span" fontWeight={600}>
+                  {feedback ? 'AI 피드백 재요청' : 'AI 피드백 요청'}
+                </SText>
+              </AiFeedbackButton>
+            </AiFeedbackButtonWrapper>
             {!feedback && (
               <>
-                <Spacer h={8} />
-                <GptGuideBox>
+                <AiGuideBox>
                   <SText fontSize="16px">
                     <SText as="span" color="#6E74FA" fontWeight={700}>
                       새로운 기능:
                     </SText>{' '}
-                    이제 작성한 글과 코드에 대해 GPT가 피드백을 남겨드려요.
+                    이제 작성한 글과 코드에 대해 AI가 피드백을 남겨드려요.
                     <br />
                     버튼을 클릭하고 조금만 기다려 주세요.
                   </SText>
-                </GptGuideBox>
+                </AiGuideBox>
               </>
             )}
-          </div>
-          <ConfirmButtonWrap
-            disabled={isPending}
-            isPending={isPending}
-            onClick={handleFillOutClick}
-          >
-            <ClickImage src={click} />
-            <ActionText>
-              <SText fontSize={buttonFontSize} fontWeight={700}>
-                작성 완료
-              </SText>
-            </ActionText>
-          </ConfirmButtonWrap>
+            <ConfirmButton
+              disabled={isPending}
+              isPending={isPending}
+              onClick={handleFillOutClick}
+            >
+              <ClickImage src={click} />
+              <ActionText>
+                <SText fontSize={buttonFontSize} fontWeight={700}>
+                  작성 완료
+                </SText>
+              </ActionText>
+            </ConfirmButton>
+          </ArticleButtonWrapper>
         </Flex>
       </Flex>
     </CommonLayout>
   );
 };
 
-const ConfirmButtonWrap = styled.button<{ isPending: boolean }>`
-  flex: 1;
+const ArticleButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const ConfirmButton = styled.button<{ isPending: boolean }>`
   display: flex;
   width: 100%;
   align-items: center;
@@ -347,12 +355,23 @@ const ActionText = styled.div`
   margin-left: 8px;
 `;
 
-const GptFeedbackButton = styled.button<{
+const AiFeedbackButtonWrapper = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid #cdcfff;
+  padding: 20px 30px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const AiFeedbackButton = styled.button<{
   isPending: boolean;
   hasFeedback: boolean;
 }>`
-  width: 100%;
-  height: 80px;
+  width: 150px;
+  height: 60px;
   border-radius: 10px;
   border: none;
   cursor: ${(props) => (props.isPending ? 'not-allowed' : 'pointer')};
@@ -372,13 +391,12 @@ const GptFeedbackButton = styled.button<{
   }
 `;
 
-const GptGuideBox = styled.div`
+const AiGuideBox = styled.div`
   width: 100%;
   min-height: 80px;
   display: flex;
   line-height: 1.5em;
   align-items: center;
-  margin-top: 4px;
   padding: 10px 30px;
   border-radius: 10px;
   background: rgba(127, 92, 255, 0.06);

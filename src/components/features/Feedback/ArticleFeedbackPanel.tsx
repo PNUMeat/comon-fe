@@ -21,7 +21,7 @@ const ArticleFeedbackPanel = ({
       <Flex direction="column" align="flex-start" justify="center">
         <Flex direction="row" align="center" justify="space-between">
           <SText fontSize="24px" fontWeight={700}>
-            GPT 코드 리뷰
+            AI 코드 리뷰
           </SText>
 
           {isStreaming && (
