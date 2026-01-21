@@ -1,12 +1,13 @@
 import extractTextFromHtml from '@/utils/extractTextFromHtml';
 import injectImageUrlsIntoHtml from '@/utils/injectImageUrlsIntoHtml';
 
-import { useArticleFeedbackStream } from '@/hooks/useArticleFeedbackStream';
+import { useArticleFeedback } from '@/hooks/useArticleFeedback';
 import { usePrompt } from '@/hooks/usePrompt';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
 import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
+import { ProgressBar } from '@/components/commons/ProgressBar/ProgressBar';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Title } from '@/components/commons/Title';
@@ -15,6 +16,7 @@ import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
 import { useEffect, useState } from 'react';
+import { RiErrorWarningFill } from 'react-icons/ri';
 import {
   Navigate,
   useLocation,
@@ -60,17 +62,11 @@ const Posting = () => {
     articleId ? Number(articleId) : null
   );
 
-  const {
-    feedback,
-    status: feedbackStatus,
-    isStreaming: isFeedbackStreaming,
-    start: startFeedbackStream,
-  } = useArticleFeedbackStream(savedArticleId);
+  const { feedback, error, isLoading, isStreaming, isComplete, startStream } =
+    useArticleFeedback(savedArticleId);
 
   const canRequestFeedback =
-    extractTextFromHtml(content).length > 0 &&
-    !isPending &&
-    !isFeedbackStreaming;
+    extractTextFromHtml(content).length > 0 && !isPending && !isStreaming;
 
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -81,8 +77,9 @@ const Posting = () => {
   const queryClient = useQueryClient();
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-  const buttonFontSize = isMobile ? '16px' : '20px';
+  const buttonFontSize = isMobile ? '12px' : '16px';
   const { id } = useParams();
+  const [progress, setProgress] = useState(0);
 
   usePrompt(!disablePrompt);
 
@@ -94,6 +91,27 @@ const Posting = () => {
     });
   }, []);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isStreaming) {
+      setProgress(0);
+
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev;
+          return prev + Math.random() * 5;
+        });
+      }, 400);
+    } else {
+      setProgress((prev) => (prev > 0 && prev < 100 ? 100 : prev));
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isStreaming]);
+
   const { data } = useQuery<ITopicResponse>({
     queryKey: ['team-topic', id, selectedDate],
     queryFn: () => getTeamTopic(parseInt(id as string), selectedDate),
@@ -103,7 +121,9 @@ const Posting = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const handleSaveArticle = async (): Promise<number | undefined> => {
+  const handleSaveArticle = async (
+    isVisible: boolean = true
+  ): Promise<number | undefined> => {
     if (isPending) return;
 
     if (!postTitle) {
@@ -165,6 +185,7 @@ const Posting = () => {
           articleId: targetId,
           articleBody: articleBody,
           articleTitle: postTitle,
+          isVisible: isVisible,
         });
       } else {
         const res = await createPost({
@@ -175,6 +196,7 @@ const Posting = () => {
               : null,
           articleBody: articleBody,
           articleTitle: postTitle,
+          isVisible: isVisible,
         });
         targetId = res.articleId;
       }
@@ -223,19 +245,19 @@ const Posting = () => {
   };
 
   const handleFeedbackClick = async () => {
-    if (feedbackStatus === 'streaming') {
+    if (isStreaming) {
       setAlert({
-        message: '이미 Ai가 코드를 분석하는 중이에요.',
+        message: '이미 AI가 코드를 분석하는 중이에요.',
         isVisible: true,
         onConfirm: () => {},
       });
       return;
     }
 
-    const savedId = await handleSaveArticle();
+    const savedId = await handleSaveArticle(false);
 
     if (savedId) {
-      startFeedbackStream(savedId);
+      startStream(savedId);
     }
   };
 
@@ -258,55 +280,66 @@ const Posting = () => {
         />
         <Spacer h={22} />
         <Flex
-          direction={'row'}
+          direction={'column'}
           justify={'center'}
-          align={'flex-start'}
+          align={'center'}
           gap={'16px'}
         >
           <ArticleBottomWrapper>
             <AiFeedbackWrapper>
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <SText fontSize={buttonFontSize} fontWeight={700}>
+              <AiFeedbackButtonWrapper>
+                <SText fontSize="20px" fontWeight={700} whiteSpace="nowrap">
                   AI 코드 리뷰
                 </SText>
+                {(isLoading || isStreaming) && (
+                  <Flex
+                    direction="column"
+                    align="center"
+                    justify="center"
+                    gap="8px"
+                    style={{ flex: 1, maxWidth: '400px' }}
+                  >
+                    <SText fontSize="16px" color="#636363">
+                      풀이를 분석하고 있어요
+                    </SText>
+                    <ProgressBar
+                      progress={progress}
+                      width="100%"
+                      height="8px"
+                    />
+                    <SText fontSize="14px" color="#7D8E9F">
+                      loading...
+                    </SText>
+                  </Flex>
+                )}
                 <AiFeedbackButton
                   disabled={!canRequestFeedback}
                   hasFeedback={!!feedback}
                   onClick={handleFeedbackClick}
                 >
-                  <SText as="span" fontWeight={600}>
+                  <SText
+                    fontSize={buttonFontSize}
+                    fontWeight={600}
+                    whiteSpace="nowrap"
+                  >
                     {feedback ? 'AI 피드백 재요청' : 'AI 피드백 요청'}
                   </SText>
                 </AiFeedbackButton>
-              </div>
+              </AiFeedbackButtonWrapper>
               {feedback && (
                 <>
                   <Spacer h={spacing} />
-                  <ArticleFeedbackPanel feedback={feedback} />
+                  <ArticleFeedbackPanel
+                    feedback={feedback}
+                    isComplete={isComplete}
+                    isStreaming={isStreaming}
+                  />
                 </>
               )}
             </AiFeedbackWrapper>
-            {!feedback && (
-              <>
-                <AiGuideBox>
-                  <SText fontSize="16px">
-                    <SText as="span" color="#6E74FA" fontWeight={700}>
-                      새로운 기능:
-                    </SText>{' '}
-                    이제 작성한 글과 코드에 대해 AI가 피드백을 남겨드려요.
-                    <br />
-                    버튼을 클릭하고 조금만 기다려 주세요.
-                  </SText>
-                </AiGuideBox>
-              </>
-            )}
+            <AiGuideBox>
+              {error ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
+            </AiGuideBox>
             <ConfirmButton disabled={isPending} onClick={handleFillOutClick}>
               <ClickImage src={click} />
               <ActionText>
@@ -321,6 +354,43 @@ const Posting = () => {
     </CommonLayout>
   );
 };
+
+const ErrorMessageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  width: 100%;
+
+  font-size: 16px;
+  color: #ff5557;
+
+  svg {
+    color: #ff5557;
+    flex-shrink: 0;
+  }
+`;
+
+const FeedbackGuideMessage = () => (
+  <SText fontSize="16px" textAlign="center" style={{ width: '100%' }}>
+    <SText as="span" color="#6E74FA" fontWeight={700}>
+      새로운 기능:
+    </SText>{' '}
+    이제 작성한 글과 코드에 대해 AI가 피드백을 남겨드려요. 버튼을 클릭하고
+    조금만 기다려 주세요.
+  </SText>
+);
+
+const FeedbackErrorMessage = () => (
+  <ErrorMessageWrapper>
+    <RiErrorWarningFill size={18} />
+    <SText as="span" fontSize="16px" fontWeight={700}>
+      피드백 작성 실패:
+    </SText>
+    <span>다시 시도해 주세요. 문제가 계속되면 코몬 운영진에게 알려주세요.</span>
+  </ErrorMessageWrapper>
+);
 
 const ArticleBottomWrapper = styled.div`
   display: flex;
@@ -340,9 +410,9 @@ const ConfirmButton = styled.button<{ disabled?: boolean }>`
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
-  width: 712px;
+  width: 532px;
   height: 80px;
-  padding: 0;
+  padding: 18px 0;
   border: 3px solid ${colors.borderPurple};
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
@@ -374,12 +444,20 @@ const AiFeedbackWrapper = styled.div`
   justify-content: center;
 `;
 
+const AiFeedbackButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+`;
+
 const AiFeedbackButton = styled.button<{
   disabled?: boolean;
   hasFeedback: boolean;
 }>`
   width: 150px;
-  height: 60px;
+  height: 50px;
   border-radius: 10px;
   border: none;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
@@ -395,7 +473,8 @@ const AiFeedbackButton = styled.button<{
   justify-content: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    height: 50px;
+    width: 120px;
+    height: 45px;
   }
 `;
 
@@ -409,6 +488,7 @@ const AiGuideBox = styled.div`
   border-radius: 10px;
   background: rgba(127, 92, 255, 0.06);
   box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 100%;
