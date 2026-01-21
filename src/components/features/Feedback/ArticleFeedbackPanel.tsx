@@ -1,6 +1,4 @@
-import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
-import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import ReactMarkdown from 'react-markdown';
@@ -9,53 +7,34 @@ import styled from '@emotion/styled';
 
 interface ArticleFeedbackPanelArgs {
   feedback: string;
+  isComplete: boolean;
   isStreaming: boolean;
 }
 
 const ArticleFeedbackPanel = ({
   feedback,
+  isComplete,
   isStreaming,
 }: ArticleFeedbackPanelArgs) => {
+  if (!(isComplete || isStreaming)) return null;
+
   return (
-    <Box width="100%" borderRadius="10px" padding="30px">
+    <>
       <Flex direction="column" align="flex-start" justify="center">
-        <Flex direction="row" align="center" justify="space-between">
-          <SText fontSize="24px" fontWeight={700}>
-            AI 코드 리뷰
-          </SText>
-
-          {isStreaming && (
-            <StreamingBadge>
-              <Dot />
-              <Dot />
-              <Dot />
-              <SText fontSize="11px" style={{ marginLeft: 6 }}>
-                코드를 분석하는 중이에요...
-              </SText>
-            </StreamingBadge>
-          )}
-        </Flex>
-
+        <Flex direction="row" align="center" justify="space-between"></Flex>
         <Spacer h={12} />
-        {feedback ? (
-          <MarkdownWrapper>
-            <ReactMarkdown>{feedback}</ReactMarkdown>
-          </MarkdownWrapper>
-        ) : (
-          <SText fontSize="13px" color="#999">
-            아직 도착한 피드백이 없어요. 잠시만 기다려 주세요.
-          </SText>
-        )}
+        <MarkdownWrapper>
+          <ReactMarkdown>{feedback}</ReactMarkdown>
+        </MarkdownWrapper>
       </Flex>
-    </Box>
+    </>
   );
 };
 
 export default ArticleFeedbackPanel;
 
 const MarkdownWrapper = styled.div`
-  margin-top: 4px;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.6;
   color: #333;
 
@@ -63,13 +42,12 @@ const MarkdownWrapper = styled.div`
   h2,
   h3 {
     font-weight: 700;
-    margin-top: 35px;
     margin-bottom: 8px;
     color: #000;
   }
 
   h3 {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   p {
@@ -106,42 +84,6 @@ const MarkdownWrapper = styled.div`
       background-color: transparent;
       padding: 0;
       color: inherit;
-    }
-  }
-`;
-
-const StreamingBadge = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(127, 92, 255, 0.08);
-`;
-
-const Dot = styled.span`
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #7f5cff;
-  margin-right: 2px;
-  animation: blink 1.2s infinite ease-in-out;
-
-  &:nth-of-type(2) {
-    animation-delay: 0.15s;
-  }
-  &:nth-of-type(3) {
-    animation-delay: 0.3s;
-  }
-
-  @keyframes blink {
-    0% {
-      opacity: 0.2;
-    }
-    20% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.2;
     }
   }
 `;
