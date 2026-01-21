@@ -1,3 +1,4 @@
+import extractTextFromHtml from '@/utils/extractTextFromHtml';
 import injectImageUrlsIntoHtml from '@/utils/injectImageUrlsIntoHtml';
 
 import { useArticleFeedbackStream } from '@/hooks/useArticleFeedbackStream';
@@ -65,6 +66,11 @@ const Posting = () => {
     isStreaming: isFeedbackStreaming,
     start: startFeedbackStream,
   } = useArticleFeedbackStream(savedArticleId);
+
+  const canRequestFeedback =
+    extractTextFromHtml(content).length > 0 &&
+    !isPending &&
+    !isFeedbackStreaming;
 
   const setSelectedPostId = useSetAtom(selectedPostIdAtom);
   const setDashboardView = useSetAtom(currentViewAtom);
@@ -250,40 +256,43 @@ const Posting = () => {
           content={article}
           title={articleTitle}
         />
-
-        {(feedback || isFeedbackStreaming) && (
-          <>
-            <Spacer h={spacing} />
-            <ArticleFeedbackPanel
-              feedback={feedback}
-              isStreaming={isFeedbackStreaming}
-            />
-            <Spacer h={spacing} />
-          </>
-        )}
-        <Spacer h={20} />
+        <Spacer h={22} />
         <Flex
           direction={'row'}
           justify={'center'}
           align={'flex-start'}
           gap={'16px'}
         >
-          <ArticleButtonWrapper>
-            <AiFeedbackButtonWrapper>
-              <SText fontSize={buttonFontSize} fontWeight={700}>
-                AI 코드 리뷰
-              </SText>
-              <AiFeedbackButton
-                disabled={isPending || isFeedbackStreaming}
-                isPending={isPending || isFeedbackStreaming}
-                hasFeedback={!!feedback}
-                onClick={handleFeedbackClick}
+          <ArticleBottomWrapper>
+            <AiFeedbackWrapper>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
               >
-                <SText as="span" fontWeight={600}>
-                  {feedback ? 'AI 피드백 재요청' : 'AI 피드백 요청'}
+                <SText fontSize={buttonFontSize} fontWeight={700}>
+                  AI 코드 리뷰
                 </SText>
-              </AiFeedbackButton>
-            </AiFeedbackButtonWrapper>
+                <AiFeedbackButton
+                  disabled={!canRequestFeedback}
+                  hasFeedback={!!feedback}
+                  onClick={handleFeedbackClick}
+                >
+                  <SText as="span" fontWeight={600}>
+                    {feedback ? 'AI 피드백 재요청' : 'AI 피드백 요청'}
+                  </SText>
+                </AiFeedbackButton>
+              </div>
+              {feedback && (
+                <>
+                  <Spacer h={spacing} />
+                  <ArticleFeedbackPanel feedback={feedback} />
+                </>
+              )}
+            </AiFeedbackWrapper>
             {!feedback && (
               <>
                 <AiGuideBox>
@@ -298,11 +307,7 @@ const Posting = () => {
                 </AiGuideBox>
               </>
             )}
-            <ConfirmButton
-              disabled={isPending}
-              isPending={isPending}
-              onClick={handleFillOutClick}
-            >
+            <ConfirmButton disabled={isPending} onClick={handleFillOutClick}>
               <ClickImage src={click} />
               <ActionText>
                 <SText fontSize={buttonFontSize} fontWeight={700}>
@@ -310,26 +315,28 @@ const Posting = () => {
                 </SText>
               </ActionText>
             </ConfirmButton>
-          </ArticleButtonWrapper>
+          </ArticleBottomWrapper>
         </Flex>
       </Flex>
     </CommonLayout>
   );
 };
 
-const ArticleButtonWrapper = styled.div`
+const ArticleBottomWrapper = styled.div`
   display: flex;
+  width: 100%;
+  align-items: center;
   flex-direction: column;
   gap: 16px;
 `;
 
-const ConfirmButton = styled.button<{ isPending: boolean }>`
+const ConfirmButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: ${(props) => (props.isPending ? '#919191' : '#fff')};
+  background: ${(props) => (props.disabled ? '#919191' : '#fff')};
   color: #000;
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
   box-sizing: border-box;
@@ -337,7 +344,7 @@ const ConfirmButton = styled.button<{ isPending: boolean }>`
   height: 80px;
   padding: 0;
   border: 3px solid ${colors.borderPurple};
-  cursor: ${(props) => (props.isPending ? 'not-allowed' : 'pointer')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 312px;
@@ -355,30 +362,31 @@ const ActionText = styled.div`
   margin-left: 8px;
 `;
 
-const AiFeedbackButtonWrapper = styled.div`
+const AiFeedbackWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   border-radius: 10px;
   border: 1px solid #cdcfff;
   padding: 20px 30px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 `;
 
 const AiFeedbackButton = styled.button<{
-  isPending: boolean;
+  disabled?: boolean;
   hasFeedback: boolean;
 }>`
   width: 150px;
   height: 60px;
   border-radius: 10px;
   border: none;
-  cursor: ${(props) => (props.isPending ? 'not-allowed' : 'pointer')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
 
-  background: ${({ isPending, hasFeedback }) =>
-    isPending ? '#B8B8C5' : hasFeedback ? '#F15CA7' : '#6E74FA'};
+  background: ${({ disabled, hasFeedback }) =>
+    disabled ? '#B8B8C5' : hasFeedback ? '#F15CA7' : '#6E74FA'};
 
   color: #ffffff;
 
