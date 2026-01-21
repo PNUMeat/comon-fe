@@ -1,4 +1,5 @@
 import apiInstance from '@/api/apiInstance';
+import { API_BASE_URL } from '@/api/config';
 import { ServerResponse } from '@/api/types';
 
 import { uploadImages } from './image';
@@ -12,6 +13,11 @@ type PostingMutationArg = {
 
 type PostingMutationResp = {
   articleId: number;
+};
+
+type StreamHandler = {
+  onMessage: (chunk: string) => void;
+  onError?: () => void;
 };
 
 export const createPost = async ({
@@ -83,4 +89,30 @@ export const deletePost = async (articleId: number) => {
   const res = await apiInstance.delete(`v1/articles/${articleId}`);
 
   return res.data;
+};
+
+export const getStartArticleFeedbackStream = (
+  articleId: number,
+  handlers: StreamHandler
+) => {
+  const es = new EventSource(
+    `${API_BASE_URL}/api/v1/articles/${articleId}/feedback/stream`,
+    { withCredentials: true }
+  );
+
+  es.onmessage = (event) => {
+    try {
+      const parsed = JSON.parse(event.data);
+      handlers.onMessage(parsed.content);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  es.onerror = () => {
+    handlers.onError?.();
+    es.close();
+  };
+
+  return es;
 };

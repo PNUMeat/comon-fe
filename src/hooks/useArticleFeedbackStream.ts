@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { API_BASE_URL } from '@/api/config';
+import { getStartArticleFeedbackStream } from '@/api/postings';
 
 type FeedbackStatus = 'idle' | 'streaming' | 'completed' | 'error';
 
@@ -28,28 +28,15 @@ export const useArticleFeedbackStream = (initialArticleId: number | null) => {
       setError(null);
       setFeedback('');
 
-      const es = new EventSource(
-        `${API_BASE_URL}/api/v1/articles/${targetId}/feedback/stream`,
-        { withCredentials: true }
-      );
-
-      eventSourceRef.current = es;
-
-      es.onmessage = (event) => {
-        try {
-          const parsed = JSON.parse(event.data);
-          const chunk = parsed.content;
-
+      eventSourceRef.current = getStartArticleFeedbackStream(targetId, {
+        onMessage: (chunk: string) => {
           setFeedback((prev) => prev + chunk);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      es.onerror = () => {
-        closeStream();
-        setStatus('completed');
-      };
+        },
+        onError: () => {
+          closeStream();
+          setStatus('completed');
+        },
+      });
     },
     [initialArticleId, closeStream]
   );
