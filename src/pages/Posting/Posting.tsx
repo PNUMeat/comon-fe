@@ -131,7 +131,9 @@ const Posting = () => {
     return <Navigate to={PATH.TEAMS} />;
   }
 
-  const handleSaveArticle = async (): Promise<number | undefined> => {
+  const handleSaveArticle = async (
+    isVisible: boolean = true
+  ): Promise<number | undefined> => {
     if (isPending) return;
 
     if (!postTitle) {
@@ -193,6 +195,7 @@ const Posting = () => {
           articleId: targetId,
           articleBody: articleBody,
           articleTitle: postTitle,
+          isVisible: isVisible,
         });
       } else {
         const res = await createPost({
@@ -203,6 +206,7 @@ const Posting = () => {
               : null,
           articleBody: articleBody,
           articleTitle: postTitle,
+          isVisible: isVisible,
         });
         targetId = res.articleId;
       }
@@ -261,7 +265,7 @@ const Posting = () => {
       return;
     }
 
-    const savedId = await handleSaveArticle();
+    const savedId = await handleSaveArticle(false);
 
     if (savedId) {
       startFeedbackStream(savedId);
@@ -328,8 +332,8 @@ const Posting = () => {
                   gap="8px"
                 >
                   <GptFeedbackButton
-                    disabled={isPending || isFeedbackStreaming}
-                    isPending={isPending || isFeedbackStreaming}
+                    disabled={isPending || isFeedbackStreaming || isComplete}
+                    isPending={isPending || isFeedbackStreaming || isComplete}
                     hasFeedback={!!feedback}
                     onClick={handleFeedbackClick}
                   >

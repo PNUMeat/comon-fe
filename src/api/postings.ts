@@ -8,6 +8,7 @@ type PostingMutationArg = {
   articleTitle: string;
   articleBody: string;
   images: File[] | null;
+  isVisible: boolean;
 };
 
 type PostingMutationResp = {
@@ -19,6 +20,7 @@ export const createPost = async ({
   articleTitle,
   articleBody,
   images,
+  isVisible,
 }: PostingMutationArg) => {
   let imageUrls: string[] | undefined;
 
@@ -35,6 +37,7 @@ export const createPost = async ({
     articleTitle,
     articleBody,
     images: imageUrls,
+    isVisible,
   };
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
@@ -51,6 +54,7 @@ export const mutatePost = async ({
   articleBody,
   images,
   articleId,
+  isVisible,
 }: PostingMutationArg & {
   articleId: number;
 }) => {
@@ -69,6 +73,7 @@ export const mutatePost = async ({
     articleTitle,
     articleBody,
     images: imageUrls,
+    isVisible,
   };
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
