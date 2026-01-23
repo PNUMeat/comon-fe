@@ -16,11 +16,6 @@ type PostingMutationResp = {
   articleId: number;
 };
 
-type StreamHandler = {
-  onMessage: (chunk: string) => void;
-  onError?: () => void;
-};
-
 export const createPost = async ({
   teamId,
   articleTitle,
@@ -96,6 +91,15 @@ export const deletePost = async (articleId: number) => {
   return res.data;
 };
 
+export type StreamMessage =
+  | { type: 'PROCESSING'; content: string }
+  | { type: 'DONE' };
+
+export type StreamHandler = {
+  onMessage: (message: StreamMessage) => void;
+  onError?: () => void;
+};
+
 export const getStartArticleFeedbackStream = (
   articleId: number,
   handlers: StreamHandler
@@ -107,10 +111,10 @@ export const getStartArticleFeedbackStream = (
 
   es.onmessage = (event) => {
     try {
-      const parsed = JSON.parse(event.data);
-      handlers.onMessage(parsed.content);
+      const parsed = JSON.parse(event.data) as StreamMessage;
+      handlers.onMessage(parsed);
     } catch (err) {
-      console.log(err);
+      console.error('Invalid SSE message', err);
     }
   };
 
