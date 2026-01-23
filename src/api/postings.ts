@@ -1,4 +1,5 @@
 import apiInstance from '@/api/apiInstance';
+import { API_BASE_URL } from '@/api/config';
 import { ServerResponse } from '@/api/types';
 
 import { uploadImages } from './image';
@@ -8,6 +9,7 @@ type PostingMutationArg = {
   articleTitle: string;
   articleBody: string;
   images: File[] | null;
+  isVisible: boolean;
 };
 
 type PostingMutationResp = {
@@ -19,6 +21,7 @@ export const createPost = async ({
   articleTitle,
   articleBody,
   images,
+  isVisible,
 }: PostingMutationArg) => {
   let imageUrls: string[] | undefined;
 
@@ -35,6 +38,7 @@ export const createPost = async ({
     articleTitle,
     articleBody,
     images: imageUrls,
+    isVisible,
   };
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
@@ -51,6 +55,7 @@ export const mutatePost = async ({
   articleBody,
   images,
   articleId,
+  isVisible,
 }: PostingMutationArg & {
   articleId: number;
 }) => {
@@ -69,6 +74,7 @@ export const mutatePost = async ({
     articleTitle,
     articleBody,
     images: imageUrls,
+    isVisible,
   };
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
@@ -81,6 +87,49 @@ export const mutatePost = async ({
 
 export const deletePost = async (articleId: number) => {
   const res = await apiInstance.delete(`v1/articles/${articleId}`);
+
+  return res.data;
+};
+
+export type StreamMessage =
+  | { type: 'PROCESSING'; content: string }
+  | { type: 'DONE' };
+
+export type StreamHandler = {
+  onMessage: (message: StreamMessage) => void;
+  onError?: () => void;
+};
+
+export const getStartArticleFeedbackStream = (
+  articleId: number,
+  handlers: StreamHandler
+) => {
+  const es = new EventSource(
+    `${API_BASE_URL}/api/v1/articles/${articleId}/feedback/stream`,
+    { withCredentials: true }
+  );
+
+  es.onmessage = (event) => {
+    try {
+      const parsed = JSON.parse(event.data) as StreamMessage;
+      handlers.onMessage(parsed);
+    } catch (err) {
+      console.error('Invalid SSE message', err);
+    }
+  };
+
+  es.onerror = () => {
+    handlers.onError?.();
+    es.close();
+  };
+
+  return es;
+};
+
+export const getArticleFeedback = async (articleId: number) => {
+  const res = await apiInstance.get<ServerResponse<{ feedbackBody: string }>>(
+    `/v1/articles/${articleId}/feedback`
+  );
 
   return res.data;
 };
