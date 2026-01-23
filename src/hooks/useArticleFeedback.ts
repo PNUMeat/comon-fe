@@ -8,18 +8,36 @@ import axios from 'axios';
 
 type FeedbackStatus = 'idle' | 'loading' | 'streaming' | 'complete' | 'error';
 
-const END_MARKER = '스트리밍 종료';
+type StreamMessage = { type: 'PROCESSING'; content: string } | { type: 'DONE' };
 
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState<FeedbackStatus>('idle');
   const [error, setError] = useState<string | null>(null);
+
   const eventSourceRef = useRef<EventSource | null>(null);
-  const feedbackRef = useRef<string>('');
+  const feedbackRef = useRef('');
+  const rafRef = useRef<number | null>(null);
+
+  const flushToState = useCallback(() => {
+    if (rafRef.current !== null) return;
+
+    rafRef.current = requestAnimationFrame(() => {
+      setFeedback(feedbackRef.current);
+      rafRef.current = null;
+    });
+  }, []);
 
   const closeStream = useCallback(() => {
-    eventSourceRef.current?.close();
-    eventSourceRef.current = null;
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
+
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
   }, []);
 
   const fetchFeedback = useCallback(async () => {
@@ -30,8 +48,8 @@ export const useArticleFeedback = (articleId: number | null) => {
 
     try {
       const res = await getArticleFeedback(articleId);
-
       const body = res.data.feedbackBody;
+
       if (!body) {
         setStatus('idle');
         return;
@@ -41,11 +59,9 @@ export const useArticleFeedback = (articleId: number | null) => {
       feedbackRef.current = body;
       setStatus('complete');
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 404) {
-          setStatus('idle');
-          return;
-        }
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        setStatus('idle');
+        return;
       }
 
       setError('AI 피드백을 불러오지 못했습니다.');
@@ -55,6 +71,7 @@ export const useArticleFeedback = (articleId: number | null) => {
 
   useEffect(() => {
     if (!articleId) return;
+    if (status === 'streaming') return;
     fetchFeedback();
   }, [articleId, fetchFeedback]);
 
@@ -62,7 +79,15 @@ export const useArticleFeedback = (articleId: number | null) => {
     (overrideArticleId?: number) => {
       const targetId = overrideArticleId ?? articleId;
       if (!targetId) return;
-      if (eventSourceRef.current) return;
+
+      if (
+        eventSourceRef.current &&
+        eventSourceRef.current.readyState !== EventSource.CLOSED
+      ) {
+        return;
+      }
+
+      closeStream();
 
       setStatus('streaming');
       setError(null);
@@ -70,27 +95,23 @@ export const useArticleFeedback = (articleId: number | null) => {
       feedbackRef.current = '';
 
       const es = getStartArticleFeedbackStream(targetId, {
-        onMessage: (chunk) => {
-          feedbackRef.current += chunk;
-          setFeedback((prev) => prev + chunk);
-
-          if (feedbackRef.current.includes(END_MARKER)) {
-            const finalText = feedbackRef.current
-              .replace(END_MARKER, '')
-              .trim();
-
-            setFeedback(finalText);
-            feedbackRef.current = finalText;
-
+        onMessage: (message: StreamMessage) => {
+          if (message.type === 'DONE') {
+            flushToState();
             closeStream();
             setStatus('complete');
+            return;
           }
+
+          feedbackRef.current += message.content;
+          flushToState();
         },
+
         onError: () => {
           closeStream();
 
           if (feedbackRef.current.length > 0) {
-            setStatus('complete' as FeedbackStatus);
+            setStatus('complete');
           } else {
             setError('AI 피드백 생성에 실패했습니다.');
             setStatus('error');
@@ -100,7 +121,7 @@ export const useArticleFeedback = (articleId: number | null) => {
 
       eventSourceRef.current = es;
     },
-    [articleId, closeStream]
+    [articleId, closeStream, flushToState]
   );
 
   useEffect(() => {
