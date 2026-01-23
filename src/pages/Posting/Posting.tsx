@@ -62,7 +62,7 @@ const Posting = () => {
     articleId ? Number(articleId) : null
   );
 
-  const { feedback, error, isLoading, isStreaming, isComplete, startStream } =
+  const { feedback, isError, isLoading, isStreaming, isComplete, startStream } =
     useArticleFeedback(savedArticleId);
 
   const canRequestFeedback =
@@ -326,7 +326,7 @@ const Posting = () => {
                   </SText>
                 </AiFeedbackButton>
               </AiFeedbackButtonWrapper>
-              {feedback && (
+              {!isError &&feedback && (
                 <>
                   <Spacer h={spacing} />
                   <ArticleFeedbackPanel
@@ -338,7 +338,7 @@ const Posting = () => {
               )}
             </AiFeedbackWrapper>
             <AiGuideBox>
-              {error ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
+              {isError ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
             </AiGuideBox>
             <ConfirmButton disabled={isPending} onClick={handleFillOutClick}>
               <ClickImage src={click} />

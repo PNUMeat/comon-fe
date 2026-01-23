@@ -13,7 +13,6 @@ type StreamMessage = { type: 'PROCESSING'; content: string } | { type: 'DONE' };
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState<FeedbackStatus>('idle');
-  const [error, setError] = useState<string | null>(null);
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const feedbackRef = useRef('');
@@ -44,7 +43,6 @@ export const useArticleFeedback = (articleId: number | null) => {
     if (!articleId) return;
 
     setStatus('loading');
-    setError(null);
 
     try {
       const res = await getArticleFeedback(articleId);
@@ -63,8 +61,6 @@ export const useArticleFeedback = (articleId: number | null) => {
         setStatus('idle');
         return;
       }
-
-      setError('AI 피드백을 불러오지 못했습니다.');
       setStatus('error');
     }
   }, [articleId]);
@@ -90,7 +86,6 @@ export const useArticleFeedback = (articleId: number | null) => {
       closeStream();
 
       setStatus('streaming');
-      setError(null);
       setFeedback('');
       feedbackRef.current = '';
 
@@ -110,12 +105,9 @@ export const useArticleFeedback = (articleId: number | null) => {
         onError: () => {
           closeStream();
 
-          if (feedbackRef.current.length > 0) {
-            setStatus('complete');
-          } else {
-            setError('AI 피드백 생성에 실패했습니다.');
-            setStatus('error');
-          }
+          if (feedbackRef.current.length > 0) setStatus('complete');
+          else setStatus('error');
+          
         },
       });
 
@@ -131,7 +123,7 @@ export const useArticleFeedback = (articleId: number | null) => {
   return {
     feedback,
     status,
-    error,
+    isError: status === 'error',
     isLoading: status === 'loading',
     isStreaming: status === 'streaming',
     isComplete: status === 'complete',
