@@ -1,3 +1,5 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
@@ -14,10 +16,8 @@ import { getTeamRecruitList } from '@/api/recruitment';
 import click from '@/assets/TeamJoin/click.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
-import { isLoggedInAtom } from '@/store/auth';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useAtom } from 'jotai';
 
 const tabs: { label: string; value: 'all' | 'open' | 'closed' }[] = [
   { label: '전체', value: 'all' },
@@ -47,7 +47,9 @@ export const TeamRecruitListPage = () => {
   };
 
   // 로그인 여부
-  const [isLoggedIn] = useAtom(isLoggedInAtom);
+  const [isLoggedIn] = useState<boolean>(
+    checkRemainingCookies() || isDevMode()
+  );
 
   return (
     <div style={{ padding: isMobile ? '0px' : '30px 20px' }}>

@@ -1,3 +1,7 @@
+import { isDevMode } from '@/utils/cookie.ts';
+
+import { subjectMock, teamArticlesMock, teamInfoMock } from '@/api/mocks.ts';
+
 import apiInstance from './apiInstance';
 import { ITeamInfo } from './team';
 import { ServerResponse } from './types';
@@ -28,31 +32,12 @@ export interface IArticle {
 
 export interface IArticlesByDateResponse {
   content: IArticle[];
-  empty: boolean;
-  first: boolean;
-  last: boolean;
-  number: number;
-  numberOfElements: number;
-  pageable: {
-    offset: number;
-    pageNumber: number;
-    pageSize: number;
-    paged: boolean;
-    unpaged: boolean;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
   };
-  size: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  totalElements: number;
-  totalPages: number;
 }
 
 export interface ITopicResponse {
@@ -73,6 +58,12 @@ export const getTeamInfoAndTags = async (
   year: number,
   month: number
 ): Promise<ITeamInfoAndTagsResponse> => {
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+
+    return teamInfoMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITeamInfoAndTagsResponse>>(
     `/v1/teams/${teamId}/team-page`,
     { params: { year, month } }
@@ -86,6 +77,10 @@ export const getArticlesByDate = async (
   date: string,
   page: number
 ): Promise<IArticlesByDateResponse> => {
+  if (isDevMode()) {
+    return teamArticlesMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
     { params: { date, page } }
@@ -98,6 +93,10 @@ export const getTeamTopic = async (
   teamId: number,
   date: string
 ): Promise<ITopicResponse> => {
+  if (isDevMode()) {
+    return subjectMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITopicResponse>>(
     `/v1/articles/teams/${teamId}/subjects`,
     { params: { date } }

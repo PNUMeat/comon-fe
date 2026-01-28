@@ -10,7 +10,6 @@ export interface ILazyImage {
   imageRef?: MutableRefObject<HTMLImageElement | null>;
   nodeKey?: string;
   style?: React.CSSProperties;
-  objectFit?: React.CSSProperties['objectFit'];
 }
 
 const imageCache = new Set();
@@ -24,7 +23,6 @@ export const LazyImage: React.FC<ILazyImage> = ({
   className,
   imageRef,
   style,
-  objectFit = 'contain',
 }) => {
   if (!imageCache.has(src)) {
     throw new Promise((resolve) => {
@@ -50,7 +48,7 @@ export const LazyImage: React.FC<ILazyImage> = ({
         width: w,
         maxWidth: maxW,
         height: h,
-        objectFit,
+        objectFit: 'cover',
         ...style,
       }}
       draggable={false}

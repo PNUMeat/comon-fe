@@ -1,7 +1,12 @@
-import apiInstance from '@/api/apiInstance';
-import { ServerResponse } from '@/api/types';
+import { isDevMode } from '@/utils/cookie.ts';
 
-import { uploadImages } from './image';
+import apiInstance from '@/api/apiInstance';
+import {
+  teamAdminPageMock,
+  teamCombinedMock,
+  teamSearchMock,
+} from '@/api/mocks.ts';
+import { ServerResponse } from '@/api/types';
 
 // 생성
 interface ITeamCommon {
@@ -38,47 +43,28 @@ interface ITeamMember {
 
 export interface ITeamInfo extends ITeamCommon {
   teamId: number;
-  teamName: string;
-  teamExplain: string;
-  topic: string;
-  memberLimit: number;
+  imageUrl: string;
   memberCount: number;
   streakDays: number;
-  imageUrl: string;
-  createdAt: string;
-  teamRecruitId?: number | null;
+  // successMemberCount: number;
   teamAnnouncement?: string;
+  createdAt: string;
+  teamRecruitId: number | null;
+  // password: string;
   members?: ITeamMember[];
+  memberLimit: number;
 }
 
 interface ITeamListResponse {
   myTeams: ITeamInfo[];
   allTeams: {
     content: ITeamInfo[];
-    empty: boolean;
-    first: boolean;
-    last: boolean;
-    number: number;
-    numberOfElements: number;
-    pageable: {
-      pageNumber: number;
-      pageSize: number;
-      offset: number;
-      sort: {
-        unsorted: boolean;
-        sorted: boolean;
-        empty: boolean;
-      };
-      unpaged: boolean;
+    page: {
+      size: number;
+      number: number;
+      totalElements: number;
+      totalPages: number;
     };
-    size: number;
-    sort: {
-      unsorted: boolean;
-      sorted: boolean;
-      empty: boolean;
-    };
-    totalElements: number;
-    totalPages: number;
   };
 }
 
@@ -103,26 +89,6 @@ export interface TeamAdminResponse {
   teamIconUrl: string;
 }
 
-interface CreateTeamBody {
-  teamName: string;
-  teamExplain: string;
-  topic: string;
-  password: string;
-  memberLimit: number;
-  teamRecruitId: number | null;
-  teamMemberUuids?: string[];
-  teamIconUrl?: string;
-}
-
-interface ModifyTeamBody {
-  teamName: string;
-  teamExplain: string;
-  topic: string;
-  memberLimit: number;
-  password?: string | null;
-  teamIconUrl?: string;
-}
-
 export const createTeam = async ({
   teamName,
   teamExplain,
@@ -133,37 +99,36 @@ export const createTeam = async ({
   teamMemberUuids,
   teamRecruitId,
 }: ICreateTeamRequest) => {
-  let teamIconUrl: string | undefined;
+  const formData = new FormData();
+
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('password', password);
+  formData.append('memberLimit', memberLimit.toString());
 
   if (image) {
-    const uploadedUrl = await uploadImages({
-      files: [image],
-      category: 'TEAM',
+    formData.append('image', image);
+  }
+
+  if (teamMemberUuids) {
+    teamMemberUuids.forEach((uuid) => {
+      formData.append('teamMemberUuids', uuid);
     });
-    teamIconUrl = uploadedUrl[0];
   }
 
-  const body: CreateTeamBody = {
-    teamName,
-    teamExplain,
-    topic,
-    password,
-    memberLimit,
-    teamRecruitId,
-    teamIconUrl,
-  };
-
-  if (teamMemberUuids && teamMemberUuids.length > 0) {
-    body.teamMemberUuids = teamMemberUuids;
-  }
-
-  if (teamIconUrl) {
-    body.teamIconUrl = teamIconUrl;
+  if (teamRecruitId !== null) {
+    formData.append('teamRecruitId', teamRecruitId.toString());
   }
 
   const res = await apiInstance.post<ServerResponse<ICreateTeamResponse>>(
     'v1/teams',
-    body
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -178,34 +143,27 @@ export const modifyTeam = async ({
   image,
   teamId,
 }: IMPutTeamRequest) => {
-  let teamIconUrl: string | undefined;
+  const formData = new FormData();
 
+  formData.append('teamName', teamName);
+  formData.append('teamExplain', teamExplain);
+  formData.append('topic', topic);
+  formData.append('memberLimit', memberLimit.toString());
   if (image) {
-    const uploadedUrl = await uploadImages({
-      files: [image],
-      category: 'TEAM',
-    });
-    teamIconUrl = uploadedUrl[0];
+    formData.append('image', image);
   }
-
-  const body: ModifyTeamBody = {
-    teamName,
-    teamExplain,
-    topic,
-    memberLimit,
-  };
-
-  if (password !== null) {
-    body.password = password;
-  }
-
-  if (teamIconUrl) {
-    body.teamIconUrl = teamIconUrl;
+  if (password) {
+    formData.append('password', password);
   }
 
   const res = await apiInstance.put<ServerResponse<ICreateTeamResponse>>(
     `v1/teams/${teamId}`,
-    body
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -216,6 +174,10 @@ export const getTeamList = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
+  if (isDevMode()) {
+    return teamCombinedMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
     {
@@ -245,6 +207,10 @@ export const searchTeams = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamSearchResponse> => {
+  if (isDevMode()) {
+    return teamSearchMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<ITeamSearchResponse>>(
     `/v1/teams/search`,
     {
@@ -264,6 +230,10 @@ export const withdrawTeam = async (teamId: number) => {
 };
 
 export const getTeamInfoAdmin = async (teamId: string) => {
+  if (isDevMode()) {
+    return teamAdminPageMock.data;
+  }
+
   const res = await apiInstance.get<ServerResponse<TeamAdminResponse>>(
     `v1/teams/${teamId}`
   );

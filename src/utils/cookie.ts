@@ -1,4 +1,3 @@
-
 export const getCookieAsJson = (): Record<string, string> => {
   return document.cookie
     .split(';')
@@ -37,7 +36,6 @@ export const checkRemainingCookies = () => {
   }
   return sessionStorage.getItem('Authorization') !== null;
 };
-
 
 export const isLoggedIn = () =>
   sessionStorage.getItem('Authorization') !== null;

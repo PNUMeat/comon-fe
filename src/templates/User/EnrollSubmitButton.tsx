@@ -4,13 +4,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { createProfile } from '@/api/user';
 import { PATH } from '@/routes/path';
-import { refreshAuthAtom } from '@/store/auth';
+import { isSubmittedAtom } from '@/store/form';
 import {
   formTextInputAtom,
   formTextareaAtom,
   imageAtom,
   isEnrollSatisfiedAtom,
-  isSubmittedAtom,
 } from '@/store/form';
 import { alertAtom } from '@/store/modal';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -24,7 +23,6 @@ export const EnrollSubmitButton = () => {
   const location = useLocation();
   const setAlert = useSetAtom(alertAtom);
   const setIsSubmitted = useSetAtom(isSubmittedAtom);
-  const refreshAuth = useSetAtom(refreshAuthAtom);
 
   const onClick = () => {
     createProfile({
@@ -32,10 +30,9 @@ export const EnrollSubmitButton = () => {
       memberExplain: memberExplain,
       image: image,
     })
-      .then(async () => {
+      .then(() => {
         // const previousPath = location.state?.redirect ?? PATH.TEAMS;
         // navigate(previousPath);
-        await refreshAuth();
         setIsSubmitted(true);
 
         const navigatePath = location.state?.redirect

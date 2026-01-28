@@ -1,3 +1,5 @@
+import { checkRemainingCookies, isDevMode } from '@/utils/cookie';
+
 import TeamRecruitPosting from '@/components/features/TeamRecruit/TeamRecruitPosting';
 import { MultiSectionLayout } from '@/components/layout/MultiSectionHeader';
 import { SSLWithPathAtom } from '@/components/layout/SSLWithPathAtom';
@@ -17,7 +19,6 @@ import { TeamRecruitDetail } from '@/pages/TeamRecruit/TeamRecruitDetail';
 import { TeamRecruitListPage } from '@/pages/TeamRecruit/TeamRecruitList';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
 import { PATH } from '@/routes/path';
-import { isLoggedInAtom } from '@/store/auth';
 import { LoginTemplate } from '@/templates/Login/LoginTemplate';
 import MyDashboard from '@/templates/MyDashboard/MyDashboard.tsx';
 import { MyTeams } from '@/templates/MyDashboard/MyTeams';
@@ -26,18 +27,15 @@ import MemberModification from '@/templates/Team/MemberModification';
 import { TeamInformation } from '@/templates/Team/TeamInformation';
 import TeamRegistrationTemplate from '@/templates/Team/TeamRegistrationTemplate.tsx';
 import TeamSetting from '@/templates/Team/TeamSetting';
-import { useAtom } from 'jotai';
 
 const useAuth = () => {
-  const [isLoggedIn] = useAtom(isLoggedInAtom);
-  console.log('useAuth isLoggedIn', isLoggedIn);
-  // if (isDevMode()) {
-  //   return {
-  //     isAuthenticated: true,
-  //   };
-  // }
+  if (isDevMode()) {
+    return {
+      isAuthenticated: true,
+    };
+  }
   return {
-    isAuthenticated: isLoggedIn,
+    isAuthenticated: checkRemainingCookies(),
   };
 };
 
@@ -113,9 +111,11 @@ export const router = createBrowserRouter(
         {
           path: PATH.ENROLL,
           element: (
-            <Suspense fallback={<LazySkeleton />}>
-              <LazyEnrollTemplate />
-            </Suspense>
+            <PrivateRoute>
+              <Suspense fallback={<LazySkeleton />}>
+                <LazyEnrollTemplate />
+              </Suspense>
+            </PrivateRoute>
           ),
         },
         {

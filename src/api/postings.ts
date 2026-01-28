@@ -1,15 +1,14 @@
-import apiInstance from '@/api/apiInstance';
-import { API_BASE_URL } from '@/api/config';
-import { ServerResponse } from '@/api/types';
+import { isDevMode } from '@/utils/cookie.ts';
 
-import { uploadImages } from './image';
+import apiInstance from '@/api/apiInstance';
+import { createPostMock, mutatePostMock } from '@/api/mocks.ts';
+import { ServerResponse } from '@/api/types';
 
 type PostingMutationArg = {
   teamId: number;
   articleTitle: string;
   articleBody: string;
   images: File[] | null;
-  isVisible: boolean;
 };
 
 type PostingMutationResp = {
@@ -21,29 +20,35 @@ export const createPost = async ({
   articleTitle,
   articleBody,
   images,
-  isVisible,
 }: PostingMutationArg) => {
-  let imageUrls: string[] | undefined;
+  const formData = new FormData();
 
-  if (images && images.length > 0) {
-    const uploadedUrls = await uploadImages({
-      files: images,
-      category: 'ARTICLE',
+  formData.append('teamId', teamId.toString());
+  formData.append('articleTitle', articleTitle);
+  formData.append('articleBody', articleBody);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-    imageUrls = uploadedUrls;
+  }
+  // else {
+  // formData.append('images', '');
+  // }
+
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return createPostMock.data;
   }
 
-  const body = {
-    teamId,
-    articleTitle,
-    articleBody,
-    images: imageUrls,
-    isVisible,
-  };
-
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
-    '/v1/articles',
-    body
+    'v1/articles',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -55,31 +60,38 @@ export const mutatePost = async ({
   articleBody,
   images,
   articleId,
-  isVisible,
 }: PostingMutationArg & {
   articleId: number;
 }) => {
-  let imageUrls: string[] | undefined;
+  const formData = new FormData();
 
-  if (images && images.length > 0) {
-    const uploadedUrls = await uploadImages({
-      files: images,
-      category: 'ARTICLE',
+  formData.append('teamId', teamId.toString());
+  formData.append('articleId', articleId.toString());
+  formData.append('articleTitle', articleTitle);
+  formData.append('articleBody', articleBody);
+  if (images) {
+    images.forEach((img) => {
+      // formData.append('images', img);
+      formData.append('image', img);
     });
-    imageUrls = uploadedUrls;
   }
+  // else {
+  //   formData.append('images', '');
+  // }
 
-  const body = {
-    teamId,
-    articleTitle,
-    articleBody,
-    images: imageUrls,
-    isVisible,
-  };
+  if (isDevMode()) {
+    await new Promise((r) => setTimeout(r, 1000));
+    return mutatePostMock.data;
+  }
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
-    body
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   return res.data.data;
@@ -87,49 +99,6 @@ export const mutatePost = async ({
 
 export const deletePost = async (articleId: number) => {
   const res = await apiInstance.delete(`v1/articles/${articleId}`);
-
-  return res.data;
-};
-
-export type StreamMessage =
-  | { type: 'PROCESSING'; content: string }
-  | { type: 'DONE' };
-
-export type StreamHandler = {
-  onMessage: (message: StreamMessage) => void;
-  onError?: () => void;
-};
-
-export const getStartArticleFeedbackStream = (
-  articleId: number,
-  handlers: StreamHandler
-) => {
-  const es = new EventSource(
-    `${API_BASE_URL}/api/v1/articles/${articleId}/feedback/stream`,
-    { withCredentials: true }
-  );
-
-  es.onmessage = (event) => {
-    try {
-      const parsed = JSON.parse(event.data) as StreamMessage;
-      handlers.onMessage(parsed);
-    } catch (err) {
-      console.error('Invalid SSE message', err);
-    }
-  };
-
-  es.onerror = () => {
-    handlers.onError?.();
-    es.close();
-  };
-
-  return es;
-};
-
-export const getArticleFeedback = async (articleId: number) => {
-  const res = await apiInstance.get<ServerResponse<{ feedbackBody: string }>>(
-    `/v1/articles/${articleId}/feedback`
-  );
 
   return res.data;
 };

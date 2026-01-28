@@ -10,5 +10,3 @@ export type ServerResponse<T> = {
   data: T;
   message?: string | null;
 };
-
-export type ImageCategory = 'ARTICLE' | 'PROFILE' | 'TEAM' | 'TEAM_RECRUIT';
