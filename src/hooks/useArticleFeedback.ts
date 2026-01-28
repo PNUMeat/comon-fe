@@ -16,26 +16,11 @@ export const useArticleFeedback = (articleId: number | null) => {
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const feedbackRef = useRef('');
-  const rafRef = useRef<number | null>(null);
-
-  const flushToState = useCallback(() => {
-    if (rafRef.current !== null) return;
-
-    rafRef.current = requestAnimationFrame(() => {
-      setFeedback(feedbackRef.current);
-      rafRef.current = null;
-    });
-  }, []);
 
   const closeStream = useCallback(() => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
-    }
-
-    if (rafRef.current !== null) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
     }
   }, []);
 
@@ -92,14 +77,14 @@ export const useArticleFeedback = (articleId: number | null) => {
       const es = getStartArticleFeedbackStream(targetId, {
         onMessage: (message: StreamMessage) => {
           if (message.type === 'DONE') {
-            flushToState();
+            setFeedback(feedbackRef.current);
             closeStream();
             setStatus('complete');
             return;
           }
 
           feedbackRef.current += message.content;
-          flushToState();
+          setFeedback(feedbackRef.current);
         },
 
         onError: () => {
@@ -107,13 +92,12 @@ export const useArticleFeedback = (articleId: number | null) => {
 
           if (feedbackRef.current.length > 0) setStatus('complete');
           else setStatus('error');
-          
         },
       });
 
       eventSourceRef.current = es;
     },
-    [articleId, closeStream, flushToState]
+    [articleId, closeStream]
   );
 
   useEffect(() => {
