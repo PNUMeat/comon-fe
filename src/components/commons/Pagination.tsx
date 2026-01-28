@@ -10,6 +10,7 @@ interface IPaginationProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   currentPageProp: number;
+  pagesPerView?: number;
   hideShadow?: boolean;
   marginTop?: string;
 }
@@ -18,9 +19,17 @@ export const Pagination = ({
   totalPages,
   onPageChange,
   currentPageProp,
+  pagesPerView = 5,
   hideShadow,
   marginTop,
 }: IPaginationProps) => {
+  const currentPage = currentPageProp + 1;
+  const start = Math.max(1, currentPage - pagesPerView + 1);
+  const end = Math.min(start + pagesPerView - 1, totalPages);
+  const visiblePageNumbers = [];
+  for (let p = start; p <= end; p++) visiblePageNumbers.push(p);
+  const isShowingArrows = totalPages > 1;
+
   const handlePageChange = (page: number) => {
     onPageChange(page);
   };
@@ -40,21 +49,25 @@ export const Pagination = ({
   return (
     <Flex justify="center">
       <PaginationContainer hideShadow={hideShadow} marginTop={marginTop}>
-        <LeftArrow src={ArrowButton} onClick={handlePrev} />
+        {isShowingArrows && (
+          <LeftArrow src={ArrowButton} onClick={handlePrev} />
+        )}
         <Spacer width={12} h={0} />
         <PageList>
-          {Array.from({ length: totalPages }, (_, index) => (
+          {visiblePageNumbers.map((page) => (
             <PageNumber
-              key={index + 1}
-              isActive={index + 1 === currentPageProp + 1}
-              onClick={() => handlePageChange(index)}
+              key={page}
+              isActive={page === currentPageProp + 1}
+              onClick={() => handlePageChange(page - 1)}
             >
-              {index + 1}
+              {page}
             </PageNumber>
           ))}
         </PageList>
         <Spacer width={12} h={0} />
-        <RightArrow src={ArrowButton} onClick={handleNext} />
+        {isShowingArrows && (
+          <RightArrow src={ArrowButton} onClick={handleNext} />
+        )}
       </PaginationContainer>
     </Flex>
   );
@@ -110,8 +123,10 @@ const RightArrow = styled.img`
 
 const PageList = styled.div`
   display: flex;
+  justify-content: space-around;
   align-items: center;
-  gap: 20px;
+  gap: 0.8rem;
+  width: clamp(120px, 20vw, 280px);
   margin: 0 16px;
 `;
 
