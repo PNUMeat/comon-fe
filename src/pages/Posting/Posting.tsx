@@ -46,21 +46,48 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 const Posting = () => {
+  const { id } = useParams();
   const location = useLocation();
   const { article, articleId, articleTitle } = location?.state ?? {
     article: null,
     articleId: null,
     articleTitle: null,
   };
-  const [content, setContent] = useState<string>(() => article ?? '');
-  const [postTitle, setPostTitle] = useState(() => articleTitle ?? '');
+  const [content, setContent] = useState<string>(() => {
+    if (article) return article;
+    return sessionStorage.getItem(`posting-content-${id}`) ?? '';
+  });
+  const [postTitle, setPostTitle] = useState(() => {
+    if (articleTitle) return articleTitle;
+    return sessionStorage.getItem(`posting-title-${id}`) ?? '';
+  });
   const [isPending, setIsPending] = useState(false);
   const [disablePrompt, setDisablePrompt] = useState(false);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
 
-  const [savedArticleId, setSavedArticleId] = useState<number | null>(() =>
-    articleId ? Number(articleId) : null
-  );
+  const [savedArticleId, setSavedArticleId] = useState<number | null>(() => {
+    if (articleId) return Number(articleId);
+    const stored = sessionStorage.getItem(`posting-articleId-${id}`);
+    return stored ? Number(stored) : null;
+  });
+
+  useEffect(() => {
+    if (savedArticleId) {
+      sessionStorage.setItem(`posting-articleId-${id}`, String(savedArticleId));
+    }
+  }, [savedArticleId, id]);
+
+  useEffect(() => {
+    if (content) {
+      sessionStorage.setItem(`posting-content-${id}`, content);
+    }
+  }, [content, id]);
+
+  useEffect(() => {
+    if (postTitle) {
+      sessionStorage.setItem(`posting-title-${id}`, postTitle);
+    }
+  }, [postTitle, id]);
 
   const { feedback, isError, isLoading, isStreaming, isComplete, startStream } =
     useArticleFeedback(savedArticleId);
@@ -78,17 +105,12 @@ const Posting = () => {
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
   const buttonFontSize = isMobile ? '12px' : '16px';
-  const { id } = useParams();
   const [progress, setProgress] = useState(0);
 
   usePrompt(!disablePrompt);
 
   useEffect(() => {
-    document.documentElement.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'instant',
-    });
+    document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, []);
 
   useEffect(() => {
@@ -152,10 +174,7 @@ const Posting = () => {
       if (sortedImages.length > 0) {
         const files = sortedImages.map((imgObj) => imgObj.img);
         try {
-          uploadedUrls = await uploadImages({
-            files,
-            category: 'ARTICLE',
-          });
+          uploadedUrls = await uploadImages({ files, category: 'ARTICLE' });
         } catch (err: unknown) {
           const e = err as { response?: { data?: { message?: string } } };
           setAlert({
@@ -231,6 +250,9 @@ const Posting = () => {
     const savedId = await handleSaveArticle();
 
     if (savedId) {
+      sessionStorage.removeItem(`posting-articleId-${id}`);
+      sessionStorage.removeItem(`posting-content-${id}`);
+      sessionStorage.removeItem(`posting-title-${id}`);
       setDashboardView('article');
       setSelectedPostId(savedId);
       setDisablePrompt(true);
@@ -275,8 +297,8 @@ const Posting = () => {
         <PostEditor
           forwardContent={setContent}
           forwardTitle={setPostTitle}
-          content={article}
-          title={articleTitle}
+          content={content}
+          title={postTitle}
         />
         <Spacer h={22} />
         <Flex
@@ -326,7 +348,7 @@ const Posting = () => {
                   </SText>
                 </AiFeedbackButton>
               </AiFeedbackButtonWrapper>
-              {!isError &&feedback && (
+              {!isError && feedback && (
                 <>
                   <Spacer h={spacing} />
                   <ArticleFeedbackPanel
