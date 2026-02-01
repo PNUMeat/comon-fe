@@ -4,7 +4,18 @@ import { ServerResponse } from '@/api/types';
 
 import { uploadImages } from './image';
 
-export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
+const getOAuthUrl = () => {
+  const host = window.location.hostname;
+  if (host === 'codemonster.site') {
+    return 'https://api.codemonster.site/oauth2/authorization/kakao';
+  }
+  if (host === 'test.codemonster.site') {
+    return 'https://api.test.codemonster.site/oauth2/authorization/kakao';
+  }
+  return `${API_BASE_URL}/oauth2/authorization/kakao`;
+};
+
+export const kakaoOauth2LoginUrl = getOAuthUrl();
 
 type ProfileCommonArgs = {
   memberName: string;
