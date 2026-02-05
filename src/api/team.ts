@@ -55,30 +55,12 @@ interface ITeamListResponse {
   myTeams: ITeamInfo[];
   allTeams: {
     content: ITeamInfo[];
-    empty: boolean;
-    first: boolean;
-    last: boolean;
-    number: number;
-    numberOfElements: number;
-    pageable: {
-      pageNumber: number;
-      pageSize: number;
-      offset: number;
-      sort: {
-        unsorted: boolean;
-        sorted: boolean;
-        empty: boolean;
-      };
-      unpaged: boolean;
+    page: {
+      size: number;
+      number: number;
+      totalElements: number;
+      totalPages: number;
     };
-    size: number;
-    sort: {
-      unsorted: boolean;
-      sorted: boolean;
-      empty: boolean;
-    };
-    totalElements: number;
-    totalPages: number;
   };
 }
 
