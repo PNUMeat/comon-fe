@@ -29,35 +29,36 @@ const prevPageCacheMap: Map<string, number> = new Map();
 const QUERY_MODE = 'query';
 const SEARCH_MODE = 'search';
 
-totalPagesCacheMap.set(QUERY_MODE, 1);
-totalPagesCacheMap.set(SEARCH_MODE, 1);
-
 prevPageCacheMap.set(QUERY_MODE, 0);
 prevPageCacheMap.set(SEARCH_MODE, 0);
 
 const TeamData = () => {
-  const [page, setPage] = useState(-1);
+  const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState(prevKeyword);
   const isSearchMode = keyword.trim().length > 0;
 
+  const handleKeywordChange = (newKeyword: string) => {
+    setKeyword(newKeyword);
+    setPage(0);
+  };
+
   const { data: queryData, isPending: queryPending } = useQuery({
-    queryKey: ['team-list', page === -1 ? 0 : page],
-    queryFn: () => getTeamList('recent', page === -1 ? 0 : page, 6),
-    //placeholdreData에서 prevData ?? queryclient.getQueryData(['team-list', 이전 페이지`])
-    // 위의 코드는 사용시 플로우를 완전히 제어 못할 거 같음
-    // placeholderData: (prevData) => ({ prevData })},
-    select: (data) => ({
-      myTeams: data.myTeams,
-      otherTeams: data.allTeams.content,
-      totalPages: data.allTeams.totalPages,
-    }),
+    queryKey: ['team-list', page],
+    queryFn: () => getTeamList('recent', page, 6),
+    select: (data) => {
+      return {
+        myTeams: data.myTeams,
+        otherTeams: data.allTeams.content,
+        totalPages: data.allTeams.page.totalPages,
+      };
+    },
+    enabled: !isSearchMode,
     retry: (failureCount, error: AxiosError<ServerResponse<null>>) => {
       if (
         error.response &&
         error.response.status === 401 &&
         (error.response.data.code === 100 || error.response.data.code === 101)
       ) {
-        console.log('asdasd tj');
         return false;
       }
 
@@ -71,12 +72,14 @@ const TeamData = () => {
   }
 
   const { data: searchData, isPending: searchPending } = useQuery({
-    queryKey: ['team-search', keyword, page === -1 ? 0 : page],
-    queryFn: () => searchTeams(keyword, 'recent', page === -1 ? 0 : page, 6),
-    select: (data) => ({
-      otherTeams: data.content,
-      totalPages: data?.page?.totalPages,
-    }),
+    queryKey: ['team-search', keyword, page],
+    queryFn: () => searchTeams(keyword, 'recent', page, 6),
+    select: (data) => {
+      return {
+        otherTeams: data.content,
+        totalPages: data?.page?.totalPages,
+      };
+    },
     enabled: isSearchMode,
   });
 
@@ -96,20 +99,13 @@ const TeamData = () => {
     ? (searchData?.otherTeams ?? [])
     : (queryData?.otherTeams ?? []);
   const totalPages = isSearchMode
-    ? (searchData?.totalPages ??
-      (totalPagesCacheMap.get(SEARCH_MODE) as number))
-    : (queryData?.totalPages ?? (totalPagesCacheMap.get(QUERY_MODE) as number));
-  const currPage =
-    page === -1
-      ? (prevPageCacheMap.get(
-          isSearchMode ? SEARCH_MODE : QUERY_MODE
-        ) as number)
-      : page;
+    ? (searchData?.totalPages ?? totalPagesCacheMap.get(SEARCH_MODE) ?? 1)
+    : (queryData?.totalPages ?? totalPagesCacheMap.get(QUERY_MODE) ?? 1);
   const isPending = isSearchMode ? searchPending : queryPending;
 
   return (
     <KeywordPageControlContext.Provider
-      value={{ keyword, setKeyword, setPage }}
+      value={{ keyword, setKeyword: handleKeywordChange, setPage }}
     >
       {/* 나의 팀 */}
       {myTeam.length > 0 && <MyTeamCard teams={myTeam} />}
@@ -118,7 +114,7 @@ const TeamData = () => {
       <Pagination
         totalPages={totalPages}
         onPageChange={handlePageChange}
-        currentPageProp={currPage}
+        currentPageProp={page}
         hideShadow={true}
       />
       <Spacer h={34} />
