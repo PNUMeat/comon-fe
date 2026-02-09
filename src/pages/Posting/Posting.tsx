@@ -15,7 +15,7 @@ import ArticleFeedbackPanel from '@/components/features/Feedback/ArticleFeedback
 import PostEditor from '@/components/features/Post/PostEditor';
 import { CommonLayout } from '@/components/layout/CommonLayout';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { RiErrorWarningFill } from 'react-icons/ri';
 import {
   Navigate,
@@ -107,7 +107,14 @@ const Posting = () => {
   const buttonFontSize = isMobile ? '12px' : '16px';
   const [progress, setProgress] = useState(0);
 
-  usePrompt(!disablePrompt);
+  const clearPostingCache = useCallback(() => {
+    sessionStorage.removeItem(`posting-articleId-${id}`);
+    sessionStorage.removeItem(`posting-content-${id}`);
+    sessionStorage.removeItem(`posting-title-${id}`);
+    setPostImages([]);
+  }, [id, setPostImages]);
+
+  usePrompt(!disablePrompt, clearPostingCache);
 
   useEffect(() => {
     document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -250,9 +257,7 @@ const Posting = () => {
     const savedId = await handleSaveArticle();
 
     if (savedId) {
-      sessionStorage.removeItem(`posting-articleId-${id}`);
-      sessionStorage.removeItem(`posting-content-${id}`);
-      sessionStorage.removeItem(`posting-title-${id}`);
+      clearPostingCache();
       setDashboardView('article');
       setSelectedPostId(savedId);
       setDisablePrompt(true);
