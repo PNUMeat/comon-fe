@@ -65,7 +65,7 @@ const TeamDashboardPage = () => {
   });
   // 가장 비용이 적은 캐싱
   if (isPaginationReady && articlesData) {
-    totalPageCache = articlesData.totalPages;
+    totalPageCache = articlesData.page.totalPages;
   }
 
   const onClickCalendarDate = (newDate: string) => {
@@ -137,13 +137,16 @@ const TeamDashboardPage = () => {
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
           />
-          <Pagination
-            totalPages={articlesData?.totalPages ?? totalPageCache}
-            currentPageProp={page}
-            onPageChange={handlePageChange}
-            hideShadow={isMobile}
-            marginTop="-70px"
-          />
+          {articlesData && (
+            <Pagination
+              totalPages={articlesData?.page.totalPages ?? totalPageCache}
+              currentPageProp={page}
+              onPageChange={handlePageChange}
+              hideShadow={isMobile}
+              marginTop="-70px"
+            />
+          )}
+
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
