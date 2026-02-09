@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_run:
-    workflows: ["Develop to Main 브랜치 동기화"]
+    workflows: ['Develop to Main 브랜치 동기화']
     types:
       - completed
 
@@ -44,13 +44,19 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy
+      - name: Deploy to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --delete
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_PROD }} # PROD용
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: 'dist'
+
+      - name: Invalidate CloudFront Cache
         run: |
-          echo "$SSH_PRIVATE_KEY" > key.pem
-          chmod 600 key.pem
-          scp -o StrictHostKeyChecking=no -i key.pem -r dist/* $EC2_USERNAME@$EC2_HOST:/var/www/html/
-          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USERNAME@$EC2_HOST "sudo systemctl restart nginx"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID_PROD }} \  # PROD용
+            --paths "/*"
