@@ -137,8 +137,8 @@ export const getArticleFeedback = async (articleId: number) => {
 interface CommentItem {
   commentId: number;
   description: string;
-  memberId: number;
-  memberName: string;
+  memberId: number | null;
+  memberName: string | null;
   memberProfileImageUrl: string | null;
   createdAt: string;
   isDeleted: boolean;

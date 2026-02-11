@@ -151,7 +151,7 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
           readOnly={!isLoggedIn}
           placeholder={
             isLoggedIn
-              ? '더 좋은 풀이가 떠오르면 댓글을 남겨주세요!'
+              ? '더 좋은 풀이 방법이나 응원의 메시지를 남겨주세요!'
               : '댓글을 작성하려면 로그인해 주세요.'
           }
         />
@@ -178,19 +178,21 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
           return (
             <CommentCard key={comment.commentId}>
               <Flex justify="space-between" align="flex-start">
-                <Flex align="center" gap="10px">
-                  <AvatarCircle>{comment.memberName[0] ?? '?'}</AvatarCircle>
-                  <div>
+                <Flex align="center" gap="10px" flex={1}>
+                  <AvatarCircle>
+                    {comment.memberProfileImageUrl ?? comment.memberName?.[0]}
+                  </AvatarCircle>
+                  <Flex flex={1} align="center">
                     <SText fontSize="13px" fontWeight={600} color="#111">
                       {comment.memberName}
                     </SText>
-                    <SText fontSize="11px" color="#999">
-                      {formatDateTime(comment.createdAt)}
-                    </SText>
-                  </div>
+                  </Flex>
+                  <SText fontSize="11px" color="#999">
+                    {formatDateTime(comment.createdAt)}
+                  </SText>
                 </Flex>
 
-                {isOwner && !isEditing && (
+                {isOwner && !isEditing && !comment.isDeleted && (
                   <CommentActions>
                     <TextButton
                       type="button"
@@ -212,7 +214,11 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
 
               <Spacer h={12} />
 
-              {isEditing ? (
+              {comment.isDeleted ? (
+                <SText fontSize="13px" color="#bbb" lineHeight="20px">
+                  삭제된 댓글입니다.
+                </SText>
+              ) : isEditing ? (
                 <>
                   <EditTextArea
                     value={editingText}
@@ -361,21 +367,20 @@ const CommentList = styled.div`
 
 const CommentCard = styled.div`
   padding: 16px 18px;
-  border-radius: 20px;
-  border: 1px solid ${colors.borderPurple};
+  border-radius: 8px;
   background-color: #fff;
-  box-shadow: 5px 7px 11.6px 0px #3f3f4d12;
+  box-shadow: 0px 6px 20px 0px #3031430f;
 `;
 
 const AvatarCircle = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: ${colors.headerPurple};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 8px;
   font-weight: 600;
   color: #666;
 `;
