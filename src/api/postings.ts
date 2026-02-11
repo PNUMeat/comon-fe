@@ -139,7 +139,9 @@ interface CommentItem {
   description: string;
   memberId: number;
   memberName: string;
+  memberProfileImageUrl: string | null;
   createdAt: string;
+  isDeleted: boolean;
 }
 
 interface CommentsResponse {

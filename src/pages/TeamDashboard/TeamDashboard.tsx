@@ -6,6 +6,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
+import { CommentSection } from '@/components/features/Comment/CommentSection';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
@@ -152,17 +153,20 @@ const TeamDashboardPage = () => {
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
           {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail
-              data={
-                articlesData.content.find(
-                  (article) => article.articleId === selectedArticleId
-                ) as IArticle
-              }
-              shouldBlur={!isMyTeam}
-              refetchArticles={refetch}
-              teamId={Number(teamId)}
-              setIsModalOpen={setIsModalOpen}
-            />
+            <>
+              <ArticleDetail
+                data={
+                  articlesData.content.find(
+                    (article) => article.articleId === selectedArticleId
+                  ) as IArticle
+                }
+                shouldBlur={!isMyTeam}
+                refetchArticles={refetch}
+                teamId={Number(teamId)}
+                setIsModalOpen={setIsModalOpen}
+              />
+              <CommentSection articleId={selectedArticleId} />
+            </>
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
