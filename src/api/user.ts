@@ -10,7 +10,7 @@ const getOAuthUrl = () => {
     return 'https://api.test.codemonster.site/oauth2/authorization/kakao';
   }
   if (host === 'test.codemonster.site') {
-    return 'https://api.test.codemonster.site/oauth2/authorization/kakao';
+    return 'https://api.codemonster.site/oauth2/authorization/kakao';
   }
   return `${API_BASE_URL}/oauth2/authorization/kakao`;
 };

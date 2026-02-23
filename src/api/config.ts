@@ -2,8 +2,8 @@ const getApiBaseUrl = () => {
   const host = window.location.hostname;
 
   if (host === 'localhost') return import.meta.env.VITE_LOCAL_URL;
-  if (host === 'test.codemonster.site') return import.meta.env.VITE_TEST_URL;
-  if (host === 'codemonster.site') return import.meta.env.VITE_BASE_URL;
+  if (host === 'test.codemonster.site') return import.meta.env.VITE_BASE_URL;
+  if (host === 'codemonster.site') return import.meta.env.VITE_TEST_URL;
 
   return 'https://api.test.codemonster.site';
 };
