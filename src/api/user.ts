@@ -4,16 +4,22 @@ import { ServerResponse } from '@/api/types';
 
 import { uploadImages } from './image';
 
-export const kakaoOauth2LoginUrl = `${API_BASE_URL}/oauth2/authorization/kakao`;
-
-type ProfileCommonArgs = {
-  memberName: string;
-  memberExplain: string;
+const getOAuthUrl = () => {
+  const host = window.location.hostname;
+  if (host === 'codemonster.site') {
+    return 'https://api.test.codemonster.site/oauth2/authorization/kakao';
+  }
+  if (host === 'test.codemonster.site') {
+    return 'https://api.test.codemonster.site/oauth2/authorization/kakao';
+  }
+  return `${API_BASE_URL}/oauth2/authorization/kakao`;
 };
 
-type ProfileMutationArgs = ProfileCommonArgs & {
-  image: File | null;
-};
+export const kakaoOauth2LoginUrl = getOAuthUrl();
+
+type ProfileCommonArgs = { memberName: string; memberExplain: string };
+
+type ProfileMutationArgs = ProfileCommonArgs & { image: File | null };
 
 export type ProfileQueryResp = ProfileCommonArgs & {
   imageUrl: string;
@@ -35,15 +41,8 @@ export const createProfile = async ({
     imageUrl = uploadedUrls[0];
   }
 
-  const body: {
-    memberName: string;
-    memberExplain: string;
-    imageUrl?: string;
-  } = {
-    memberName,
-    memberExplain,
-    ...(imageUrl && { imageUrl }),
-  };
+  const body: { memberName: string; memberExplain: string; imageUrl?: string } =
+    { memberName, memberExplain, ...(imageUrl && { imageUrl }) };
 
   const res = await apiInstance.post('/v1/members', body);
 
@@ -65,15 +64,8 @@ export const changeProfile = async ({
     imageUrl = uploadedUrls[0];
   }
 
-  const body: {
-    memberName: string;
-    memberExplain: string;
-    imageUrl?: string;
-  } = {
-    memberName,
-    memberExplain,
-    ...(imageUrl && { imageUrl }),
-  };
+  const body: { memberName: string; memberExplain: string; imageUrl?: string } =
+    { memberName, memberExplain, ...(imageUrl && { imageUrl }) };
 
   const res = await apiInstance.put('/v1/members', body);
 
@@ -102,11 +94,7 @@ export const logout = async () => {
   return res.data;
 };
 
-type TeamAbsInfo = {
-  teamId: number;
-  teamName: string;
-  teamImageUrl: string;
-};
+type TeamAbsInfo = { teamId: number; teamName: string; teamImageUrl: string };
 
 type MemberInfoResp = {
   memberName: string;

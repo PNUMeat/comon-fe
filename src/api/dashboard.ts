@@ -28,31 +28,12 @@ export interface IArticle {
 
 export interface IArticlesByDateResponse {
   content: IArticle[];
-  empty: boolean;
-  first: boolean;
-  last: boolean;
-  number: number;
-  numberOfElements: number;
-  pageable: {
-    offset: number;
-    pageNumber: number;
-    pageSize: number;
-    paged: boolean;
-    unpaged: boolean;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
   };
-  size: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  totalElements: number;
-  totalPages: number;
 }
 
 export interface ITopicResponse {

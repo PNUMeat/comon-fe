@@ -374,7 +374,7 @@ const TeamAdmin = () => {
   });
   // 가장 비용이 적은 캐싱
   if (isPaginationReady && articlesData) {
-    totalPageCache = articlesData.totalPages;
+    totalPageCache = articlesData.page.totalPages;
   }
 
   const handleShowTopicDetail = () => {
@@ -528,7 +528,7 @@ const TeamAdmin = () => {
             onShowArticleDetail={handleShowArticleDetail}
           />
           <Pagination
-            totalPages={articlesData?.totalPages ?? totalPageCache}
+            totalPages={articlesData?.page.totalPages ?? totalPageCache}
             currentPageProp={page}
             onPageChange={handlePageChange}
             hideShadow={isMobile}

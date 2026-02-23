@@ -688,6 +688,44 @@ export const teamPageMock = {
   },
 };
 
+export const articleCommentsMock = {
+  status: 'success',
+  code: 200,
+  message: null,
+  data: {
+    comments: [
+      {
+        commentId: 1,
+        description: '좋은 풀이 올려주셔서 감사합니다.',
+        memberId: 101,
+        memberName: '내내입123',
+        memberProfileImageUrl: null,
+        createdAt: '2025-02-10 14:00:00',
+        isDeleted: false,
+      },
+      {
+        commentId: 2,
+        description:
+          '1. 우선 DP 테이블에 무엇을 저장할 것인지, DP 테이블 초기값은 어떻게 해야할지 먼저 고민해보았습니다.\n2. DP 테이블에 num_list[i]가 수열의 마지막 값이 되었을 때, 수열의 가장 긴 증가하는 부분 수열의 길이를 저장하도록 하고, 초기값은 1로 두었습니다.',
+        memberId: 102,
+        memberName: '내내입123',
+        memberProfileImageUrl: null,
+        createdAt: '2025-02-10 14:10:00',
+        isDeleted: false,
+      },
+      {
+        commentId: 3,
+        description: '삭제된 댓글입니다',
+        memberId: null,
+        memberName: 'null',
+        memberProfileImageUrl: null,
+        createdAt: '2025-02-10 14:20:00',
+        isDeleted: true,
+      },
+    ],
+  },
+};
+
 export const createPostMock = {
   status: 'success',
   code: 201,

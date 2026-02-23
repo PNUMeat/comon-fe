@@ -133,3 +133,57 @@ export const getArticleFeedback = async (articleId: number) => {
 
   return res.data;
 };
+
+interface CommentItem {
+  commentId: number;
+  description: string;
+  memberId: number | null;
+  memberName: string | null;
+  memberProfileImageUrl: string | null;
+  createdAt: string;
+  isDeleted: boolean;
+}
+
+interface CommentsResponse {
+  comments: CommentItem[];
+}
+
+export const getArticleComments = async (articleId: number) => {
+  const res = await apiInstance.get<ServerResponse<CommentsResponse>>(
+    `/v1/articles/${articleId}/comments`
+  );
+  return res.data;
+};
+
+export const createArticleComment = async (
+  articleId: number,
+  { description }: { description: string }
+) => {
+  const res = await apiInstance.post<ServerResponse<{ commentId: number }>>(
+    `/v1/articles/${articleId}/comments`,
+    { description }
+  );
+  return res.data;
+};
+
+export const mutateArticleComment = async (
+  articleId: number,
+  commentId: number,
+  { description }: { description: string }
+) => {
+  const res = await apiInstance.patch<ServerResponse<{ commentId: number }>>(
+    `/v1/articles/${articleId}/comments/${commentId}`,
+    { description }
+  );
+  return res.data;
+};
+
+export const deleteArticleComment = async (
+  articleId: number,
+  commentId: number
+) => {
+  const res = await apiInstance.delete<ServerResponse<null>>(
+    `/v1/articles/${articleId}/comments/${commentId}`
+  );
+  return res.data;
+};

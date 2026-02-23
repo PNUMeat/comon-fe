@@ -47,29 +47,31 @@ export const Pagination = ({
   };
 
   return (
-    <Flex justify="center">
-      <PaginationContainer hideShadow={hideShadow} marginTop={marginTop}>
-        {isShowingArrows && (
-          <LeftArrow src={ArrowButton} onClick={handlePrev} />
-        )}
-        <Spacer width={12} h={0} />
-        <PageList>
-          {visiblePageNumbers.map((page) => (
-            <PageNumber
-              key={page}
-              isActive={page === currentPageProp + 1}
-              onClick={() => handlePageChange(page - 1)}
-            >
-              {page}
-            </PageNumber>
-          ))}
-        </PageList>
-        <Spacer width={12} h={0} />
-        {isShowingArrows && (
-          <RightArrow src={ArrowButton} onClick={handleNext} />
-        )}
-      </PaginationContainer>
-    </Flex>
+    totalPages > 0 && (
+      <Flex justify="center">
+        <PaginationContainer hideShadow={hideShadow} marginTop={marginTop}>
+          {isShowingArrows && (
+            <LeftArrow src={ArrowButton} onClick={handlePrev} />
+          )}
+          <Spacer width={12} h={0} />
+          <PageList>
+            {visiblePageNumbers.map((page) => (
+              <PageNumber
+                key={page}
+                isActive={page === currentPageProp + 1}
+                onClick={() => handlePageChange(page - 1)}
+              >
+                {page}
+              </PageNumber>
+            ))}
+          </PageList>
+          <Spacer width={12} h={0} />
+          {isShowingArrows && (
+            <RightArrow src={ArrowButton} onClick={handleNext} />
+          )}
+        </PaginationContainer>
+      </Flex>
+    )
   );
 };
 

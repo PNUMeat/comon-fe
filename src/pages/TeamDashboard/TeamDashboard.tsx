@@ -6,6 +6,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
+import { CommentSection } from '@/components/features/Comment/CommentSection';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
@@ -65,7 +66,7 @@ const TeamDashboardPage = () => {
   });
   // 가장 비용이 적은 캐싱
   if (isPaginationReady && articlesData) {
-    totalPageCache = articlesData.totalPages;
+    totalPageCache = articlesData.page.totalPages;
   }
 
   const onClickCalendarDate = (newDate: string) => {
@@ -137,29 +138,35 @@ const TeamDashboardPage = () => {
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
           />
-          <Pagination
-            totalPages={articlesData?.totalPages ?? totalPageCache}
-            currentPageProp={page}
-            onPageChange={handlePageChange}
-            hideShadow={isMobile}
-            marginTop="-70px"
-          />
+          {articlesData && (
+            <Pagination
+              totalPages={articlesData?.page.totalPages ?? totalPageCache}
+              currentPageProp={page}
+              onPageChange={handlePageChange}
+              hideShadow={isMobile}
+              marginTop="-70px"
+            />
+          )}
+
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
           {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail
-              data={
-                articlesData.content.find(
-                  (article) => article.articleId === selectedArticleId
-                ) as IArticle
-              }
-              shouldBlur={!isMyTeam}
-              refetchArticles={refetch}
-              teamId={Number(teamId)}
-              setIsModalOpen={setIsModalOpen}
-            />
+            <>
+              <ArticleDetail
+                data={
+                  articlesData.content.find(
+                    (article) => article.articleId === selectedArticleId
+                  ) as IArticle
+                }
+                shouldBlur={!isMyTeam}
+                refetchArticles={refetch}
+                teamId={Number(teamId)}
+                setIsModalOpen={setIsModalOpen}
+              />
+              <CommentSection articleId={selectedArticleId} />
+            </>
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>
