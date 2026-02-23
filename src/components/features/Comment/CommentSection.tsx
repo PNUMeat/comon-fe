@@ -12,15 +12,23 @@ import {
   getArticleComments,
   mutateArticleComment,
 } from '@/api/postings';
+import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
+import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
 import { colors } from '@/constants/colors';
 import { isLoggedInAtom, profileAtom } from '@/store/auth';
 import styled from '@emotion/styled';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useAtomValue } from 'jotai';
 
 interface CommentSectionProps {
   articleId: number;
 }
+
+const MAX_COMMENT_LENGTH = 300;
 
 export const CommentSection = ({ articleId }: CommentSectionProps) => {
   const queryClient = useQueryClient();
@@ -34,17 +42,27 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
   const [editingText, setEditingText] = useState('');
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
-  const { data: commentsResp } = useQuery({
+  const {
+    data: commentsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ['article-comments', articleId],
-    queryFn: () => getArticleComments(articleId),
+    queryFn: ({ pageParam = 0 }) => getArticleComments(articleId, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { number, totalPages } = lastPage.data.page;
+      return number + 1 < totalPages ? number + 1 : undefined;
+    },
   });
 
-  const commentItems = commentsResp?.data.comments ?? [];
+  const commentItems =
+    commentsData?.pages.flatMap((page) => page.data.content) ?? [];
+  const totalElements = commentsData?.pages[0]?.data.page.totalElements ?? 0;
 
   const sortedComments =
-    sortOrder === 'latest' ? [...commentItems].slice().reverse() : commentItems;
-
-  console.log('articleId', articleId);
+    sortOrder === 'latest' ? [...commentItems].reverse() : commentItems;
 
   const createCommentMutation = useMutation({
     mutationFn: (description: string) =>
@@ -116,7 +134,7 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
     <CommentSectionWrapper>
       <SectionHeader>
         <SText fontSize="14px" fontWeight={600} color="#6E74FA">
-          댓글 {commentItems.length}
+          댓글 {totalElements}
         </SText>
         <SortGroup>
           <SortButton
@@ -135,40 +153,6 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
           </SortButton>
         </SortGroup>
       </SectionHeader>
-
-      <EditorWrapper
-        isFocused={isEditorFocused}
-        disabled={!isLoggedIn}
-        onClick={() => {
-          if (!isLoggedIn) return;
-        }}
-      >
-        <CommentTextArea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          onFocus={() => setIsEditorFocused(true)}
-          onBlur={() => setIsEditorFocused(false)}
-          readOnly={!isLoggedIn}
-          placeholder={
-            isLoggedIn
-              ? '더 좋은 풀이 방법이나 응원의 메시지를 남겨주세요!'
-              : '댓글을 작성하려면 로그인해 주세요.'
-          }
-        />
-        <Spacer h={12} />
-        <Flex align="center" justify="flex-end">
-          <Button
-            backgroundColor={isCreateDisabled ? '#E4E5F7' : colors.buttonPurple}
-            cursor={isCreateDisabled ? 'not-allowed' : 'pointer'}
-            onClick={isCreateDisabled ? undefined : handleCreateComment}
-          >
-            댓글 달기
-          </Button>
-        </Flex>
-      </EditorWrapper>
-
-      <Spacer h={24} />
-
       <CommentList>
         {sortedComments.map((comment) => {
           const isOwner =
@@ -177,10 +161,14 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
 
           return (
             <CommentCard key={comment.commentId}>
-              <Flex justify="space-between" align="flex-start">
+              <Flex justify="space-between" align="center">
                 <Flex align="center" gap="10px" flex={1}>
                   <AvatarCircle>
-                    {comment.memberProfileImageUrl ?? comment.memberName?.[0]}
+                    {comment.memberImageUrl ? (
+                      <AvatarImage src={comment.memberImageUrl} alt="" />
+                    ) : (
+                      comment.memberName?.[0]
+                    )}
                   </AvatarCircle>
                   <Flex flex={1} align="center">
                     <SText fontSize="13px" fontWeight={600} color="#111">
@@ -188,26 +176,28 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
                     </SText>
                   </Flex>
                   <SText fontSize="11px" color="#999">
-                    {formatDateTime(comment.createdAt)}
+                    {!comment.isDeleted && formatDateTime(comment.createdAt)}
                   </SText>
                 </Flex>
 
                 {isOwner && !isEditing && !comment.isDeleted && (
                   <CommentActions>
-                    <TextButton
-                      type="button"
+                    <img
+                      src={ModifyIcon}
+                      alt="수정"
+                      width={12}
+                      height={12}
                       onClick={() =>
                         handleStartEdit(comment.commentId, comment.description)
                       }
-                    >
-                      수정
-                    </TextButton>
-                    <TextButton
-                      type="button"
+                    />
+                    <img
+                      src={DeleteIcon}
+                      alt="삭제"
+                      width={12}
+                      height={12}
                       onClick={() => setDeleteTargetId(comment.commentId)}
-                    >
-                      삭제
-                    </TextButton>
+                    />
                   </CommentActions>
                 )}
               </Flex>
@@ -241,7 +231,9 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
                           : () => handleConfirmEdit(comment.commentId)
                       }
                     >
-                      완료
+                      <SText fontSize="12px" fontWeight={700} color="#fff">
+                        완료
+                      </SText>
                     </Button>
                   </EditButtons>
                 </>
@@ -266,7 +258,63 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
             </SText>
           </EmptyState>
         )}
+
+        {hasNextPage && (
+          <MoreButton
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? '불러오는 중...' : '댓글 더보기'}
+          </MoreButton>
+        )}
       </CommentList>
+
+      <Spacer h={32} />
+
+      <SText fontSize="16px" fontWeight={600} color="#6E74FA">
+        작성하기
+      </SText>
+
+      <EditorWrapper
+        isFocused={isEditorFocused}
+        disabled={!isLoggedIn}
+        onClick={() => {
+          if (!isLoggedIn) return;
+        }}
+      >
+        <CommentTextArea
+          value={newComment}
+          onChange={(e) => {
+            if (e.target.value.length <= MAX_COMMENT_LENGTH) {
+              setNewComment(e.target.value.slice(0, MAX_COMMENT_LENGTH));
+            }
+          }}
+          onFocus={() => setIsEditorFocused(true)}
+          onBlur={() => setIsEditorFocused(false)}
+          readOnly={!isLoggedIn}
+          placeholder={
+            isLoggedIn
+              ? '더 좋은 풀이 방법이나 응원의 메시지를 남겨주세요!'
+              : '댓글을 작성하려면 로그인해 주세요.'
+          }
+        />
+        <Spacer h={12} />
+        <Flex align="center" justify="flex-end">
+          <Button
+            padding="5px 11px"
+            backgroundColor={isCreateDisabled ? '#E4E5F7' : colors.buttonPurple}
+            cursor={isCreateDisabled ? 'not-allowed' : 'pointer'}
+            onClick={isCreateDisabled ? undefined : handleCreateComment}
+          >
+            <SText fontSize="12px" fontWeight={700} color="#fff">
+              댓글 달기
+            </SText>
+          </Button>
+        </Flex>
+      </EditorWrapper>
+
+      <Spacer h={24} />
 
       <Modal
         open={deleteTargetId !== null}
@@ -328,12 +376,11 @@ const SortButton = styled.button<{ active: boolean }>`
 `;
 
 const EditorWrapper = styled.div<{ isFocused: boolean; disabled: boolean }>`
-  margin-top: 4px;
-  padding: 16px 18px;
+  margin-top: 10px;
+  padding: 20px 35px;
   border-radius: 8px;
   border: none;
-  outline: ${(props) =>
-    props.isFocused ? `1px solid ${colors.buttonPurple}` : 'none'};
+  outline: none;
   background-color: #ffffff;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
   box-sizing: border-box;
@@ -344,7 +391,7 @@ const CommentTextArea = styled.textarea`
   min-height: 80px;
   border: none;
   border-radius: 8px;
-  resize: vertical;
+  resize: none;
   outline: none;
   background: transparent;
   font-size: 13px;
@@ -383,12 +430,21 @@ const AvatarCircle = styled.div`
   font-size: 8px;
   font-weight: 600;
   color: #666;
+  overflow: hidden;
+`;
+
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const CommentActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 4px;
+  margin-left: 20px;
 `;
 
 const TextButton = styled.button`
@@ -421,6 +477,17 @@ const EditButtons = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
+`;
+
+const MoreButton = styled.button`
+  border: none;
+  border-radius: 8px;
+  background-color: #f8f8ff;
+  font-size: 14px;
+  text-decoration: underline;
+  font-weight: 500;
+  color: #b2b5fb;
+  cursor: pointer;
 `;
 
 const EmptyState = styled.div`
@@ -480,11 +547,11 @@ const formatDateTime = (isoString: string) => {
 
   if (Number.isNaN(date.getTime())) return isoString;
 
-  return date.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+
+  return `${y}.${m}.${d} ${h}:${min}`;
 };

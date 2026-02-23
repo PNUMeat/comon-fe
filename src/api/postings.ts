@@ -139,18 +139,27 @@ interface CommentItem {
   description: string;
   memberId: number | null;
   memberName: string | null;
-  memberProfileImageUrl: string | null;
+  memberImageUrl: string | null;
   createdAt: string;
   isDeleted: boolean;
 }
 
 interface CommentsResponse {
-  comments: CommentItem[];
+  content: CommentItem[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
 }
 
-export const getArticleComments = async (articleId: number) => {
+export const getArticleComments = async (
+  articleId: number,
+  page = 0
+) => {
   const res = await apiInstance.get<ServerResponse<CommentsResponse>>(
-    `/v1/articles/${articleId}/comments`
+    `/v1/articles/${articleId}/comments?page=${page}`
   );
   return res.data;
 };
