@@ -9,3 +9,4 @@ const getApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = getApiBaseUrl();
+console.log('[config] host:', window.location.hostname, 'API_BASE_URL:', API_BASE_URL);
