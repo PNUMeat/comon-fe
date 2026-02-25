@@ -251,14 +251,6 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
           );
         })}
 
-        {commentItems.length === 0 && (
-          <EmptyState>
-            <SText fontSize="13px" color="#999">
-              아직 댓글이 없어요. 첫 댓글을 남겨보세요!
-            </SText>
-          </EmptyState>
-        )}
-
         {hasNextPage && (
           <MoreButton
             type="button"
@@ -488,13 +480,6 @@ const MoreButton = styled.button`
   font-weight: 500;
   color: #b2b5fb;
   cursor: pointer;
-`;
-
-const EmptyState = styled.div`
-  padding: 24px 18px;
-  border-radius: 16px;
-  background-color: #f8f8ff;
-  text-align: center;
 `;
 
 const DeleteModalContent = styled.div`
