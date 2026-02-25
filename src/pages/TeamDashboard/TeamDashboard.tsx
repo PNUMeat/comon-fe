@@ -15,7 +15,7 @@ import { TeamJoinModal } from '@/components/features/TeamDashboard/TeamJoinModal
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
@@ -46,6 +46,11 @@ const TeamDashboardPage = () => {
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    setSelectedArticleId(null);
+    setCurrentView(null);
+  }, [teamId]);
+
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const { tagsMap, myTeamResponse, isTeamManager, isPending } =
@@ -72,6 +77,8 @@ const TeamDashboardPage = () => {
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
+    setSelectedArticleId(null);
+    setCurrentView(null);
   };
 
   const handleShowTopicDetail = () => {
