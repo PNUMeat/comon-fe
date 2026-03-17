@@ -154,10 +154,7 @@ interface CommentsResponse {
   };
 }
 
-export const getArticleComments = async (
-  articleId: number,
-  page = 0
-) => {
+export const getArticleComments = async (articleId: number, page = 0) => {
   const res = await apiInstance.get<ServerResponse<CommentsResponse>>(
     `/v1/articles/${articleId}/comments?page=${page}`
   );
