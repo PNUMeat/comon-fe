@@ -44,6 +44,7 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { nanoid } from 'nanoid';
 
 const Posting = () => {
   const { id } = useParams();
@@ -53,41 +54,68 @@ const Posting = () => {
     articleId: null,
     articleTitle: null,
   };
+
+  const isEditMode = !!articleId;
+  let initialTempId = null;
+  if (!isEditMode) {
+    const tempIdFromSession = sessionStorage.getItem('posting-tempId');
+    if (tempIdFromSession) {
+      initialTempId = tempIdFromSession;
+    } else {
+      initialTempId = nanoid();
+      sessionStorage.setItem('posting-tempId', initialTempId);
+    }
+  }
+  const [tempId] = useState(() => (isEditMode ? null : initialTempId));
+  const storageKey = isEditMode
+    ? `posting:edit:${articleId}`
+    : `posting:create:${tempId}`;
+
   const [content, setContent] = useState<string>(() => {
-    if (article) return article;
-    return sessionStorage.getItem(`posting-content-${id}`) ?? '';
+    const draft = sessionStorage.getItem(storageKey);
+    if (draft) {
+      return JSON.parse(draft).content ?? '';
+    }
+    if (isEditMode && article) return article;
+    return '';
   });
   const [postTitle, setPostTitle] = useState(() => {
-    if (articleTitle) return articleTitle;
-    return sessionStorage.getItem(`posting-title-${id}`) ?? '';
+    const draft = sessionStorage.getItem(storageKey);
+    if (draft) {
+      return JSON.parse(draft).title ?? '';
+    }
+    if (isEditMode && articleTitle) return articleTitle;
+    return '';
   });
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        content,
+        title: postTitle,
+        articleId: isEditMode ? articleId : undefined,
+      })
+    );
+  }, [content, postTitle, storageKey, isEditMode, articleId]);
   const [isPending, setIsPending] = useState(false);
   const [disablePrompt, setDisablePrompt] = useState(false);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
 
   const [savedArticleId, setSavedArticleId] = useState<number | null>(() => {
-    if (articleId) return Number(articleId);
-    const stored = sessionStorage.getItem(`posting-articleId-${id}`);
-    return stored ? Number(stored) : null;
+    return isEditMode ? Number(articleId) : null;
   });
 
   useEffect(() => {
-    if (savedArticleId) {
-      sessionStorage.setItem(`posting-articleId-${id}`, String(savedArticleId));
-    }
-  }, [savedArticleId, id]);
-
-  useEffect(() => {
-    if (content) {
-      sessionStorage.setItem(`posting-content-${id}`, content);
-    }
-  }, [content, id]);
-
-  useEffect(() => {
-    if (postTitle) {
-      sessionStorage.setItem(`posting-title-${id}`, postTitle);
-    }
-  }, [postTitle, id]);
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        content,
+        title: postTitle,
+        articleId: isEditMode ? articleId : undefined,
+      })
+    );
+  }, [content, postTitle, storageKey, isEditMode, articleId]);
 
   const { feedback, isError, isLoading, isStreaming, isComplete, startStream } =
     useArticleFeedback(savedArticleId);
@@ -108,11 +136,10 @@ const Posting = () => {
   const [progress, setProgress] = useState(0);
 
   const clearPostingCache = useCallback(() => {
-    sessionStorage.removeItem(`posting-articleId-${id}`);
-    sessionStorage.removeItem(`posting-content-${id}`);
-    sessionStorage.removeItem(`posting-title-${id}`);
+    sessionStorage.removeItem(storageKey);
+    if (!isEditMode) sessionStorage.removeItem('posting-tempId');
     setPostImages([]);
-  }, [id, setPostImages]);
+  }, [storageKey, setPostImages, isEditMode]);
 
   usePrompt(!disablePrompt, clearPostingCache);
 
@@ -201,7 +228,7 @@ const Posting = () => {
 
       let targetId = savedArticleId;
 
-      if (targetId) {
+      if (isEditMode && targetId) {
         await mutatePost({
           teamId: parseInt(id as string),
           images:
@@ -235,6 +262,8 @@ const Posting = () => {
       setContent(articleBody);
       setPostImages([]);
 
+      clearPostingCache();
+
       return targetId;
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
@@ -257,12 +286,11 @@ const Posting = () => {
     const savedId = await handleSaveArticle();
 
     if (savedId) {
-      clearPostingCache();
       setDashboardView('article');
       setSelectedPostId(savedId);
       setDisablePrompt(true);
       setAlert({
-        message: savedArticleId ? '게시글을 수정했어요' : '글쓰기를 완료했어요',
+        message: isEditMode ? '게시글을 수정했어요' : '글쓰기를 완료했어요',
         isVisible: true,
         onConfirm: () => {
           navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
