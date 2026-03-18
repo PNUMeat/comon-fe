@@ -141,7 +141,9 @@ const Posting = () => {
     setPostImages([]);
   }, [storageKey, setPostImages, isEditMode]);
 
-  usePrompt(!disablePrompt, clearPostingCache);
+  usePrompt(!disablePrompt, () => {
+    clearPostingCache();
+  });
 
   useEffect(() => {
     document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
