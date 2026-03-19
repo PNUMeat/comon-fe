@@ -57,7 +57,9 @@ const Posting = () => {
 
   const isEditMode = !!articleId;
   let initialTempId = null;
-  if (!isEditMode) {
+  if (isEditMode) {
+    initialTempId = articleId;
+  } else {
     const tempIdFromSession = sessionStorage.getItem('posting-tempId');
     if (tempIdFromSession) {
       initialTempId = tempIdFromSession;
@@ -66,10 +68,8 @@ const Posting = () => {
       sessionStorage.setItem('posting-tempId', initialTempId);
     }
   }
-  const [tempId] = useState(() => (isEditMode ? null : initialTempId));
-  const storageKey = isEditMode
-    ? `posting:edit:${articleId}`
-    : `posting:create:${tempId}`;
+  const [tempId] = useState(() => initialTempId);
+  const storageKey = `posting:draft:${tempId}`;
 
   const [content, setContent] = useState<string>(() => {
     const draft = sessionStorage.getItem(storageKey);
@@ -94,7 +94,6 @@ const Posting = () => {
       JSON.stringify({
         content,
         title: postTitle,
-        articleId: isEditMode ? articleId : undefined,
       })
     );
   }, [content, postTitle, storageKey, isEditMode, articleId]);
@@ -263,9 +262,7 @@ const Posting = () => {
       setSavedArticleId(targetId);
       setContent(articleBody);
       setPostImages([]);
-
       clearPostingCache();
-
       return targetId;
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
