@@ -62,7 +62,7 @@ const Posting = () => {
     if (tempIdFromSession) {
       initialTempId = tempIdFromSession;
     } else {
-      initialTempId = nanoid();
+      initialTempId = nanoid(4);
       sessionStorage.setItem('posting-tempId', initialTempId);
     }
   }
