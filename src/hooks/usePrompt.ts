@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useBlocker } from 'react-router-dom';
 
 // should be isDirty
@@ -12,15 +12,23 @@ export const usePrompt = (when: boolean, onLeave?: () => void) => {
     event.returnValue = true;
   };
 
+  const isProceeding = useRef(false);
+
   useEffect(() => {
-    if (blocker.state !== 'blocked') return;
+    if (blocker.state !== 'blocked') {
+      isProceeding.current = false;
+      return;
+    }
     if (!when) return;
 
-    if (window.confirm('정말로 이동하시겠습니까?')) {
-      onLeave?.();
-      blocker.proceed();
-    } else {
-      blocker.reset();
+    if (!isProceeding.current) {
+      isProceeding.current = true;
+      if (window.confirm('정말로 이동하시겠습니까?')) {
+        onLeave?.();
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
     }
   }, [blocker.state, when, onLeave]);
 

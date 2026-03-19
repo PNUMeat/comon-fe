@@ -1,0 +1,557 @@
+import { Button } from '@/components/commons/Button';
+import { Flex } from '@/components/commons/Flex';
+import Modal from '@/components/commons/Modal/Modal';
+import { SText } from '@/components/commons/SText';
+import { Spacer } from '@/components/commons/Spacer';
+
+import { useState } from 'react';
+
+import {
+  createArticleComment,
+  deleteArticleComment,
+  getArticleComments,
+  mutateArticleComment,
+} from '@/api/postings';
+import DeleteIcon from '@/assets/TeamDashboard/deleteIcon.png';
+import ModifyIcon from '@/assets/TeamDashboard/modifyIcon.png';
+import { colors } from '@/constants/colors';
+import { isLoggedInAtom, profileAtom } from '@/store/auth';
+import styled from '@emotion/styled';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { useAtomValue } from 'jotai';
+
+interface CommentSectionProps {
+  articleId: number;
+}
+
+const MAX_COMMENT_LENGTH = 300;
+
+export const CommentSection = ({ articleId }: CommentSectionProps) => {
+  const queryClient = useQueryClient();
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
+  const profile = useAtomValue(profileAtom);
+
+  const [newComment, setNewComment] = useState('');
+  const [isEditorFocused, setIsEditorFocused] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState('');
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
+  const {
+    data: commentsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['article-comments', articleId],
+    queryFn: ({ pageParam = 0 }) => getArticleComments(articleId, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { number, totalPages } = lastPage.data.page;
+      return number + 1 < totalPages ? number + 1 : undefined;
+    },
+  });
+
+  const commentItems =
+    commentsData?.pages.flatMap((page) => page.data.content) ?? [];
+  const totalElements = commentsData?.pages[0]?.data.page.totalElements ?? 0;
+
+  const sortedComments =
+    sortOrder === 'latest' ? [...commentItems].reverse() : commentItems;
+
+  const createCommentMutation = useMutation({
+    mutationFn: (description: string) =>
+      createArticleComment(articleId, { description }),
+    onSuccess: () => {
+      setNewComment('');
+      queryClient.invalidateQueries({
+        queryKey: ['article-comments', articleId],
+      });
+    },
+  });
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: (commentId: number) =>
+      deleteArticleComment(articleId, commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['article-comments', articleId],
+      });
+    },
+  });
+
+  const modifyCommentMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      description,
+    }: {
+      commentId: number;
+      description: string;
+    }) => mutateArticleComment(articleId, commentId, { description }),
+    onSuccess: () => {
+      setEditingCommentId(null);
+      setEditingText('');
+      queryClient.invalidateQueries({
+        queryKey: ['article-comments', articleId],
+      });
+    },
+  });
+
+  const handleCreateComment = () => {
+    const trimmed = newComment.trim();
+    if (!trimmed || !isLoggedIn) return;
+
+    createCommentMutation.mutate(trimmed);
+  };
+
+  const handleStartEdit = (commentId: number, description: string) => {
+    setEditingCommentId(commentId);
+    setEditingText(description);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditingText('');
+  };
+
+  const handleConfirmEdit = (commentId: number) => {
+    const trimmed = editingText.trim();
+    if (!trimmed) return;
+
+    modifyCommentMutation.mutate({ commentId, description: trimmed });
+  };
+
+  const isCreateDisabled = !isLoggedIn || !newComment.trim();
+
+  const isEditDisabled = !editingText.trim();
+
+  return (
+    <CommentSectionWrapper>
+      <SectionHeader>
+        <SText fontSize="14px" fontWeight={600} color="#6E74FA">
+          댓글 {totalElements}
+        </SText>
+        <SortGroup>
+          <SortButton
+            type="button"
+            active={sortOrder === 'latest'}
+            onClick={() => setSortOrder('latest')}
+          >
+            최신순
+          </SortButton>
+          <SortButton
+            type="button"
+            active={sortOrder === 'oldest'}
+            onClick={() => setSortOrder('oldest')}
+          >
+            오래된순
+          </SortButton>
+        </SortGroup>
+      </SectionHeader>
+      <CommentList>
+        {sortedComments.map((comment) => {
+          const isOwner =
+            !!profile && comment.memberName === profile.memberName;
+          const isEditing = editingCommentId === comment.commentId;
+
+          return (
+            <CommentCard key={comment.commentId}>
+              <Flex justify="space-between" align="center">
+                <Flex align="center" gap="10px" flex={1}>
+                  <AvatarCircle>
+                    {comment.memberImageUrl ? (
+                      <AvatarImage src={comment.memberImageUrl} alt="" />
+                    ) : (
+                      comment.memberName?.[0]
+                    )}
+                  </AvatarCircle>
+                  <Flex flex={1} align="center">
+                    <SText fontSize="13px" fontWeight={600} color="#111">
+                      {comment.memberName}
+                    </SText>
+                  </Flex>
+                  <SText fontSize="11px" color="#999">
+                    {!comment.isDeleted && formatDateTime(comment.createdAt)}
+                  </SText>
+                </Flex>
+
+                {isOwner && !isEditing && !comment.isDeleted && (
+                  <CommentActions>
+                    <img
+                      src={ModifyIcon}
+                      alt="수정"
+                      width={12}
+                      height={12}
+                      onClick={() =>
+                        handleStartEdit(comment.commentId, comment.description)
+                      }
+                    />
+                    <img
+                      src={DeleteIcon}
+                      alt="삭제"
+                      width={12}
+                      height={12}
+                      onClick={() => setDeleteTargetId(comment.commentId)}
+                    />
+                  </CommentActions>
+                )}
+              </Flex>
+
+              <Spacer h={12} />
+
+              {comment.isDeleted ? (
+                <SText fontSize="13px" color="#bbb" lineHeight="20px">
+                  삭제된 댓글입니다.
+                </SText>
+              ) : isEditing ? (
+                <>
+                  <EditTextArea
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                    rows={3}
+                  />
+                  <Spacer h={8} />
+                  <EditButtons>
+                    <TextButton type="button" onClick={handleCancelEdit}>
+                      취소
+                    </TextButton>
+                    <Button
+                      backgroundColor={
+                        isEditDisabled ? '#E4E5F7' : colors.buttonPurple
+                      }
+                      cursor={isEditDisabled ? 'not-allowed' : 'pointer'}
+                      onClick={
+                        isEditDisabled
+                          ? undefined
+                          : () => handleConfirmEdit(comment.commentId)
+                      }
+                    >
+                      <SText fontSize="12px" fontWeight={700} color="#fff">
+                        완료
+                      </SText>
+                    </Button>
+                  </EditButtons>
+                </>
+              ) : (
+                <SText
+                  fontSize="13px"
+                  color="#333"
+                  lineHeight="20px"
+                  whiteSpace="pre-wrap"
+                >
+                  {comment.description}
+                </SText>
+              )}
+            </CommentCard>
+          );
+        })}
+
+        {commentItems.length === 0 && (
+          <EmptyState>
+            <SText fontSize="13px" color="#999">
+              아직 댓글이 없어요. 첫 댓글을 남겨보세요!
+            </SText>
+          </EmptyState>
+        )}
+
+        {hasNextPage && (
+          <MoreButton
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? '불러오는 중...' : '댓글 더보기'}
+          </MoreButton>
+        )}
+      </CommentList>
+
+      <Spacer h={32} />
+
+      <SText fontSize="16px" fontWeight={600} color="#6E74FA">
+        작성하기
+      </SText>
+
+      <EditorWrapper
+        isFocused={isEditorFocused}
+        disabled={!isLoggedIn}
+        onClick={() => {
+          if (!isLoggedIn) return;
+        }}
+      >
+        <CommentTextArea
+          value={newComment}
+          onChange={(e) => {
+            if (e.target.value.length <= MAX_COMMENT_LENGTH) {
+              setNewComment(e.target.value.slice(0, MAX_COMMENT_LENGTH));
+            }
+          }}
+          onFocus={() => setIsEditorFocused(true)}
+          onBlur={() => setIsEditorFocused(false)}
+          readOnly={!isLoggedIn}
+          placeholder={
+            isLoggedIn
+              ? '더 좋은 풀이 방법이나 응원의 메시지를 남겨주세요!'
+              : '댓글을 작성하려면 로그인해 주세요.'
+          }
+        />
+        <Spacer h={12} />
+        <Flex align="center" justify="flex-end">
+          <Button
+            padding="5px 11px"
+            backgroundColor={isCreateDisabled ? '#E4E5F7' : colors.buttonPurple}
+            cursor={isCreateDisabled ? 'not-allowed' : 'pointer'}
+            onClick={isCreateDisabled ? undefined : handleCreateComment}
+          >
+            <SText fontSize="12px" fontWeight={700} color="#fff">
+              댓글 달기
+            </SText>
+          </Button>
+        </Flex>
+      </EditorWrapper>
+
+      <Spacer h={24} />
+
+      <Modal
+        open={deleteTargetId !== null}
+        onClose={() => setDeleteTargetId(null)}
+        height={168}
+      >
+        <DeleteModalContent>
+          <DeleteModalMessage>댓글을 삭제할까요?</DeleteModalMessage>
+          <DeleteModalDescription>
+            삭제 후에는 다시 되돌릴 수 없어요.
+          </DeleteModalDescription>
+          <DeleteModalButtons>
+            <DeleteCancelButton
+              type="button"
+              onClick={() => setDeleteTargetId(null)}
+            >
+              취소
+            </DeleteCancelButton>
+            <DeleteConfirmButton
+              type="button"
+              onClick={() => {
+                if (deleteTargetId === null) return;
+                deleteCommentMutation.mutate(deleteTargetId);
+                setDeleteTargetId(null);
+              }}
+            >
+              삭제하기
+            </DeleteConfirmButton>
+          </DeleteModalButtons>
+        </DeleteModalContent>
+      </Modal>
+    </CommentSectionWrapper>
+  );
+};
+
+const CommentSectionWrapper = styled.div`
+  margin-top: 32px;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+`;
+
+const SortGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const SortButton = styled.button<{ active: boolean }>`
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: ${(props) => (props.active ? colors.buttonPurple : '#C2C5FB')};
+  cursor: pointer;
+`;
+
+const EditorWrapper = styled.div<{ isFocused: boolean; disabled: boolean }>`
+  margin-top: 10px;
+  padding: 20px 35px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #ffffff;
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+  box-sizing: border-box;
+`;
+
+const CommentTextArea = styled.textarea`
+  width: 100%;
+  min-height: 80px;
+  border: none;
+  border-radius: 8px;
+  resize: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  line-height: 20px;
+  color: #333;
+  font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+
+  &::placeholder {
+    color: ${colors.borderPurple};
+  }
+`;
+
+const CommentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const CommentCard = styled.div`
+  padding: 16px 18px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0px 6px 20px 0px #3031430f;
+`;
+
+const AvatarCircle = styled.div`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: ${colors.headerPurple};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 600;
+  color: #666;
+  overflow: hidden;
+`;
+
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const CommentActions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-left: 20px;
+`;
+
+const TextButton = styled.button`
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  color: #777;
+  cursor: pointer;
+
+  &:hover {
+    color: ${colors.buttonPurple};
+  }
+`;
+
+const EditTextArea = styled.textarea`
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid ${colors.borderPurple};
+  padding: 10px 12px;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+  line-height: 20px;
+  box-sizing: border-box;
+`;
+
+const EditButtons = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+`;
+
+const MoreButton = styled.button`
+  border: none;
+  border-radius: 8px;
+  background-color: #f8f8ff;
+  font-size: 14px;
+  text-decoration: underline;
+  font-weight: 500;
+  color: #b2b5fb;
+  cursor: pointer;
+`;
+
+const EmptyState = styled.div`
+  padding: 24px 18px;
+  border-radius: 16px;
+  background-color: #f8f8ff;
+  text-align: center;
+`;
+
+const DeleteModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DeleteModalMessage = styled.p`
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 32px;
+  color: #333;
+`;
+
+const DeleteModalDescription = styled.p`
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 8px;
+  color: #ef2528;
+`;
+
+const DeleteModalButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 22px auto;
+  gap: 16px;
+`;
+
+const DeleteCancelButton = styled.button`
+  width: 110px;
+  height: 38px;
+  background-color: #d9d9d9;
+  border-radius: 40px;
+  font-size: 14px;
+`;
+
+const DeleteConfirmButton = styled.button`
+  width: 110px;
+  height: 38px;
+  background-color: #ef2528;
+  color: #fff;
+  border-radius: 40px;
+  font-size: 14px;
+`;
+
+const formatDateTime = (isoString: string) => {
+  const date = new Date(isoString);
+
+  if (Number.isNaN(date.getTime())) return isoString;
+
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+
+  return `${y}.${m}.${d} ${h}:${min}`;
+};
