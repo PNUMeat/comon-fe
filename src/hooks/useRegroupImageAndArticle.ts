@@ -24,6 +24,110 @@ const mock6 =
 
 const mocks = [mock1, mock2, mock3, mock4, mock5, mock6];
 
+const CODE_FENCE_START_REGEX = /^```([\w#+.-]+)?(?:\s+.*)?$/;
+const CODE_FENCE_END_REGEX = /^```(?:\s+.*)?$/;
+
+const normalizeFenceText = (text: string): string => {
+  return text.replace(/\u00a0/g, ' ').replace(/[\u200b-\u200d\ufeff]/g, '');
+};
+
+const getNodeTextContent = (node: ChildNode): string => {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent ?? '';
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+
+  const element = node as HTMLElement;
+  if (element.tagName.toLowerCase() === 'br') {
+    return '\n';
+  }
+
+  return Array.from(element.childNodes)
+    .map((child) => getNodeTextContent(child))
+    .join('');
+};
+
+const toGutter = (lineCount: number): string => {
+  const safeCount = Math.max(lineCount, 1);
+  return Array.from({ length: safeCount }, (_, i) => String(i + 1)).join('\n');
+};
+
+const normalizeLegacyCodeFenceHtml = (html: string): string => {
+  if (!html || typeof window === 'undefined') {
+    return html;
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const { body } = doc;
+  const nodes = Array.from(body.childNodes);
+  const normalizedParts: string[] = [];
+
+  let index = 0;
+  while (index < nodes.length) {
+    const currentNode = nodes[index];
+    const isParagraphNode =
+      currentNode.nodeType === Node.ELEMENT_NODE &&
+      (currentNode as HTMLElement).tagName.toLowerCase() === 'p';
+    const currentText = normalizeFenceText(
+      getNodeTextContent(currentNode).trim()
+    );
+    const startFenceMatch =
+      isParagraphNode && currentText.match(CODE_FENCE_START_REGEX);
+
+    if (startFenceMatch) {
+      const language = startFenceMatch[1] ?? '';
+      const codeLines: string[] = [];
+      let endFenceIndex = -1;
+
+      for (let j = index + 1; j < nodes.length; j += 1) {
+        const candidate = nodes[j];
+        const candidateIsParagraph =
+          candidate.nodeType === Node.ELEMENT_NODE &&
+          (candidate as HTMLElement).tagName.toLowerCase() === 'p';
+        const candidateText = normalizeFenceText(
+          getNodeTextContent(candidate).trim()
+        );
+
+        if (candidateIsParagraph && CODE_FENCE_END_REGEX.test(candidateText)) {
+          endFenceIndex = j;
+          break;
+        }
+
+        codeLines.push(getNodeTextContent(candidate).replace(/\r/g, ''));
+      }
+
+      if (endFenceIndex !== -1) {
+        const codeText = codeLines.join('\n');
+        const lineCount = codeText ? codeText.split('\n').length : 1;
+        const pre = doc.createElement('pre');
+        pre.className = 'codeblock';
+        pre.setAttribute('spellcheck', 'false');
+        pre.setAttribute('data-gutter', toGutter(lineCount));
+        if (language) {
+          pre.setAttribute('data-highlight-language', language);
+        }
+        pre.textContent = codeText;
+        normalizedParts.push(pre.outerHTML);
+        index = endFenceIndex + 1;
+        continue;
+      }
+    }
+
+    if (currentNode.nodeType === Node.ELEMENT_NODE) {
+      normalizedParts.push((currentNode as HTMLElement).outerHTML);
+    } else {
+      normalizedParts.push(currentNode.textContent ?? '');
+    }
+    index += 1;
+  }
+
+  return normalizedParts.join('');
+};
+
 const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
   if (data.articleBody === null) {
     if (data.articleId) {
@@ -33,11 +137,11 @@ const regroupArticle = (data: IArticle | ITopicResponse | MyArticle) => {
   }
 
   // if (!data.imageUrls || data.imageUrls.length === 0) {
-  if (!data.imageUrl) {
-    return data.articleBody;
-  } else {
-    return data.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
-  }
+  const articleBody = !data.imageUrl
+    ? data.articleBody
+    : data.articleBody?.replace(/src="\?"/, `src="${data.imageUrl}"`);
+
+  return normalizeLegacyCodeFenceHtml(articleBody);
   // TODO: 이미지 하나
   // let imgIndex = 0;
   //
