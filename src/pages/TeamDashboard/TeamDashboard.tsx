@@ -6,6 +6,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { CustomCalendar } from '@/components/commons/Calendar/Calendar';
 import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
+import { CommentSection } from '@/components/features/Comment/CommentSection';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
@@ -14,7 +15,7 @@ import { TeamJoinModal } from '@/components/features/TeamDashboard/TeamJoinModal
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
@@ -45,6 +46,11 @@ const TeamDashboardPage = () => {
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    setSelectedArticleId(null);
+    setCurrentView(null);
+  }, [teamId]);
+
   const { boundRef, buttonRef, onClickJump } = useScrollUpButtonPosition();
 
   const { tagsMap, myTeamResponse, isTeamManager, isPending } =
@@ -71,6 +77,8 @@ const TeamDashboardPage = () => {
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
+    setSelectedArticleId(null);
+    setCurrentView(null);
   };
 
   const handleShowTopicDetail = () => {
@@ -152,17 +160,21 @@ const TeamDashboardPage = () => {
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
           {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail
-              data={
-                articlesData.content.find(
-                  (article) => article.articleId === selectedArticleId
-                ) as IArticle
-              }
-              shouldBlur={!isMyTeam}
-              refetchArticles={refetch}
-              teamId={Number(teamId)}
-              setIsModalOpen={setIsModalOpen}
-            />
+            <>
+              <ArticleDetail
+                data={
+                  articlesData.content.find(
+                    (article) => article.articleId === selectedArticleId
+                  ) as IArticle
+                }
+                shouldBlur={!isMyTeam}
+                refetchArticles={refetch}
+                teamId={Number(teamId)}
+                setIsModalOpen={setIsModalOpen}
+                setSelectedArticleId={setSelectedArticleId}
+              />
+              <CommentSection articleId={selectedArticleId} />
+            </>
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>

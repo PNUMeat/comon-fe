@@ -58,6 +58,33 @@ const getFormatFromClasses = (classes: string[]): number => {
   return 0;
 };
 
+const CODE_FENCE_START_REGEX = /^```([\w#+.-]+)?(?:\s+.*)?$/;
+const CODE_FENCE_END_REGEX = /^```(?:\s+.*)?$/;
+
+const normalizeFenceText = (text: string): string => {
+  return text.replace(/\u00a0/g, ' ').replace(/[\u200b-\u200d\ufeff]/g, '');
+};
+
+const getNodeTextContent = (node: ChildNode): string => {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent ?? '';
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+
+  const element = node as HTMLElement;
+
+  if (element.tagName.toLowerCase() === 'br') {
+    return '\n';
+  }
+
+  return Array.from(element.childNodes)
+    .map((child) => getNodeTextContent(child))
+    .join('');
+};
+
 // 나중에 따로 뺌
 // eslint-disable-next-line
 export const parseHtmlStrToLexicalNodes = (
@@ -367,8 +394,52 @@ export const parseHtmlStrToLexicalNodes = (
     return null;
   };
 
-  body.childNodes.forEach((child) => {
-    const result = traverse(child);
+  const childNodes = Array.from(body.childNodes);
+
+  let index = 0;
+  while (index < childNodes.length) {
+    const currentNode = childNodes[index];
+    const isParagraphNode =
+      currentNode.nodeType === Node.ELEMENT_NODE &&
+      (currentNode as HTMLElement).tagName.toLowerCase() === 'p';
+    const currentText = normalizeFenceText(
+      getNodeTextContent(currentNode).trim()
+    );
+    const startFenceMatch =
+      isParagraphNode && currentText.match(CODE_FENCE_START_REGEX);
+
+    if (startFenceMatch) {
+      const language = startFenceMatch[1] ?? '';
+      const codeLines: string[] = [];
+      let endFenceIndex = -1;
+
+      for (let j = index + 1; j < childNodes.length; j += 1) {
+        const candidate = childNodes[j];
+        const candidateIsParagraph =
+          candidate.nodeType === Node.ELEMENT_NODE &&
+          (candidate as HTMLElement).tagName.toLowerCase() === 'p';
+        const candidateText = normalizeFenceText(
+          getNodeTextContent(candidate).trim()
+        );
+
+        if (candidateIsParagraph && CODE_FENCE_END_REGEX.test(candidateText)) {
+          endFenceIndex = j;
+          break;
+        }
+
+        codeLines.push(getNodeTextContent(candidate).replace(/\r/g, ''));
+      }
+
+      if (endFenceIndex !== -1) {
+        const codeNode = $createCodeNode(language);
+        codeNode.append($createTextNode(codeLines.join('\n')));
+        lexicalNodes.push(codeNode);
+        index = endFenceIndex + 1;
+        continue;
+      }
+    }
+
+    const result = traverse(currentNode);
     if (result) {
       if (Array.isArray(result)) {
         lexicalNodes.push(...result);
@@ -376,7 +447,9 @@ export const parseHtmlStrToLexicalNodes = (
         lexicalNodes.push(result);
       }
     }
-  });
+
+    index += 1;
+  }
 
   return lexicalNodes;
 };
@@ -388,18 +461,20 @@ export const InitContentPlugin: React.FC<{ content: string }> = ({
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (!initialized) {
-      return editor.update(() => {
-        const nodes = parseHtmlStrToLexicalNodes(content);
-        $getRoot().clear().select();
-        const selection = $getSelection();
-        if (selection) {
-          selection.insertNodes(nodes);
-          setInitialized(true);
-        }
-      });
+    if (initialized || !content.trim()) {
+      return;
     }
-  }, [editor]);
+
+    return editor.update(() => {
+      const nodes = parseHtmlStrToLexicalNodes(content);
+      $getRoot().clear().select();
+      const selection = $getSelection();
+      if (selection) {
+        selection.insertNodes(nodes);
+        setInitialized(true);
+      }
+    });
+  }, [editor, content, initialized]);
 
   return null;
 };

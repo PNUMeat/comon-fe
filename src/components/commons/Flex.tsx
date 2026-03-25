@@ -15,6 +15,7 @@ export const Flex = styled.div<{
   width?: number | string;
   padding?: string;
   height?: number;
+  flex?: number | string;
 }>`
   display: flex;
   flex-direction: ${(props) => props.direction || 'row'};
@@ -24,5 +25,6 @@ export const Flex = styled.div<{
   width: ${(props) => props.width ?? 100}%;
   padding: ${(props) => props.padding};
   height: ${(props) => (props.height ? `${props.height}px` : undefined)};
+  flex: ${(props) => (props.flex !== undefined ? props.flex : undefined)};
   box-sizing: border-box;
 `;

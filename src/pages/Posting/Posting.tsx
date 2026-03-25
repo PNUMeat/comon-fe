@@ -44,6 +44,111 @@ import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { nanoid } from 'nanoid';
+
+const CODE_FENCE_START_REGEX = /^```([\w#+.-]+)?(?:\s+.*)?$/;
+const CODE_FENCE_END_REGEX = /^```(?:\s+.*)?$/;
+
+const normalizeFenceText = (text: string): string => {
+  return text.replace(/\u00a0/g, ' ').replace(/[\u200b-\u200d\ufeff]/g, '');
+};
+
+const getNodeTextContent = (node: ChildNode): string => {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent ?? '';
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+
+  const element = node as HTMLElement;
+  if (element.tagName.toLowerCase() === 'br') {
+    return '\n';
+  }
+
+  return Array.from(element.childNodes)
+    .map((child) => getNodeTextContent(child))
+    .join('');
+};
+
+const toGutter = (lineCount: number): string => {
+  const safeCount = Math.max(lineCount, 1);
+  return Array.from({ length: safeCount }, (_, i) => String(i + 1)).join('\n');
+};
+
+const normalizeLegacyCodeFenceHtml = (html: string): string => {
+  if (!html) {
+    return html;
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const { body } = doc;
+  const nodes = Array.from(body.childNodes);
+  const normalizedParts: string[] = [];
+
+  let index = 0;
+  while (index < nodes.length) {
+    const currentNode = nodes[index];
+    const isParagraphNode =
+      currentNode.nodeType === Node.ELEMENT_NODE &&
+      (currentNode as HTMLElement).tagName.toLowerCase() === 'p';
+    const currentText = normalizeFenceText(
+      getNodeTextContent(currentNode).trim()
+    );
+    const startFenceMatch =
+      isParagraphNode && currentText.match(CODE_FENCE_START_REGEX);
+
+    if (startFenceMatch) {
+      const language = startFenceMatch[1] ?? '';
+      const codeLines: string[] = [];
+      let endFenceIndex = -1;
+
+      for (let j = index + 1; j < nodes.length; j += 1) {
+        const candidate = nodes[j];
+        const candidateIsParagraph =
+          candidate.nodeType === Node.ELEMENT_NODE &&
+          (candidate as HTMLElement).tagName.toLowerCase() === 'p';
+        const candidateText = normalizeFenceText(
+          getNodeTextContent(candidate).trim()
+        );
+
+        if (candidateIsParagraph && CODE_FENCE_END_REGEX.test(candidateText)) {
+          endFenceIndex = j;
+          break;
+        }
+
+        codeLines.push(getNodeTextContent(candidate).replace(/\r/g, ''));
+      }
+
+      if (endFenceIndex !== -1) {
+        const codeText = codeLines.join('\n');
+        const lineCount = codeText ? codeText.split('\n').length : 1;
+        const pre = doc.createElement('pre');
+        pre.className = 'codeblock';
+        pre.setAttribute('spellcheck', 'false');
+        pre.setAttribute('data-gutter', toGutter(lineCount));
+        if (language) {
+          pre.setAttribute('data-highlight-language', language);
+        }
+        pre.textContent = codeText;
+        normalizedParts.push(pre.outerHTML);
+        index = endFenceIndex + 1;
+        continue;
+      }
+    }
+
+    if (currentNode.nodeType === Node.ELEMENT_NODE) {
+      normalizedParts.push((currentNode as HTMLElement).outerHTML);
+    } else {
+      normalizedParts.push(currentNode.textContent ?? '');
+    }
+    index += 1;
+  }
+
+  return normalizedParts.join('');
+};
 
 const Posting = () => {
   const { id } = useParams();
@@ -53,41 +158,67 @@ const Posting = () => {
     articleId: null,
     articleTitle: null,
   };
+
+  const isEditMode = !!articleId;
+  let initialTempId = null;
+  if (isEditMode) {
+    initialTempId = articleId;
+  } else {
+    const tempIdFromSession = sessionStorage.getItem('posting-tempId');
+    if (tempIdFromSession) {
+      initialTempId = tempIdFromSession;
+    } else {
+      initialTempId = nanoid(4);
+      sessionStorage.setItem('posting-tempId', initialTempId);
+    }
+  }
+  const [tempId] = useState(() => initialTempId);
+  const storageKey = `posting:draft:${tempId}`;
+
   const [content, setContent] = useState<string>(() => {
-    if (article) return article;
-    return sessionStorage.getItem(`posting-content-${id}`) ?? '';
+    const draft = sessionStorage.getItem(storageKey);
+    if (draft) {
+      return JSON.parse(draft).content ?? '';
+    }
+    if (isEditMode && article) return article;
+    return '';
   });
   const [postTitle, setPostTitle] = useState(() => {
-    if (articleTitle) return articleTitle;
-    return sessionStorage.getItem(`posting-title-${id}`) ?? '';
+    const draft = sessionStorage.getItem(storageKey);
+    if (draft) {
+      return JSON.parse(draft).title ?? '';
+    }
+    if (isEditMode && articleTitle) return articleTitle;
+    return '';
   });
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        content,
+        title: postTitle,
+      })
+    );
+  }, [content, postTitle, storageKey, isEditMode, articleId]);
   const [isPending, setIsPending] = useState(false);
   const [disablePrompt, setDisablePrompt] = useState(false);
   const [postImages, setPostImages] = useAtom(postImagesAtom);
 
   const [savedArticleId, setSavedArticleId] = useState<number | null>(() => {
-    if (articleId) return Number(articleId);
-    const stored = sessionStorage.getItem(`posting-articleId-${id}`);
-    return stored ? Number(stored) : null;
+    return isEditMode ? Number(articleId) : null;
   });
 
   useEffect(() => {
-    if (savedArticleId) {
-      sessionStorage.setItem(`posting-articleId-${id}`, String(savedArticleId));
-    }
-  }, [savedArticleId, id]);
-
-  useEffect(() => {
-    if (content) {
-      sessionStorage.setItem(`posting-content-${id}`, content);
-    }
-  }, [content, id]);
-
-  useEffect(() => {
-    if (postTitle) {
-      sessionStorage.setItem(`posting-title-${id}`, postTitle);
-    }
-  }, [postTitle, id]);
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        content,
+        title: postTitle,
+        articleId: isEditMode ? articleId : undefined,
+      })
+    );
+  }, [content, postTitle, storageKey, isEditMode, articleId]);
 
   const { feedback, isError, isLoading, isStreaming, isComplete, startStream } =
     useArticleFeedback(savedArticleId);
@@ -108,13 +239,14 @@ const Posting = () => {
   const [progress, setProgress] = useState(0);
 
   const clearPostingCache = useCallback(() => {
-    sessionStorage.removeItem(`posting-articleId-${id}`);
-    sessionStorage.removeItem(`posting-content-${id}`);
-    sessionStorage.removeItem(`posting-title-${id}`);
+    sessionStorage.removeItem(storageKey);
+    if (!isEditMode) sessionStorage.removeItem('posting-tempId');
     setPostImages([]);
-  }, [id, setPostImages]);
+  }, [storageKey, setPostImages, isEditMode]);
 
-  usePrompt(!disablePrompt, clearPostingCache);
+  usePrompt(!disablePrompt, () => {
+    clearPostingCache();
+  });
 
   useEffect(() => {
     document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -198,10 +330,11 @@ const Posting = () => {
         postImages.length > 0
           ? injectImageUrlsIntoHtml(articleBodyTrim, uploadedUrls)
           : articleBodyTrim;
+      const normalizedArticleBody = normalizeLegacyCodeFenceHtml(articleBody);
 
       let targetId = savedArticleId;
 
-      if (targetId) {
+      if (isEditMode && targetId) {
         await mutatePost({
           teamId: parseInt(id as string),
           images:
@@ -209,7 +342,7 @@ const Posting = () => {
               ? sortedImages.map((imgObj) => imgObj.img)
               : null,
           articleId: targetId,
-          articleBody: articleBody,
+          articleBody: normalizedArticleBody,
           articleTitle: postTitle,
           isVisible: isVisible,
         });
@@ -220,7 +353,7 @@ const Posting = () => {
             postImages.length > 0
               ? sortedImages.map((imgObj) => imgObj.img)
               : null,
-          articleBody: articleBody,
+          articleBody: normalizedArticleBody,
           articleTitle: postTitle,
           isVisible: isVisible,
         });
@@ -232,9 +365,9 @@ const Posting = () => {
       });
 
       setSavedArticleId(targetId);
-      setContent(articleBody);
+      setContent(normalizedArticleBody);
       setPostImages([]);
-
+      clearPostingCache();
       return targetId;
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
@@ -257,12 +390,11 @@ const Posting = () => {
     const savedId = await handleSaveArticle();
 
     if (savedId) {
-      clearPostingCache();
       setDashboardView('article');
       setSelectedPostId(savedId);
       setDisablePrompt(true);
       setAlert({
-        message: savedArticleId ? '게시글을 수정했어요' : '글쓰기를 완료했어요',
+        message: isEditMode ? '게시글을 수정했어요' : '글쓰기를 완료했어요',
         isVisible: true,
         onConfirm: () => {
           navigate(`${PATH.TEAM_DASHBOARD}/${id}`);
