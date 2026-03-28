@@ -171,6 +171,7 @@ const TeamDashboardPage = () => {
                 refetchArticles={refetch}
                 teamId={Number(teamId)}
                 setIsModalOpen={setIsModalOpen}
+                setSelectedArticleId={setSelectedArticleId}
               />
               <CommentSection articleId={selectedArticleId} />
             </>

@@ -34,7 +34,12 @@ import {
 import { breakpoints } from '@/constants/breakpoints';
 import { postImagesAtom } from '@/store/posting';
 import styled from '@emotion/styled';
-import { CodeHighlightNode, CodeNode } from '@lexical/code';
+import {
+  $createCodeNode,
+  $isCodeNode,
+  CodeHighlightNode,
+  CodeNode,
+} from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -51,12 +56,19 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { addClassNamesToElement } from '@lexical/utils';
 import { useAtom } from 'jotai';
 import {
+  $createParagraphNode,
+  $createTextNode,
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
   $getRoot,
+  $getSelection,
   $isLineBreakNode,
+  $isParagraphNode,
+  $isRangeSelection,
+  COMMAND_PRIORITY_HIGH,
   DOMExportOutput,
   EditorThemeClasses,
+  KEY_ENTER_COMMAND,
   LexicalEditor,
   LexicalNode,
   TextNode,
@@ -630,6 +642,69 @@ const PostSectionWrap: React.FC<{
   );
 };
 
+const CodeFenceFallbackPlugin = () => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_ENTER_COMMAND,
+      (event) => {
+        let handled = false;
+
+        editor.update(() => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection) || !selection.isCollapsed()) return;
+
+          const anchorNode = selection.anchor.getNode();
+          const topLevelNode = anchorNode.getTopLevelElementOrThrow();
+
+          if ($isParagraphNode(topLevelNode)) {
+            const text = topLevelNode.getTextContent();
+            const openMatch = text.match(/^[ \t]*```(\w+)?[ \t]*$/);
+            if (!openMatch) return;
+
+            const language = openMatch[1] || 'javascript';
+            const codeNode = $createCodeNode(language);
+            topLevelNode.replace(codeNode);
+            codeNode.selectEnd();
+            handled = true;
+            return;
+          }
+
+          if ($isCodeNode(topLevelNode)) {
+            const codeText = topLevelNode.getTextContent().replace(/\r/g, '');
+            const closeMatch = codeText.match(/(?:^|\n)```[ \t]*$/);
+            if (!closeMatch) return;
+            const closeIndex = closeMatch.index ?? codeText.length;
+
+            const nextCodeText = codeText
+              .slice(0, closeIndex)
+              .replace(/\n$/, '');
+            topLevelNode.clear();
+            if (nextCodeText.length > 0) {
+              topLevelNode.append($createTextNode(nextCodeText));
+            }
+
+            const paragraphNode = $createParagraphNode();
+            topLevelNode.insertAfter(paragraphNode);
+            paragraphNode.selectStart();
+            handled = true;
+          }
+        });
+
+        if (handled) {
+          event?.preventDefault();
+          return true;
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+  }, [editor]);
+
+  return null;
+};
+
 const PostEditor: React.FC<{
   forwardTitle?: (title: string) => void;
   forwardContent?: (content: string) => void;
@@ -696,6 +771,7 @@ const PostEditor: React.FC<{
             <GrabContentPlugin forwardContent={forwardContent} />
           )}
           <MarkdownShortcutPlugin transformers={SHORTCUTS} />
+          <CodeFenceFallbackPlugin />
           <ListPlugin />
           <TabIndentationPlugin />
           <MaxIndentPlugin />

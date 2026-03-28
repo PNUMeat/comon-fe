@@ -28,6 +28,7 @@ interface ArticleDetailProps {
   refetchArticles: () => void;
   shouldBlur?: boolean;
   setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedArticleId?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
@@ -36,6 +37,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   refetchArticles,
   shouldBlur = true,
   setIsModalOpen,
+  setSelectedArticleId,
 }) => {
   const { result: article } = useRegroupImageAndArticle(data);
 
@@ -51,6 +53,7 @@ export const ArticleDetail: React.FC<ArticleDetailProps> = ({
       deletePost(data.articleId)
         .then(() => {
           refetchArticles();
+          setSelectedArticleId?.(null);
         })
         .catch(() =>
           setAlert({
