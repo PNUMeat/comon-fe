@@ -4,7 +4,7 @@ export const PATH = {
   ENROLL: '/enroll',
   PROFILE: '/profile',
   MY_PAGE: '/my-dashboard',
-  TEAMS: '/team-list',
+  TEAMS: '/team-overview', // 기존 team-list에서 변경
   TEAM_REGISTRATION: '/team-registration',
   TEAM_SETTING: '/team-setting',
   TEAM_DASHBOARD: '/team-dashboard',
