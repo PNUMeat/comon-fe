@@ -3,9 +3,11 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { Flex } from '@/components/commons/Flex';
 import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
+import { Spacer } from '@/components/commons/Spacer';
 
 import { useNavigate } from 'react-router-dom';
 
+import EmptyTeamImg from '@/assets/Header/empty-team-img.png';
 import fourDaysImg from '@/assets/Overview/4days.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
@@ -117,11 +119,12 @@ const TeamNavWrapper = styled.div`
 
 const TeamNavCard = styled(GlassCard)`
   width: 100%;
-  max-height: 544px;
+  min-height: auto;
   border-radius: 20px;
   padding: 0 0 16px 0;
   gap: 12px;
   overflow: hidden;
+  justify-content: flex-start;
 `;
 
 export const MyTeamNav: React.FC<{
@@ -142,6 +145,10 @@ export const MyTeamNav: React.FC<{
       }}
     >
       <Flex width="100%" direction="column">
+        <SText fontSize="24px" fontWeight={700} color="#777">
+          참여중인 스터디
+        </SText>
+        <Spacer h={30} />
         <TeamNavCard>
           <TeamImg src={teamImgSrc} />
           <Flex direction="column" gap="27px" padding="40px">
@@ -179,6 +186,51 @@ export const MyTeamNav: React.FC<{
             >
               <SText>팀 메인으로</SText>
             </button>
+          </Flex>
+        </TeamNavCard>
+      </Flex>
+    </TeamNavWrapper>
+  );
+};
+
+export const EmptyTeamNav: React.FC = () => {
+  const navigate = useNavigate();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
+
+  return (
+    <TeamNavWrapper
+      onClick={() => {
+        navigate(`${PATH.TEAMS}`);
+      }}
+    >
+      <Flex width="100%" direction="column">
+        <SText fontSize="24px" fontWeight={700} color="#777">
+          참여중인 스터디
+        </SText>
+        <Spacer h={30} />
+        <TeamNavCard>
+          <TeamImg src={EmptyTeamImg} style={{ objectFit: 'fill' }} />
+          <Flex direction="column" gap="27px" padding="40px">
+            <SText
+              fontFamily={'Pretendard'}
+              fontSize={isMobile ? '24px' : '32px'}
+              fontWeight={700}
+              lineHeight={isMobile ? '' : '30px'}
+              color="#333"
+            >
+              스터디 방
+            </SText>
+            <SText
+              fontSize="18px"
+              fontWeight={500}
+              color="#777"
+              lineHeight="30px"
+            >
+              현재 참여중인 스터디가 없습니다.
+              <br />
+              스터디 모집에서 팀에 참여해보세요.
+            </SText>
           </Flex>
         </TeamNavCard>
       </Flex>

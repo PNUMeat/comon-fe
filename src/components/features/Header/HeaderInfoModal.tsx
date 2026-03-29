@@ -4,6 +4,7 @@ import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
 import {
   Divider,
+  EmptyTeamNav,
   LogoutWrap,
   MyTeamNav,
   SimpleProfile,
@@ -43,10 +44,7 @@ const InfoModal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 952px;
-  // overflow-x: hidden;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
 
   border-radius: 10px;
   border: 1px solid #8488ec;
@@ -139,7 +137,7 @@ export const HeaderInfoModal: React.FC<{
       </SimpleProfileWrap>
       <Divider margin={'9px 0 0 0'} />
 
-      {teams && teams.length > 0 && (
+      {teams && teams.length > 0 ? (
         <TeamSliderWrapper>
           <Slider
             dots={teams.length > 1}
@@ -161,6 +159,8 @@ export const HeaderInfoModal: React.FC<{
             ))}
           </Slider>
         </TeamSliderWrapper>
+      ) : (
+        <EmptyTeamNav />
       )}
 
       <Divider
