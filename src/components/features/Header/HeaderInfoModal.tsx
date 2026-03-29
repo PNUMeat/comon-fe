@@ -11,19 +11,24 @@ import {
 } from '@/components/features/Header/segments';
 
 import { useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
 
 import { ServerResponse } from '@/api/types';
 import { getMemberInfo } from '@/api/user';
+import navArrow from '@/assets/Header/jumpArrow.svg';
 import MyPage from '@/assets/Header/mypage.png';
+import Arrow from '@/assets/TeamJoin/carousel_arrow.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
 const InfoModal = styled.div`
-  width: 326px;
+  width: 645px;
   flex-shrink: 0;
   border-radius: 10px;
   border: 1px solid #8488ec;
@@ -38,7 +43,7 @@ const InfoModal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 500px;
+  max-height: 952px;
   // overflow-x: hidden;
   overflow-y: auto;
   overflow-x: hidden;
@@ -57,15 +62,15 @@ const InfoModal = styled.div`
 
 const MyPageButton = styled.button`
   height: 48px;
-
+  display: flex;
   @media (max-width: ${breakpoints.mobile}px) {
     height: 24px;
   }
 `;
 
 const MyPageImage = styled.img`
-  width: 11px;
-  height: 13px;
+  width: 21px;
+  height: 25px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 8px;
@@ -117,48 +122,129 @@ export const HeaderInfoModal: React.FC<{
       <SimpleProfileWrap>
         <SimpleProfile name={myName} img={myImg} />
         <MyPageButton onClick={() => navigate(`${PATH.MY_PAGE}/profile`)}>
-          <Flex align="center" gap="5px">
+          <Flex align="center" gap="12px">
             <MyPageImage src={MyPage} />
             <SText
               fontFamily="NanumSquareNeo"
               color={'#333'}
               lineHeight={isMobile ? '' : '48px'}
-              fontSize={isMobile ? '8px' : '12px'}
+              fontSize={isMobile ? '8px' : '24px'}
               fontWeight={500}
             >
               마이페이지
             </SText>
+            <img src={navArrow} alt="navigate" width={10} />
           </Flex>
         </MyPageButton>
       </SimpleProfileWrap>
       <Divider margin={'9px 0 0 0'} />
 
-      {teams &&
-        teams.map((team) => (
-          <MyTeamNav
-            key={team.teamId}
-            teamImg={team.teamImageUrl}
-            teamName={team.teamName}
-            teamId={team.teamId}
-          />
-        ))}
+      {teams && teams.length > 0 && (
+        <TeamSliderWrapper>
+          <Slider
+            dots={teams.length > 1}
+            infinite={teams.length > 1}
+            speed={500}
+            slidesToShow={1}
+            slidesToScroll={1}
+            prevArrow={<CustomArrow direction="left" />}
+            nextArrow={<CustomArrow direction="right" />}
+          >
+            {teams.map((team) => (
+              <div key={team.teamId}>
+                <MyTeamNav
+                  teamImg={team.teamImageUrl}
+                  teamName={team.teamName}
+                  teamId={team.teamId}
+                />
+              </div>
+            ))}
+          </Slider>
+        </TeamSliderWrapper>
+      )}
 
       <Divider
         margin={isMobile ? '0 0 5px 0' : '0 0 9px 0'}
         color={colors.borderPurple}
       />
       <LogoutWrap>
-        <button onClick={onClickLogout}>
+        <button
+          style={{
+            backgroundColor: '#F4F4F4',
+            padding: '8px 14px',
+            borderRadius: '5px',
+          }}
+          onClick={onClickLogout}
+        >
           <SText
-            color={'#CA2D2D'}
-            fontSize={isMobile ? '8px' : '12px'}
-            fontWeight={500}
+            color={'#FF5557'}
+            fontSize={isMobile ? '12px' : '16px'}
+            fontWeight={600}
             fontFamily={'NanumSquareNeo'}
           >
-            로그아웃
+            ← 로그아웃
           </SText>
         </button>
       </LogoutWrap>
     </InfoModal>
   );
 };
+
+interface CustomArrowProps {
+  onClick?: () => void;
+  direction: string;
+}
+
+const CustomArrow: React.FC<CustomArrowProps> = ({ onClick, direction }) => (
+  <ArrowButton onClick={onClick} direction={direction}>
+    <ArrowImage src={Arrow} direction={direction} />
+  </ArrowButton>
+);
+
+const TeamSliderWrapper = styled.div`
+  width: 100%;
+  position: relative;
+
+  .slick-dots {
+    bottom: 30px;
+    .slick-active {
+      button:before {
+        font-size: 10px;
+        opacity: 1;
+        color: ${colors.buttonPurple};
+      }
+    }
+    li {
+      button:before {
+        font-size: 10px;
+        opacity: 1;
+        color: ${colors.borderPurple};
+      }
+    }
+  }
+`;
+
+const ArrowButton = styled.div<{ direction: string }>`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 60px;
+  border-radius: 6px;
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  border: 1px solid rgba(205, 207, 255, 0.6);
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  ${({ direction }) => (direction === 'right' ? 'right: 14px;' : 'left: 14px;')}
+`;
+
+const ArrowImage = styled.img<{ direction: string }>`
+  width: auto;
+  height: 14px;
+  transform: ${({ direction }) =>
+    direction === 'right' ? 'rotate(180deg)' : 'none'};
+`;

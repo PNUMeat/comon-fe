@@ -1,10 +1,12 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
+import { Flex } from '@/components/commons/Flex';
+import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
 
 import { useNavigate } from 'react-router-dom';
 
-import navArrow from '@/assets/Header/jumpArrow.svg';
+import fourDaysImg from '@/assets/Overview/4days.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path.tsx';
@@ -25,7 +27,7 @@ export const ProfileBoxContainer = styled.div`
 const ProfileUserWrapper = styled.div`
   display: flex;
   gap: 18px;
-  height: 48px;
+  align-items: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 24px;
@@ -35,8 +37,8 @@ const ProfileUserWrapper = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 50%;
 
@@ -47,8 +49,9 @@ const ProfileImage = styled.img`
 `;
 
 export const SimpleProfileWrap = styled.div`
-  width: 280px;
-  height: 48px;
+  width: 100%;
+  padding: 24px 30px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -71,7 +74,7 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
       {img && <ProfileImage src={img} alt={'profile image'} />}
       {name && (
         <SText
-          fontSize={isMobile ? '12px' : '16px'}
+          fontSize={isMobile ? '12px' : '32px'}
           fontWeight={500}
           fontFamily={'NanumSquareNeo'}
           lineHeight={isMobile ? '' : '48px'}
@@ -98,7 +101,7 @@ const TeamNavWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 28px;
+  padding: 30px 60px 70px 60px;
   box-sizing: border-box;
   cursor: pointer;
 
@@ -112,6 +115,15 @@ const TeamNavWrapper = styled.div`
   }
 `;
 
+const TeamNavCard = styled(GlassCard)`
+  width: 100%;
+  max-height: 544px;
+  border-radius: 20px;
+  padding: 0 0 16px 0;
+  gap: 12px;
+  overflow: hidden;
+`;
+
 export const MyTeamNav: React.FC<{
   teamImg: string;
   teamName: string;
@@ -121,6 +133,7 @@ export const MyTeamNav: React.FC<{
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
+  const teamImgSrc = fourDaysImg;
 
   return (
     <TeamNavWrapper
@@ -128,36 +141,56 @@ export const MyTeamNav: React.FC<{
         navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
       }}
     >
-      <TeamInfoWrap>
-        <TeamImg src={teamImg} />
-        <SText
-          fontFamily={'Pretendard'}
-          fontSize={isMobile ? '10px' : '12px'}
-          fontWeight={500}
-          lineHeight={isMobile ? '' : '30px'}
-          color="#333"
-        >
-          {teamName}
-        </SText>
-      </TeamInfoWrap>
-      <TeamNavButton />
+      <Flex width="100%" direction="column">
+        <TeamNavCard>
+          <TeamImg src={teamImgSrc} />
+          <Flex direction="column" gap="27px" padding="40px">
+            <SText
+              fontFamily={'Pretendard'}
+              fontSize={isMobile ? '24px' : '32px'}
+              fontWeight={700}
+              lineHeight={isMobile ? '' : '30px'}
+              color="#333"
+            >
+              {teamName}
+            </SText>
+            <SText fontSize="18px" fontWeight={500} color="#777">
+              가벼운 마음으로 습관을 시작해보세요. 스터디 주 2일 풀어요.
+            </SText>
+            <Flex gap="8px">
+              <Badge>
+                <span style={{ color: '#8488EC' }}>124 members</span>
+              </Badge>
+              <Badge>
+                🔥 &nbsp;누적{' '}
+                <span style={{ color: '#8488EC', fontWeight: 500 }}>4500</span>
+                풀이
+              </Badge>
+            </Flex>
+            <button
+              style={{
+                backgroundColor: '#8488EC',
+                color: '#fff',
+                fontSize: '20px',
+                border: '1px solid #CDCFFF',
+                padding: '19px 0',
+                borderRadius: '20px',
+              }}
+            >
+              <SText>팀 메인으로</SText>
+            </button>
+          </Flex>
+        </TeamNavCard>
+      </Flex>
     </TeamNavWrapper>
   );
 };
 
-const TeamInfoWrap = styled.div`
-  display: flex;
-  gap: 10px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    align-items: center;
-  }
-`;
-
 const TeamImg = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  width: 100%;
+  height: 248px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 20px;
@@ -165,23 +198,21 @@ const TeamImg = styled.img`
   }
 `;
 
-const Arrow = styled.img`
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 6px;
-  }
-`;
-
-const TeamNavButton = () => {
-  return <Arrow src={navArrow} alt={'jump button to team page'} />;
-};
-
 export const LogoutWrap = styled.div`
   width: calc(100% - 48px);
-  margin-bottom: 6px;
-  margin-top: 4px;
+  padding: 24px 46px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin-bottom: 2px;
     margin-top: 0;
   }
+`;
+
+const Badge = styled.div`
+  backgrount-color: #f4f4f4;
+  border: 1px solid #cdcfff;
+  padding: 5.5px 14px;
+  border-radius: 5px;
+  font-weight: 400;
+  color: #777777;
 `;
