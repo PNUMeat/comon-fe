@@ -39,9 +39,9 @@ const TeamOverviewInfo = [
 ];
 
 export const TeamOverviewPage = () => {
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
 
-  const { data: queryData, isPending: queryPending } = useQuery({
+  const { data: queryData } = useQuery({
     queryKey: ['team-list', page],
     queryFn: () => getTeamList('recent', page, 6),
     select: (data) => {

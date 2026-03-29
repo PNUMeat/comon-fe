@@ -131,7 +131,7 @@ export const MyTeamNav: React.FC<{
   teamImg: string;
   teamName: string;
   teamId: number;
-}> = ({ teamImg, teamName, teamId }) => {
+}> = ({ teamName, teamId }) => {
   const navigate = useNavigate();
 
   const width = useWindowWidth();
