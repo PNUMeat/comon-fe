@@ -1,4 +1,3 @@
-
 import { useWindowWidth } from '@/hooks/useWindowWidth.ts';
 
 import { Flex } from '@/components/commons/Flex';
@@ -168,8 +167,6 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  
-
   const setModalRef = (el: HTMLDivElement | null) => {
     if (el) {
       modalControlRef.current.modal = el;
@@ -234,9 +231,9 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
               }}
               href={PATH.TEAMS}
             >
-              활동 중인 팀
+              스터디 모집
             </a>
-            <a
+            {/* <a
               style={{
                 color:
                   location.pathname === `${PATH.TEAM_RECRUIT}/list`
@@ -248,7 +245,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
               href={`${PATH.TEAM_RECRUIT}/list`}
             >
               팀원 모집
-            </a>
+            </a> */}
           </NavMenu>
         </Flex>
         <UserMenu>
