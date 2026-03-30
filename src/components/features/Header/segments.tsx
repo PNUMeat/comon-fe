@@ -15,8 +15,8 @@ import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
 
 export const ProfileBoxContainer = styled.div`
-  width: 280px;
-  height: 48px;
+  width: 200px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,19 +28,19 @@ export const ProfileBoxContainer = styled.div`
 
 const ProfileUserWrapper = styled.div`
   display: flex;
-  gap: 18px;
+  gap: 12px;
   align-items: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 24px;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
   }
 `;
 
 const ProfileImage = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 48px;
+  height: 48px;
   object-fit: cover;
   border-radius: 50%;
 
@@ -52,7 +52,7 @@ const ProfileImage = styled.img`
 
 export const SimpleProfileWrap = styled.div`
   width: 100%;
-  padding: 24px 30px;
+  padding: 4px 30px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -76,10 +76,10 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
       {img && <ProfileImage src={img} alt={'profile image'} />}
       {name && (
         <SText
-          fontSize={isMobile ? '12px' : '32px'}
+          fontSize={isMobile ? '12px' : '14px'}
           fontWeight={500}
           fontFamily={'NanumSquareNeo'}
-          lineHeight={isMobile ? '' : '48px'}
+          lineHeight={isMobile ? '' : '24px'}
           color="#333"
         >
           {name}
@@ -101,15 +101,11 @@ export const Divider = styled.hr<{
 const TeamNavWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 30px 60px 70px 60px;
+  padding: 16px 32px 32px 30px;
   box-sizing: border-box;
   cursor: pointer;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 10px 24px;
@@ -120,9 +116,9 @@ const TeamNavWrapper = styled.div`
 const TeamNavCard = styled(GlassCard)`
   width: 100%;
   min-height: auto;
-  border-radius: 20px;
-  padding: 0 0 16px 0;
-  gap: 12px;
+  border-radius: 14px;
+  padding: 0 0 10px 0;
+  gap: 8px;
   overflow: hidden;
   justify-content: flex-start;
 `;
@@ -144,27 +140,27 @@ export const MyTeamNav: React.FC<{
         navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
       }}
     >
-      <Flex width="100%" direction="column">
-        <SText fontSize="24px" fontWeight={700} color="#777">
+      <Flex direction="column" style={{ width: '340px' }}>
+        <SText fontSize="16px" fontWeight={700} color="#777">
           참여중인 스터디
         </SText>
-        <Spacer h={30} />
+        <Spacer h={14} />
         <TeamNavCard>
           <TeamImg src={teamImgSrc} />
-          <Flex direction="column" gap="27px" padding="40px">
+          <Flex direction="column" gap="14px" padding="16px">
             <SText
               fontFamily={'Pretendard'}
-              fontSize={isMobile ? '24px' : '32px'}
+              fontSize={isMobile ? '16px' : '20px'}
               fontWeight={700}
-              lineHeight={isMobile ? '' : '30px'}
+              lineHeight={isMobile ? '' : '24px'}
               color="#333"
             >
               {teamName}
             </SText>
-            <SText fontSize="18px" fontWeight={500} color="#777">
+            <SText fontSize="13px" fontWeight={500} color="#777">
               가벼운 마음으로 습관을 시작해보세요. 스터디 주 2일 풀어요.
             </SText>
-            <Flex gap="8px">
+            <Flex gap="6px">
               <Badge>
                 <span style={{ color: '#8488EC' }}>124 members</span>
               </Badge>
@@ -178,10 +174,10 @@ export const MyTeamNav: React.FC<{
               style={{
                 backgroundColor: '#8488EC',
                 color: '#fff',
-                fontSize: '20px',
+                fontSize: '14px',
                 border: '1px solid #CDCFFF',
-                padding: '19px 0',
-                borderRadius: '20px',
+                padding: '10px 0',
+                borderRadius: '14px',
               }}
             >
               <SText>팀 메인으로</SText>
@@ -205,27 +201,27 @@ export const EmptyTeamNav: React.FC = () => {
       }}
     >
       <Flex width="100%" direction="column">
-        <SText fontSize="24px" fontWeight={700} color="#777">
+        <SText fontSize="16px" fontWeight={700} color="#777">
           참여중인 스터디
         </SText>
-        <Spacer h={30} />
+        <Spacer h={14} />
         <TeamNavCard>
           <TeamImg src={EmptyTeamImg} style={{ objectFit: 'fill' }} />
-          <Flex direction="column" gap="27px" padding="40px">
+          <Flex direction="column" gap="14px" padding="20px">
             <SText
               fontFamily={'Pretendard'}
-              fontSize={isMobile ? '24px' : '32px'}
+              fontSize={isMobile ? '16px' : '20px'}
               fontWeight={700}
-              lineHeight={isMobile ? '' : '30px'}
+              lineHeight={isMobile ? '' : '24px'}
               color="#333"
             >
               스터디 방
             </SText>
             <SText
-              fontSize="18px"
+              fontSize="13px"
               fontWeight={500}
               color="#777"
-              lineHeight="30px"
+              lineHeight="22px"
             >
               현재 참여중인 스터디가 없습니다.
               <br />
@@ -240,9 +236,9 @@ export const EmptyTeamNav: React.FC = () => {
 
 const TeamImg = styled.img`
   width: 100%;
-  height: 248px;
+  height: 150px;
   object-fit: cover;
-  border-radius: 20px 20px 0 0;
+  border-radius: 14px 14px 0 0;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 20px;
@@ -251,8 +247,8 @@ const TeamImg = styled.img`
 `;
 
 export const LogoutWrap = styled.div`
-  width: calc(100% - 48px);
-  padding: 24px 46px;
+  width: calc(100% - 40px);
+  padding: 12px 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin-bottom: 2px;
@@ -263,8 +259,9 @@ export const LogoutWrap = styled.div`
 const Badge = styled.div`
   backgrount-color: #f4f4f4;
   border: 1px solid #cdcfff;
-  padding: 5.5px 14px;
+  padding: 4px 8px;
   border-radius: 5px;
+  font-size: 12px;
   font-weight: 400;
   color: #777777;
 `;
