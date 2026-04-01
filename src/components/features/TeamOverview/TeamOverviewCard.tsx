@@ -3,54 +3,70 @@ import { Flex } from '@/components/commons/Flex';
 import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
 
+import { Link } from 'react-router-dom';
+
+import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 
 interface TeamOverviewCardProps {
-  data: {
-    imgSrc: string;
-    title: string;
-    description: string;
-    count: number;
-    solveCount: number;
-  };
+  imgUrl: string;
+  teamId: number;
+  teamName: string;
+  teamExplain: string;
+  totalSolveCount: number;
+  memberCount: number;
 }
 
-export const TeamOverviewCard = ({ data }: TeamOverviewCardProps) => {
-  const { imgSrc, title, description, count, solveCount } = data;
+export const TeamOverviewCard = ({
+  imgUrl,
+  teamId,
+  teamName,
+  teamExplain,
+  totalSolveCount,
+  memberCount,
+}: TeamOverviewCardProps) => {
   return (
-    <GlassCard>
-      <CardImage src={imgSrc} />
-      <Flex direction="column" gap="22px" padding="37px 56px">
-        <Heading>{title}</Heading>
-        <Description>{description}</Description>
+    <GlassCard style={{ height: 'auto' }}>
+      <CardImage src={imgUrl} />
+      <Flex direction="column" gap="24px" padding="32px 48px">
+        <Heading>{teamName}</Heading>
+        <Description>{teamExplain}</Description>
         <Flex gap="8px">
           <Badge>
-            <span style={{ color: '#8488EC' }}>{count} members</span>
+            <span style={{ color: '#8488EC' }}>{memberCount} members</span>
           </Badge>
           <Badge>
             🔥 &nbsp;누적{' '}
             <span style={{ color: '#8488EC', fontWeight: 500 }}>
-              {solveCount}
+              {totalSolveCount}
             </span>
             풀이
           </Badge>
         </Flex>
-        <Button padding="19px" style={{ borderRadius: '20px' }}>
-          <SText fontWeight={700}>스터디 둘러보기</SText>
-        </Button>
+        <Link
+          to={`${PATH.TEAM_DASHBOARD}/${teamId}`}
+          style={{ textDecoration: 'none', width: '100%' }}
+        >
+          <Button
+            padding="16px"
+            style={{ borderRadius: '20px', width: '100%' }}
+          >
+            <SText fontWeight={700}>스터디 둘러보기</SText>
+          </Button>
+        </Link>
       </Flex>
     </GlassCard>
   );
 };
 
 const Heading = styled.h1`
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #333;
 `;
 
 const Description = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: #777;
 `;
@@ -68,5 +84,5 @@ const CardImage = styled.img`
   width: 100%;
   height: 174px;
   object-fit: cover;
-  border-radius: 20px 20px 0 0;
+  border-radius: 40px 40px 0 0;
 `;

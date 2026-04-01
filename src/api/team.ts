@@ -49,6 +49,8 @@ export interface ITeamInfo extends ITeamCommon {
   teamRecruitId?: number | null;
   teamAnnouncement?: string;
   members?: ITeamMember[];
+  totalSolveCount: number;
+  imgUrl: string;
 }
 
 interface ITeamListResponse {
