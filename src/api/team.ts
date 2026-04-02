@@ -195,6 +195,11 @@ export const modifyTeam = async ({
   return res.data.data;
 };
 
+export const getMyTeams = async (): Promise<ITeamInfo[]> => {
+  const res = await apiInstance.get<ServerResponse<ITeamInfo[]>>('/v1/teams/my');
+  return res.data.data;
+};
+
 export const getTeamList = async (
   sort: string = 'recent',
   page: number = 0,

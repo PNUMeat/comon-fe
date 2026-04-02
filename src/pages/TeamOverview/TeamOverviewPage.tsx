@@ -1,11 +1,9 @@
-import { PageSectionHeader } from '@/components/commons/PageSectionHeader';
 import { TeamOverviewCard } from '@/components/features/TeamOverview/TeamOverviewCard';
 
 import { useState } from 'react';
 
 import { getTeamList } from '@/api/team';
 import { ServerResponse } from '@/api/types';
-import magnifier from '@/assets/TeamJoin/magnifier.png';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -39,10 +37,6 @@ export const TeamOverviewPage = () => {
   console.log(queryData);
   return (
     <OverviewWrapper>
-      <PageSectionHeader h={40}>
-        <Icon src={magnifier} alt="magnifier" />
-        스터디 모집
-      </PageSectionHeader>
       {queryData?.otherTeams.map((data, key) => (
         <TeamOverviewCard
           key={key}

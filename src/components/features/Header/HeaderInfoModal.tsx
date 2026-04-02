@@ -2,6 +2,7 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Flex } from '@/components/commons/Flex';
 import { SText } from '@/components/commons/SText';
+import { Spacer } from '@/components/commons/Spacer';
 import {
   Divider,
   EmptyTeamNav,
@@ -14,6 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 
+import { getMyTeams } from '@/api/team';
 import { ServerResponse } from '@/api/types';
 import { getMemberInfo } from '@/api/user';
 import navArrow from '@/assets/Header/jumpArrow.svg';
@@ -95,7 +97,15 @@ export const HeaderInfoModal: React.FC<{
   });
   const myName = data?.memberName;
   const myImg = data?.memberImageUrl;
-  const teams = data?.teamAbstractResponses ?? [];
+
+  const { data: myTeams } = useQuery({
+    queryFn: getMyTeams,
+    queryKey: ['myTeams'],
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn,
+  });
+  const teams = myTeams ?? [];
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -131,6 +141,13 @@ export const HeaderInfoModal: React.FC<{
       </SimpleProfileWrap>
       <Divider margin={'6px 0 0 0'} />
 
+      <Spacer h={24} />
+      <Flex align="flex-start" padding="0 58px">
+        <SText fontSize="16px" fontWeight={700} color="#777">
+          참여중인 스터디
+        </SText>
+      </Flex>
+
       {teams && teams.length > 0 ? (
         <TeamSliderWrapper>
           <Slider
@@ -145,9 +162,12 @@ export const HeaderInfoModal: React.FC<{
             {teams.map((team) => (
               <div key={team.teamId}>
                 <MyTeamNav
-                  teamImg={team.teamImageUrl}
-                  teamName={team.teamName}
                   teamId={team.teamId}
+                  teamName={team.teamName}
+                  imageUrl={team.imageUrl}
+                  teamAnnouncement={team.teamAnnouncement}
+                  memberCount={team.memberCount}
+                  totalSolveCount={team.totalSolveCount}
                 />
               </div>
             ))}
@@ -201,6 +221,10 @@ const TeamSliderWrapper = styled.div`
 
   .slick-dots {
     bottom: 8px;
+    li {
+      width: 8px;
+      margin: 2px;
+    }
     .slick-active {
       button:before {
         font-size: 8px;

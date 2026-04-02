@@ -95,7 +95,14 @@ export const logout = async () => {
   return res.data;
 };
 
-type TeamAbsInfo = { teamId: number; teamName: string; teamImageUrl: string };
+export type TeamAbsInfo = {
+  teamId: number;
+  teamName: string;
+  teamImageUrl: string;
+  teamAnnouncement: string;
+  memberCount: number;
+  totalSolveCount: number;
+};
 
 type MemberInfoResp = {
   memberName: string;

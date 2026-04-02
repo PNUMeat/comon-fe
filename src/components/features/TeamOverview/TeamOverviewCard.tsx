@@ -2,6 +2,7 @@ import { Button } from '@/components/commons/Button';
 import { Flex } from '@/components/commons/Flex';
 import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
+import { Spacer } from '@/components/commons/Spacer';
 
 import { Link } from 'react-router-dom';
 
@@ -26,11 +27,13 @@ export const TeamOverviewCard = ({
   memberCount,
 }: TeamOverviewCardProps) => {
   return (
-    <GlassCard style={{ height: 'auto' }}>
+    <GlassCard style={{ minHeight: '338px', height: '338px', width: '1120px' }}>
       <CardImage src={imgUrl} />
-      <Flex direction="column" gap="24px" padding="32px 48px">
+      <Flex direction="column" padding="24px 56px">
         <Heading>{teamName}</Heading>
+        <Spacer h={21} />
         <Description>{teamExplain}</Description>
+        <Spacer h={14} />
         <Flex gap="8px">
           <Badge>
             <span style={{ color: '#8488EC' }}>{memberCount} members</span>
@@ -43,15 +46,18 @@ export const TeamOverviewCard = ({
             풀이
           </Badge>
         </Flex>
+        <Spacer h={35} />
         <Link
           to={`${PATH.TEAM_DASHBOARD}/${teamId}`}
           style={{ textDecoration: 'none', width: '100%' }}
         >
           <Button
             padding="16px"
-            style={{ borderRadius: '20px', width: '100%' }}
+            style={{ borderRadius: '11px', width: '100%' }}
           >
-            <SText fontWeight={700}>스터디 둘러보기</SText>
+            <SText fontWeight={700} fontSize="16px">
+              스터디 둘러보기
+            </SText>
           </Button>
         </Link>
       </Flex>
@@ -66,7 +72,7 @@ const Heading = styled.h1`
 `;
 
 const Description = styled.p`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: #777;
 `;

@@ -7,8 +7,8 @@ import { Spacer } from '@/components/commons/Spacer';
 
 import { useNavigate } from 'react-router-dom';
 
+import { ITeamInfo } from '@/api/team';
 import EmptyTeamImg from '@/assets/Header/empty-team-img.png';
-import fourDaysImg from '@/assets/Overview/4days.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path.tsx';
@@ -103,7 +103,7 @@ const TeamNavWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px 32px 32px 30px;
+  padding: 24px 32px 36px 30px;
   box-sizing: border-box;
   cursor: pointer;
 
@@ -123,16 +123,26 @@ const TeamNavCard = styled(GlassCard)`
   justify-content: flex-start;
 `;
 
-export const MyTeamNav: React.FC<{
-  teamImg: string;
-  teamName: string;
-  teamId: number;
-}> = ({ teamName, teamId }) => {
+export const MyTeamNav = ({
+  imageUrl,
+  teamName,
+  teamId,
+  teamAnnouncement,
+  memberCount,
+  totalSolveCount,
+}: Pick<
+  ITeamInfo,
+  | 'imageUrl'
+  | 'teamName'
+  | 'teamId'
+  | 'teamAnnouncement'
+  | 'memberCount'
+  | 'totalSolveCount'
+>) => {
   const navigate = useNavigate();
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
-  const teamImgSrc = fourDaysImg;
 
   return (
     <TeamNavWrapper
@@ -140,13 +150,9 @@ export const MyTeamNav: React.FC<{
         navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
       }}
     >
-      <Flex direction="column" style={{ width: '340px' }}>
-        <SText fontSize="16px" fontWeight={700} color="#777">
-          참여중인 스터디
-        </SText>
-        <Spacer h={14} />
+      <Flex direction="column" style={{ width: '320px' }}>
         <TeamNavCard>
-          <TeamImg src={teamImgSrc} />
+          <TeamImg src={imageUrl} />
           <Flex direction="column" gap="14px" padding="16px">
             <SText
               fontFamily={'Pretendard'}
@@ -157,16 +163,18 @@ export const MyTeamNav: React.FC<{
             >
               {teamName}
             </SText>
-            <SText fontSize="13px" fontWeight={500} color="#777">
-              가벼운 마음으로 습관을 시작해보세요. 스터디 주 2일 풀어요.
+            <SText fontSize="12px" fontWeight={500} color="#777">
+              {teamAnnouncement}
             </SText>
             <Flex gap="6px">
               <Badge>
-                <span style={{ color: '#8488EC' }}>124 members</span>
+                <span style={{ color: '#8488EC' }}>{memberCount} members</span>
               </Badge>
               <Badge>
                 🔥 &nbsp;누적{' '}
-                <span style={{ color: '#8488EC', fontWeight: 500 }}>4500</span>
+                <span style={{ color: '#8488EC', fontWeight: 500 }}>
+                  {totalSolveCount}
+                </span>
                 풀이
               </Badge>
             </Flex>
@@ -176,8 +184,8 @@ export const MyTeamNav: React.FC<{
                 color: '#fff',
                 fontSize: '14px',
                 border: '1px solid #CDCFFF',
-                padding: '10px 0',
-                borderRadius: '14px',
+                padding: '12px 0',
+                borderRadius: '10px',
               }}
             >
               <SText>팀 메인으로</SText>
