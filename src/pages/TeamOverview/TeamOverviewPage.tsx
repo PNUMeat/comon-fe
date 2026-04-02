@@ -58,11 +58,4 @@ const OverviewWrapper = styled.div`
   gap: 52px;
 `;
 
-const Icon = styled.img`
-  width: 25px;
-  height: 25px;
-  margin-bottom: 5px;
-  margin-right: 8px;
-`;
-
 export default TeamOverviewPage;
