@@ -1,48 +1,51 @@
-import RightArrowIcon from "@/assets/Landing/right_arrow.png";
-import { Spacer } from "@/components/commons/Spacer";
-import { breakpoints } from "@/constants/breakpoints";
-import { useWindowWidth } from "@/hooks/useWindowWidth";
-import { PATH } from "@/routes/path";
-import styled from "@emotion/styled";
-import { useNavigate } from "react-router-dom";
-import AnimatedImages from "./AnimatedImages";
+import { useWindowWidth } from '@/hooks/useWindowWidth';
+
+import { Spacer } from '@/components/commons/Spacer';
+
+import { useNavigate } from 'react-router-dom';
+
+import RightArrowIcon from '@/assets/Landing/right_arrow.png';
+import { breakpoints } from '@/constants/breakpoints';
+import { PATH } from '@/routes/path';
+import styled from '@emotion/styled';
+
+import AnimatedImages from './AnimatedImages';
 
 export const AnimatedLanding = () => {
-
   const navigate = useNavigate();
   const isMobile = useWindowWidth() < breakpoints.mobile;
 
   const handleClick = () => {
-    navigate(`${PATH.TEAM_RECRUIT}/list`);
-  }
+    navigate(`${PATH.TEAMS}`);
+  };
   return (
     <Container>
       <AnimatedImages />
       <Spacer h={isMobile ? 20 : 80} />
-    <ContentContainer>
-    <div>
-      <Content>이미 약 200명의 개발자가</Content>
-      <Content>코몬에서 팀원들과 풀이를 공유하고 있어요.</Content>
-    </div>
-    <div>
-      <Content>우리 모두 꾸준히 해야한다는 걸 알면서</Content>
-      <Content>조금씩 미루곤 하는 코테 준비.</Content>
-    </div>
-    <div>
-      <Content>코몬에서 알맞은 팀을 찾거나, 혹은 새로 팀을 만들어</Content>
-      <Content>목표를 향해 달려가 보는 건 어떨까요?</Content>
-    </div>
-    <div>
-      <Content>함께 가면 더 멀리 갈 수 있으니까요!</Content>
-    </div>
-    <Button onClick={handleClick}>
-      팀 찾아보기
-      {!isMobile ? <Icon src={RightArrowIcon} className="icon"/> : null}  
-    </Button>
-    </ContentContainer>
+      <ContentContainer>
+        <div>
+          <Content>이미 약 200명의 개발자가</Content>
+          <Content>코몬에서 팀원들과 풀이를 공유하고 있어요.</Content>
+        </div>
+        <div>
+          <Content>우리 모두 꾸준히 해야한다는 걸 알면서</Content>
+          <Content>조금씩 미루곤 하는 코테 준비.</Content>
+        </div>
+        <div>
+          <Content>코몬에서 알맞은 팀을 찾거나, 혹은 새로 팀을 만들어</Content>
+          <Content>목표를 향해 달려가 보는 건 어떨까요?</Content>
+        </div>
+        <div>
+          <Content>함께 가면 더 멀리 갈 수 있으니까요!</Content>
+        </div>
+        <Button onClick={handleClick}>
+          팀 찾아보기
+          {!isMobile ? <Icon src={RightArrowIcon} className="icon" /> : null}
+        </Button>
+      </ContentContainer>
     </Container>
   );
-}
+};
 
 const Container = styled.div`
   display: flex;
@@ -58,14 +61,12 @@ const Container = styled.div`
   }
 `;
 
-
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   position: relative;
-
 `;
 
 const Content = styled.div`
@@ -101,7 +102,9 @@ const Button = styled.div`
   border-radius: 9999px;
 
   width: 180px;
-  transition: width 0.3s ease, background 0.3s ease;
+  transition:
+    width 0.3s ease,
+    background 0.3s ease;
   overflow: hidden;
   cursor: pointer;
 
