@@ -3,7 +3,6 @@ import { useWindowWidth } from '@/hooks/useWindowWidth';
 import { Flex } from '@/components/commons/Flex';
 import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
-import { Spacer } from '@/components/commons/Spacer';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -208,11 +207,7 @@ export const EmptyTeamNav: React.FC = () => {
         navigate(`${PATH.TEAMS}`);
       }}
     >
-      <Flex width="100%" direction="column">
-        <SText fontSize="16px" fontWeight={700} color="#777">
-          참여중인 스터디
-        </SText>
-        <Spacer h={14} />
+      <Flex direction="column" style={{ width: '320px' }}>
         <TeamNavCard>
           <TeamImg src={EmptyTeamImg} style={{ objectFit: 'fill' }} />
           <Flex direction="column" gap="14px" padding="20px">
