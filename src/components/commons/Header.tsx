@@ -179,7 +179,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
       if (modal) {
         const onClick = (e: DocumentEventMap['click']) => {
           const target = e.target as HTMLElement;
-          if (target && target.textContent !== '내정보') {
+          if (target && target.textContent !== '내 스터디') {
             setOpen(false);
             return;
           }
@@ -262,8 +262,7 @@ export const Header: React.FC<HeightInNumber> = ({ h }) => {
           )}
           {isLoggedIn && (
             <MyPageButton onClick={() => setOpen(true)}>
-              <img src={user} alt={'user icon'} />
-              내정보
+              <img src={user} alt={'user icon'} />내 스터디
             </MyPageButton>
           )}
           {open && (
