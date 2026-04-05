@@ -151,7 +151,7 @@ export const HeaderInfoModal: React.FC<{
       {teams && teams.length > 0 ? (
         <TeamSliderWrapper>
           <Slider
-            dots={teams.length > 1}
+            dots={true}
             infinite={teams.length > 1}
             speed={500}
             slidesToShow={1}
