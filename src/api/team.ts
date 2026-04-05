@@ -49,6 +49,8 @@ export interface ITeamInfo extends ITeamCommon {
   teamRecruitId?: number | null;
   teamAnnouncement?: string;
   members?: ITeamMember[];
+  totalSolveCount: number;
+  imgUrl: string;
 }
 
 interface ITeamListResponse {
@@ -190,6 +192,11 @@ export const modifyTeam = async ({
     body
   );
 
+  return res.data.data;
+};
+
+export const getMyTeams = async (): Promise<ITeamInfo[]> => {
+  const res = await apiInstance.get<ServerResponse<ITeamInfo[]>>('/v1/teams/my');
   return res.data.data;
 };
 

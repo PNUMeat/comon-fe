@@ -16,6 +16,7 @@ import {
   removeTeamMember,
 } from '@/api/member';
 import { getMemberInfo } from '@/api/user';
+import MemberSettingIcon from '@/assets/TeamAdmin/member_settings.png';
 import noteIcon from '@/assets/TeamDashboard/note.png';
 import checkIcon from '@/assets/TeamInfo/check.svg';
 import downArrow from '@/assets/TeamInfo/down_arrow.svg';
@@ -24,11 +25,10 @@ import { breakpoints } from '@/constants/breakpoints';
 import { PATH } from '@/routes/path';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import MemberSettingIcon from '@/assets/TeamAdmin/member_settings.png';
 
 import { MemberExplainModal } from './segments/MemberExplainModal';
 
-const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
+const MemberTableGrid: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
   const { teamId } = useParams();
   const navigate = useNavigate();
 
@@ -89,10 +89,6 @@ const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
         (item): item is { index: number; status: string } => item !== null
       );
 
-    const managerCount = sortedTeamMembers.filter(
-      (member) => member.isTeamManager
-    ).length;
-
     selectedStatuses.forEach(({ index, status }) => {
       if (status === '강퇴하기') {
         removeTeamMember({ teamId, memberInfo: sortedTeamMembers[index].uuid })
@@ -129,10 +125,6 @@ const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
         }
       }
       if (status === '공동 방장으로 지정') {
-        if (managerCount >= 3) {
-          alert('방장은 최대 3명까지만 지정할 수 있습니다.');
-          return;
-        }
         if (confirm('공동 방장으로 지정하시겠어요?')) {
           addTeamManager({ teamId, memberInfo: sortedTeamMembers[index].uuid })
             .then(() => {
@@ -177,25 +169,32 @@ const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
         {sortedTeamMembers.map((row, index) => (
           <React.Fragment key={index}>
             <NicknameCell {...row} />
-            { isMobile ? 
-              row.isTeamManager ? <RoleCell isTeamManager={row.isTeamManager} isStart={!isMobile}/> 
-              : <MemberStatusChangeCell
-              isManager={row.isTeamManager}
-              selected={statuses[index]}
-              onChange={(value) => handleStatusChange(index, value)}
-              shouldBeEmpty={row.memberName === memberInfo?.memberName}
+            {isMobile ? (
+              row.isTeamManager ? (
+                <RoleCell
+                  isTeamManager={row.isTeamManager}
+                  isStart={!isMobile}
+                />
+              ) : (
+                <MemberStatusChangeCell
+                  isManager={row.isTeamManager}
+                  selected={statuses[index]}
+                  onChange={(value) => handleStatusChange(index, value)}
+                  shouldBeEmpty={row.memberName === memberInfo?.memberName}
+                />
+              )
+            ) : (
+              <RoleCell isTeamManager={row.isTeamManager} />
+            )}
+            {!isMobile && <EnterDateCell dateString={row.registerDate} />}
+            {!isMobile && (
+              <MemberStatusChangeCell
+                isManager={row.isTeamManager}
+                selected={statuses[index]}
+                onChange={(value) => handleStatusChange(index, value)}
+                shouldBeEmpty={row.memberName === memberInfo?.memberName}
               />
-              :
-              <RoleCell isTeamManager={row.isTeamManager}/>
-            }
-            {!isMobile && <EnterDateCell dateString={row.registerDate} /> }
-            {!isMobile && <MemberStatusChangeCell
-              isManager={row.isTeamManager}
-              selected={statuses[index]}
-              onChange={(value) => handleStatusChange(index, value)}
-              shouldBeEmpty={row.memberName === memberInfo?.memberName}
-            />
-            }
+            )}
             <ExpelCell
               shouldBeEmpty={row.memberName === memberInfo?.memberName}
               isChecked={statuses[index] === '강퇴하기'}
@@ -215,8 +214,10 @@ const MemberTableGrid: React.FC<{ isMobile : boolean }> = ({ isMobile }) => {
   );
 };
 
-const MemberModification  = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoints.mobile);
+const MemberModification = () => {
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth < breakpoints.mobile
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -233,14 +234,14 @@ const MemberModification  = () => {
   return (
     <MemberModWrap>
       <Spacer h={isMobile ? 40 : 0} />
-      <MemberSectionHeader src={isMobile ? MemberSettingIcon : noteIcon}/>
+      <MemberSectionHeader src={isMobile ? MemberSettingIcon : noteIcon} />
       <Spacer h={31} />
-      <MemberTableGrid isMobile={isMobile}/>
+      <MemberTableGrid isMobile={isMobile} />
     </MemberModWrap>
   );
 };
 
-const MemberSectionHeader: React.FC<{ src: string}> = ({src}) => (
+const MemberSectionHeader: React.FC<{ src: string }> = ({ src }) => (
   <ModeButton>
     <img src={src} alt="note icon" />
     멤버 관리
@@ -249,13 +250,13 @@ const MemberSectionHeader: React.FC<{ src: string}> = ({src}) => (
 
 const TableHeader: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
   return (
-  <Header>
-    <HeaderCell>닉네임</HeaderCell>
-    <HeaderCell>상태</HeaderCell>
-    {!isMobile && <HeaderCell>팀 가입일</HeaderCell> }
-    {!isMobile && <HeaderCell>상태 변경</HeaderCell> }
-    <HeaderCell>강퇴</HeaderCell>
-  </Header>
+    <Header>
+      <HeaderCell>닉네임</HeaderCell>
+      <HeaderCell>상태</HeaderCell>
+      {!isMobile && <HeaderCell>팀 가입일</HeaderCell>}
+      {!isMobile && <HeaderCell>상태 변경</HeaderCell>}
+      <HeaderCell>강퇴</HeaderCell>
+    </Header>
   );
 };
 
@@ -275,9 +276,12 @@ const NicknameCell: React.FC<IMemberCommon> = ({
   </RowCell>
 );
 
-const RoleCell: React.FC<{ isTeamManager: boolean, isStart?: boolean }> = ({ isTeamManager, isStart = false }) => {
+const RoleCell: React.FC<{ isTeamManager: boolean; isStart?: boolean }> = ({
+  isTeamManager,
+  isStart = false,
+}) => {
   return (
-    <RowCell isStart={isStart} >
+    <RowCell isStart={isStart}>
       <StatusWrapper>
         {isTeamManager ? (
           <Fragment>
@@ -387,7 +391,7 @@ const GridContainer = styled.div`
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 10px 0;
     grid-template-columns: 40% 40% 20%;
-    box-shadow: 2px 2px 20px 0px #5E609933;
+    box-shadow: 2px 2px 20px 0px #5e609933;
     border-radius: 0 0 6px 6px;
   }
 `;
@@ -397,7 +401,7 @@ const Table = styled.div`
   min-width: 700px;
   display: grid;
   height: auto;
-  
+
   @media (max-width: ${breakpoints.mobile}px) {
     min-width: 100%;
   }

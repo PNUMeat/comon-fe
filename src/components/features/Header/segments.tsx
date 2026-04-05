@@ -1,18 +1,21 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
+import { Flex } from '@/components/commons/Flex';
+import { GlassCard } from '@/components/commons/GlassCard';
 import { SText } from '@/components/commons/SText';
 
 import { useNavigate } from 'react-router-dom';
 
-import navArrow from '@/assets/Header/jumpArrow.svg';
+import { ITeamInfo } from '@/api/team';
+import EmptyTeamImg from '@/assets/Header/empty-team-img.png';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import { PATH } from '@/routes/path.tsx';
 import styled from '@emotion/styled';
 
 export const ProfileBoxContainer = styled.div`
-  width: 280px;
-  height: 48px;
+  width: 200px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,12 +27,12 @@ export const ProfileBoxContainer = styled.div`
 
 const ProfileUserWrapper = styled.div`
   display: flex;
-  gap: 18px;
-  height: 48px;
+  gap: 12px;
+  align-items: center;
 
   @media (max-width: ${breakpoints.mobile}px) {
     height: 24px;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
   }
 `;
@@ -47,8 +50,9 @@ const ProfileImage = styled.img`
 `;
 
 export const SimpleProfileWrap = styled.div`
-  width: 280px;
-  height: 48px;
+  width: 100%;
+  padding: 4px 30px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -71,10 +75,10 @@ export const SimpleProfile: React.FC<{ img?: string; name?: string }> = ({
       {img && <ProfileImage src={img} alt={'profile image'} />}
       {name && (
         <SText
-          fontSize={isMobile ? '12px' : '16px'}
+          fontSize={isMobile ? '12px' : '14px'}
           fontWeight={500}
           fontFamily={'NanumSquareNeo'}
-          lineHeight={isMobile ? '' : '48px'}
+          lineHeight={isMobile ? '' : '24px'}
           color="#333"
         >
           {name}
@@ -96,15 +100,11 @@ export const Divider = styled.hr<{
 const TeamNavWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 12px 28px;
+  padding: 24px 32px 36px 30px;
   box-sizing: border-box;
   cursor: pointer;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 10px 24px;
@@ -112,11 +112,32 @@ const TeamNavWrapper = styled.div`
   }
 `;
 
-export const MyTeamNav: React.FC<{
-  teamImg: string;
-  teamName: string;
-  teamId: number;
-}> = ({ teamImg, teamName, teamId }) => {
+const TeamNavCard = styled(GlassCard)`
+  width: 100%;
+  min-height: auto;
+  border-radius: 14px;
+  padding: 0 0 10px 0;
+  gap: 8px;
+  overflow: hidden;
+  justify-content: flex-start;
+`;
+
+export const MyTeamNav = ({
+  imageUrl,
+  teamName,
+  teamId,
+  teamAnnouncement,
+  memberCount,
+  totalSolveCount,
+}: Pick<
+  ITeamInfo,
+  | 'imageUrl'
+  | 'teamName'
+  | 'teamId'
+  | 'teamAnnouncement'
+  | 'memberCount'
+  | 'totalSolveCount'
+>) => {
   const navigate = useNavigate();
 
   const width = useWindowWidth();
@@ -128,36 +149,99 @@ export const MyTeamNav: React.FC<{
         navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
       }}
     >
-      <TeamInfoWrap>
-        <TeamImg src={teamImg} />
-        <SText
-          fontFamily={'Pretendard'}
-          fontSize={isMobile ? '10px' : '12px'}
-          fontWeight={500}
-          lineHeight={isMobile ? '' : '30px'}
-          color="#333"
-        >
-          {teamName}
-        </SText>
-      </TeamInfoWrap>
-      <TeamNavButton />
+      <Flex direction="column" style={{ width: '320px' }}>
+        <TeamNavCard>
+          <TeamImg src={imageUrl} />
+          <Flex direction="column" gap="14px" padding="16px">
+            <SText
+              fontFamily={'Pretendard'}
+              fontSize={isMobile ? '16px' : '20px'}
+              fontWeight={700}
+              lineHeight={isMobile ? '' : '24px'}
+              color="#333"
+            >
+              {teamName}
+            </SText>
+            <SText fontSize="12px" fontWeight={500} color="#777">
+              {teamAnnouncement}
+            </SText>
+            <Flex gap="6px">
+              <Badge>
+                <span style={{ color: '#8488EC' }}>{memberCount} members</span>
+              </Badge>
+              <Badge>
+                🔥 &nbsp;누적{' '}
+                <span style={{ color: '#8488EC', fontWeight: 500 }}>
+                  {totalSolveCount}
+                </span>
+                풀이
+              </Badge>
+            </Flex>
+            <button
+              style={{
+                backgroundColor: '#8488EC',
+                color: '#fff',
+                fontSize: '14px',
+                border: '1px solid #CDCFFF',
+                padding: '12px 0',
+                borderRadius: '10px',
+              }}
+            >
+              <SText>팀 메인으로</SText>
+            </button>
+          </Flex>
+        </TeamNavCard>
+      </Flex>
     </TeamNavWrapper>
   );
 };
 
-const TeamInfoWrap = styled.div`
-  display: flex;
-  gap: 10px;
+export const EmptyTeamNav: React.FC = () => {
+  const navigate = useNavigate();
+  const width = useWindowWidth();
+  const isMobile = width <= breakpoints.mobile;
 
-  @media (max-width: ${breakpoints.mobile}px) {
-    align-items: center;
-  }
-`;
+  return (
+    <TeamNavWrapper
+      onClick={() => {
+        navigate(`${PATH.TEAMS}`);
+      }}
+    >
+      <Flex direction="column" style={{ width: '320px' }}>
+        <TeamNavCard>
+          <TeamImg src={EmptyTeamImg} style={{ objectFit: 'fill' }} />
+          <Flex direction="column" gap="14px" padding="20px">
+            <SText
+              fontFamily={'Pretendard'}
+              fontSize={isMobile ? '16px' : '20px'}
+              fontWeight={700}
+              lineHeight={isMobile ? '' : '24px'}
+              color="#333"
+            >
+              스터디 방
+            </SText>
+            <SText
+              fontSize="13px"
+              fontWeight={500}
+              color="#777"
+              lineHeight="22px"
+            >
+              현재 참여중인 스터디가 없습니다.
+              <br />
+              스터디 모집에서 팀에 참여해보세요.
+            </SText>
+          </Flex>
+        </TeamNavCard>
+      </Flex>
+    </TeamNavWrapper>
+  );
+};
 
 const TeamImg = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 14px 14px 0 0;
 
   @media (max-width: ${breakpoints.mobile}px) {
     width: 20px;
@@ -165,23 +249,22 @@ const TeamImg = styled.img`
   }
 `;
 
-const Arrow = styled.img`
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 6px;
-  }
-`;
-
-const TeamNavButton = () => {
-  return <Arrow src={navArrow} alt={'jump button to team page'} />;
-};
-
 export const LogoutWrap = styled.div`
-  width: calc(100% - 48px);
-  margin-bottom: 6px;
-  margin-top: 4px;
+  width: calc(100% - 40px);
+  padding: 12px 20px;
 
   @media (max-width: ${breakpoints.mobile}px) {
     margin-bottom: 2px;
     margin-top: 0;
   }
+`;
+
+const Badge = styled.div`
+  backgrount-color: #f4f4f4;
+  border: 1px solid #cdcfff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #777777;
 `;

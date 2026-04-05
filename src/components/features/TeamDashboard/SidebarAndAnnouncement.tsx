@@ -8,14 +8,13 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
 import { Suspense, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
 import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
 import LockIcon from '@/assets/TeamDashboard/lock.png';
-import MessageIcon from '@/assets/TeamDashboard/message_circle.png';
 import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
@@ -79,14 +78,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
       return;
     }
     setIsModalOpen(true);
-  };
-
-  const goRecruitPage = () => {
-    if (teamInfo.teamRecruitId) {
-      navigate(`${PATH.TEAM_RECRUIT}/detail/${teamInfo.teamRecruitId}`);
-    } else {
-      toast.error('참가할 수 없는 상태입니다.');
-    }
   };
 
   const handleClick = () => {
@@ -357,10 +348,6 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             <DropdownList onClick={joinTeam}>
               <DropdownListIcon src={LockIcon} />
               <DropdownListText>비밀번호 입력</DropdownListText>
-            </DropdownList>
-            <DropdownList onClick={goRecruitPage}>
-              <DropdownListIcon src={MessageIcon} />
-              <DropdownListText>모집글 보러가기</DropdownListText>
             </DropdownList>
           </DropdownWrapper>
         )}

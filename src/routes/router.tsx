@@ -12,7 +12,7 @@ import Posting from '@/pages/Posting/Posting.tsx';
 import TeamDailySubject from '@/pages/Posting/TeamDailySubject.tsx';
 import TeamAdmin from '@/pages/TeamAdmin/TeamAdmin.tsx';
 import TeamDashboardPage from '@/pages/TeamDashboard/TeamDashboard.tsx';
-import TeamJoinPage from '@/pages/TeamJoin/TeamJoin.tsx';
+import TeamOverviewPage from '@/pages/TeamOverview/TeamOverviewPage';
 import { TeamRecruitDetail } from '@/pages/TeamRecruit/TeamRecruitDetail';
 import { TeamRecruitListPage } from '@/pages/TeamRecruit/TeamRecruitList';
 import { LazyEnrollTemplate, LazySkeleton } from '@/routes/Lazies';
@@ -198,9 +198,14 @@ export const router = createBrowserRouter(
     {
       element: <MultiSectionLayout />,
       children: [
+        // 기존 팀 찾기 페이지
+        // {
+        //   path: PATH.TEAMS,
+        //   element: <TeamJoinPage />,
+        // },
         {
           path: PATH.TEAMS,
-          element: <TeamJoinPage />,
+          element: <TeamOverviewPage />,
         },
       ],
     },

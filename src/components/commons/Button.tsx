@@ -8,6 +8,7 @@ interface ButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   cursor?: string;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -16,6 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
   cursor,
   onClick,
   children,
+  style,
 }) => {
   return (
     <StyledButton
@@ -23,6 +25,7 @@ export const Button: React.FC<ButtonProps> = ({
       padding={padding}
       cursor={cursor}
       onClick={onClick}
+      style={style}
     >
       {children}
     </StyledButton>
