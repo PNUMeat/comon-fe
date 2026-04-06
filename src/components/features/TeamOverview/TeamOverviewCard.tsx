@@ -88,7 +88,7 @@ const Badge = styled.div`
 
 const CardImage = styled.img`
   width: 100%;
-  height: 174px;
+  height: 100px;
   object-fit: cover;
   border-radius: 40px 40px 0 0;
 `;
