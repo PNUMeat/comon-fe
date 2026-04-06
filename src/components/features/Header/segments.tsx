@@ -144,11 +144,7 @@ export const MyTeamNav = ({
   const isMobile = width <= breakpoints.mobile;
 
   return (
-    <TeamNavWrapper
-      onClick={() => {
-        navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
-      }}
-    >
+    <TeamNavWrapper>
       <Flex direction="column" style={{ width: '320px' }}>
         <TeamNavCard>
           <TeamImg src={imageUrl} />
@@ -185,6 +181,9 @@ export const MyTeamNav = ({
                 border: '1px solid #CDCFFF',
                 padding: '12px 0',
                 borderRadius: '10px',
+              }}
+              onClick={() => {
+                navigate(`${PATH.TEAM_DASHBOARD}/${teamId}`);
               }}
             >
               <SText>팀 메인으로</SText>
