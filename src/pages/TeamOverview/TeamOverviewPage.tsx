@@ -40,7 +40,7 @@ export const TeamOverviewPage = () => {
       {queryData?.otherTeams.map((data, key) => (
         <TeamOverviewCard
           key={key}
-          imgUrl={data.imgUrl}
+          imgUrl={data.imageUrl}
           teamId={data.teamId}
           teamName={data.teamName}
           teamExplain={data.teamExplain}
