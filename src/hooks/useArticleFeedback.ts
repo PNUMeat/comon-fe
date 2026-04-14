@@ -8,7 +8,9 @@ import axios from 'axios';
 
 type FeedbackStatus = 'idle' | 'loading' | 'streaming' | 'complete' | 'error';
 
-type StreamMessage = { type: 'PROCESSING'; content: string } | { type: 'DONE' };
+type StreamMessage =
+  | { type: 'PROCESSING'; content: string }
+  | { type: 'COMPLETE' };
 
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');
@@ -76,7 +78,7 @@ export const useArticleFeedback = (articleId: number | null) => {
 
       const es = getStartArticleFeedbackStream(targetId, {
         onMessage: (message: StreamMessage) => {
-          if (message.type === 'DONE') {
+          if (message.type === 'COMPLETE') {
             setFeedback(feedbackRef.current);
             closeStream();
             setStatus('complete');
