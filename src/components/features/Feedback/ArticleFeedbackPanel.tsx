@@ -86,4 +86,17 @@ const MarkdownWrapper = styled.div`
       color: inherit;
     }
   }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 20px 0;
+  }
+
+  blockquote {
+    border-left: 3px solid #e5e5e5;
+    padding-left: 12px;
+    color: #666;
+    margin: 8px 0;
+  }
 `;
