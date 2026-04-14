@@ -3,14 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getArticleFeedback,
   getStartArticleFeedbackStream,
+  StreamMessage,
 } from '@/api/postings';
 import axios from 'axios';
 
 type FeedbackStatus = 'idle' | 'loading' | 'streaming' | 'complete' | 'error';
-
-type StreamMessage =
-  | { type: 'PROCESSING'; content: string }
-  | { type: 'COMPLETE' };
 
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');

@@ -93,7 +93,7 @@ export const deletePost = async (articleId: number) => {
 
 export type StreamMessage =
   | { type: 'PROCESSING'; content: string }
-  | { type: 'DONE' };
+  | { type: 'COMPLETE' };
 
 export type StreamHandler = {
   onMessage: (message: StreamMessage) => void;
