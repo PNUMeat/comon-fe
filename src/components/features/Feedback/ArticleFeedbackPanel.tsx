@@ -7,16 +7,12 @@ import styled from '@emotion/styled';
 
 interface ArticleFeedbackPanelArgs {
   feedback: string;
-  isComplete: boolean;
-  isStreaming: boolean;
 }
 
 const ArticleFeedbackPanel = ({
   feedback,
-  isComplete,
-  isStreaming,
 }: ArticleFeedbackPanelArgs) => {
-  if (!(isComplete || isStreaming)) return null;
+  if (!feedback) return null;
 
   return (
     <>
