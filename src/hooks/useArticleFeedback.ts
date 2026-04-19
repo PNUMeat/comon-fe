@@ -9,12 +9,17 @@ import axios from 'axios';
 
 type FeedbackStatus = 'idle' | 'loading' | 'streaming' | 'complete' | 'error';
 
+// DB save is fire-and-forget on the backend; wait briefly after COMPLETE to avoid race condition
+const DB_SAVE_BUFFER_MS = 1500;
+
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState<FeedbackStatus>('idle');
+  const [isDbSaving, setIsDbSaving] = useState(false);
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const feedbackRef = useRef('');
+  const dbSavingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const closeStream = useCallback(() => {
     if (eventSourceRef.current) {
@@ -69,7 +74,13 @@ export const useArticleFeedback = (articleId: number | null) => {
 
       closeStream();
 
+      if (dbSavingTimerRef.current) {
+        clearTimeout(dbSavingTimerRef.current);
+        dbSavingTimerRef.current = null;
+      }
+
       setStatus('streaming');
+      setIsDbSaving(false);
       setFeedback('');
       feedbackRef.current = '';
 
@@ -79,6 +90,11 @@ export const useArticleFeedback = (articleId: number | null) => {
             setFeedback(feedbackRef.current);
             closeStream();
             setStatus('complete');
+            // Keep blocking submit briefly so DB save can commit
+            setIsDbSaving(true);
+            dbSavingTimerRef.current = setTimeout(() => {
+              setIsDbSaving(false);
+            }, DB_SAVE_BUFFER_MS);
             return;
           }
 
@@ -91,6 +107,7 @@ export const useArticleFeedback = (articleId: number | null) => {
 
           if (feedbackRef.current.length > 0) setStatus('complete');
           else setStatus('error');
+          setIsDbSaving(false);
         },
       });
 
@@ -100,7 +117,10 @@ export const useArticleFeedback = (articleId: number | null) => {
   );
 
   useEffect(() => {
-    return () => closeStream();
+    return () => {
+      closeStream();
+      if (dbSavingTimerRef.current) clearTimeout(dbSavingTimerRef.current);
+    };
   }, [closeStream]);
 
   return {
@@ -110,6 +130,8 @@ export const useArticleFeedback = (articleId: number | null) => {
     isLoading: status === 'loading',
     isStreaming: status === 'streaming',
     isComplete: status === 'complete',
+    isDbSaving,
+    isBlocking: status === 'streaming' || isDbSaving,
     startStream,
     stop: closeStream,
   };

@@ -220,7 +220,7 @@ const Posting = () => {
     );
   }, [content, postTitle, storageKey, isEditMode, articleId]);
 
-  const { feedback, isError, isLoading, isStreaming, isComplete, startStream } =
+  const { feedback, isError, isLoading, isStreaming, isComplete, isDbSaving, isBlocking, startStream } =
     useArticleFeedback(savedArticleId);
 
   const canRequestFeedback =
@@ -450,7 +450,7 @@ const Posting = () => {
                 <SText fontSize="20px" fontWeight={700} whiteSpace="nowrap">
                   AI 코드 리뷰
                 </SText>
-                {(isLoading || isStreaming) && (
+                {(isLoading || isStreaming || isDbSaving) && (
                   <Flex
                     direction="column"
                     align="center"
@@ -466,9 +466,12 @@ const Posting = () => {
                       width="100%"
                       height="8px"
                     />
-                    <SText fontSize="14px" color="#7D8E9F">
-                      loading...
-                    </SText>
+                    {isBlocking && (
+                      <SText fontSize="13px" color="#E07000">
+                        분석이 완료될 때까지 잠시 기다려주세요.
+                        페이지를 나가면 AI 코드 리뷰가 저장되지 않을 수 있어요.
+                      </SText>
+                    )}
                   </Flex>
                 )}
                 <AiFeedbackButton
@@ -499,7 +502,7 @@ const Posting = () => {
             <AiGuideBox>
               {isError ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
             </AiGuideBox>
-            <ConfirmButton disabled={isPending} onClick={handleFillOutClick}>
+            <ConfirmButton disabled={isPending || isBlocking} onClick={handleFillOutClick}>
               <ClickImage src={click} />
               <ActionText>
                 <SText fontSize={buttonFontSize} fontWeight={700}>
