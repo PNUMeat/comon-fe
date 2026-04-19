@@ -29,10 +29,12 @@ const LANG_ALIASES: Record<string, string> = {
   py: 'python',
 };
 
-function CodeBlock({
-  children,
-  className,
-}: Parameters<NonNullable<Components['code']>>[0]) {
+type CodeProps = {
+  children?: React.ReactNode;
+  className?: string;
+};
+
+function CodeBlock({ children, className }: CodeProps) {
   const match = /language-([\w+#-]+)/.exec(className || '');
   if (match) {
     const rawLang = match[1].toLowerCase();
@@ -65,7 +67,7 @@ const ArticleFeedbackPanel = ({
         <Flex direction="row" align="center" justify="space-between"></Flex>
         <Spacer h={12} />
         <MarkdownWrapper>
-          <ReactMarkdown components={{ code: CodeBlock }}>
+          <ReactMarkdown components={{ code: CodeBlock as Components['code'] }}>
             {feedback}
           </ReactMarkdown>
         </MarkdownWrapper>
