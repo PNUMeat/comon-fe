@@ -134,6 +134,18 @@ export const getArticleFeedback = async (articleId: number) => {
   return res.data;
 };
 
+export const saveArticleFeedback = async (
+  articleId: number,
+  feedbackBody: string
+) => {
+  const res = await apiInstance.post<ServerResponse<null>>(
+    `/v1/articles/${articleId}/feedback`,
+    { feedbackBody }
+  );
+
+  return res.data;
+};
+
 interface CommentItem {
   commentId: number;
   description: string;

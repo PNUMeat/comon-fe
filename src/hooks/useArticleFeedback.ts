@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getArticleFeedback,
   getStartArticleFeedbackStream,
+  saveArticleFeedback,
 } from '@/api/postings';
 import axios from 'axios';
 
@@ -80,6 +81,7 @@ export const useArticleFeedback = (articleId: number | null) => {
             setFeedback(feedbackRef.current);
             closeStream();
             setStatus('complete');
+            saveArticleFeedback(targetId, feedbackRef.current).catch(() => {});
             return;
           }
 
