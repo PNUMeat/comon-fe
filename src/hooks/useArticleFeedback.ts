@@ -3,14 +3,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getArticleFeedback,
   getStartArticleFeedbackStream,
+  saveArticleFeedback,
   StreamMessage,
 } from '@/api/postings';
 import axios from 'axios';
 
 type FeedbackStatus = 'idle' | 'loading' | 'streaming' | 'complete' | 'error';
 
-// DB save is fire-and-forget on the backend; wait briefly after COMPLETE to avoid race condition
-const DB_SAVE_BUFFER_MS = 1500;
 
 export const useArticleFeedback = (articleId: number | null) => {
   const [feedback, setFeedback] = useState('');
@@ -90,11 +89,7 @@ export const useArticleFeedback = (articleId: number | null) => {
             setFeedback(feedbackRef.current);
             closeStream();
             setStatus('complete');
-            // Keep blocking submit briefly so DB save can commit
-            setIsDbSaving(true);
-            dbSavingTimerRef.current = setTimeout(() => {
-              setIsDbSaving(false);
-            }, DB_SAVE_BUFFER_MS);
+            saveArticleFeedback(targetId, feedbackRef.current).catch(() => {});
             return;
           }
 

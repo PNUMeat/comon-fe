@@ -17,8 +17,6 @@ import styled from '@emotion/styled';
 
 interface ArticleFeedbackPanelArgs {
   feedback: string;
-  isComplete: boolean;
-  isStreaming: boolean;
 }
 
 const LANG_ALIASES: Record<string, string> = {
@@ -56,10 +54,8 @@ function CodeBlock({ children, className }: CodeProps) {
 
 const ArticleFeedbackPanel = ({
   feedback,
-  isComplete,
-  isStreaming,
 }: ArticleFeedbackPanelArgs) => {
-  if (!(isComplete || isStreaming)) return null;
+  if (!feedback) return null;
 
   return (
     <>

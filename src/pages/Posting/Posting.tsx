@@ -22,6 +22,7 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from 'react-router-dom';
 
 import { ITopicResponse, getTeamTopic } from '@/api/dashboard.ts';
@@ -152,6 +153,7 @@ const normalizeLegacyCodeFenceHtml = (html: string): string => {
 
 const Posting = () => {
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const { article, articleId, articleTitle } = location?.state ?? {
     article: null,
@@ -206,7 +208,10 @@ const Posting = () => {
   const [postImages, setPostImages] = useAtom(postImagesAtom);
 
   const [savedArticleId, setSavedArticleId] = useState<number | null>(() => {
-    return isEditMode ? Number(articleId) : null;
+    if (isEditMode) return Number(articleId);
+    const paramArticleId = searchParams.get('articleId');
+    if (paramArticleId) return Number(paramArticleId);
+    return null;
   });
 
   useEffect(() => {
@@ -220,7 +225,7 @@ const Posting = () => {
     );
   }, [content, postTitle, storageKey, isEditMode, articleId]);
 
-  const { feedback, isError, isLoading, isStreaming, isComplete, isDbSaving, isBlocking, startStream } =
+  const { feedback, isError, isLoading, isStreaming, isDbSaving, isBlocking, startStream } =
     useArticleFeedback(savedArticleId);
 
   const canRequestFeedback =
@@ -253,7 +258,7 @@ const Posting = () => {
   }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isStreaming) {
       setProgress(0);
@@ -334,7 +339,7 @@ const Posting = () => {
 
       let targetId = savedArticleId;
 
-      if (isEditMode && targetId) {
+      if (targetId) {
         await mutatePost({
           teamId: parseInt(id as string),
           images:
@@ -365,6 +370,7 @@ const Posting = () => {
       });
 
       setSavedArticleId(targetId);
+      setSearchParams({ articleId: String(targetId) }, { replace: true });
       setContent(normalizedArticleBody);
       setPostImages([]);
       clearPostingCache();
@@ -468,8 +474,8 @@ const Posting = () => {
                     />
                     {isBlocking && (
                       <SText fontSize="13px" color="#E07000">
-                        분석이 완료될 때까지 잠시 기다려주세요.
-                        페이지를 나가면 AI 코드 리뷰가 저장되지 않을 수 있어요.
+                        분석이 완료될 때까지 잠시 기다려주세요. 페이지를 나가면
+                        AI 코드 리뷰가 저장되지 않을 수 있어요.
                       </SText>
                     )}
                   </Flex>
@@ -491,18 +497,16 @@ const Posting = () => {
               {!isError && feedback && (
                 <>
                   <Spacer h={spacing} />
-                  <ArticleFeedbackPanel
-                    feedback={feedback}
-                    isComplete={isComplete}
-                    isStreaming={isStreaming}
-                  />
+                  <ArticleFeedbackPanel feedback={feedback} />
                 </>
               )}
             </AiFeedbackWrapper>
-            <AiGuideBox>
-              {isError ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
-            </AiGuideBox>
-            <ConfirmButton disabled={isPending || isBlocking} onClick={handleFillOutClick}>
+            {(isError || !feedback) && (
+              <AiGuideBox>
+                {isError ? <FeedbackErrorMessage /> : <FeedbackGuideMessage />}
+              </AiGuideBox>
+            )}
+            <ConfirmButton disabled={isPending} onClick={handleFillOutClick}>
               <ClickImage src={click} />
               <ActionText>
                 <SText fontSize={buttonFontSize} fontWeight={700}>
