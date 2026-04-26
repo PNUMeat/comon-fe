@@ -54,6 +54,10 @@ export const useArticleFeedback = (articleId: number | null) => {
   }, [articleId]);
 
   useEffect(() => {
+    setFeedback('');
+    feedbackRef.current = '';
+    setStatus('idle');
+
     if (!articleId) return;
     if (status === 'streaming') return;
     fetchFeedback();

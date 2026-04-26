@@ -1,5 +1,6 @@
 import { viewStyle } from '@/utils/viewStyle';
 
+import { useArticleFeedback } from '@/hooks/useArticleFeedback';
 import { useRegroupImageAndArticle } from '@/hooks/useRegroupImageAndArticle.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -7,6 +8,7 @@ import { Flex } from '@/components/commons/Flex';
 import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import ArticleFeedbackPanel from '@/components/features/Feedback/ArticleFeedbackPanel';
 
 import { Fragment, useEffect, useState } from 'react';
 
@@ -497,7 +499,7 @@ const ModeSwitcher: React.FC<{
 };
 
 const GradationArticleDetail = styled.div`
-  margin-bottom: 100px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   width: 700px;
@@ -588,12 +590,6 @@ const ArticleDetailViewer: React.FC<{
 
   const { result: selectedArticleBody } =
     useRegroupImageAndArticle(selectedArticle);
-  // const selectedArticleBody = selectedArticle?.imageUrl
-  //   ? selectedArticle?.articleBody.replace(
-  //       /src="\?"/,
-  //       `src="${selectedArticle.imageUrl}"`
-  //     )
-  //   : selectedArticle?.articleBody;
 
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
@@ -759,6 +755,27 @@ const MoveButtonIcon = styled.img`
   }
 `;
 
+const AiFeedbackWrapper = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  border: 1px solid #cdcfff;
+  padding: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+`;
+
+const AiFeedbackButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+`;
+
 const MoveButton: React.FC<{
   onClick: () => void;
   src: string;
@@ -804,6 +821,7 @@ export const MyTeams = () => {
 
   const canGoPrev = startIndex > 0;
   const canGoNext = startIndex + TEAMS_PER_VIEW < teamsLength;
+  const { feedback } = useArticleFeedback(selectedId);
 
   const goPrev = () => {
     if (!canGoPrev) return;
@@ -863,11 +881,23 @@ export const MyTeams = () => {
         <InformationViewer teamId={teamId} />
       )}
       {mode === 'history' && selectedId !== null && teamId !== null ? (
-        <ArticleDetailViewer
-          selectedId={selectedId}
-          teamId={teamId}
-          page={page}
-        />
+        <>
+          <ArticleDetailViewer
+            selectedId={selectedId}
+            teamId={teamId}
+            page={page}
+          />
+          {feedback && (
+            <AiFeedbackWrapper>
+              <AiFeedbackButtonWrapper>
+                <SText fontSize="20px" fontWeight={700} whiteSpace="nowrap">
+                  AI 코드 리뷰
+                </SText>
+              </AiFeedbackButtonWrapper>
+              <ArticleFeedbackPanel feedback={feedback} />
+            </AiFeedbackWrapper>
+          )}
+        </>
       ) : (
         <div
           style={{
