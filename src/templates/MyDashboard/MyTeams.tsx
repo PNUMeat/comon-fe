@@ -760,8 +760,8 @@ const AiFeedbackWrapper = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
-  border: 1px solid #cdcfff;
+  border-radius: 20px;
+  border: 1px solid #ffd482;
   padding: 30px;
   align-items: center;
   justify-content: center;
