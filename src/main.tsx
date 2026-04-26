@@ -5,8 +5,11 @@ import { createRoot } from 'react-dom/client';
 
 import '@/styles/reset.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { App } from './App';
+import 'prismjs';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-clike';
 
+import { App } from './App';
 import './main.css';
 
 const registerFileCacheWorker = async (): Promise<void> => {
