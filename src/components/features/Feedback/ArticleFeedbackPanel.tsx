@@ -1,19 +1,19 @@
 import { Flex } from '@/components/commons/Flex';
 import { Spacer } from '@/components/commons/Spacer';
 
-import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
+
+import styled from '@emotion/styled';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-c';
 import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-go';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-rust';
-
-import styled from '@emotion/styled';
+import 'prismjs/components/prism-typescript';
 
 interface ArticleFeedbackPanelArgs {
   feedback: string;
@@ -52,7 +52,7 @@ function CodeBlock({ children, className }: CodeProps) {
   return <code className={className}>{children}</code>;
 }
 
-const ArticleFeedbackPanel = ({
+export const ArticleFeedbackPanel = ({
   feedback,
 }: ArticleFeedbackPanelArgs) => {
   if (!feedback) return null;
@@ -135,7 +135,8 @@ const MarkdownWrapper = styled.div`
     background-color: rgba(135, 131, 120, 0.15);
     padding: 2px 5px;
     border-radius: 4px;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-family:
+      'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 0.88em;
     color: #c7254e;
   }
@@ -152,7 +153,8 @@ const MarkdownWrapper = styled.div`
       background-color: transparent;
       padding: 0;
       color: #24292e;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-family:
+        'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
       font-size: 13px;
       line-height: 1.6;
     }
