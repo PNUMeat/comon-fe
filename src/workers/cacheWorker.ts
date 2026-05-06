@@ -9,7 +9,9 @@ import { CacheFirst } from 'workbox-strategies';
 
 export type {};
 
-const filteredManifest = (self.__WB_MANIFEST as ManifestEntry[]).filter(
+const precacheManifest = (self.__WB_MANIFEST ?? []) as ManifestEntry[];
+
+const filteredManifest = precacheManifest.filter(
   (entry) => !/\.(js|css|html)(\?.*)?$/.test(entry.url)
 );
 
@@ -41,14 +43,56 @@ registerRoute(
 self.addEventListener('activate', (event: ExtendableEvent) => {
   const cacheWhitelist = ['static-cache', 'dynamic-cache'];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (!cacheWhitelist.includes(cacheName)) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (!cacheWhitelist.includes(cacheName)) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      self.clients.claim(),
+    ])
+  );
+});
+
+self.addEventListener('push', (event: PushEvent) => {
+  const data = event.data?.json() ?? {};
+  const notification = data.notification ?? data.data ?? data;
+  const { title, body, icon } = notification;
+  const clickUrl = data.data?.url ?? notification.url ?? '/';
+
+  if (title) {
+    event.waitUntil(
+      self.registration.showNotification(title, {
+        body,
+        icon: icon ?? '/web-app-manifest-192x192.png',
+        data: {
+          ...data.data,
+          url: clickUrl,
+        },
+      })
+    );
+  }
+});
+
+self.addEventListener('notificationclick', (event: NotificationEvent) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url ?? '/';
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        const client = clients.find((c) => c.visibilityState === 'visible');
+        if (client) {
+          client.navigate(url);
+          return client.focus();
+        }
+        return self.clients.openWindow(url);
+      })
   );
 });
