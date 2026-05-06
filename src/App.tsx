@@ -2,18 +2,21 @@
 
 import { RouterProvider } from 'react-router-dom';
 
+import { useFcmToken } from '@/hooks/useFcmToken';
 import { router } from '@/routes/router';
 import { authStatusAtom, refreshAuthAtom } from '@/store/auth';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 const AuthChecker = () => {
-  const refresh = useSetAtom(refreshAuthAtom); 
+  const refresh = useSetAtom(refreshAuthAtom);
 
   useEffect(() => {
     refresh();
   }, []);
-  
+
+  useFcmToken();
+
   return null;
 }
 
