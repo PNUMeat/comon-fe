@@ -2,7 +2,7 @@ import react from '@vitejs/plugin-react';
 import * as fs from 'fs';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 const fontFolderPath = path.resolve(__dirname, 'src/assets/fonts');
@@ -24,9 +24,33 @@ const preloadTags = fontFiles
     };
 })
     .filter((tag) => tag !== null);
-export default defineConfig({
+const firebaseMessagingSwPlugin = (mode) => {
+    const swPath = path.resolve(__dirname, 'public/firebase-messaging-sw.js');
+    const env = loadEnv(mode, process.cwd(), 'VITE_FIREBASE_');
+    const renderServiceWorker = () => {
+        const source = fs.readFileSync(swPath, 'utf-8');
+        return source.replace(/__(VITE_FIREBASE_[A-Z0-9_]+?)__/g, (_, key) => JSON.stringify(env[key] ?? ''));
+    };
+    return {
+        name: 'firebase-messaging-sw-env',
+        configureServer(server) {
+            server.middlewares.use('/firebase-messaging-sw.js', (_req, res) => {
+                res.setHeader('Content-Type', 'application/javascript');
+                res.end(renderServiceWorker());
+            });
+        },
+        closeBundle() {
+            const outDir = path.resolve(__dirname, 'dist');
+            if (!fs.existsSync(outDir))
+                return;
+            fs.writeFileSync(path.resolve(outDir, 'firebase-messaging-sw.js'), renderServiceWorker());
+        },
+    };
+};
+export default defineConfig(({ mode }) => ({
     plugins: [
         react(),
+        firebaseMessagingSwPlugin(mode),
         createHtmlPlugin({
             inject: {
                 tags: preloadTags,
@@ -114,4 +138,4 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
-});
+}));

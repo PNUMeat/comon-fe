@@ -18,6 +18,31 @@ const filteredManifest = precacheManifest.filter(
 precacheAndRoute(filteredManifest);
 
 declare const self: ServiceWorkerGlobalScope;
+const DEFAULT_NOTIFICATION_MESSAGE = '댓글이 달렸습니다.';
+
+const formatCommentNotificationMessage = (comment?: string) =>
+  comment
+    ? `${DEFAULT_NOTIFICATION_MESSAGE} ${comment}`
+    : DEFAULT_NOTIFICATION_MESSAGE;
+
+type PushPayload = {
+  notification?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+    url?: string;
+  };
+  data?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+    url?: string;
+  };
+  title?: string;
+  body?: string;
+  icon?: string;
+  url?: string;
+};
 
 registerRoute(
   ({ request, url }) =>
@@ -40,6 +65,10 @@ registerRoute(
   })
 );
 
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
 self.addEventListener('activate', (event: ExtendableEvent) => {
   const cacheWhitelist = ['static-cache', 'dynamic-cache'];
   event.waitUntil(
@@ -59,23 +88,42 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
 });
 
 self.addEventListener('push', (event: PushEvent) => {
-  const data = event.data?.json() ?? {};
-  const notification = data.notification ?? data.data ?? data;
-  const { title, body, icon } = notification;
-  const clickUrl = data.data?.url ?? notification.url ?? '/';
+  const rawData = event.data?.text() ?? '';
 
-  if (title) {
-    event.waitUntil(
-      self.registration.showNotification(title, {
+  let data: PushPayload = {};
+  try {
+    data = rawData ? JSON.parse(rawData) : {};
+  } catch {
+    data = { data: { body: rawData } };
+  }
+
+  const notification = data.notification ?? data.data ?? data;
+  const title = notification.title;
+  const body = formatCommentNotificationMessage(notification.body ?? rawData);
+  const icon = notification.icon;
+  const clickUrl = data.data?.url ?? notification.url ?? '/';
+  const message = body ?? title;
+
+  if (!message) return;
+
+  const notificationTitle = title ?? 'Code Monster';
+
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(notificationTitle, {
         body,
         icon: icon ?? '/web-app-manifest-192x192.png',
-        data: {
-          ...data.data,
-          url: clickUrl,
-        },
-      })
-    );
-  }
+        data: { url: clickUrl },
+      }),
+      self.clients
+        .matchAll({ type: 'window', includeUncontrolled: true })
+        .then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: 'FCM_MESSAGE', title, body });
+          });
+        }),
+    ])
+  );
 });
 
 self.addEventListener('notificationclick', (event: NotificationEvent) => {
