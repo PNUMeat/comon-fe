@@ -4,15 +4,62 @@ import toast from 'react-hot-toast';
 import { registerFcmToken } from '@/api/fcm';
 import { messaging } from '@/firebase';
 import { authStatusAtom } from '@/store/auth';
-import { registerAppServiceWorker } from '@/workers/registerServiceWorker';
 import { getToken, onMessage } from 'firebase/messaging';
 import { useAtomValue } from 'jotai';
+
+const registerFcmServiceWorker = () =>
+  navigator.serviceWorker.register('/firebase-messaging-sw.js');
+
+interface FcmDataPayload {
+  [key: string]: string | FcmDataPayload | undefined;
+}
+
+const isDataPayload = (value: unknown): value is FcmDataPayload =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const getStringValue = (
+  value: string | FcmDataPayload | undefined
+): string | undefined => (typeof value === 'string' ? value : undefined);
+
+const getCommentMessageFromPayload = (payload: {
+  notification?: { body?: string; title?: string };
+  data?: Record<string, string>;
+}): string | undefined => {
+  let data: FcmDataPayload = payload.data ?? {};
+
+  if (typeof payload.data?.data === 'string') {
+    try {
+      const parsedData: unknown = JSON.parse(payload.data.data);
+      data = isDataPayload(parsedData) ? parsedData : payload.data;
+    } catch {
+      data = payload.data;
+    }
+  }
+
+  const content = isDataPayload(data.content) ? data.content : data;
+  const comment =
+    getStringValue(content.body) ??
+    getStringValue(data.body) ??
+    payload.notification?.body ??
+    payload.notification?.title;
+
+  return comment;
+};
+
+const showBrowserNotification = async (message: string) => {
+  if (Notification.permission !== 'granted') return;
+
+  const registration = await navigator.serviceWorker.ready;
+  await registration.showNotification('Code Monster', {
+    body: message,
+    icon: '/web-app-manifest-192x192.png',
+  });
+};
 
 export const useFcmToken = () => {
   const authStatus = useAtomValue(authStatusAtom);
 
   useEffect(() => {
-    console.log('[FCM] authStatus:', authStatus);
     if (authStatus !== 'authenticated') return;
 
     const setup = async () => {
@@ -26,42 +73,46 @@ export const useFcmToken = () => {
         return;
       }
 
-      console.log('[FCM] requesting notification permission...');
       const permission = await Notification.requestPermission();
-      console.log('[FCM] permission:', permission);
       if (permission !== 'granted') return;
 
-      console.log('[FCM] registering app SW...');
-      const registration = await registerAppServiceWorker();
-      if (!registration) return;
-      console.log('[FCM] SW registered:', registration);
+      const fcmRegistration = await registerFcmServiceWorker();
 
-      console.log('[FCM] waiting for SW ready...');
-      await navigator.serviceWorker.ready;
-      console.log('[FCM] SW ready');
-
-      console.log('[FCM] getting token...');
       const token = await getToken(messaging, {
         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-        serviceWorkerRegistration: registration,
+        serviceWorkerRegistration: fcmRegistration,
       });
-      console.log('[FCM] token:', token);
 
       if (token) {
         await registerFcmToken(token);
-        console.log('[FCM] token registered to server');
       }
     };
 
     setup().catch(console.error);
 
-    const unsubscribe = onMessage(messaging, (payload) => {
-      const { title, body } = payload.notification ?? {};
-      if (title) {
-        toast(body ?? title, { icon: '🔔' });
-      }
+    const unsubscribeOnMessage = onMessage(messaging, (payload) => {
+      const message = getCommentMessageFromPayload(payload);
+      if (!message) return;
+
+      toast(message, { icon: '🔔' });
+      showBrowserNotification(message).catch(console.error);
     });
 
-    return unsubscribe;
+    const handleSwMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'FCM_MESSAGE') {
+        const message = event.data.message ?? event.data.body;
+        if (!message) return;
+
+        toast(message, {
+          icon: '🔔',
+        });
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', handleSwMessage);
+
+    return () => {
+      unsubscribeOnMessage();
+      navigator.serviceWorker.removeEventListener('message', handleSwMessage);
+    };
   }, [authStatus]);
 };
