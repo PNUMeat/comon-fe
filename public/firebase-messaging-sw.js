@@ -15,12 +15,6 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const DEFAULT_NOTIFICATION_MESSAGE = '댓글이 달렸습니다 : ';
-const formatCommentNotificationMessage = (comment) =>
-  comment
-    ? `${DEFAULT_NOTIFICATION_MESSAGE} ${comment}`
-    : DEFAULT_NOTIFICATION_MESSAGE;
-
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
@@ -47,7 +41,7 @@ const parsePayload = (payload) => {
 
   return {
     title: notification.title ?? content.title ?? data.title ?? 'Code Monster',
-    body: formatCommentNotificationMessage(comment),
+    body: comment,
     icon:
       notification.icon ??
       content.icon ??
@@ -60,7 +54,7 @@ const parsePayload = (payload) => {
 const showFcmNotification = (payload) => {
   const { title, body, icon, url } = parsePayload(payload);
 
-  if (!body && !title) return Promise.resolve();
+  if (!body) return Promise.resolve();
 
   return self.registration.showNotification(title, {
     body,

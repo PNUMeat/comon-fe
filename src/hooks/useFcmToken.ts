@@ -10,18 +10,6 @@ import { useAtomValue } from 'jotai';
 const registerFcmServiceWorker = () =>
   navigator.serviceWorker.register('/firebase-messaging-sw.js');
 
-const DEFAULT_NOTIFICATION_MESSAGE = '댓글이 달렸습니다 : ';
-
-const formatCommentNotificationMessage = (comment?: string) =>
-  comment
-    ? `${DEFAULT_NOTIFICATION_MESSAGE} ${comment}`
-    : DEFAULT_NOTIFICATION_MESSAGE;
-
-const getToastMessage = (message?: string) =>
-  message?.startsWith(DEFAULT_NOTIFICATION_MESSAGE)
-    ? message
-    : formatCommentNotificationMessage(message);
-
 interface FcmDataPayload {
   [key: string]: string | FcmDataPayload | undefined;
 }
@@ -36,7 +24,7 @@ const getStringValue = (
 const getCommentMessageFromPayload = (payload: {
   notification?: { body?: string; title?: string };
   data?: Record<string, string>;
-}) => {
+}): string | undefined => {
   let data: FcmDataPayload = payload.data ?? {};
 
   if (typeof payload.data?.data === 'string') {
@@ -55,7 +43,7 @@ const getCommentMessageFromPayload = (payload: {
     payload.notification?.body ??
     payload.notification?.title;
 
-  return formatCommentNotificationMessage(comment);
+  return comment;
 };
 
 const showBrowserNotification = async (message: string) => {
@@ -105,13 +93,18 @@ export const useFcmToken = () => {
 
     const unsubscribeOnMessage = onMessage(messaging, (payload) => {
       const message = getCommentMessageFromPayload(payload);
+      if (!message) return;
+
       toast(message, { icon: '🔔' });
       showBrowserNotification(message).catch(console.error);
     });
 
     const handleSwMessage = (event: MessageEvent) => {
       if (event.data?.type === 'FCM_MESSAGE') {
-        toast(getToastMessage(event.data.message ?? event.data.body), {
+        const message = event.data.message ?? event.data.body;
+        if (!message) return;
+
+        toast(message, {
           icon: '🔔',
         });
       }

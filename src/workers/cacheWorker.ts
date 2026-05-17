@@ -18,12 +18,6 @@ const filteredManifest = precacheManifest.filter(
 precacheAndRoute(filteredManifest);
 
 declare const self: ServiceWorkerGlobalScope;
-const DEFAULT_NOTIFICATION_MESSAGE = '댓글이 달렸습니다.';
-
-const formatCommentNotificationMessage = (comment?: string) =>
-  comment
-    ? `${DEFAULT_NOTIFICATION_MESSAGE} ${comment}`
-    : DEFAULT_NOTIFICATION_MESSAGE;
 
 type PushPayload = {
   notification?: {
@@ -99,12 +93,11 @@ self.addEventListener('push', (event: PushEvent) => {
 
   const notification = data.notification ?? data.data ?? data;
   const title = notification.title;
-  const body = formatCommentNotificationMessage(notification.body ?? rawData);
+  const body = notification.body ?? rawData;
   const icon = notification.icon;
   const clickUrl = data.data?.url ?? notification.url ?? '/';
-  const message = body ?? title;
 
-  if (!message) return;
+  if (!body) return;
 
   const notificationTitle = title ?? 'Code Monster';
 
