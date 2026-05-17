@@ -48,7 +48,6 @@ const getCommentMessageFromPayload = (payload: {
 
 const showBrowserNotification = async (message: string) => {
   if (Notification.permission !== 'granted') return;
-  if (document.hasFocus()) return;
 
   const registration = await navigator.serviceWorker.ready;
   await registration.showNotification('Code Monster', {
