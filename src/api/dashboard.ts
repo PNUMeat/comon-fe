@@ -52,7 +52,7 @@ export interface IWeeklyGrassDay {
 
 export interface IDashboardResponse {
   teamName: string;
-  nDays: number; // 추천 요일 수 (2 | 4 | 6)
+  nDays: number;
   joinedAt: string; // YYYY-MM-DD
   imageUrl: string | null;
   memberName: string;
