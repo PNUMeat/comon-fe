@@ -6,6 +6,7 @@ import { Label } from '@/components/commons/Label';
 import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
+import { PersonalDashboard } from '@/components/features/TeamDashboard/PersonalDashboard';
 
 import { Suspense, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -100,6 +101,60 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
     }
   };
 
+  const managerMenu = (
+    <Flex direction="column" justify="flex-start" align="flex-start">
+      <Link
+        to={`${PATH.TEAM_ADMIN}/${teamId}`}
+        style={{ textDecoration: 'none' }}
+        onClick={() => setSelectedId(null)}
+      >
+        <Flex justify="center" align="center">
+          <SettingImage src={SettingsGreenIcon} />
+          <SText
+            color="#ccc"
+            fontWeight={600}
+            fontSize={isMobile ? '10px' : '14px'}
+          >
+            게시글 관리
+          </SText>
+        </Flex>
+      </Link>
+      <Spacer h={2} />
+      <Link
+        to={`${PATH.TEAM_SETTING}/team/${teamId}`}
+        style={{ textDecoration: 'none' }}
+      >
+        <Flex justify={isMobile ? 'flex-start' : 'center'} align="center">
+          <SettingImage src={SettingsRedIcon} />
+          <SText
+            color="#ccc"
+            fontWeight={600}
+            fontSize={isMobile ? '10px' : '14px'}
+          >
+            팀 설정
+          </SText>
+        </Flex>
+      </Link>
+      <Spacer h={2} />
+      <Flex
+        width={'auto'}
+        justify={isMobile ? 'flex-start' : 'center'}
+        align="center"
+        onClick={handleClick}
+        style={{ cursor: 'pointer' }}
+      >
+        <SettingImage src={SettingsPurpleIcon} />
+        <SText
+          color="#ccc"
+          fontWeight={600}
+          fontSize={isMobile ? '10px' : '14px'}
+        >
+          모집글
+        </SText>
+      </Flex>
+    </Flex>
+  );
+
   return (
     <>
       <Toaster
@@ -110,7 +165,21 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
         }}
       />
       <Sidebar>
-        <Box
+        {isMyTeam ? (
+          <MemberSidebar>
+            <PersonalDashboard teamId={teamId} enabled={isMyTeam} />
+            {isTeamManager && (
+              <>
+                <Spacer h={20} />
+                <Box width="100%" padding="16px 24px" borderRadius="20px">
+                  {managerMenu}
+                </Box>
+              </>
+            )}
+          </MemberSidebar>
+        ) : (
+          <>
+            <Box
           width={isMobile ? '84px' : '100%'}
           height={isMobile ? '84px' : '260px'}
           borderWidth={isMobile ? '1px' : '3px'}
@@ -217,69 +286,12 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                   <Spacer h={4} />
                 </>
               )}
-              {isTeamManager && (
-                <Flex
-                  direction="column"
-                  justify="flex-start"
-                  align="flex-start"
-                >
-                  <Link
-                    to={`${PATH.TEAM_ADMIN}/${teamId}`}
-                    style={{ textDecoration: 'none' }}
-                    onClick={() => setSelectedId(null)}
-                  >
-                    <Flex justify="center" align="center">
-                      <SettingImage src={SettingsGreenIcon} />
-                      <SText
-                        color="#ccc"
-                        fontWeight={600}
-                        fontSize={isMobile ? '10px' : '14px'}
-                      >
-                        게시글 관리
-                      </SText>
-                    </Flex>
-                  </Link>
-                  <Spacer h={2} />
-                  <Link
-                    to={`${PATH.TEAM_SETTING}/team/${teamId}`}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Flex
-                      justify={isMobile ? 'flex-start' : 'center'}
-                      align="center"
-                    >
-                      <SettingImage src={SettingsRedIcon} />
-                      <SText
-                        color="#ccc"
-                        fontWeight={600}
-                        fontSize={isMobile ? '10px' : '14px'}
-                      >
-                        팀 설정
-                      </SText>
-                    </Flex>
-                  </Link>
-                  <Spacer h={2} />
-                  <Flex
-                    width={'auto'}
-                    justify={isMobile ? 'flex-start' : 'center'}
-                    align="center"
-                    onClick={handleClick}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <SettingImage src={SettingsPurpleIcon} />
-                    <SText
-                      color="#ccc"
-                      fontWeight={600}
-                      fontSize={isMobile ? '10px' : '14px'}
-                    >
-                      모집글
-                    </SText>
-                  </Flex>
-                </Flex>
-              )}
+              {isTeamManager && managerMenu}
             </div>
           </Flex>
         </Box>
+          </>
+        )}
       </Sidebar>
 
       <Announcement>
@@ -363,6 +375,13 @@ const Sidebar = styled.aside`
     display: flex;
     gap: 4px;
   }
+`;
+
+// 멤버용 개인화 영역: Sidebar가 모바일에서 flex-row가 되므로 단일 컬럼으로 고정
+const MemberSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;
 
 const ImageContainer = styled(LazyImage)`
