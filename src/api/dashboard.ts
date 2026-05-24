@@ -36,6 +36,33 @@ export interface IArticlesByDateResponse {
   };
 }
 
+export type DayOfWeek =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATURDAY'
+  | 'SUNDAY';
+
+export interface IWeeklyGrassDay {
+  dayOfWeek: DayOfWeek;
+  count: number; // 그 요일의 풀이 글 수(원시값, 캡 없음)
+}
+
+export interface IDashboardResponse {
+  teamName: string;
+  nDays: number; // 추천 요일 수 (2 | 4 | 6)
+  joinedAt: string; // YYYY-MM-DD
+  imageUrl: string | null;
+  memberName: string;
+  description: string;
+  weeklySolvedDays: number; // 이번주 출석일수 A (A>B 가능, 클램핑 금지)
+  consecutiveSolveCount: number;
+  cumulativeSolveCount: number;
+  weeklyGrass: IWeeklyGrassDay[]; // 항상 월→일 순서로 7개
+}
+
 export interface ITopicResponse {
   articleId: number;
   articleCategory: string;
@@ -70,6 +97,16 @@ export const getArticlesByDate = async (
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
     { params: { date, page } }
+  );
+
+  return res.data.data;
+};
+
+export const getTeamDashboard = async (
+  teamId: number
+): Promise<IDashboardResponse> => {
+  const res = await apiInstance.get<ServerResponse<IDashboardResponse>>(
+    `/v1/teams/${teamId}/dashboard`
   );
 
   return res.data.data;
