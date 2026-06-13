@@ -334,7 +334,9 @@ const Posting = () => {
 
       let targetId = savedArticleId;
 
-      if (isEditMode && targetId) {
+      // AI 피드백 요청 시 isVisible=false 초안이 먼저 생성되므로(savedArticleId 존재),
+      // 등록 시 새 글을 또 만들지 않고 그 초안을 갱신한다. (초안 중복 생성/카운트 2배 방지)
+      if (targetId) {
         await mutatePost({
           teamId: parseInt(id as string),
           images:

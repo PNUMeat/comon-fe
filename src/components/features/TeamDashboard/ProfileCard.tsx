@@ -1,4 +1,5 @@
 import { Box } from '@/components/commons/Box';
+import { Label } from '@/components/commons/Label';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 
@@ -28,7 +29,11 @@ const TOOLTIP = {
   cumulative: '코몬에서 지금까지 푼 전체 문제 수예요.',
 };
 
-export const ProfileCard: React.FC<{ data: ProfileCardData }> = ({ data }) => {
+export const ProfileCard: React.FC<{
+  data: ProfileCardData;
+  createdAt: string;
+  topic: string;
+}> = ({ data, createdAt, topic }) => {
   const {
     imageUrl,
     memberName,
@@ -48,6 +53,8 @@ export const ProfileCard: React.FC<{ data: ProfileCardData }> = ({ data }) => {
   return (
     <Box width="100%" padding="24px 20px" borderRadius="20px">
       <Column>
+        <TeamHeader nDays={nDays} createdAt={createdAt} topic={topic} />
+        <Spacer h={20} />
         <ProfileImage
           src={imgSrc}
           alt={memberName}
@@ -59,7 +66,13 @@ export const ProfileCard: React.FC<{ data: ProfileCardData }> = ({ data }) => {
           {memberName}
         </SText>
         <Spacer h={4} />
-        <SText fontSize="26px" fontWeight={800} color="#333" textAlign="center">
+        {/* perf-003: 상단 팀 헤더("코몬 N DAYS")가 추가되어, 개인 nDays는 위계상 더 작게 */}
+        <SText
+          fontSize="18px"
+          fontWeight={700}
+          color={colors.buttonPurple}
+          textAlign="center"
+        >
           {nDays} DAYS
         </SText>
         <Spacer h={12} />
@@ -96,6 +109,41 @@ export const ProfileCard: React.FC<{ data: ProfileCardData }> = ({ data }) => {
   );
 };
 
+// perf-001: 현재 접속한 팀 식별 헤더("코몬 N DAYS"). 비회원 팀 박스 헤더와 동일 표기를 멤버 화면 상단에 노출
+const TeamHeader: React.FC<{
+  nDays: number;
+  createdAt: string;
+  topic: string;
+}> = ({ nDays, createdAt, topic }) => (
+  <TeamHeaderWrap>
+    <SText fontSize="12px" fontWeight={600} color="#333">
+      TEAM
+    </SText>
+    <Spacer h={4} />
+    <SText fontSize="24px" fontWeight={800} color="#333" textAlign="center">
+      코몬 {nDays}DAYS
+    </SText>
+    {createdAt && (
+      <>
+        <Spacer h={4} />
+        <SText fontSize="14px" fontWeight={400} color="#777">
+          since {createdAt}
+        </SText>
+      </>
+    )}
+    {topic && (
+      <>
+        <Spacer h={10} />
+        <Label background="#fff" padding="2px 12px">
+          <SText fontSize="11px" fontWeight={600} color={colors.buttonPurple}>
+            {topic}
+          </SText>
+        </Label>
+      </>
+    )}
+  </TeamHeaderWrap>
+);
+
 const InfoTip: React.FC<{ text: string }> = ({ text }) => (
   <TipWrap tabIndex={0} aria-label={text}>
     <RiInformationLine size={14} aria-hidden />
@@ -121,6 +169,13 @@ const StatItem: React.FC<{
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+`;
+
+const TeamHeaderWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
 `;
 

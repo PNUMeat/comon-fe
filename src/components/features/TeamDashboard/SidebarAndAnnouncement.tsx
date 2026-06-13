@@ -63,9 +63,18 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
           articleTitle: null,
         },
       });
-    } else {
-      setIsDropdownOpen((prev) => !prev);
+      return;
     }
+    if (!isLoggedIn) {
+      sessionStorage.setItem('redirect', location.pathname);
+      navigate(PATH.LOGIN, {
+        state: {
+          redirect: location.pathname,
+        },
+      });
+      return;
+    }
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const joinTeam = () => {
@@ -167,7 +176,11 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
       <Sidebar>
         {isMyTeam ? (
           <MemberSidebar>
-            <PersonalDashboard teamId={teamId} enabled={isMyTeam} />
+            <PersonalDashboard
+              teamId={teamId}
+              enabled={isMyTeam}
+              teamInfo={teamInfo}
+            />
             {isTeamManager && (
               <>
                 <Spacer h={20} />

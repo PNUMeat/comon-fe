@@ -29,3 +29,7 @@ dist-ssr
 .env.test.local
 .env.production.local
 .env.local
+
+# Local-only tooling / working docs (not for commit)
+.omc/
+docs/
