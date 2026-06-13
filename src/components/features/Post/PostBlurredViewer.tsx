@@ -1,8 +1,12 @@
 import { viewStyle } from '@/utils/viewStyle.ts';
 
 import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { PATH } from '@/routes/path';
+import { isLoggedInAtom } from '@/store/auth';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 
 const ArticleBlurWrap = styled.div`
   width: 100%;
@@ -116,6 +120,8 @@ export const PostBlurredViewer: React.FC<{
 }> = ({ shouldBlur, article, setIsModalOpen }) => {
   const stickyRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -141,6 +147,15 @@ export const PostBlurredViewer: React.FC<{
   }, []);
 
   const onClickOpenModal = () => {
+    if (!isLoggedIn) {
+      sessionStorage.setItem('redirect', location.pathname);
+      navigate(PATH.LOGIN, {
+        state: {
+          redirect: location.pathname,
+        },
+      });
+      return;
+    }
     if (setIsModalOpen) {
       setIsModalOpen(true);
     }
