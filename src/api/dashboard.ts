@@ -123,3 +123,25 @@ export const getTeamTopic = async (
 
   return res.data.data;
 };
+
+export type ProblemStep = 'STEP1' | 'STEP2' | 'STEP3' | 'STEP4';
+export type Platform = 'BAEKJOON' | 'PROGRAMMERS' | 'LEETCODE';
+
+export interface IRecommendationProblem {
+  step: ProblemStep;
+  platform: Platform;
+  title: string;
+  url: string;
+}
+
+export const getRecommendations = async (
+  teamId: number,
+  date: string
+): Promise<IRecommendationProblem[]> => {
+  const res = await apiInstance.get<ServerResponse<IRecommendationProblem[]>>(
+    `/v1/teams/${teamId}/recommendations`,
+    { params: { date } }
+  );
+
+  return res.data.data;
+};

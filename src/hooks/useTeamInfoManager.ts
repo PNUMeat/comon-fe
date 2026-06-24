@@ -8,6 +8,9 @@ type TeamCalendarTagArg = {
   year: number;
   month: number;
   teamId?: string;
+  // 주간 보기가 두 달에 걸칠 때(저번주+이번주) 추가로 fetch할 달
+  secondYear?: number;
+  secondMonth?: number;
 };
 
 type TeamInfoSegment = { teamInfo: ITeamInfo | null; isManager: boolean };
@@ -23,6 +26,8 @@ export const useTeamInfoManager = ({
   year,
   month,
   teamId,
+  secondYear,
+  secondMonth,
 }: TeamCalendarTagArg) => {
   const [tagsMap, setTagsMap] = useState<Map<string, ICalendarTag[]>>(
     new Map()
@@ -36,6 +41,17 @@ export const useTeamInfoManager = ({
     queryKey: ['team-info', teamId, year, month],
     queryFn: () => getTeamInfoAndTags(Number(teamId), year, month),
     enabled: !!teamId,
+  });
+
+  const hasSecond =
+    secondYear !== undefined &&
+    secondMonth !== undefined &&
+    !(secondYear === year && secondMonth === month);
+
+  const { data: secondData, isSuccess: secondSuccess } = useQuery({
+    queryKey: ['team-info', teamId, secondYear, secondMonth],
+    queryFn: () => getTeamInfoAndTags(Number(teamId), secondYear!, secondMonth!),
+    enabled: !!teamId && hasSecond,
   });
 
   if (isSuccess && teamId) {
@@ -73,6 +89,12 @@ export const useTeamInfoManager = ({
       addTags(teamId, teamInfoData.subjectArticleDateAndTagResponses);
     }
   }, [isSuccess, teamId]);
+
+  useEffect(() => {
+    if (secondSuccess && secondData && teamId) {
+      addTags(teamId, secondData.subjectArticleDateAndTagResponses);
+    }
+  }, [secondSuccess, teamId, secondYear, secondMonth]);
 
   const teamCache = teamInfoCacheMap.get(teamId ?? '-1') as TeamInfoSegment;
 
