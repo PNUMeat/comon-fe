@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import { ICalendarTag } from '@/api/dashboard';
+import { categoryColors } from '@/components/features/TeamDashboard/weekdayBadge';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -28,13 +29,6 @@ const formatDate = (date: Date): string =>
     .replace(/\s/g, '')
     .replace(/[./]/g, '-')
     .replace(/-$/, '');
-
-const categoryColors: Record<string, string> = {
-  '스터디 복습': '#6E74FA',
-  '스터디 예습': '#C2C4FB',
-  스터디: '#FFA379',
-  '코딩 테스트': '#FF5780',
-};
 
 const getCategoryForDate = (tags: ICalendarTag[], date: Date) => {
   const formattedDate = formatDate(date);

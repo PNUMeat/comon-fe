@@ -8,11 +8,14 @@ import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
 import { CommentSection } from '@/components/features/Comment/CommentSection';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
+import { CalendarViewToggle } from '@/components/features/TeamDashboard/CalendarViewToggle';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { SidebarAndAnnouncement } from '@/components/features/TeamDashboard/SidebarAndAnnouncement';
 import { TeamJoinModal } from '@/components/features/TeamDashboard/TeamJoinModal.tsx';
+import { TodayProblemSection } from '@/components/features/TeamDashboard/TodayProblemSection';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
+import { WeeklyCalendar } from '@/components/features/TeamDashboard/WeeklyCalendar';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
 import { Fragment, useEffect, useState } from 'react';
@@ -23,11 +26,14 @@ import { ITeamInfo, getTeamList } from '@/api/team';
 import { ServerResponse } from '@/api/types.ts';
 import { breakpoints } from '@/constants/breakpoints';
 import {
+  calendarModeAtom,
   currentViewAtom,
   pageAtom,
   selectedDateAtom,
   selectedPostIdAtom,
+  weekAnchorAtom,
 } from '@/store/dashboard';
+import { addDays, getMonday, getWeekDates, parseYMD } from '@/utils/week';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -40,6 +46,24 @@ const TeamDashboardPage = () => {
 
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [year, month] = selectedDate.split('-').map(Number);
+
+  const [calendarMode] = useAtom(calendarModeAtom);
+  const [weekAnchor] = useAtom(weekAnchorAtom);
+
+  // 주간 보기가 두 달에 걸칠 때(저번주 시작 ~ 이번주 끝) 양쪽 달의 tags를 모두 fetch
+  const weekMonths =
+    calendarMode === 'weekly'
+      ? (() => {
+          const start = addDays(getMonday(parseYMD(weekAnchor)), -7);
+          const end = parseYMD(getWeekDates(parseYMD(weekAnchor))[6]);
+          return {
+            primaryYear: start.getFullYear(),
+            primaryMonth: start.getMonth() + 1,
+            secondYear: end.getFullYear(),
+            secondMonth: end.getMonth() + 1,
+          };
+        })()
+      : null;
 
   const [page, setPage] = useAtom(pageAtom);
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
@@ -56,8 +80,10 @@ const TeamDashboardPage = () => {
   const { tagsMap, myTeamResponse, isTeamManager, isPending } =
     useTeamInfoManager({
       teamId,
-      year,
-      month,
+      year: weekMonths ? weekMonths.primaryYear : year,
+      month: weekMonths ? weekMonths.primaryMonth : month,
+      secondYear: weekMonths?.secondYear,
+      secondMonth: weekMonths?.secondMonth,
     });
 
   const {
@@ -131,12 +157,31 @@ const TeamDashboardPage = () => {
           setIsModalOpen={setIsModalOpen}
         />
         <CalendarSection>
-          <CustomCalendar
-            tags={tagsMap.get(teamId as string) ?? []}
-            onDateSelect={onClickCalendarDate}
-            selectedDate={selectedDate}
-            isPending={isPending}
-          />
+          <CalendarViewToggle />
+          {calendarMode === 'weekly' ? (
+            <WeeklyCalendar
+              tags={tagsMap.get(teamId as string) ?? []}
+              onDateSelect={onClickCalendarDate}
+              selectedDate={selectedDate}
+            />
+          ) : (
+            <CustomCalendar
+              tags={tagsMap.get(teamId as string) ?? []}
+              onDateSelect={onClickCalendarDate}
+              selectedDate={selectedDate}
+              isPending={isPending}
+            />
+          )}
+          {calendarMode === 'weekly' && (
+            <>
+              <Spacer h={24} />
+              <TodayProblemSection
+                teamId={teamId}
+                selectedDate={selectedDate}
+                isMyTeam={isMyTeam}
+              />
+            </>
+          )}
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
             data={articlesData}
