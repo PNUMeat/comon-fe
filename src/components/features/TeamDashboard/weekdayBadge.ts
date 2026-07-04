@@ -8,8 +8,7 @@ export const categoryColors: Record<string, string> = {
   '코딩 테스트': '#FF5780',
 };
 
-// weekf-006: 해당 날짜의 카테고리(추천 주제) 뱃지. 없으면 undefined.
-// ※ "개인 풀이 여부"로 의미를 바꾸려면 이 함수 1곳만 교체하면 된다.
+// weekf-005: 해당 날짜의 카테고리(추천 주제). 없으면 undefined — 주간 캘린더 뱃지 노출 여부 판정용.
 export const getDateCategory = (
   tags: ICalendarTag[],
   ymd: string
