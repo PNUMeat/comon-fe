@@ -4,7 +4,7 @@ import { colors } from '@/constants/colors';
 import { weekAnchorAtom } from '@/store/dashboard';
 import {
   addDays,
-  formatHeaderMonth,
+  formatWeekRange,
   getMonday,
   getWeekDates,
   isFutureWeek,
@@ -86,7 +86,7 @@ export const WeeklyCalendar = ({
   return (
     <Wrapper>
       <Header>
-        <MonthLabel>{formatHeaderMonth(anchorDate)}</MonthLabel>
+        <MonthLabel>{formatWeekRange(anchorDate)}</MonthLabel>
         <Nav>
           <NavBtn onClick={goPrevWeek}>{'<'}</NavBtn>
           <TodayBtn onClick={goToday}>오늘</TodayBtn>

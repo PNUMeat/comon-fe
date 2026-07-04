@@ -37,5 +37,12 @@ export const getWeekDates = (anchor: Date): string[] => {
 export const isFutureWeek = (monday: Date, today: Date): boolean =>
   monday.getTime() > getMonday(today).getTime();
 
-export const formatHeaderMonth = (anchor: Date): string =>
-  `${anchor.getFullYear()}년 ${String(anchor.getMonth() + 1).padStart(2, '0')}월`;
+// weekf-003: 주간 헤더 서식 20XX. XX. XX. ~ XX. XX. (월이 바뀌는 주 대응)
+export const formatWeekRange = (anchor: Date): string => {
+  const monday = getMonday(anchor);
+  const sunday = addDays(monday, 6);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${monday.getFullYear()}. ${pad(monday.getMonth() + 1)}. ${pad(
+    monday.getDate()
+  )}. ~ ${pad(sunday.getMonth() + 1)}. ${pad(sunday.getDate())}.`;
+};
