@@ -163,6 +163,8 @@ const TeamDashboardPage = () => {
               tags={tagsMap.get(teamId as string) ?? []}
               onDateSelect={onClickCalendarDate}
               selectedDate={selectedDate}
+              teamId={teamId}
+              isMyTeam={isMyTeam}
             />
           ) : (
             <CustomCalendar

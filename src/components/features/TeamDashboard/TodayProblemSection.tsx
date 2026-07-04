@@ -5,11 +5,11 @@ import { todayYMD } from '@/utils/week';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 
-// weekf-008 워딩 (확정 디자인 Frame 38558은 "오늘의 문제 풀기"/"문제 풀기" 사용 — QA 시 확인)
+// weekf-008/010 워딩 (QA 확정)
 const HEADING_TODAY = '오늘의 추천 문제';
-const HEADING_PAST = '추천 문제';
+const HEADING_PAST = '지난 추천 문제';
 const HEADING_EMPTY = '오늘은 추천 문제가 없어요. 개인적으로 문제를 풀어보세요.';
-const REGISTER_LABEL = '문제 풀이 등록하기';
+const REGISTER_LABEL = '문제 풀기';
 
 interface TodayProblemSectionProps {
   teamId?: string;
@@ -118,8 +118,6 @@ const Step = styled.div`
 const Title = styled.div`
   font-size: 14px;
   color: #3a3a46;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 `;
 
 const RegisterButton = styled.button`

@@ -18,7 +18,7 @@ export const CalendarViewToggle = () => {
         $active={mode === 'monthly'}
         onClick={() => setMode('monthly')}
       >
-        전체 보기
+        Monthly
       </ToggleButton>
     </ToggleRow>
   );

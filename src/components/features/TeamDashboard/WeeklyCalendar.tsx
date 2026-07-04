@@ -1,10 +1,11 @@
 import { ICalendarTag } from '@/api/dashboard.ts';
 import { Tag } from '@/components/commons/Tag';
 import { colors } from '@/constants/colors';
+import { useTeamDashboard } from '@/hooks/useTeamDashboard';
 import { weekAnchorAtom } from '@/store/dashboard';
 import {
   addDays,
-  formatHeaderMonth,
+  formatWeekRange,
   getMonday,
   getWeekDates,
   isFutureWeek,
@@ -23,16 +24,31 @@ interface WeeklyCalendarProps {
   tags: ICalendarTag[];
   onDateSelect: (date: string) => void;
   selectedDate: string;
+  teamId?: string;
+  isMyTeam: boolean;
 }
 
 export const WeeklyCalendar = ({
   tags,
   onDateSelect,
   selectedDate,
+  teamId,
+  isMyTeam,
 }: WeeklyCalendarProps) => {
   const [anchor, setAnchor] = useAtom(weekAnchorAtom);
   const today = todayYMD();
   const anchorDate = parseYMD(anchor);
+
+  // weekf-006: 이번 주 풀이 여부 — 대시보드 weeklyGrass(월~일, 멤버 전용) 재사용
+  const { dashboard } = useTeamDashboard({ teamId, enabled: isMyTeam });
+  const solvedByDate = new Map(
+    dashboard
+      ? getWeekDates(parseYMD(today)).map((ymd, i) => [
+          ymd,
+          (dashboard.weeklyGrass[i]?.count ?? 0) > 0,
+        ])
+      : []
+  );
 
   const thisWeek = getWeekDates(anchorDate); // 월~일 7개 (weekf-005)
   const lastWeek = getWeekDates(addDays(getMonday(anchorDate), -7)); // weekf-004
@@ -54,9 +70,14 @@ export const WeeklyCalendar = ({
     <Row>
       {week.map((ymd) => {
         const day = Number(ymd.split('-')[2]);
-        const category = getDateCategory(tags, ymd);
         const isToday = ymd === today;
         const isSelected = ymd === selectedDate;
+        // weekf-005: 주제가 있는 날짜의 뱃지 — 오늘은 '스터디', 지난 날짜는 '스터디 복습'
+        const badgeLabel = isToday ? '스터디' : '스터디 복습';
+        const hasBadge = !!getDateCategory(tags, ymd);
+        // weekf-006: 우측 하단 풀이 여부 박스 — 이번 주(dim 제외) 오늘까지만 표시
+        const solved = solvedByDate.get(ymd);
+        const showSolveBox = !dim && ymd <= today && solved !== undefined;
         return (
           <Cell
             key={ymd}
@@ -69,13 +90,28 @@ export const WeeklyCalendar = ({
             }}
           >
             <DayNum $dim={dim}>{day}</DayNum>
-            {category && (
+            {hasBadge && (
               <BadgeWrap>
                 <Tag
-                  bgColor={categoryColors[category] ?? colors.buttonPurple}
-                  label={category}
+                  bgColor={categoryColors[badgeLabel] ?? colors.buttonPurple}
+                  label={badgeLabel}
                 />
               </BadgeWrap>
+            )}
+            {showSolveBox && (
+              <SolveBox $solved={solved}>
+                {solved && (
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+                    <path
+                      d="M1.5 5.5L4 8L8.5 2"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+              </SolveBox>
             )}
           </Cell>
         );
@@ -86,7 +122,7 @@ export const WeeklyCalendar = ({
   return (
     <Wrapper>
       <Header>
-        <MonthLabel>{formatHeaderMonth(anchorDate)}</MonthLabel>
+        <MonthLabel>{formatWeekRange(anchorDate)}</MonthLabel>
         <Nav>
           <NavBtn onClick={goPrevWeek}>{'<'}</NavBtn>
           <TodayBtn onClick={goToday}>오늘</TodayBtn>
@@ -162,11 +198,18 @@ const Row = styled.div`
 `;
 
 const Cell = styled.div<{ $dim: boolean; $selected: boolean; $today: boolean }>`
+  position: relative;
   min-height: 84px;
   padding: 8px;
   cursor: pointer;
   border: 1px solid #ececf4;
-  background: ${({ $dim }) => ($dim ? '#f4f4fb' : '#ffffff')};
+  /* weekf-007: 오늘 날짜는 아웃라인 + 그라데이션 채움 */
+  background: ${({ $dim, $today }) =>
+    $today
+      ? 'linear-gradient(135deg, #ffc4ad 0%, #b0b0f6 100%)'
+      : $dim
+        ? '#f4f4fb'
+        : '#ffffff'};
   outline: ${({ $today }) =>
     $today ? `2px solid ${colors.buttonPurple}` : 'none'};
   outline-offset: -2px;
@@ -181,4 +224,18 @@ const DayNum = styled.div<{ $dim: boolean }>`
 
 const BadgeWrap = styled.div`
   margin-top: 6px;
+`;
+
+const SolveBox = styled.div<{ $solved?: boolean }>`
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid ${colors.buttonPurple};
+  background: ${({ $solved }) => ($solved ? colors.buttonPurple : '#ffffff')};
 `;
