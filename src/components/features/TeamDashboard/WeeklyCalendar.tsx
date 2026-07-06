@@ -226,8 +226,7 @@ const DayNum = styled.div<{ $dim: boolean }>`
 const TopRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 4px;
+  gap: 12px;
 `;
 
 const SolveBox = styled.div<{ $solved?: boolean }>`

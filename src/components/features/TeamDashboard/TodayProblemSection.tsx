@@ -34,11 +34,7 @@ export const TodayProblemSection = ({
   });
 
   const hasRec = recommendations.length > 0;
-  const heading = !hasRec
-    ? HEADING_EMPTY
-    : isToday
-      ? HEADING_TODAY
-      : HEADING_PAST;
+  const heading = isToday ? HEADING_TODAY : HEADING_PAST;
 
   const openProblem = (problem: IRecommendationProblem) =>
     window.open(problem.url, '_blank');
@@ -48,28 +44,38 @@ export const TodayProblemSection = ({
       state: { article: null, articleId: null, articleTitle: null },
     });
 
+  // weekf-010: 문제 풀기 버튼은 오늘 날짜일 때만 노출
+  const registerButton = isToday && (
+    <RegisterButton onClick={goPosting}>
+      <PencilImage src={PencilIcon} alt="" />
+      {REGISTER_LABEL}
+    </RegisterButton>
+  );
+
   return (
     <Section>
-      <Heading $muted={!hasRec}>{heading}</Heading>
-      <Body>
-        {hasRec && (
-          <Cards>
-            {recommendations.map((problem) => (
-              <Card key={problem.step} onClick={() => openProblem(problem)}>
-                <Step>[{problem.step}]</Step>
-                <Title>{problem.title}</Title>
-              </Card>
-            ))}
-          </Cards>
-        )}
-        {/* weekf-010: 오늘 날짜일 때만 노출 */}
-        {isToday && (
-          <RegisterButton onClick={goPosting}>
-            <PencilImage src={PencilIcon} alt="" />
-            {REGISTER_LABEL}
-          </RegisterButton>
-        )}
-      </Body>
+      {hasRec ? (
+        <>
+          <Heading>{heading}</Heading>
+          <Body>
+            <Cards>
+              {recommendations.map((problem) => (
+                <Card key={problem.step} onClick={() => openProblem(problem)}>
+                  <Step>[{problem.step}]</Step>
+                  <Title>{problem.title}</Title>
+                </Card>
+              ))}
+            </Cards>
+            {registerButton}
+          </Body>
+        </>
+      ) : (
+        // 추천이 없으면 안내 문구 오른쪽에 버튼 배치
+        <EmptyRow>
+          <EmptyText>{HEADING_EMPTY}</EmptyText>
+          {registerButton}
+        </EmptyRow>
+      )}
     </Section>
   );
 };
@@ -81,11 +87,25 @@ const Section = styled.div`
   margin-bottom: 24px;
 `;
 
-const Heading = styled.div<{ $muted: boolean }>`
+const Heading = styled.div`
   font-weight: 700;
   font-size: 16px;
   margin-bottom: 16px;
-  color: ${({ $muted }) => ($muted ? '#9a9aa8' : '#3a3a46')};
+  color: #3a3a46;
+`;
+
+const EmptyRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+`;
+
+const EmptyText = styled.div`
+  font-weight: 700;
+  font-size: 16px;
+  color: #9a9aa8;
 `;
 
 const Body = styled.div`
