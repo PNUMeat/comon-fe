@@ -1,4 +1,5 @@
 import { IRecommendationProblem } from '@/api/dashboard.ts';
+import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import { colors } from '@/constants/colors';
 import { useRecommendations } from '@/hooks/useRecommendations';
 import { todayYMD } from '@/utils/week';
@@ -63,7 +64,10 @@ export const TodayProblemSection = ({
         )}
         {/* weekf-010: 오늘 날짜일 때만 노출 */}
         {isToday && (
-          <RegisterButton onClick={goPosting}>{REGISTER_LABEL}</RegisterButton>
+          <RegisterButton onClick={goPosting}>
+            <PencilImage src={PencilIcon} alt="" />
+            {REGISTER_LABEL}
+          </RegisterButton>
         )}
       </Body>
     </Section>
@@ -121,6 +125,10 @@ const Title = styled.div`
 `;
 
 const RegisterButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border: none;
   border-radius: 14px;
   padding: 0 24px;
@@ -130,4 +138,9 @@ const RegisterButton = styled.button`
   cursor: pointer;
   font-weight: 700;
   background: linear-gradient(90deg, ${colors.buttonPurple}, ${colors.buttonPink});
+`;
+
+const PencilImage = styled.img`
+  width: 18px;
+  height: 18px;
 `;

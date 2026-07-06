@@ -89,15 +89,16 @@ export const WeeklyCalendar = ({
               if (dim) goPrevWeek(); // weekf-004: 저번주 클릭 시 저번주로 이동
             }}
           >
-            <DayNum $dim={dim}>{day}</DayNum>
-            {hasBadge && (
-              <BadgeWrap>
+            {/* weekf-005: 날짜 오른쪽에 뱃지 배치 (피그마 시안) */}
+            <TopRow>
+              <DayNum $dim={dim}>{day}</DayNum>
+              {hasBadge && (
                 <Tag
                   bgColor={categoryColors[badgeLabel] ?? colors.buttonPurple}
                   label={badgeLabel}
                 />
-              </BadgeWrap>
-            )}
+              )}
+            </TopRow>
             {showSolveBox && (
               <SolveBox $solved={solved}>
                 {solved && (
@@ -222,8 +223,11 @@ const DayNum = styled.div<{ $dim: boolean }>`
   color: ${({ $dim }) => ($dim ? '#b6b6c4' : '#5b5b6b')};
 `;
 
-const BadgeWrap = styled.div`
-  margin-top: 6px;
+const TopRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
 `;
 
 const SolveBox = styled.div<{ $solved?: boolean }>`
