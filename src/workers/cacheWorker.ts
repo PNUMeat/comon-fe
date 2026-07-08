@@ -19,6 +19,25 @@ precacheAndRoute(filteredManifest);
 
 declare const self: ServiceWorkerGlobalScope;
 
+type PushPayload = {
+  notification?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+    url?: string;
+  };
+  data?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+    url?: string;
+  };
+  title?: string;
+  body?: string;
+  icon?: string;
+  url?: string;
+};
+
 registerRoute(
   ({ request, url }) =>
     request.destination === 'font' ||
@@ -40,6 +59,10 @@ registerRoute(
   })
 );
 
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
 self.addEventListener('activate', (event: ExtendableEvent) => {
   const cacheWhitelist = ['static-cache', 'dynamic-cache'];
   event.waitUntil(
@@ -59,23 +82,41 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
 });
 
 self.addEventListener('push', (event: PushEvent) => {
-  const data = event.data?.json() ?? {};
+  const rawData = event.data?.text() ?? '';
+
+  let data: PushPayload = {};
+  try {
+    data = rawData ? JSON.parse(rawData) : {};
+  } catch {
+    data = { data: { body: rawData } };
+  }
+
   const notification = data.notification ?? data.data ?? data;
-  const { title, body, icon } = notification;
+  const title = notification.title;
+  const body = notification.body ?? rawData;
+  const icon = notification.icon;
   const clickUrl = data.data?.url ?? notification.url ?? '/';
 
-  if (title) {
-    event.waitUntil(
-      self.registration.showNotification(title, {
+  if (!body) return;
+
+  const notificationTitle = title ?? 'Code Monster';
+
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(notificationTitle, {
         body,
         icon: icon ?? '/web-app-manifest-192x192.png',
-        data: {
-          ...data.data,
-          url: clickUrl,
-        },
-      })
-    );
-  }
+        data: { url: clickUrl },
+      }),
+      self.clients
+        .matchAll({ type: 'window', includeUncontrolled: true })
+        .then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: 'FCM_MESSAGE', title, body });
+          });
+        }),
+    ])
+  );
 });
 
 self.addEventListener('notificationclick', (event: NotificationEvent) => {

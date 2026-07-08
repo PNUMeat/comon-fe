@@ -1,6 +1,7 @@
 'use client';
 
 import { RouterProvider } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 import { useFcmToken } from '@/hooks/useFcmToken';
 import { router } from '@/routes/router';
@@ -25,6 +26,7 @@ export const App = () => {
 
   return (
     <>
+      <Toaster position="top-center" />
       <AuthChecker />
       {authStatus === 'loading' ? null : <RouterProvider router={router} />}
     </>

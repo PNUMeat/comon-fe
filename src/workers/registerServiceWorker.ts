@@ -18,13 +18,10 @@ export const registerAppServiceWorker =
         .register(getServiceWorkerUrl(), {
           type: 'module',
         })
-        .then((registration) => {
-          console.log('[ServiceWorker] registration successful:', registration);
-          return registration;
-        })
+        .then((registration) => registration)
         .catch((error) => {
           registrationPromise = null;
-          console.log('[ServiceWorker] registration failed:', error);
+          console.error('[ServiceWorker] registration failed:', error);
           return null;
         });
     }
