@@ -92,11 +92,12 @@ export const getTeamInfoAndTags = async (
 export const getArticlesByDate = async (
   teamId: number,
   date: string,
-  page: number
+  page: number,
+  size?: number
 ): Promise<IArticlesByDateResponse> => {
   const res = await apiInstance.get<ServerResponse<IArticlesByDateResponse>>(
     `/v1/articles/${teamId}/by-date`,
-    { params: { date, page } }
+    { params: { date, page, ...(size && { size }) } }
   );
 
   return res.data.data;

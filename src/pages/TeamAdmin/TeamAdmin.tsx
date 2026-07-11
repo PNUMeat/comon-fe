@@ -1,3 +1,5 @@
+import { getLatestOwnArticle } from '@/utils/article';
+
 import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -9,12 +11,13 @@ import { Pagination } from '@/components/commons/Pagination';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
+import { ArticleFeedbackToggle } from '@/components/features/TeamDashboard/ArticleFeedbackToggle';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
 import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, Suspense, useState } from 'react';
+import { Fragment, Suspense, useMemo, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { updateAnnouncement } from '@/api/announcement';
@@ -345,10 +348,12 @@ const TeamAdmin = () => {
   const [year, month] = selectedDate.split('-').map(Number);
 
   const [page, setPage] = useState<number>(0);
+  const [isPostsExpanded, setIsPostsExpanded] = useState(true);
 
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
+    setIsPostsExpanded(true);
   };
 
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
@@ -372,6 +377,54 @@ const TeamAdmin = () => {
     queryFn: () => getArticlesByDate(Number(id), selectedDate, page),
     enabled: !!id && !!selectedDate,
   });
+  const { data: pinnedArticlesData, refetch: refetchPinnedArticles } = useQuery(
+    {
+      queryKey: ['articles-by-date-pinned', id, selectedDate],
+      queryFn: () => getArticlesByDate(Number(id), selectedDate, 0, 1000),
+      enabled: !!id && !!selectedDate,
+    }
+  );
+  const pinnedArticle = useMemo(
+    () => getLatestOwnArticle(pinnedArticlesData?.content ?? []) ?? null,
+    [pinnedArticlesData?.content]
+  );
+  const displayedArticlesData = useMemo(() => {
+    if (!pinnedArticlesData) {
+      return articlesData;
+    }
+
+    const pageSize = 6;
+    const articles = pinnedArticlesData.content.filter(
+      (article) => article.articleId !== pinnedArticle?.articleId
+    );
+    const start = page * pageSize;
+
+    return {
+      content: articles.slice(start, start + pageSize),
+      page: {
+        size: pageSize,
+        number: page,
+        totalElements: articles.length,
+        totalPages: Math.ceil(articles.length / pageSize),
+      },
+    };
+  }, [articlesData, page, pinnedArticle?.articleId, pinnedArticlesData]);
+  const selectedArticle = useMemo(() => {
+    if (!selectedArticleId) {
+      return null;
+    }
+
+    return (
+      [
+        ...(displayedArticlesData?.content ?? []),
+        ...(pinnedArticle ? [pinnedArticle] : []),
+      ].find((article) => article.articleId === selectedArticleId) ?? null
+    );
+  }, [displayedArticlesData?.content, pinnedArticle, selectedArticleId]);
+  const refetchArticleViews = () => {
+    refetch();
+    refetchPinnedArticles();
+  };
   // 가장 비용이 적은 캐싱
   if (isPaginationReady && articlesData) {
     totalPageCache = articlesData.page.totalPages;
@@ -521,19 +574,27 @@ const TeamAdmin = () => {
           />
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
-            data={articlesData}
+            data={displayedArticlesData}
             tags={tagsMap.get(id) ?? []}
             selectedDate={selectedDate}
+            isExpanded={isPostsExpanded}
+            pinnedArticle={pinnedArticle}
+            showPinnedSlot
+            onToggleExpanded={() => setIsPostsExpanded((prev) => !prev)}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
           />
-          <Pagination
-            totalPages={articlesData?.page.totalPages ?? totalPageCache}
-            currentPageProp={page}
-            onPageChange={handlePageChange}
-            hideShadow={isMobile}
-            marginTop="-70px"
-          />
+          {isPostsExpanded && (
+            <Pagination
+              totalPages={
+                displayedArticlesData?.page.totalPages ?? totalPageCache
+              }
+              currentPageProp={page}
+              onPageChange={handlePageChange}
+              hideShadow={isMobile}
+              marginTop="-70px"
+            />
+          )}
           <Spacer h={isMobile ? 30 : 40} />
           {currentView === 'topic' && (
             <TopicDetail
@@ -542,17 +603,18 @@ const TeamAdmin = () => {
               isTeamManager={isTeamManager}
             />
           )}
-          {currentView === 'article' && articlesData && selectedArticleId && (
-            <ArticleDetail
-              data={
-                articlesData.content.find(
-                  (article) => article.articleId === selectedArticleId
-                ) as IArticle
-              }
-              refetchArticles={refetch}
-              teamId={Number(id)}
-              shouldBlur={false}
-            />
+          {currentView === 'article' && selectedArticle && (
+            <>
+              <ArticleDetail
+                data={selectedArticle as IArticle}
+                refetchArticles={refetchArticleViews}
+                teamId={Number(id)}
+                shouldBlur={false}
+              />
+              {selectedArticle.isAuthor && (
+                <ArticleFeedbackToggle articleId={selectedArticle.articleId} />
+              )}
+            </>
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
         </CalendarSection>

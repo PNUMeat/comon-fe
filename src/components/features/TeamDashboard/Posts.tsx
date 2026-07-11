@@ -7,9 +7,9 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 
-import { IArticlesByDateResponse } from '@/api/dashboard';
+import { IArticle, IArticlesByDateResponse } from '@/api/dashboard';
 import RocketImg from '@/assets/TeamDashboard/rocket.png';
 import { breakpoints } from '@/constants/breakpoints.ts';
 import { selectedPostIdAtom } from '@/store/dashboard';
@@ -23,6 +23,10 @@ interface PostsProps {
     articleCategory: string;
   }[];
   selectedDate: string;
+  isExpanded: boolean;
+  pinnedArticle?: IArticle | null;
+  showPinnedSlot?: boolean;
+  onToggleExpanded: () => void;
   onShowTopicDetail: () => void;
   onShowArticleDetail: (articleId: number) => void;
 }
@@ -38,6 +42,10 @@ export const Posts: React.FC<PostsProps> = ({
   data,
   tags,
   selectedDate,
+  isExpanded,
+  pinnedArticle,
+  showPinnedSlot = false,
+  onToggleExpanded,
   onShowTopicDetail,
   onShowArticleDetail,
 }) => {
@@ -67,9 +75,108 @@ export const Posts: React.FC<PostsProps> = ({
 
   const fontSize = isMobile ? '18px' : '24px';
   const padding = isMobile ? '10px 16px' : '10px 40px';
+  const listArticles = useMemo(() => {
+    const articles = data?.content ?? [];
+
+    if (!pinnedArticle) {
+      return articles;
+    }
+
+    return articles.filter(
+      (article) => article.articleId !== pinnedArticle.articleId
+    );
+  }, [data?.content, pinnedArticle]);
+  const mobileArticles = pinnedArticle
+    ? [pinnedArticle, ...listArticles]
+    : listArticles;
+  const shouldShowPinnedSlot = showPinnedSlot || !!pinnedArticle;
+
+  const renderArticleCard = (article: IArticle) => (
+    <Box
+      width="100%"
+      height={isMobile ? '86px' : '104px'}
+      padding={isMobile ? '12px 14px' : '20px'}
+      key={article.articleId}
+      style={{
+        cursor: 'pointer',
+        boxShadow:
+          selectedId === article.articleId
+            ? '4px 4px 8.2px 0px rgba(104, 104, 104, 0.20) inset'
+            : undefined,
+        backgroundColor: '#fff',
+      }}
+      onClick={() => handleArticleClick(article.articleId)}
+    >
+      <Flex direction="column">
+        <PostTitleWrap>
+          <SText
+            color="#333"
+            fontSize={isMobile ? '14px' : '16px'}
+            lineHeight={isMobile ? '17px' : '20px'}
+            fontWeight={600}
+            shouldCut
+          >
+            {article.articleTitle}
+          </SText>
+        </PostTitleWrap>
+        <Spacer h={8} />
+        <SText
+          color="#777"
+          fontSize={isMobile ? '10px' : '12px'}
+          fontWeight={400}
+          whiteSpace="nowrap"
+        >
+          {article.createdDate.slice(0, -3)}
+        </SText>
+        <Spacer h={12} />
+        <Flex align="center" gap="6px">
+          <LazyImage
+            src={article.memberImage}
+            altText={article.memberName}
+            w={isMobile ? 14 : 16}
+            h={isMobile ? 14 : 16}
+            maxW={16}
+            style={{ borderRadius: '50%' }}
+          />
+          <SText
+            color="#333"
+            fontSize={isMobile ? '10px' : '12px'}
+            fontWeight={600}
+          >
+            {article.memberName}
+          </SText>
+        </Flex>
+      </Flex>
+    </Box>
+  );
+
+  const renderPinnedPlaceholder = () => (
+    <PinnedPlaceholderCard>
+      <PinnedPlaceholderContent>
+        <SText
+          color="#333"
+          fontSize={isMobile ? '14px' : '16px'}
+          lineHeight={isMobile ? '17px' : '20px'}
+          fontWeight={600}
+        >
+          나의 풀이
+        </SText>
+        <Spacer h={8} />
+        <SText
+          color="#777"
+          fontSize={isMobile ? '9px' : '10px'}
+          fontWeight={400}
+          lineHeight={isMobile ? '12px' : '14px'}
+          whiteSpace="nowrap"
+        >
+          오늘의 풀이를 등록해보세요
+        </SText>
+      </PinnedPlaceholderContent>
+    </PinnedPlaceholderCard>
+  );
 
   return (
-    <ContentDiv height={isMobile ? '391px' : ''}>
+    <ContentDiv height={isMobile && isExpanded ? '391px' : ''}>
       <Box width="100%" padding={padding} style={{ zIndex: 2 }}>
         <Flex justify="space-between" align="center">
           <Flex
@@ -90,96 +197,72 @@ export const Posts: React.FC<PostsProps> = ({
               />
             )}
           </Flex>
-          <StyledButton isClicked={isButtonClicked} onClick={handleButtonClick}>
-            <RocketIcon src={RocketImg} />
-            문제 확인하기
-          </StyledButton>
+          <ActionGroup>
+            <StyledButton
+              isClicked={isButtonClicked}
+              onClick={handleButtonClick}
+            >
+              <RocketIcon src={RocketImg} />
+              문제 확인하기
+            </StyledButton>
+            <ToggleButton
+              type="button"
+              isExpanded={isExpanded}
+              aria-expanded={isExpanded}
+              onClick={onToggleExpanded}
+            >
+              {isExpanded ? '닫기' : '펼치기'}
+              <ToggleCaret isExpanded={isExpanded} />
+            </ToggleButton>
+          </ActionGroup>
         </Flex>
       </Box>
 
-      <Suspense fallback={<NoArticleDiv />}>
-        {data?.content?.length === 0 ? (
-          <NoArticleDiv>
-            <Flex
-              justify="center"
-              align="center"
-              style={{ minHeight: '216px' }}
-            >
-              <SText
-                color="#ccc"
-                fontSize={isMobile ? '16px' : '24px'}
-                fontWeight={400}
+      {isExpanded && (
+        <Suspense fallback={<NoArticleDiv />}>
+          {!shouldShowPinnedSlot && data?.content?.length === 0 ? (
+            <NoArticleDiv>
+              <Flex
+                justify="center"
+                align="center"
+                style={{ minHeight: '216px' }}
               >
-                게시글이 존재하지 않아요
-              </SText>
-            </Flex>
-          </NoArticleDiv>
-        ) : (
-          <List>
-            <ContentWrapper>
-              {data?.content?.map((article) => (
-                <Box
-                  // TODO: 100%로 하면 grid로 width가 계산되어 피그마 디자인(145px)과 달라집니다.
-                  width="100%"
-                  height={isMobile ? '86px' : '104px'}
-                  padding={isMobile ? '12px 14px' : '20px'}
-                  key={article.articleId}
-                  style={{
-                    cursor: 'pointer',
-                    boxShadow:
-                      selectedId === article.articleId
-                        ? '4px 4px 8.2px 0px rgba(104, 104, 104, 0.20) inset'
-                        : undefined,
-                    backgroundColor: '#fff',
-                  }}
-                  onClick={() => handleArticleClick(article.articleId)}
+                <SText
+                  color="#ccc"
+                  fontSize={isMobile ? '16px' : '24px'}
+                  fontWeight={400}
                 >
-                  <Flex direction="column">
-                    <PostTitleWrap>
-                      <SText
-                        color="#333"
-                        fontSize={isMobile ? '14px' : '16px'}
-                        lineHeight={isMobile ? '17px' : '20px'}
-                        fontWeight={600}
-                        shouldCut
-                      >
-                        {article.articleTitle}
-                      </SText>
-                    </PostTitleWrap>
-                    <Spacer h={8} />
-                    <SText
-                      color="#777"
-                      fontSize={isMobile ? '10px' : '12px'}
-                      fontWeight={400}
-                      whiteSpace="nowrap"
-                    >
-                      {article.createdDate.slice(0, -3)}
-                    </SText>
-                    <Spacer h={12} />
-                    <Flex align="center" gap="6px">
-                      <LazyImage
-                        src={article.memberImage}
-                        altText={article.memberName}
-                        w={isMobile ? 14 : 16}
-                        h={isMobile ? 14 : 16}
-                        maxW={16}
-                        style={{ borderRadius: '50%' }}
-                      />
-                      <SText
-                        color="#333"
-                        fontSize={isMobile ? '10px' : '12px'}
-                        fontWeight={600}
-                      >
-                        {article.memberName}
-                      </SText>
-                    </Flex>
-                  </Flex>
-                </Box>
-              ))}
-            </ContentWrapper>
-          </List>
-        )}
-      </Suspense>
+                  게시글이 존재하지 않아요
+                </SText>
+              </Flex>
+            </NoArticleDiv>
+          ) : (
+            <List>
+              {shouldShowPinnedSlot && !isMobile ? (
+                <PinnedContentWrapper>
+                  <PinnedCardSlot>
+                    {pinnedArticle
+                      ? renderArticleCard(pinnedArticle)
+                      : renderPinnedPlaceholder()}
+                  </PinnedCardSlot>
+                  <PinnedDivider />
+                  <RightArticlesGrid>
+                    {listArticles.map(renderArticleCard)}
+                  </RightArticlesGrid>
+                </PinnedContentWrapper>
+              ) : (
+                <ContentWrapper>
+                  {showPinnedSlot &&
+                    !pinnedArticle &&
+                    isMobile &&
+                    renderPinnedPlaceholder()}
+                  {mobileArticles.map(renderArticleCard)}
+                </ContentWrapper>
+              )}
+            </List>
+          )}
+        </Suspense>
+      )}
     </ContentDiv>
   );
 };
@@ -191,6 +274,17 @@ const ContentDiv = styled.div<{ height: string }>`
   justify-content: center;
   width: 100%;
   height: ${(props) => props.height};
+`;
+
+const ActionGroup = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    gap: 6px;
+  }
 `;
 
 const StyledButton = styled.button<{ isClicked: boolean }>`
@@ -230,6 +324,44 @@ const StyledButton = styled.button<{ isClicked: boolean }>`
   }
 `;
 
+const ToggleButton = styled.button<{ isExpanded: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 80px;
+  height: 28px;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: ${(props) =>
+    props.isExpanded
+      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
+      : 'none'};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    min-width: 58px;
+    height: 28px;
+    padding: 7px 8px;
+    font-size: 10px;
+  }
+`;
+
+const ToggleCaret = styled.span<{ isExpanded: boolean }>`
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #333;
+  transform: rotate(${(props) => (props.isExpanded ? '180deg' : '0deg')});
+  transition: transform 0.2s ease;
+`;
+
 const RocketIcon = styled.img`
   width: 24px;
   height: 24px;
@@ -253,8 +385,9 @@ const NoArticleDiv = styled.div`
 
 const ContentWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, calc(33.33% - 8px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   width: calc(100% - 80px);
+  max-width: 592px;
   height: 216px;
   gap: 8px;
   top: 0px;
@@ -267,6 +400,66 @@ const ContentWrapper = styled.div`
     width: calc(100% - 40px);
     height: 278px;
   }
+`;
+
+const PinnedContentWrapper = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 3fr);
+  column-gap: 8px;
+  width: calc(100% - 80px);
+  max-width: 801px;
+  height: 216px;
+  align-items: start;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    display: grid;
+    grid-template-columns: repeat(2, calc(50% - 4px));
+    gap: 8px;
+    width: calc(100% - 40px);
+    height: 278px;
+  }
+`;
+
+const PinnedCardSlot = styled.div`
+  width: 100%;
+`;
+
+const PinnedPlaceholderCard = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  height: 104px;
+  padding: 20px;
+  border: 1px solid #cdcfff;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
+  box-sizing: border-box;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: 86px;
+    padding: 12px 14px;
+  }
+`;
+
+const PinnedPlaceholderContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-right: 8px;
+`;
+
+const PinnedDivider = styled.div`
+  width: 1px;
+  height: 104px;
+  background: #cdcfff;
+`;
+
+const RightArticlesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 8px;
+  min-width: 0;
 `;
 
 const List = styled.div`
@@ -287,9 +480,10 @@ const List = styled.div`
 `;
 
 const PostTitleWrap = styled.div`
-  width: 164px;
+  width: 100%;
+  min-width: 0;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    width: 105px;
+    width: 100%;
   }
 `;

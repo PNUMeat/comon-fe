@@ -1,4 +1,6 @@
+import { getLatestOwnArticle } from '@/utils/article';
 import { isDevMode } from '@/utils/cookie.ts';
+import { addDays, getMonday, getWeekDates, parseYMD } from '@/utils/week';
 
 import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
@@ -8,6 +10,7 @@ import { Pagination } from '@/components/commons/Pagination';
 import { Spacer } from '@/components/commons/Spacer';
 import { CommentSection } from '@/components/features/Comment/CommentSection';
 import { ArticleDetail } from '@/components/features/TeamDashboard/ArticleDetail';
+import { ArticleFeedbackToggle } from '@/components/features/TeamDashboard/ArticleFeedbackToggle';
 import { CalendarViewToggle } from '@/components/features/TeamDashboard/CalendarViewToggle';
 import { Posts } from '@/components/features/TeamDashboard/Posts';
 import { ScrollUpButton } from '@/components/features/TeamDashboard/ScrollUpButton';
@@ -18,7 +21,7 @@ import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { WeeklyCalendar } from '@/components/features/TeamDashboard/WeeklyCalendar';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
@@ -33,7 +36,6 @@ import {
   selectedPostIdAtom,
   weekAnchorAtom,
 } from '@/store/dashboard';
-import { addDays, getMonday, getWeekDates, parseYMD } from '@/utils/week';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -69,6 +71,7 @@ const TeamDashboardPage = () => {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [selectedArticleId, setSelectedArticleId] = useAtom(selectedPostIdAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPostsExpanded, setIsPostsExpanded] = useState(true);
 
   useEffect(() => {
     setSelectedArticleId(null);
@@ -95,6 +98,54 @@ const TeamDashboardPage = () => {
     queryFn: () => getArticlesByDate(Number(teamId), selectedDate, page),
     enabled: !!teamId && !!selectedDate,
   });
+  const { data: pinnedArticlesData, refetch: refetchPinnedArticles } = useQuery(
+    {
+      queryKey: ['articles-by-date-pinned', teamId, selectedDate],
+      queryFn: () => getArticlesByDate(Number(teamId), selectedDate, 0, 1000),
+      enabled: !!teamId && !!selectedDate,
+    }
+  );
+  const pinnedArticle = useMemo(
+    () => getLatestOwnArticle(pinnedArticlesData?.content ?? []) ?? null,
+    [pinnedArticlesData?.content]
+  );
+  const displayedArticlesData = useMemo(() => {
+    if (!pinnedArticlesData) {
+      return articlesData;
+    }
+
+    const pageSize = 6;
+    const articles = pinnedArticlesData.content.filter(
+      (article) => article.articleId !== pinnedArticle?.articleId
+    );
+    const start = page * pageSize;
+
+    return {
+      content: articles.slice(start, start + pageSize),
+      page: {
+        size: pageSize,
+        number: page,
+        totalElements: articles.length,
+        totalPages: Math.ceil(articles.length / pageSize),
+      },
+    };
+  }, [articlesData, page, pinnedArticle?.articleId, pinnedArticlesData]);
+  const selectedArticle = useMemo(() => {
+    if (!selectedArticleId) {
+      return null;
+    }
+
+    return (
+      [
+        ...(displayedArticlesData?.content ?? []),
+        ...(pinnedArticle ? [pinnedArticle] : []),
+      ].find((article) => article.articleId === selectedArticleId) ?? null
+    );
+  }, [displayedArticlesData?.content, pinnedArticle, selectedArticleId]);
+  const refetchArticleViews = () => {
+    refetch();
+    refetchPinnedArticles();
+  };
   // 가장 비용이 적은 캐싱
   if (isPaginationReady && articlesData) {
     totalPageCache = articlesData.page.totalPages;
@@ -103,6 +154,7 @@ const TeamDashboardPage = () => {
   const onClickCalendarDate = (newDate: string) => {
     setSelectedDate(newDate);
     setPage(0);
+    setIsPostsExpanded(true);
     setSelectedArticleId(null);
     setCurrentView(null);
   };
@@ -186,15 +238,21 @@ const TeamDashboardPage = () => {
           )}
           <Spacer h={24} isRef ref={boundRef} />
           <Posts
-            data={articlesData}
+            data={displayedArticlesData}
             tags={tagsMap.get(teamId as string) ?? []}
             selectedDate={selectedDate}
+            isExpanded={isPostsExpanded}
+            pinnedArticle={pinnedArticle}
+            showPinnedSlot
+            onToggleExpanded={() => setIsPostsExpanded((prev) => !prev)}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}
           />
-          {articlesData && (
+          {displayedArticlesData && isPostsExpanded && (
             <Pagination
-              totalPages={articlesData?.page.totalPages ?? totalPageCache}
+              totalPages={
+                displayedArticlesData.page.totalPages ?? totalPageCache
+              }
               currentPageProp={page}
               onPageChange={handlePageChange}
               hideShadow={isMobile}
@@ -206,21 +264,20 @@ const TeamDashboardPage = () => {
           {currentView === 'topic' && (
             <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
           )}
-          {currentView === 'article' && articlesData && selectedArticleId && (
+          {currentView === 'article' && selectedArticle && (
             <>
               <ArticleDetail
-                data={
-                  articlesData.content.find(
-                    (article) => article.articleId === selectedArticleId
-                  ) as IArticle
-                }
+                data={selectedArticle as IArticle}
                 shouldBlur={!isMyTeam}
-                refetchArticles={refetch}
+                refetchArticles={refetchArticleViews}
                 teamId={Number(teamId)}
                 setIsModalOpen={setIsModalOpen}
                 setSelectedArticleId={setSelectedArticleId}
               />
-              <CommentSection articleId={selectedArticleId} />
+              {selectedArticle.isAuthor && (
+                <ArticleFeedbackToggle articleId={selectedArticle.articleId} />
+              )}
+              <CommentSection articleId={selectedArticle.articleId} />
             </>
           )}
           <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
