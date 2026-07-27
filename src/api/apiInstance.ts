@@ -50,7 +50,9 @@ const apiInstance: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  // 5초는 서버 콜드 스타트/느린 쿼리 시 "요청은 성공했는데 클라이언트만 실패 처리"되는
+  // 중복 등록 사고를 유발해서 여유있게 설정 (쓰기 요청은 개별 API에서 더 길게 지정)
+  timeout: 15000,
 });
 
 apiInstance.interceptors.request.use(

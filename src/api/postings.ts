@@ -43,7 +43,9 @@ export const createPost = async ({
 
   const res = await apiInstance.post<ServerResponse<PostingMutationResp>>(
     '/v1/articles',
-    body
+    body,
+    // 타임아웃으로 실패 처리 후 재시도하면 글이 중복 등록되므로 쓰기 요청은 길게
+    { timeout: 30000 }
   );
 
   return res.data.data;
@@ -79,7 +81,8 @@ export const mutatePost = async ({
 
   const res = await apiInstance.put<ServerResponse<PostingMutationResp>>(
     `v1/articles/${articleId}`,
-    body
+    body,
+    { timeout: 30000 }
   );
 
   return res.data.data;
