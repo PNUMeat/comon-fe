@@ -17,6 +17,10 @@ interface ICustomCalendarProps {
   onDateSelect: (date: string) => void;
   selectedDate: string;
   isPending: boolean;
+  // 스터디방 전용 UI (TeamAdmin은 기존 유지): 고정 뱃지 라벨 + 오늘 그라데이션 + 풀이 체크박스
+  studyUi?: boolean;
+  // 이번 달 풀이 작성 날짜(YYYY-MM-DD) — 멤버 전용, undefined면 체크박스 미표시
+  solvedDates?: string[];
 }
 
 const formatDate = (date: Date): string =>
@@ -43,6 +47,8 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   onDateSelect,
   selectedDate,
   isPending = false,
+  studyUi = false,
+  solvedDates,
 }) => {
   const [showPending, setShowPending] = useState(false);
   const apiRef = useRef<{
@@ -71,7 +77,7 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   const isMobile = width <= breakpoints.mobile;
 
   return (
-    <CalendarWrapper>
+    <CalendarWrapper $studyUi={studyUi}>
       {/* 오늘 버튼 */}
       <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
 
@@ -83,19 +89,56 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
         formatDay={(_locale, date) => date.getDate().toString()}
         next2Label={null}
         prev2Label={null}
-        tileContent={({ date }) => {
+        tileContent={({ date, view, activeStartDate }) => {
+          if (view !== 'month') return null;
+
+          const ymd = formatDate(date);
+          const today = formatDate(new Date());
           const category = getCategoryForDate(tags, date);
-          return category ? (
-            isMobile ? (
-              <Dot bgColor={categoryColors[category]} />
-            ) : (
-              <Tag
-                bgColor={categoryColors[category]}
-                label={category}
-                height="fit-content"
-              />
-            )
-          ) : null;
+          // 스터디방: 백엔드 카테고리 문자열 대신 고정 라벨 (오늘=스터디, 그 외=스터디 복습)
+          const label = studyUi
+            ? ymd === today
+              ? '스터디'
+              : '스터디 복습'
+            : category;
+          const isCurrentMonth =
+            date.getMonth() === activeStartDate.getMonth() &&
+            date.getFullYear() === activeStartDate.getFullYear();
+          // 풀이 체크박스: 이번 달 + 오늘 이하 날짜만, 푼 날은 체크·안 푼 날은 빈 박스
+          const showSolveBox =
+            studyUi && !!solvedDates && isCurrentMonth && ymd <= today;
+          const solved = !!solvedDates?.includes(ymd);
+
+          return (
+            <>
+              {category && label && (
+                isMobile ? (
+                  <Dot bgColor={categoryColors[label]} />
+                ) : (
+                  <Tag
+                    bgColor={categoryColors[label]}
+                    label={label}
+                    height="fit-content"
+                  />
+                )
+              )}
+              {showSolveBox && (
+                <SolveBox $solved={solved}>
+                  {solved && (
+                    <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+                      <path
+                        d="M1.5 5.5L4 8L8.5 2"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </SolveBox>
+              )}
+            </>
+          );
         }}
         defaultValue={new Date(selectedDate)}
         onActiveStartDateChange={({ action, view, activeStartDate }) => {
@@ -125,8 +168,16 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
   );
 };
 
-const CalendarWrapper = styled.div`
+const CalendarWrapper = styled.div<{ $studyUi: boolean }>`
   position: relative;
+  /* weekf-007과 동일한 오늘 셀 그라데이션 — studyUi일 때만 StyledCalendar의 --now 배경을 덮음 */
+  --tile-now-bg: ${({ $studyUi }) =>
+    $studyUi ? 'linear-gradient(135deg, #ffc4ad 0%, #b0b0f6 100%)' : '#fff'};
+  /* 오늘이 선택된 상태(기본)여도 studyUi면 오늘 그라데이션 유지 */
+  --tile-now-selected-bg: ${({ $studyUi }) =>
+    $studyUi
+      ? 'linear-gradient(135deg, #ffc4ad 0%, #b0b0f6 100%)'
+      : 'linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%)'};
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 10px 24px;
@@ -253,9 +304,9 @@ const StyledCalendar = styled(Calendar)`
     }
   }
 
-  /* 현재 날짜 스타일 */
+  /* 현재 날짜 스타일 — studyUi면 그라데이션, 아니면 흰색 (CalendarWrapper의 CSS 변수) */
   .react-calendar__tile--now {
-    background-color: #fff !important;
+    background: var(--tile-now-bg, #fff) !important;
     box-sizing: border-box;
   }
 
@@ -264,6 +315,34 @@ const StyledCalendar = styled(Calendar)`
     background: linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%) !important;
     box-sizing: border-box;
     color: #fff;
+  }
+
+  .react-calendar__tile--now.react-calendar__tile--active {
+    background: var(--tile-now-selected-bg) !important;
+  }
+`;
+
+// 풀이 여부 체크박스 — WeeklyCalendar SolveBox와 동일 스펙 (모바일만 축소)
+const SolveBox = styled.div<{ $solved?: boolean }>`
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid ${colors.buttonPurple};
+  background: ${({ $solved }) => ($solved ? colors.buttonPurple : '#ffffff')};
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    right: 3px;
+    bottom: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    border-width: 1px;
   }
 `;
 

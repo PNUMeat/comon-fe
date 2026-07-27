@@ -2,6 +2,7 @@ import { getLatestOwnArticle } from '@/utils/article';
 import { isDevMode } from '@/utils/cookie.ts';
 import { addDays, getMonday, getWeekDates, parseYMD } from '@/utils/week';
 
+import { useSolvedDates } from '@/hooks/useSolvedDates.ts';
 import { useTeamInfoManager } from '@/hooks/useTeamInfoManager.ts';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
@@ -198,6 +199,14 @@ const TeamDashboardPage = () => {
     isDevMode()
   );
 
+  // 월간 캘린더 풀이 체크박스 데이터 — 멤버 전용, 월간 모드에서만 조회
+  const { solvedDates } = useSolvedDates({
+    teamId,
+    year,
+    month,
+    enabled: isMyTeam && calendarMode === 'monthly',
+  });
+
   return (
     <Fragment>
       <Spacer h={isMobile ? 16 : 28} />
@@ -224,6 +233,8 @@ const TeamDashboardPage = () => {
               onDateSelect={onClickCalendarDate}
               selectedDate={selectedDate}
               isPending={isPending}
+              studyUi
+              solvedDates={isMyTeam ? solvedDates : undefined}
             />
           )}
           {calendarMode === 'weekly' && (
@@ -244,6 +255,7 @@ const TeamDashboardPage = () => {
             isExpanded={isPostsExpanded}
             pinnedArticle={pinnedArticle}
             showPinnedSlot
+            studyUi
             onToggleExpanded={() => setIsPostsExpanded((prev) => !prev)}
             onShowTopicDetail={handleShowTopicDetail}
             onShowArticleDetail={handleShowArticleDetail}

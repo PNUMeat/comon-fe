@@ -135,6 +135,20 @@ export interface IRecommendationProblem {
   url: string;
 }
 
+// 월간 캘린더 풀이 체크박스: 해당 월에 내가 풀이를 작성한 날짜(YYYY-MM-DD) 목록 (멤버 전용)
+export const getSolvedDates = async (
+  teamId: number,
+  year: number,
+  month: number
+): Promise<string[]> => {
+  const res = await apiInstance.get<ServerResponse<string[]>>(
+    `/v1/teams/${teamId}/solved-dates`,
+    { params: { year, month } }
+  );
+
+  return res.data.data;
+};
+
 export const getRecommendations = async (
   teamId: number,
   date: string
