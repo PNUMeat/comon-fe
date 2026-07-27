@@ -114,6 +114,15 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
               {category && label && (
                 isMobile ? (
                   <Dot bgColor={categoryColors[label]} />
+                ) : studyUi ? (
+                  /* 뱃지를 셀 우측 상단에 고정 (SolveBox가 우측 하단인 것과 대칭) */
+                  <BadgeSlot>
+                    <Tag
+                      bgColor={categoryColors[label]}
+                      label={label}
+                      height="fit-content"
+                    />
+                  </BadgeSlot>
                 ) : (
                   <Tag
                     bgColor={categoryColors[label]}
@@ -320,6 +329,13 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__tile--now.react-calendar__tile--active {
     background: var(--tile-now-selected-bg) !important;
   }
+`;
+
+// 뱃지 우측 상단 고정 슬롯 (studyUi 전용)
+const BadgeSlot = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 6px;
 `;
 
 // 풀이 여부 체크박스 — WeeklyCalendar SolveBox와 동일 스펙 (모바일만 축소)
