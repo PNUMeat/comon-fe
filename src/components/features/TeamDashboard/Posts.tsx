@@ -26,6 +26,8 @@ interface PostsProps {
   isExpanded: boolean;
   pinnedArticle?: IArticle | null;
   showPinnedSlot?: boolean;
+  // 스터디방 전용: 뱃지를 고정 라벨(스터디/스터디 복습)로 표시 — TeamAdmin은 기존 카테고리 유지
+  studyUi?: boolean;
   onToggleExpanded: () => void;
   onShowTopicDetail: () => void;
   onShowArticleDetail: (articleId: number) => void;
@@ -38,6 +40,20 @@ const categoryColors: Record<string, string> = {
   '코딩 테스트': '#FF5780',
 };
 
+// 캘린더와 동일한 고정 라벨 — 오늘은 '스터디', 그 외는 '스터디 복습' (백엔드 카테고리 문자열 미노출)
+const getBadgeLabel = (selectedDate: string): string => {
+  const today = new Date()
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\s/g, '')
+    .replace(/[./]/g, '-')
+    .replace(/-$/, '');
+  return selectedDate === today ? '스터디' : '스터디 복습';
+};
+
 export const Posts: React.FC<PostsProps> = ({
   data,
   tags,
@@ -45,6 +61,7 @@ export const Posts: React.FC<PostsProps> = ({
   isExpanded,
   pinnedArticle,
   showPinnedSlot = false,
+  studyUi = false,
   onToggleExpanded,
   onShowTopicDetail,
   onShowArticleDetail,
@@ -190,8 +207,12 @@ export const Posts: React.FC<PostsProps> = ({
             </SText>
             {category && (
               <Tag
-                bgColor={categoryColors[category.articleCategory]}
-                label={category.articleCategory}
+                bgColor={
+                  categoryColors[
+                    studyUi ? getBadgeLabel(selectedDate) : category.articleCategory
+                  ]
+                }
+                label={studyUi ? getBadgeLabel(selectedDate) : category.articleCategory}
                 padding={isMobile ? '3px 4px' : '4px 10px'}
                 fontSize={isMobile ? '8px' : '10px'}
               />
