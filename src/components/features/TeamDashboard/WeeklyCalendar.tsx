@@ -226,6 +226,8 @@ const DayNum = styled.div<{ $dim: boolean }>`
 const TopRow = styled.div`
   display: flex;
   align-items: center;
+  /* 뱃지를 셀 오른쪽 끝으로 — 월간 캘린더(BadgeSlot 우측 상단 고정)와 통일 */
+  justify-content: space-between;
   gap: 12px;
 `;
 
