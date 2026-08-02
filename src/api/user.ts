@@ -5,14 +5,7 @@ import { ServerResponse } from '@/api/types';
 import { uploadImages } from './image';
 
 const getOAuthUrl = () => {
-  const host = window.location.hostname;
   const origin = window.location.origin;
-  if (host === 'codemonster.site') {
-    return `https://api.test.codemonster.site/oauth2/authorization/kakao?redirect_uri=${origin}`;
-  }
-  if (host === 'test.codemonster.site') {
-    return `https://api.codemonster.site/oauth2/authorization/kakao?redirect_uri=${origin}`;
-  }
   return `${API_BASE_URL}/oauth2/authorization/kakao?redirect_uri=${origin}`;
 };
 
