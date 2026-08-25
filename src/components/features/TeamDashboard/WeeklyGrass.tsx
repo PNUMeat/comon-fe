@@ -119,8 +119,17 @@ export const WeeklyGrass: React.FC<IWeeklyGrassProps> = ({
 
     return days;
   }, [recentMonths]);
+  // 전체 기간의 첫 날짜를 실제 요일 열에 놓으면 이후 날짜도 월→일 열에 연속 정렬된다.
+  const leadingEmptyCellCount = timelineDays[0]?.weekdayIndex ?? 0;
+  const timelineCells = [
+    ...Array.from({ length: leadingEmptyCellCount }, () => null),
+    ...timelineDays,
+  ];
   const monthMarkers = timelineDays
-    .map((day, index) => ({ day, index }))
+    .map((day, index) => ({
+      day,
+      index: index + leadingEmptyCellCount,
+    }))
     .filter(({ day }) => day.day === 1);
 
   useEffect(() => {
@@ -242,14 +251,23 @@ export const WeeklyGrass: React.FC<IWeeklyGrassProps> = ({
                   ))}
                 </MonthLabels>
                 <ExpandedGrid>
-                  {timelineDays.map((day) => (
-                    <Cell
-                      key={day.ymd}
-                      $inMonth
-                      $filled={solvedDates.has(day.ymd)}
-                      $recommended={recommended.has(day.weekdayIndex)}
-                    />
-                  ))}
+                  {timelineCells.map((day, index) =>
+                    day ? (
+                      <Cell
+                        key={day.ymd}
+                        $inMonth
+                        $filled={solvedDates.has(day.ymd)}
+                        $recommended={recommended.has(day.weekdayIndex)}
+                      />
+                    ) : (
+                      <Cell
+                        key={`leading-empty-${index}`}
+                        $inMonth={false}
+                        $filled={false}
+                        $recommended={false}
+                      />
+                    )
+                  )}
                 </ExpandedGrid>
               </Timeline>
             </ExpandedCard>
