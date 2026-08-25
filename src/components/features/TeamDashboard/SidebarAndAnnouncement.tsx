@@ -504,11 +504,17 @@ const JoinDropdownItem = styled.button`
   padding: 0;
   border: 0;
   border-radius: 5px;
-  background: #f8f8ff;
+  background: #ffffff;
   color: #333333;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: #f8f8ff;
+  }
 `;
 
 const JoinLockIcon = styled.img`
