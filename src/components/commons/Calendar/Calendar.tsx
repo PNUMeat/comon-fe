@@ -1,11 +1,14 @@
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
+import { categoryColors } from '@/components/features/TeamDashboard/weekdayBadge';
+
 import { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import { ICalendarTag } from '@/api/dashboard';
-import { categoryColors } from '@/components/features/TeamDashboard/weekdayBadge';
+import CheckedIcon from '@/assets/TeamDashboard/checkbox-checked.svg';
+import UncheckedIcon from '@/assets/TeamDashboard/checkbox.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
@@ -111,8 +114,9 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
 
           return (
             <>
-              {category && label && (
-                isMobile ? (
+              {category &&
+                label &&
+                (isMobile ? (
                   <Dot bgColor={categoryColors[label]} />
                 ) : studyUi ? (
                   /* 뱃지를 셀 우측 상단에 고정 (SolveBox가 우측 하단인 것과 대칭) */
@@ -129,21 +133,13 @@ export const CustomCalendar: React.FC<ICustomCalendarProps> = ({
                     label={label}
                     height="fit-content"
                   />
-                )
-              )}
+                ))}
               {showSolveBox && (
-                <SolveBox $solved={solved}>
-                  {solved && (
-                    <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
-                      <path
-                        d="M1.5 5.5L4 8L8.5 2"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
+                <SolveBox>
+                  <img
+                    src={solved ? CheckedIcon : UncheckedIcon}
+                    alt={solved ? '풀이 완료' : '풀이 미완료'}
+                  />
                 </SolveBox>
               )}
             </>
@@ -185,8 +181,14 @@ const CalendarWrapper = styled.div<{ $studyUi: boolean }>`
   /* 오늘이 선택된 상태(기본)여도 studyUi면 오늘 그라데이션 유지 */
   --tile-now-selected-bg: ${({ $studyUi }) =>
     $studyUi
-      ? 'linear-gradient(135deg, #ffc4ad 0%, #b0b0f6 100%)'
+      ? 'linear-gradient(136.824deg, #ffc3c4 21.42%, #c1c4ff 100%)'
       : 'linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%)'};
+  --tile-selected-bg: ${({ $studyUi }) =>
+    $studyUi
+      ? 'linear-gradient(136.824deg, #ffc3c4 21.42%, #c1c4ff 100%)'
+      : 'linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%)'};
+  --tile-selected-color: ${({ $studyUi }) =>
+    $studyUi ? colors.buttonPurple : '#ffffff'};
 
   @media (max-width: ${breakpoints.mobile}px) {
     padding: 10px 24px;
@@ -321,9 +323,9 @@ const StyledCalendar = styled(Calendar)`
 
   /* 선택된 날짜 스타일 */
   .react-calendar__tile--active {
-    background: linear-gradient(135deg, #ffc3c4 20%, #c1c4ff 100%) !important;
+    background: var(--tile-selected-bg) !important;
     box-sizing: border-box;
-    color: #fff;
+    color: var(--tile-selected-color);
   }
 
   .react-calendar__tile--now.react-calendar__tile--active {
@@ -339,26 +341,29 @@ const BadgeSlot = styled.div`
 `;
 
 // 풀이 여부 체크박스 — WeeklyCalendar SolveBox와 동일 스펙 (모바일만 축소)
-const SolveBox = styled.div<{ $solved?: boolean }>`
+const SolveBox = styled.div`
   position: absolute;
-  right: 6px;
-  bottom: 6px;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  right: 4px;
+  bottom: 2px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid ${colors.buttonPurple};
-  background: ${({ $solved }) => ($solved ? colors.buttonPurple : '#ffffff')};
+  border: 0;
+  background: transparent;
+
+  img {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
 
   @media (max-width: ${breakpoints.mobile}px) {
-    right: 3px;
-    bottom: 3px;
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    border-width: 1px;
+    right: 0;
+    bottom: 0;
+    transform: scale(0.75);
+    transform-origin: right bottom;
   }
 `;
 

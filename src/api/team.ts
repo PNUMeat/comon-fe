@@ -1,5 +1,7 @@
 import apiInstance from '@/api/apiInstance';
+import { teamCombinedMock } from '@/api/mocks';
 import { ServerResponse } from '@/api/types';
+import { isDevMode } from '@/utils/cookie';
 
 import { uploadImages } from './image';
 
@@ -205,6 +207,37 @@ export const getTeamList = async (
   page: number = 0,
   size: number = 6
 ): Promise<ITeamListResponse> => {
+  if (isDevMode()) {
+    const withCurrentFields = (
+      team: (typeof teamCombinedMock.data.allTeams.content)[number]
+    ): ITeamInfo => ({
+      ...team,
+      imgUrl: team.imageUrl,
+      totalSolveCount: 0,
+    });
+
+    return {
+      myTeams: teamCombinedMock.data.myTeams.slice(0, 1).map((team) => ({
+        ...team,
+        imgUrl: team.imageUrl,
+        totalSolveCount: 24,
+      })),
+      allTeams: {
+        content: teamCombinedMock.data.allTeams.content
+          .slice(page * size, (page + 1) * size)
+          .map(withCurrentFields),
+        page: {
+          size,
+          number: page,
+          totalElements: teamCombinedMock.data.allTeams.content.length,
+          totalPages: Math.ceil(
+            teamCombinedMock.data.allTeams.content.length / size
+          ),
+        },
+      },
+    };
+  }
+
   const res = await apiInstance.get<ServerResponse<ITeamListResponse>>(
     `/v1/teams/combined`,
     {

@@ -1,22 +1,19 @@
+import { useTeamDashboard } from '@/hooks/useTeamDashboard';
 import { useWindowWidth } from '@/hooks/useWindowWidth';
 
 import { Box } from '@/components/commons/Box';
 import { Flex } from '@/components/commons/Flex';
-import { Label } from '@/components/commons/Label';
-import { LazyImage } from '@/components/commons/LazyImage';
 import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { PersonalDashboard } from '@/components/features/TeamDashboard/PersonalDashboard';
 
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ITeamInfo } from '@/api/team';
-import AnnouncementIcon from '@/assets/TeamDashboard/announcement_purple.png';
 import TriangleIcon from '@/assets/TeamDashboard/invert_triangle.png';
 import LockIcon from '@/assets/TeamDashboard/lock.png';
-import PencilIcon from '@/assets/TeamDashboard/pencil.png';
 import SettingsGreenIcon from '@/assets/TeamDashboard/settings_green.png';
 import SettingsPurpleIcon from '@/assets/TeamDashboard/settings_purple.png';
 import SettingsRedIcon from '@/assets/TeamDashboard/settings_red.png';
@@ -31,6 +28,7 @@ import { useAtom, useSetAtom } from 'jotai';
 
 interface ISidebarAndAnnouncementProps {
   teamInfo: ITeamInfo;
+  memberTeam?: ITeamInfo;
   isTeamManager: boolean;
   isMyTeam: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,6 +36,7 @@ interface ISidebarAndAnnouncementProps {
 
 export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   teamInfo,
+  memberTeam,
   isTeamManager,
   isMyTeam,
   setIsModalOpen,
@@ -48,11 +47,13 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
   const width = useWindowWidth();
   const isMobile = width <= breakpoints.mobile;
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const toggleExpand = () => setIsExpanded((prev) => !prev);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const setConfirm = useSetAtom(confirmAtom);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
+  const { dashboard: memberDashboard } = useTeamDashboard({
+    teamId: memberTeam ? String(memberTeam.teamId) : undefined,
+    enabled: !isMyTeam && !!memberTeam,
+  });
 
   const onClick = () => {
     if (isMyTeam) {
@@ -191,123 +192,73 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
             )}
           </MemberSidebar>
         ) : (
-          <>
-            <Box
-          width={isMobile ? '84px' : '100%'}
-          height={isMobile ? '84px' : '260px'}
-          borderWidth={isMobile ? '1px' : '3px'}
-          padding={isMobile ? '8px' : '16px'}
-          borderRadius={isMobile ? '10px' : '20px'}
-        >
-          <Suspense
-            fallback={<div style={{ height: isMobile ? '84px' : '200px' }} />}
-          >
-            <ImageContainer
-              src={teamInfo.imageUrl}
-              altText={teamInfo.teamName}
-              w={isMobile ? 70 : 200}
-              h={isMobile ? 70 : 200}
-              maxW={isMobile ? 70 : 200}
-              objectFit="contain"
-            />
-          </Suspense>
-        </Box>
-        <Spacer h={20} />
-        <Box
-          width="100%"
-          padding={isMobile ? '8px 12px' : '24px 40px'}
-          height={isMobile ? '84px' : 'auto'}
-          borderRadius={isMobile ? '10px' : '20px'}
-        >
-          <Flex
-            direction={isMobile ? 'row' : 'column'}
-            justify={isMobile ? 'space-around' : 'center'}
-            align="center"
-            width={100}
-          >
-            <Flex direction="column" align="center" style={{ width: 'auto' }}>
-              <SText
-                color="#333"
-                fontSize={isMobile ? '10px' : '12px'}
-                fontWeight={600}
-              >
-                TEAM
-              </SText>
-              <Spacer h={4} />
-              <SText
-                fontSize={isMobile ? '16px' : '24px'}
-                color="#333"
-                fontWeight={700}
-                textAlign="center"
-              >
-                {teamInfo.teamName}
-              </SText>
-              <Spacer h={4} />
-              <SText
-                fontSize={isMobile ? '10px' : '16px'}
-                color="#777"
-                fontWeight={400}
-              >
-                since {teamInfo.createdAt}
-              </SText>
-              <Spacer h={isMobile ? 4 : 16} />
-              <Label
-                background={isMobile ? '#F4F4F4' : '#6E74FA'}
-                color={isMobile ? '#8488ec' : '#fff'}
-                padding={isMobile ? '2px 6px' : '2px 10px'}
-              >
-                <SText fontSize={isMobile ? '8px' : '10px'} fontWeight={600}>
-                  {teamInfo.topic}
-                </SText>
-              </Label>
-            </Flex>
-
-            {!isMobile && (
-              <>
-                <Spacer h={16} />
-                <SText
-                  color="#777"
-                  fontSize="14px"
-                  fontWeight={400}
-                  lineHeight="20px"
-                >
-                  {teamInfo.teamExplain}
-                </SText>
-                <Spacer h={32} />
-                <SText
-                  color={colors.buttonPurple}
-                  fontSize="16px"
-                  fontWeight={400}
-                >
-                  {teamInfo.memberCount} members
-                </SText>
-                <Spacer h={32} />
-              </>
+          <GuestSidebar>
+            {memberTeam && (
+              <GuestTeamSummary>
+                <TeamEyebrow>TEAM</TeamEyebrow>
+                <GuestTeamName>{memberTeam.teamName}</GuestTeamName>
+                {memberTeam.topic && (
+                  <GuestTopic>{memberTeam.topic}</GuestTopic>
+                )}
+              </GuestTeamSummary>
             )}
 
-            <div>
-              {isMobile && (
-                <>
-                  <SText
-                    color={colors.buttonPurple}
-                    fontSize="10px"
-                    fontWeight={400}
-                    textAlign="center"
-                  >
-                    {teamInfo.memberCount} members
-                  </SText>
-                  <Spacer h={4} />
-                </>
-              )}
-              {isTeamManager && managerMenu}
-            </div>
-          </Flex>
-        </Box>
-          </>
+            <NonMemberCard>
+              <NonMemberInfo>
+                <div>
+                  <TeamEyebrow>TEAM</TeamEyebrow>
+                  <NonMemberTeamName>{teamInfo.teamName}</NonMemberTeamName>
+                  <CreatedAt>
+                    since {teamInfo.createdAt?.replaceAll('-', '.')}
+                  </CreatedAt>
+                </div>
+                <JoinMessage>
+                  팀에 참가하여 꾸준히
+                  <br />
+                  문제를 풀어보세요
+                </JoinMessage>
+              </NonMemberInfo>
+
+              <JoinArea>
+                <JoinButton type="button" onClick={onClick}>
+                  팀 참가하기
+                  <MoreIcon src={TriangleIcon} alt="" aria-hidden />
+                </JoinButton>
+                {isDropdownOpen && (
+                  <JoinDropdown>
+                    <JoinDropdownItem type="button" onClick={joinTeam}>
+                      <JoinLockIcon src={LockIcon} alt="" aria-hidden />
+                      비밀번호 입력
+                    </JoinDropdownItem>
+                  </JoinDropdown>
+                )}
+              </JoinArea>
+            </NonMemberCard>
+
+            {memberDashboard && (
+              <GuestGrassCard aria-label="내 팀의 주간 풀이 기록">
+                <GuestGrassGrid>
+                  {Array.from({ length: 42 }).map((_, index) => {
+                    const column = index % 7;
+                    const row = Math.floor(index / 7);
+                    const solvedCount =
+                      memberDashboard.weeklyGrass[column]?.count ?? 0;
+                    return (
+                      <GuestGrassCell
+                        key={index}
+                        $filled={row < Math.min(solvedCount, 6)}
+                        $recommended={column < memberDashboard.nDays}
+                      />
+                    );
+                  })}
+                </GuestGrassGrid>
+              </GuestGrassCard>
+            )}
+          </GuestSidebar>
         )}
       </Sidebar>
 
-      <Announcement>
+      {/* <Announcement>
         <Box
           width={isMobile ? '204px' : '470px'}
           height={isExpanded ? 'auto' : isMobile ? 'auto' : '70px'}
@@ -355,28 +306,21 @@ export const SidebarAndAnnouncement: React.FC<ISidebarAndAnnouncementProps> = ({
                 : '공지가 등록되지 않았습니다.'}
             </SText>
           </Flex>
-        </Box>
+        </Box> */}
 
-        <NewPostButton onClick={onClick}>
-          {isMyTeam && <AnnouncementImage src={PencilIcon} />}
-          <SText
-            fontSize={isMobile ? '10px' : '18px'}
-            color="#fff"
-            fontWeight={700}
-          >
-            {isMyTeam ? '오늘의 글쓰기' : '팀 참가하기'}
-          </SText>
-          {!isMyTeam && <MoreIcon src={TriangleIcon} />}
-        </NewPostButton>
-        {isDropdownOpen && (
-          <DropdownWrapper>
-            <DropdownList onClick={joinTeam}>
-              <DropdownListIcon src={LockIcon} />
-              <DropdownListText>비밀번호 입력</DropdownListText>
-            </DropdownList>
-          </DropdownWrapper>
-        )}
-      </Announcement>
+      {/* {isMyTeam && (
+          <NewPostButton onClick={onClick}>
+            <AnnouncementImage src={PencilIcon} />
+            <SText
+              fontSize={isMobile ? '10px' : '18px'}
+              color="#fff"
+              fontWeight={700}
+            >
+              오늘의 글쓰기
+            </SText>
+          </NewPostButton>
+        )} */}
+      {/* </Announcement> */}
     </>
   );
 };
@@ -397,14 +341,219 @@ const MemberSidebar = styled.div`
   width: 100%;
 `;
 
-const ImageContainer = styled(LazyImage)`
-  object-position: center;
-  overflow: hidden;
-  max-height: 260px;
+const GuestSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+`;
+
+const GuestTeamSummary = styled.header`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0;
+`;
+
+const GuestTeamName = styled.h2`
+  margin: -16px 0 0;
+  color: #333333;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+`;
+
+const GuestTopic = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 68px;
+  background: #6e74fa;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  box-sizing: border-box;
+`;
+
+const NonMemberCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 312px;
+  height: 572px;
+  padding: 122px 31px 37px;
+  border: 1px solid ${colors.borderPurple};
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(48, 49, 67, 0.06);
+  box-sizing: border-box;
 
   @media (max-width: ${breakpoints.mobile}px) {
-    max-height: 84px;
+    width: 100%;
+    height: 180px;
+    padding: 20px 12px 16px;
+    border-radius: 10px;
   }
+`;
+
+const NonMemberInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 179px;
+  text-align: center;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    height: auto;
+    gap: 12px;
+  }
+`;
+
+const TeamEyebrow = styled.div`
+  color: #333333;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+`;
+
+const NonMemberTeamName = styled.div`
+  color: #333333;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: normal;
+  white-space: nowrap;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 22px;
+  }
+`;
+
+const CreatedAt = styled.div`
+  color: #777777;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+
+  @media (max-width: ${breakpoints.mobile}px) {
+    font-size: 12px;
+  }
+`;
+
+const JoinMessage = styled.p`
+  margin: 0;
+  color: #777777;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const JoinArea = styled.div`
+  position: relative;
+  width: 250px;
+`;
+
+const JoinButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 250px;
+  height: 70px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: linear-gradient(116.383deg, #fe82db 6.0976%, #68e4ff 103.66%);
+  box-shadow: 0 6px 20px rgba(48, 49, 67, 0.06);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+`;
+
+const JoinDropdown = styled.div`
+  position: absolute;
+  top: 77px;
+  left: -5px;
+  z-index: 3;
+  width: 261px;
+  padding: 10px 9px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 2px 2px 20px rgba(94, 96, 153, 0.2);
+  box-sizing: border-box;
+`;
+
+const JoinDropdownItem = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 240px;
+  height: 33px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: #f8f8ff;
+  }
+`;
+
+const JoinLockIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+`;
+
+const GuestGrassCard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 272px;
+  padding: 13px 34px;
+  overflow: hidden;
+  border: 1px solid ${colors.borderPurple};
+  border-radius: 15px;
+  background: #ffffff;
+  box-sizing: border-box;
+`;
+
+const GuestGrassGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 34px);
+  gap: 1px;
+  width: 244px;
+`;
+
+const GuestGrassCell = styled.div<{
+  $filled: boolean;
+  $recommended: boolean;
+}>`
+  width: 34px;
+  height: 34px;
+  border: 1px solid ${colors.borderPurple};
+  background: ${({ $filled, $recommended }) =>
+    $filled ? '#6e74fa' : $recommended ? '#eff0ff' : '#f8f8ff'};
+  box-sizing: border-box;
 `;
 
 const SettingImage = styled.img`
@@ -419,125 +568,9 @@ const SettingImage = styled.img`
   }
 `;
 
-const Announcement = styled.header`
-  grid-area: announcement;
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    margin: 12px 0;
-    border-radius: 10px;
-    background: #f8f8ff;
-    padding: 8px 10px;
-  }
-`;
-
-const AnnouncementImageWrapper = styled.div`
-  position: absolute;
-  top: 28px;
-  left: 16px;
-  transform: translateY(-50%);
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    top: 14px;
-    left: 12px;
-  }
-`;
-
-const AnnouncementImage = styled.img`
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 12px;
-    height: 12px;
-    margin-right: 6px;
-  }
-`;
-
 const MoreIcon = styled.img`
   width: 15px;
   height: 10px;
   margin-left: 8px;
   padding-top: 2px;
-`;
-
-const NewPostButton = styled.button`
-  display: flex;
-  align-items: center;
-  height: 70px;
-  width: 265px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  background: var(--1, linear-gradient(98deg, #fe82db 6.1%, #68e4ff 103.66%));
-  box-shadow: 5px 7px 11.6px 0px rgba(63, 63, 77, 0.07);
-  border: none;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 100px;
-    height: 32px;
-    padding: 12px;
-    border-radius: 28px;
-  }
-`;
-
-const DropdownWrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  right: 0;
-  bottom: -100px;
-  z-index: 1;
-  border: 1px solid #e5e5e5;
-  width: 265px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 18px 52px;
-  box-sizing: border-box;
-  box-shadow: 2px 2px 20px 0px #5e609933;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 100px;
-    bottom: -50px;
-    right: 10px;
-    padding: 8px 4px;
-  }
-`;
-
-const DropdownList = styled.div`
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  width: 100%;
-  cursor: pointer;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    gap: 8px;
-  }
-`;
-
-const DropdownListIcon = styled.img`
-  width: 18px;
-  height: 18px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 8px;
-    height: 8px;
-  }
-`;
-
-const DropdownListText = styled.div`
-  font-size: 16px;
-  color: #333;
-  font-weight: 600;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 6px;
-  }
 `;

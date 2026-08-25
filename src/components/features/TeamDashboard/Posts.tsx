@@ -7,10 +7,10 @@ import { SText } from '@/components/commons/SText';
 import { Spacer } from '@/components/commons/Spacer';
 import { Tag } from '@/components/commons/Tag';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo } from 'react';
 
 import { IArticle, IArticlesByDateResponse } from '@/api/dashboard';
-import RocketImg from '@/assets/TeamDashboard/rocket.png';
+import ToggleCaretIcon from '@/assets/TeamDashboard/caret-down.svg';
 import { breakpoints } from '@/constants/breakpoints.ts';
 import { selectedPostIdAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
@@ -63,11 +63,9 @@ export const Posts: React.FC<PostsProps> = ({
   showPinnedSlot = false,
   studyUi = false,
   onToggleExpanded,
-  onShowTopicDetail,
   onShowArticleDetail,
 }) => {
   const [selectedId, setSelectedId] = useAtom(selectedPostIdAtom);
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   const getCategoryForSelectedDate = () => {
     if (!selectedDate) return null;
@@ -76,13 +74,7 @@ export const Posts: React.FC<PostsProps> = ({
 
   const category = getCategoryForSelectedDate();
 
-  const handleButtonClick = () => {
-    setIsButtonClicked(true);
-    onShowTopicDetail();
-  };
-
   const handleArticleClick = (articleId: number) => {
-    setIsButtonClicked(false);
     onShowArticleDetail(articleId);
     setSelectedId(articleId);
   };
@@ -209,31 +201,35 @@ export const Posts: React.FC<PostsProps> = ({
               <Tag
                 bgColor={
                   categoryColors[
-                    studyUi ? getBadgeLabel(selectedDate) : category.articleCategory
+                    studyUi
+                      ? getBadgeLabel(selectedDate)
+                      : category.articleCategory
                   ]
                 }
-                label={studyUi ? getBadgeLabel(selectedDate) : category.articleCategory}
+                label={
+                  studyUi
+                    ? getBadgeLabel(selectedDate)
+                    : category.articleCategory
+                }
                 padding={isMobile ? '3px 4px' : '4px 10px'}
                 fontSize={isMobile ? '8px' : '10px'}
               />
             )}
           </Flex>
           <ActionGroup>
-            <StyledButton
-              isClicked={isButtonClicked}
-              onClick={handleButtonClick}
-            >
-              <RocketIcon src={RocketImg} />
-              문제 확인하기
-            </StyledButton>
             <ToggleButton
               type="button"
               isExpanded={isExpanded}
               aria-expanded={isExpanded}
               onClick={onToggleExpanded}
             >
+              <ToggleCaret
+                src={ToggleCaretIcon}
+                alt=""
+                aria-hidden
+                isExpanded={isExpanded}
+              />
               {isExpanded ? '닫기' : '펼치기'}
-              <ToggleCaret isExpanded={isExpanded} />
             </ToggleButton>
           </ActionGroup>
         </Flex>
@@ -308,90 +304,42 @@ const ActionGroup = styled.div`
   }
 `;
 
-const StyledButton = styled.button<{ isClicked: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  color: #333;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  position: relative;
-  gap: 4px;
-  box-shadow: ${(props) =>
-    props.isClicked
-      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
-      : 'none'};
-  background: ${(props) => (props.isClicked ? '#E5E5E5' : '#fff')};
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #ffd482, #ff377f);
-    z-index: -1;
-  }
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    font-size: 10px;
-    padding: 7px 11px;
-  }
-`;
-
 const ToggleButton = styled.button<{ isExpanded: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 0;
+  width: 80px;
   min-width: 80px;
   height: 28px;
-  padding: 7px 12px;
+  padding: 4px 8px;
   border: none;
-  border-radius: 10px;
-  background: #fff;
-  color: #333;
+  border-radius: 68px;
+  background: #8f93ff;
+  color: #ffffff;
   font-size: 12px;
   font-weight: 600;
+  line-height: normal;
   cursor: pointer;
-  box-shadow: ${(props) =>
-    props.isExpanded
-      ? '3px 6px 8.3px 0px rgba(63, 63, 77, 0.07) inset'
-      : 'none'};
 
   @media (max-width: ${breakpoints.mobile}px) {
-    min-width: 58px;
+    width: 80px;
+    min-width: 80px;
     height: 28px;
-    padding: 7px 8px;
-    font-size: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
   }
 `;
 
-const ToggleCaret = styled.span<{ isExpanded: boolean }>`
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid #333;
+const ToggleCaret = styled.img<{ isExpanded: boolean }>`
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: none;
   transform: rotate(${(props) => (props.isExpanded ? '180deg' : '0deg')});
   transition: transform 0.2s ease;
 `;
 
-const RocketIcon = styled.img`
-  width: 24px;
-  height: 24px;
-
-  @media (max-width: ${breakpoints.mobile}px) {
-    width: 16px;
-    height: 16px;
-  }
-`;
 const NoArticleDiv = styled.div`
   top: 0px;
   left: 50%;

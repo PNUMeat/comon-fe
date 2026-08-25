@@ -1,9 +1,10 @@
+import { useTeamDashboard } from '@/hooks/useTeamDashboard';
+
 import { Spacer } from '@/components/commons/Spacer';
 import { ProfileCard } from '@/components/features/TeamDashboard/ProfileCard';
 import { WeeklyGrass } from '@/components/features/TeamDashboard/WeeklyGrass';
 
 import { ITeamInfo } from '@/api/team';
-import { useTeamDashboard } from '@/hooks/useTeamDashboard';
 import styled from '@emotion/styled';
 
 interface IPersonalDashboardProps {
@@ -27,11 +28,15 @@ export const PersonalDashboard: React.FC<IPersonalDashboardProps> = ({
     <Stack>
       <ProfileCard
         data={dashboard}
-        createdAt={teamInfo.createdAt}
+        teamName={teamInfo.teamName}
         topic={teamInfo.topic}
       />
       <Spacer h={20} />
-      <WeeklyGrass weeklyGrass={dashboard.weeklyGrass} nDays={dashboard.nDays} />
+      <WeeklyGrass
+        weeklyGrass={dashboard.weeklyGrass}
+        nDays={dashboard.nDays}
+        teamId={teamId}
+      />
     </Stack>
   );
 };

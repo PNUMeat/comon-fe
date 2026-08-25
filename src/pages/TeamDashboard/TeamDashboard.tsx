@@ -1,5 +1,4 @@
 import { getLatestOwnArticle } from '@/utils/article';
-import { isDevMode } from '@/utils/cookie.ts';
 import { addDays, getMonday, getWeekDates, parseYMD } from '@/utils/week';
 
 import { useSolvedDates } from '@/hooks/useSolvedDates.ts';
@@ -22,12 +21,13 @@ import { TopicDetail } from '@/components/features/TeamDashboard/TopicDetail';
 import { WeeklyCalendar } from '@/components/features/TeamDashboard/WeeklyCalendar';
 import { useScrollUpButtonPosition } from '@/components/features/TeamDashboard/hooks/useScrollUpButtonPosition.ts';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { IArticle, getArticlesByDate } from '@/api/dashboard';
 import { ITeamInfo, getTeamList } from '@/api/team';
 import { ServerResponse } from '@/api/types.ts';
+import DashboardGlow from '@/assets/TeamDashboard/dashboard-glow.svg';
 import { breakpoints } from '@/constants/breakpoints';
 import {
   calendarModeAtom,
@@ -194,9 +194,8 @@ const TeamDashboardPage = () => {
     },
   });
 
-  const isMyTeam = (teamData?.myTeams ?? []).reduce(
-    (acc, myTeam) => acc || myTeam.teamId === parseInt(teamId as string),
-    isDevMode()
+  const isMyTeam = (teamData?.myTeams ?? []).some(
+    (myTeam) => myTeam.teamId === Number(teamId)
   );
 
   // 월간 캘린더 풀이 체크박스 데이터 — 멤버 전용, 월간 모드에서만 조회
@@ -208,92 +207,101 @@ const TeamDashboardPage = () => {
   });
 
   return (
-    <Fragment>
+    <PageShell>
+      <BackgroundGlow src={DashboardGlow} alt="" aria-hidden />
       <Spacer h={isMobile ? 16 : 28} />
       <Grid>
         <SidebarAndAnnouncement
           teamInfo={myTeamResponse ?? ({} as ITeamInfo)}
+          memberTeam={teamData?.myTeams?.[0]}
           isTeamManager={isTeamManager}
           isMyTeam={isMyTeam}
           setIsModalOpen={setIsModalOpen}
         />
-        <CalendarSection>
+        <CalendarColumn>
           <CalendarViewToggle />
-          {calendarMode === 'weekly' ? (
-            <WeeklyCalendar
-              tags={tagsMap.get(teamId as string) ?? []}
-              onDateSelect={onClickCalendarDate}
-              selectedDate={selectedDate}
-              teamId={teamId}
-              isMyTeam={isMyTeam}
-            />
-          ) : (
-            <CustomCalendar
-              tags={tagsMap.get(teamId as string) ?? []}
-              onDateSelect={onClickCalendarDate}
-              selectedDate={selectedDate}
-              isPending={isPending}
-              studyUi
-              solvedDates={isMyTeam ? solvedDates : undefined}
-            />
-          )}
-          {calendarMode === 'weekly' && (
-            <>
-              <Spacer h={24} />
-              <TodayProblemSection
-                teamId={teamId}
+          <CalendarSection>
+            {calendarMode === 'weekly' ? (
+              <WeeklyCalendar
+                tags={tagsMap.get(teamId as string) ?? []}
+                onDateSelect={onClickCalendarDate}
                 selectedDate={selectedDate}
+                teamId={teamId}
                 isMyTeam={isMyTeam}
               />
-            </>
-          )}
-          <Spacer h={24} isRef ref={boundRef} />
-          <Posts
-            data={displayedArticlesData}
-            tags={tagsMap.get(teamId as string) ?? []}
-            selectedDate={selectedDate}
-            isExpanded={isPostsExpanded}
-            pinnedArticle={pinnedArticle}
-            showPinnedSlot
-            studyUi
-            onToggleExpanded={() => setIsPostsExpanded((prev) => !prev)}
-            onShowTopicDetail={handleShowTopicDetail}
-            onShowArticleDetail={handleShowArticleDetail}
-          />
-          {displayedArticlesData && isPostsExpanded && (
-            <Pagination
-              totalPages={
-                displayedArticlesData.page.totalPages ?? totalPageCache
-              }
-              currentPageProp={page}
-              onPageChange={handlePageChange}
-              hideShadow={isMobile}
-              marginTop="-70px"
-            />
-          )}
-
-          <Spacer h={isMobile ? 30 : 40} />
-          {currentView === 'topic' && (
-            <TopicDetail teamId={Number(teamId)} selectedDate={selectedDate} />
-          )}
-          {currentView === 'article' && selectedArticle && (
-            <>
-              <ArticleDetail
-                data={selectedArticle as IArticle}
-                shouldBlur={!isMyTeam}
-                refetchArticles={refetchArticleViews}
-                teamId={Number(teamId)}
-                setIsModalOpen={setIsModalOpen}
-                setSelectedArticleId={setSelectedArticleId}
+            ) : (
+              <CustomCalendar
+                tags={tagsMap.get(teamId as string) ?? []}
+                onDateSelect={onClickCalendarDate}
+                selectedDate={selectedDate}
+                isPending={isPending}
+                studyUi
+                solvedDates={isMyTeam ? solvedDates : undefined}
               />
-              {selectedArticle.isAuthor && (
-                <ArticleFeedbackToggle articleId={selectedArticle.articleId} />
-              )}
-              <CommentSection articleId={selectedArticle.articleId} />
-            </>
-          )}
-          <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
-        </CalendarSection>
+            )}
+            {calendarMode === 'weekly' && (
+              <>
+                <Spacer h={24} />
+                <TodayProblemSection
+                  teamId={teamId}
+                  selectedDate={selectedDate}
+                  isMyTeam={isMyTeam}
+                />
+              </>
+            )}
+            <Spacer h={24} isRef ref={boundRef} />
+            <Posts
+              data={displayedArticlesData}
+              tags={tagsMap.get(teamId as string) ?? []}
+              selectedDate={selectedDate}
+              isExpanded={isPostsExpanded}
+              pinnedArticle={pinnedArticle}
+              showPinnedSlot
+              studyUi
+              onToggleExpanded={() => setIsPostsExpanded((prev) => !prev)}
+              onShowTopicDetail={handleShowTopicDetail}
+              onShowArticleDetail={handleShowArticleDetail}
+            />
+            {displayedArticlesData && isPostsExpanded && (
+              <Pagination
+                totalPages={
+                  displayedArticlesData.page.totalPages ?? totalPageCache
+                }
+                currentPageProp={page}
+                onPageChange={handlePageChange}
+                hideShadow={isMobile}
+                marginTop="-70px"
+              />
+            )}
+
+            <Spacer h={isMobile ? 30 : 40} />
+            {currentView === 'topic' && (
+              <TopicDetail
+                teamId={Number(teamId)}
+                selectedDate={selectedDate}
+              />
+            )}
+            {currentView === 'article' && selectedArticle && (
+              <>
+                <ArticleDetail
+                  data={selectedArticle as IArticle}
+                  shouldBlur={!isMyTeam}
+                  refetchArticles={refetchArticleViews}
+                  teamId={Number(teamId)}
+                  setIsModalOpen={setIsModalOpen}
+                  setSelectedArticleId={setSelectedArticleId}
+                />
+                {selectedArticle.isAuthor && (
+                  <ArticleFeedbackToggle
+                    articleId={selectedArticle.articleId}
+                  />
+                )}
+                <CommentSection articleId={selectedArticle.articleId} />
+              </>
+            )}
+            <ScrollUpButton onClick={onClickJump} ref={buttonRef} />
+          </CalendarSection>
+        </CalendarColumn>
       </Grid>
       {isModalOpen && (
         <TeamJoinModal
@@ -302,16 +310,34 @@ const TeamDashboardPage = () => {
           setIsModalOpen={setIsModalOpen}
         />
       )}
-    </Fragment>
+    </PageShell>
   );
 };
+
+const PageShell = styled.div`
+  position: relative;
+  isolation: isolate;
+`;
+
+const BackgroundGlow = styled.img`
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  z-index: -1;
+  display: block;
+  width: min(1140px, 100vw);
+  height: 670px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+`;
 
 const Grid = styled.div`
   display: grid;
   grid-template-areas:
     'sidebar announcement'
     'sidebar calendar';
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 312px 1fr;
   grid-template-rows: auto 1fr auto;
   gap: 24px 40px;
   height: 100vh;
@@ -321,8 +347,11 @@ const Grid = styled.div`
   }
 `;
 
-const CalendarSection = styled.section`
+const CalendarColumn = styled.div`
   grid-area: calendar;
+`;
+
+const CalendarSection = styled.section`
   background-color: #f8f8ff;
   border-radius: 20px;
   padding: 20px 36px 40px 36px;

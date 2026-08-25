@@ -1,8 +1,3 @@
-import { ICalendarTag } from '@/api/dashboard.ts';
-import { Tag } from '@/components/commons/Tag';
-import { colors } from '@/constants/colors';
-import { useTeamDashboard } from '@/hooks/useTeamDashboard';
-import { weekAnchorAtom } from '@/store/dashboard';
 import {
   addDays,
   formatWeekRange,
@@ -13,6 +8,16 @@ import {
   toYMD,
   todayYMD,
 } from '@/utils/week';
+
+import { useTeamDashboard } from '@/hooks/useTeamDashboard';
+
+import { Tag } from '@/components/commons/Tag';
+
+import { ICalendarTag } from '@/api/dashboard.ts';
+import CheckedIcon from '@/assets/TeamDashboard/checkbox-checked.svg';
+import UncheckedIcon from '@/assets/TeamDashboard/checkbox.svg';
+import { colors } from '@/constants/colors';
+import { weekAnchorAtom } from '@/store/dashboard';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 
@@ -100,18 +105,11 @@ export const WeeklyCalendar = ({
               )}
             </TopRow>
             {showSolveBox && (
-              <SolveBox $solved={solved}>
-                {solved && (
-                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
-                    <path
-                      d="M1.5 5.5L4 8L8.5 2"
-                      stroke="#ffffff"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
+              <SolveBox>
+                <img
+                  src={solved ? CheckedIcon : UncheckedIcon}
+                  alt={solved ? '풀이 완료' : '풀이 미완료'}
+                />
               </SolveBox>
             )}
           </Cell>
@@ -231,16 +229,21 @@ const TopRow = styled.div`
   gap: 12px;
 `;
 
-const SolveBox = styled.div<{ $solved?: boolean }>`
+const SolveBox = styled.div`
   position: absolute;
-  right: 6px;
-  bottom: 6px;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  right: 4px;
+  bottom: 2px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid ${colors.buttonPurple};
-  background: ${({ $solved }) => ($solved ? colors.buttonPurple : '#ffffff')};
+  border: 0;
+  background: transparent;
+
+  img {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
 `;
