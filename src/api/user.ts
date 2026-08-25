@@ -1,6 +1,7 @@
 import apiInstance from '@/api/apiInstance';
 import { API_BASE_URL } from '@/api/config.ts';
 import { ServerResponse } from '@/api/types';
+import { isDevMode } from '@/utils/cookie';
 
 import { uploadImages } from './image';
 
@@ -68,6 +69,15 @@ export const changeProfile = async ({
 };
 
 export const getMyProfile = async (): Promise<ProfileQueryResp> => {
+  if (isDevMode()) {
+    return {
+      memberName: '코몬 QA',
+      memberExplain: '로컬 UI 확인용 목 사용자',
+      imageUrl: '',
+      uuid: 'local-mock-user',
+    };
+  }
+
   const res = await apiInstance.get<ServerResponse<ProfileQueryResp>>(
     'v1/members/own-profile'
   );
